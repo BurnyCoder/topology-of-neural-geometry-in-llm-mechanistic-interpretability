@@ -441,3 +441,56 @@ def anim_clouds() -> None:
 
     FuncAnimation(fig, turn, frames=36).save(config.path("figures") / "anim_clouds.gif", writer=PillowWriter(fps=10), dpi=80)
     plt.close(fig)
+
+
+EXAMPLES = [("R7_llama_colors", "Colours"), ("R2_grokking_WE", "Residues mod 113\n(toy network)"),
+            ("R5b_llama_months", "Months"), ("R5a_llama_weekdays", "Weekdays"),
+            ("R5c_llama_days_time", "Days + times of day"), ("R6_llama_years", "Years (control)")]
+
+
+def fig_examples() -> None:
+    """Plain-language positive and negative examples. Top: each cloud (PC1-PC2), coloured by position in its cycle
+    (years: by value), titled with two verdicts read from results (report/verdicts.py): is there a ring (top-3
+    loop beyond the Monte Carlo null), and does the concept go around it once (preregistered theta_B or theta_A;
+    otherwise post hoc only; otherwise no). Bottom: ring strength / chance level = observed top H1 persistence
+    ratio / the null's 95th percentile, so a bar above 1 is a significant ring (p < 0.05)."""
+    from neurotopo.experiments import realdata
+    from neurotopo.report import verdicts as v
+    inv = pd.read_csv(config.path("results") / "exp2" / "invariants.csv").set_index("id")
+    k = read_json(config.path("results") / "exp3" / "method_b.json")["R2_grokking_WE"]["records3"][0]["k"]
+    fig = plt.figure(figsize=(15, 5.8))
+    gs = fig.add_gridspec(2, len(EXAMPLES), height_ratios=[1.25, 1], hspace=0.38)
+    ratios, cols = [], []
+    for j, (d, name) in enumerate(EXAMPLES):
+        c = realdata.cloud(d)
+        if d == "R2_grokking_WE":
+            pos = (k * np.array([int(s) for s in c["labels"]])) % 113 / 113
+        else:
+            con = source.concepts(d, c["labels"], n_bins=12)
+            pos = con.index / len(con.phase)
+        ax = fig.add_subplot(gs[0, j])
+        ax.scatter(c["y"][:, 0], c["y"][:, 1], c=pos, cmap="viridis" if d == "R6_llama_years" else "twilight",
+                   s=5 if len(pos) > 200 else 12)
+        ax.set_xticks([])
+        ax.set_yticks([])
+        ring = v.loop(d)
+        goes = "yes" if (v.method_b(d) or v.method_a(d)) else ("only post hoc" if v.posthoc(d) else "no")
+        control = d == "R6_llama_years"                     # an ordinal concept: no ring is the expected outcome
+        ok = (ring and goes == "yes") or (control and not ring)
+        verdict = f"ring: {'yes' if ring else 'no'}" + (" (as expected)" if control and not ring else "")
+        ax.set_title(f"{name}\n{verdict}\ngoes around once: {goes}", fontsize=8.5,
+                     color="#1b7837" if ok else ("#b35806" if ring else "#333333"))
+        ratios.append(float(inv.loc[d, "top_pi1"] / inv.loc[d, "null_q95_pi1"]))
+        cols.append("#1b7837" if ring else "#bbbbbb")
+    ax = fig.add_subplot(gs[1, :])
+    ax.bar(range(len(EXAMPLES)), ratios, color=cols, width=0.5)
+    ax.axhline(1, color="k", ls="--", lw=0.9)
+    ax.text(len(EXAMPLES) - 1.5, 1.03, "chance level", ha="center", va="bottom", fontsize=8)   # in the gap between bars
+    ax.set_xticks(range(len(EXAMPLES)))
+    ax.set_xticklabels([n.replace("\n", " ") for _, n in EXAMPLES], fontsize=8)
+    ax.set_xlim(-0.5, len(EXAMPLES) - 0.5)
+    ax.set_ylim(0, max(ratios) * 1.15)
+    ax.set_ylabel("ring strength / chance level\n(above 1 = real ring)", fontsize=8)
+    for i, r in enumerate(ratios):
+        ax.text(i, r + 0.03, f"{r:.2f}", ha="center", va="bottom", fontsize=8)
+    save(fig, "fig_examples")
