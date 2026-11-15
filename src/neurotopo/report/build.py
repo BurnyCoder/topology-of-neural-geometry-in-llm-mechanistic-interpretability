@@ -171,6 +171,31 @@ def exp6sim_table() -> str:
             + tables.md_table(pd.DataFrame(rows), 3))
 
 
+def audit_tables() -> str:
+    """Exp7 audit (post hoc, D8): where the top loop of each cluster design lives, the preregistered closure
+    ratio of every concept set, and subsample stability against full-size and size-matched thresholds."""
+    from neurotopo.report.figures import short
+    a = read_json(res("exp7_audit", "summary.json"))
+    loc = pd.DataFrame([{"dataset": short(d), "top bar birth": v["top_bar"][0], "top bar death": v["top_bar"][1],
+                         "clusters first touch (radius)": v["connect_radius"], "mean within-concept radius": v["within_radius"],
+                         "loop inside one cluster": v["within_concept_loop"], "top pi of concept means alone": v["means_top_pi1"],
+                         "last->first step / median step": v["last_first_step_over_median"]}
+                        for d, v in a["localisation"].items()])
+    cl = pd.DataFrame(a["closure"])
+    cl["id"] = cl["id"].map(short)
+    st = pd.DataFrame([{"dataset": short(d), "null q95 (full N)": v["q95_full"], "loop kept (full-N threshold)": v["freq_full_threshold"],
+                        "null q95 (80% N)": v["q95_sub"], "loop kept (size-matched threshold)": v["freq_matched_threshold"]}
+                       for d, v in a["stability"].items()])
+    pw = pd.DataFrame(a["power"]).rename(columns={"nearest_loop": "loop pass (nearest cell)", "ci_lo": "95% CI low",
+                                                  "ci_hi": "95% CI high", "interp_loop": "loop pass (interpolated)"})
+    return "\n\n".join(["Where the most persistent loop lives (normalised top-3 cloud, radius units):", tables.md_table(loc, 3),
+                        "Subsample stability (200 subsamples of 80%):", tables.md_table(st, 3),
+                        "Corrected power simulation (power2), loop condition (a) with exact 95% CIs (40 replicates per cell):",
+                        tables.md_table(pw, 3),
+                        "Preregistered closure ratio (section 5; full activation space, cosine): d(last, first) / median d(c, c+1):",
+                        tables.md_table(cl, 3)])
+
+
 def coords_table() -> str:
     q = pd.read_csv(res("coords", "point_coordinates.csv"))
     cols = [c for c in ("id", "family", "coordinate", "variable", "statistic", "n", "R", "p", "winding", "rho", "NMI", "ARI")
@@ -187,6 +212,7 @@ SECTIONS = [("exp0_topology", exp0_table, ("exp0", "real_topology.csv")),
             ("exp2", exp2_table, ("exp2", "invariants.csv")),
             ("exp3", exp3_tables, ("exp3", "summary.json")),
             ("coords", coords_table, ("coords", "point_coordinates.csv")),
+            ("audit", audit_tables, ("exp7_audit", "summary.json")),
             ("exp6sim", exp6sim_table, ("exp6_sim", "summary.json"))]
 
 

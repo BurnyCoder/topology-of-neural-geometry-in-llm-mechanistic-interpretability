@@ -451,13 +451,18 @@ EXAMPLES = [("R7_llama_colors", "Colours"), ("R2_grokking_WE", "Residues mod 113
 def fig_examples() -> None:
     """Plain-language positive and negative examples. Top: each cloud (PC1-PC2), coloured by position in its cycle
     (years: by value), titled with two verdicts read from results (report/verdicts.py): is there a ring (top-3
-    loop beyond the Monte Carlo null), and does the concept go around it once (preregistered theta_B or theta_A;
-    otherwise post hoc only; otherwise no). Bottom: ring strength / chance level = observed top H1 persistence
-    ratio / the null's 95th percentile, so a bar above 1 is a significant ring (p < 0.05)."""
+    loop beyond the Monte Carlo null that runs through the concept clusters; a significant loop that lies inside one
+    cluster is not a ring of concepts, audit D8), and does the concept go around it once (preregistered theta_B or
+    theta_A; otherwise post hoc only; otherwise no). Bottom: observed top H1 persistence ratio / the null's 95th
+    percentile, so a bar above 1 is a significant loop (p < 0.05)."""
     from neurotopo.experiments import realdata
     from neurotopo.report import verdicts as v
     inv = pd.read_csv(config.path("results") / "exp2" / "invariants.csv").set_index("id")
     k = read_json(config.path("results") / "exp3" / "method_b.json")["R2_grokking_WE"]["records3"][0]["k"]
+    audit = config.path("results") / "exp7_audit" / "summary.json"
+    a = read_json(audit) if audit.exists() else {}
+    inside = {d: r["within_concept_loop"] for d, r in a.get("localisation", {}).items()}
+    rgb_loop = bool(a and a["colour_baseline"]["rgb"]["p_loop"] < 0.05)   # the colour stimuli have the loop too
     fig = plt.figure(figsize=(15, 5.8))
     gs = fig.add_gridspec(2, len(EXAMPLES), height_ratios=[1.25, 1], hspace=0.38)
     ratios, cols = [], []
@@ -473,24 +478,30 @@ def fig_examples() -> None:
                    s=5 if len(pos) > 200 else 12)
         ax.set_xticks([])
         ax.set_yticks([])
-        ring = v.loop(d)
+        small = v.loop(d) and inside.get(d, False)          # significant, but inside one concept's cluster
+        ring = v.loop(d) and not small
         goes = "yes" if (v.method_b(d) or v.method_a(d)) else ("only post hoc" if v.posthoc(d) else "no")
         control = d == "R6_llama_years"                     # an ordinal concept: no ring is the expected outcome
-        ok = (ring and goes == "yes") or (control and not ring)
-        verdict = f"ring: {'yes' if ring else 'no'}" + (" (as expected)" if control and not ring else "")
+        inherited = d == "R7_llama_colors" and ring and rgb_loop   # confounder found by the audit (D8)
+        ok = (ring and goes == "yes" and not inherited) or (control and not ring)
+        verdict = "ring: no (a small loop inside\none cluster)" if small else \
+            "ring: yes, but the RGB input\nhas it too" if inherited else \
+            f"ring: {'yes' if ring else 'no'}" + (" (as expected)" if control and not ring else "")
         ax.set_title(f"{name}\n{verdict}\ngoes around once: {goes}", fontsize=8.5,
                      color="#1b7837" if ok else ("#b35806" if ring else "#333333"))
         ratios.append(float(inv.loc[d, "top_pi1"] / inv.loc[d, "null_q95_pi1"]))
         cols.append("#1b7837" if ring else "#bbbbbb")
     ax = fig.add_subplot(gs[1, :])
     ax.bar(range(len(EXAMPLES)), ratios, color=cols, width=0.5)
-    ax.axhline(1, color="k", ls="--", lw=0.9)
-    ax.text(len(EXAMPLES) - 1.5, 1.03, "chance level", ha="center", va="bottom", fontsize=8)   # in the gap between bars
+    ax.axhline(1, color="k", ls="--", lw=0.9, label="null 95th percentile")
+    ax.legend(loc="upper right", fontsize=8, frameon=False)        # empty corner: no clash with bar labels
     ax.set_xticks(range(len(EXAMPLES)))
     ax.set_xticklabels([n.replace("\n", " ") for _, n in EXAMPLES], fontsize=8)
     ax.set_xlim(-0.5, len(EXAMPLES) - 0.5)
     ax.set_ylim(0, max(ratios) * 1.15)
-    ax.set_ylabel("ring strength / chance level\n(above 1 = real ring)", fontsize=8)
+    ax.set_ylabel("top loop persistence / null's 95th pct.\n(above 1 = significant loop)", fontsize=8)
     for i, r in enumerate(ratios):
-        ax.text(i, r + 0.03, f"{r:.2f}", ha="center", va="bottom", fontsize=8)
+        inside_bar = 0.8 < r < 0.97                                 # label just below the dashed line: put it in the bar
+        ax.text(i, r - 0.03 if inside_bar else r + 0.03, f"{r:.2f}", ha="center", va="top" if inside_bar else "bottom",
+                fontsize=8)
     save(fig, "fig_examples")

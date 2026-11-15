@@ -126,6 +126,8 @@ def collect() -> dict:
             n["exp1.well.n"] = w["n"]
             triv = sum(v for f, v in w["family_counts"].items() if f in ("blob", "disc", "paraboloid"))
             n["exp1.well.trivial_frac"] = triv / w["n"]
+            n["exp1.well.n_torus"] = int(w["family_counts"].get("torus", 0))   # tori never reach rho_A >= 4 (D8)
+            n["exp1.well.n_families"] = len(w["family_counts"])
             for k, a in ab.items():
                 if k in w:
                     n[f"exp1.well.{a}.acc"], n[f"exp1.well.{a}.lo"], n[f"exp1.well.{a}.hi"] = w[k]["macro_exact"], *w[k]["ci"]
@@ -181,6 +183,11 @@ def collect() -> dict:
         ordinal = ["R1_gpt2_wpos", "R4_llama_counting", "R4b_pythia_counting", "R6_llama_years", "R8a_llama_temperature",
                    "R8b_llama_age"]
         n["exp2.ordinal_loops"] = int((d.loc[ordinal, "p_top_loop"] < 0.05).sum())
+        # Open-curve controls (ordinal sets and random processes) vs their Gaussian-null thresholds (audit, D8).
+        op = d.loc[ordinal + list(c1.index)]
+        n["exp2.open.pi_min"], n["exp2.open.pi_max"] = float(op["top_pi1"].min()), float(op["top_pi1"].max())
+        n["exp2.open.q95_min"], n["exp2.open.q95_max"] = float(op["null_q95_pi1"].min()), float(op["null_q95_pi1"].max())
+        n["exp2.open.p_min"] = float(op["p_top_loop"].min())
     # Exp3.
     if _res("exp3", "summary.json").exists():
         s = read_json(_res("exp3", "summary.json"))
@@ -268,11 +275,70 @@ def collect() -> dict:
             if sh:
                 for c in ("alpha3_pi1", "rips3_pi1", "rips5_pi1", "rips10_pi1", "ripsD_cos_pi1"):
                     n[f"exp5.{sh}.{c}"] = float(pr.loc[d, c])
+    # Exp7 audit (post hoc, D8): stimulus baseline, loop localisation, closure ratio, PCA, stability, power CIs.
+    if _res("exp7_audit", "summary.json").exists():
+        a = read_json(_res("exp7_audit", "summary.json"))
+        rgb, lla = a["colour_baseline"]["rgb"], a["colour_baseline"]["llama"]
+        n["audit.rgb.pi"], n["audit.rgb.q95"], n["audit.rgb.p"] = rgb["top_pi1"], rgb["null_q95"], rgb["p_loop"]
+        n["audit.rgb.ratio"], n["audit.rgb.freq"] = rgb["top_pi1"] / rgb["null_q95"], rgb["loop_freq"]
+        n["audit.rgb.means_pi"], n["audit.rgb.means_R"], n["audit.rgb.means_w"] = (
+            rgb["means_top_pi1"], rgb["means_pc12_R"], rgb["means_pc12_winding"])
+        n["audit.rgb.m"] = rgb["m"]
+        for name in ("prereg", "relaxed"):
+            t = rgb["traversal"][name]
+            n[f"audit.rgb.thetaB.{name}"] = "no coordinate" if t["record"] is None else \
+                f"R = {fmt(t['record']['R'], 2)}, winding {t['record']['winding']}"
+        n["audit.llama_over_rgb"] = lla["top_pi1"] / rgb["top_pi1"]
+        for d, v in a["localisation"].items():
+            sh = SHORT[d]
+            n[f"audit.loc.{sh}.birth"], n[f"audit.loc.{sh}.death"] = v["top_bar"]
+            n[f"audit.loc.{sh}.connect"], n[f"audit.loc.{sh}.within"] = v["connect_radius"], v["within_radius"]
+            n[f"audit.loc.{sh}.inside"] = "yes" if v["within_concept_loop"] else "no"
+            n[f"audit.loc.{sh}.means_pi"], n[f"audit.loc.{sh}.lastfirst"] = v["means_top_pi1"], v["last_first_step_over_median"]
+        cl = pd.DataFrame(a["closure"])
+        for d in cl["id"].unique():
+            sh = SHORT.get(d)
+            r = cl[(cl["id"] == d) & ~cl["variable"].str.contains("12 bins")]
+            if sh and len(r):
+                n[f"audit.closure.{sh}"] = float(r["closure_ratio"].iloc[0])
+        for grp, mask in (("ordinal", cl["id"].isin(["R1_gpt2_wpos", "R4_llama_counting", "R4b_pythia_counting",
+                                                        "R6_llama_years", "R8a_llama_temperature", "R8b_llama_age"])),
+                          ("c1", cl["id"].str.startswith("C1_"))):
+            r = cl[mask & cl["variable"].str.contains("7 bins")]["closure_ratio"]
+            n[f"audit.closure.{grp}.min"], n[f"audit.closure.{grp}.max"] = float(r.min()), float(r.max())
+        for r in a["pca"]:
+            sh = SHORT[r["id"]]
+            n[f"audit.pca.{sh}.gap34"] = r["gap34"]
+            for i in range(1, 7):
+                n[f"audit.pca.{sh}.l{i}"] = r[f"l{i}"]
+        gf = a["grok_fourier"]
+        n["audit.grok.freqs"] = ", ".join(str(k) for k in gf["top_frequencies"][:5])
+        n["audit.grok.share_min"], n["audit.grok.share_max"] = min(gf["shares"][:5]), max(gf["shares"][:5])
+        n["audit.grok.share_sum"] = sum(gf["shares"][:5])
+        for d, v in a["stability"].items():
+            sh = SHORT[d]
+            n[f"audit.stab.{sh}.full"], n[f"audit.stab.{sh}.matched"] = v["freq_full_threshold"], v["freq_matched_threshold"]
+            n[f"audit.stab.{sh}.q95_full"], n[f"audit.stab.{sh}.q95_sub"] = v["q95_full"], v["q95_sub"]
+        for key, v in a["posthoc"].items():
+            d, dim = key.split("|")
+            sh = SHORT[d]
+            if v["overlap"] is not None:
+                n[f"audit.ph.{sh}.{dim}.overlap"] = "yes" if v["overlap"] else "no"
+            if v["rips_bar"] is not None:
+                n[f"audit.ph.{sh}.{dim}.bar"] = f"[{fmt(v['rips_bar'][0], 2)}, {fmt(v['rips_bar'][1], 2)}]"
+            n[f"audit.ph.{sh}.{dim}.constant"] = v["constant_concepts"]
+        for r in a["power"]:
+            key = f"audit.power.k{r['k']}.{r['arrangement']}"
+            for c in ("nearest_loop", "ci_lo", "ci_hi", "interp_loop", "loop_min", "loop_max", "nearest_top3", "real_top3"):
+                n[f"{key}.{c}"] = r[c]
     # Percent versions of fractions quoted in the README's plain-language section.
     for k in [k for k in list(n) if k.endswith(".loop_freq")] + ["power2.weekdays.loop", "exp1.P.acc", "exp1.Bb.acc",
-                                                                 "exp1.well.Ba.acc", "exp1.well.Bb.acc"]:
+                                                                 "exp1.well.Ba.acc", "exp1.well.Bb.acc",
+                                                                 "audit.power.k7.ring.interp_loop", "audit.power.k7.ring.ci_lo",
+                                                                 "audit.power.k7.ring.ci_hi", "audit.stab.grok.matched",
+                                                                 "audit.rgb.freq", "exp1.well.trivial_frac"]:
         if isinstance(n.get(k), float):
-            n[k + "_pct"] = int(round(100 * n[k]))
+            n[k + "_pct"] = int(np.floor(100 * n[k] + 0.5))         # half-up, consistent with the 2-digit text
     return n
 
 
