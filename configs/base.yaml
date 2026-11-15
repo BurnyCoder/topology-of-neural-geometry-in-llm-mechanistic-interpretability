@@ -4,14 +4,14 @@ seed: 0                         # main seed; Exp5 repeats Monte Carlo parts with
 paths:
   submodule: external/shape-fitting          # source project, pinned commit 4c5f3b6
   source_run: results/main_s0                # inside the submodule: viz JSON, real_results.json
-  inputs: data/source                        # filled by `run.py fetch` from Hugging Face (never committed)
+  inputs: data/hf/inputs                     # filled by `run.py fetch` from Hugging Face (never committed)
   results: results
   figures: docs/figures
   logs: logs
 
 hf:
   dataset: BurnyCoder/topology-of-neural-geometry
-  revision: null                # pinned to a commit SHA after the inputs are uploaded (see reports/deviations.md)
+  revision: 02e4d50b62d75cbf689f6df3d9ec608d2acd6315   # inputs/ upload of 2026-11-15 (pinned; run.py fetch verifies SHA-256)
   collection: BurnyCoder/fitting-geometric-shapes-to-neural-geometry-6ae635f979b04232274230ee
 
 source_commit: 4c5f3b665381380c81af22827bb3959032dac417
