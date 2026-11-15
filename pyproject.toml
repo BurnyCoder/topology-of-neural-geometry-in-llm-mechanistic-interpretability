@@ -1,0 +1,34 @@
+[project]
+name = "neurotopo"
+version = "0.1.0"
+description = "Topology (exact Betti numbers of fitted shapes and persistent homology) of top-3-PCA neural activation clouds, and a test of whether semantically cyclic concepts travel around a hole"
+readme = "README.md"
+license = "MIT"
+authors = [{ name = "Libor Burian" }]
+# DREiMac (circular coordinates) declares Requires-Python <3.12, so the project is pinned to 3.11.
+requires-python = ">=3.11,<3.12"
+dependencies = [
+    "dreimac>=0.3.2",
+    "gudhi>=3.13.0",
+    "huggingface-hub>=2.4.0",
+    "joblib>=1.6.0",
+    "matplotlib>=3.11.2",
+    "numpy>=2.4.6",
+    "pandas>=3.1.1",
+    "persim>=0.4.1",
+    "python-dotenv>=1.2.4",
+    "pyyaml>=6.0.3",
+    "ripser>=0.6.15",
+    "scikit-learn>=1.9.1",
+    "scipy>=1.17.1",
+    "tqdm>=4.70.1",
+]
+
+[build-system]
+requires = ["uv_build>=0.13.6,<0.14.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+]

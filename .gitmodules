@@ -1,0 +1,3 @@
+[submodule "external/shape-fitting"]
+	path = external/shape-fitting
+	url = https://github.com/BurnyCoder/shape-fitting-in-neural-geometry-in-llm-mechanistic-interpretability.git
