@@ -69,6 +69,57 @@ def exp0_family_homotopy_table() -> str:
     return head + "\n\n" + tables.md_table(out.reset_index().rename(columns={"family_name": "family"}), 0)
 
 
+def role_table() -> str:
+    """Real data by role: test sets (cyclic concepts) vs negative controls (ordinal concepts, random-init networks,
+    random processes). Per group, how many sets have: a top-3 loop under the design-matched MC null (Exp2); a
+    resolvable fitted hole that the concept goes around (Method A); a loop that the concept goes around in the
+    preregistered theta_B (Method B, 3D); the same plus the preregistered top-10-PC check (full H1-B conjunction);
+    a single traversal in 3D post hoc (DREiMac standard_range=False, D5). "Goes around" = alignment p < 0.05
+    (unadjusted) and |winding| = 1 for the concept variable (ordinal sets: 7 or 12 value bins; days_time: day)."""
+    from neurotopo.experiments.alignment import passes
+    cfg = config.load()
+    inv = pd.read_csv(res("exp2", "invariants.csv")).set_index("id")
+    topo = pd.read_csv(res("exp0", "real_topology.csv")).set_index("id")
+    a0 = read_json(res("exp0", "real_alignment.json"))
+    mb = read_json(res("exp3", "method_b.json"))
+    ph = read_json(res("exp3", "posthoc_relaxed_range.json"))
+    c1 = sorted(d for d in inv.index if d.startswith("C1_"))
+
+    def around(d, recs):
+        keep = [r for r in recs if "mod" not in r["variable"] and (d != "R5c_llama_days_time" or r["variable"] == "day")]
+        return any(passes(r) for r in keep)
+
+    def method_a(d):
+        return bool(topo.loc[d, "hole"] and topo.loc[d, "resolvable"]
+                    and around(d, [r for r in a0 if r["id"] == d and r["kind"] == "hole"]))
+
+    def method_b(d):
+        return bool(mb[d]["loop"] and around(d, mb[d]["records3"]))
+
+    def method_b10(d):
+        return method_b(d) and around(d, mb[d].get("records10", []))
+
+    def posthoc(d):
+        return around(d, ph.get(d, {}).get("3d", {}).get("records", []))
+
+    groups = [("test: cyclic, primary (H1)", cfg["groups"]["cyclic_primary"]),
+              ("test: cyclic, secondary (H3)", cfg["groups"]["cyclic_secondary"]),
+              ("test: cyclic, exploratory", ["R7_llama_colors"]),
+              ("negative control: ordinal concepts (H2)", cfg["groups"]["ordinal"]),
+              ("control: random-init networks (H2)", cfg["groups"]["init_controls"]),
+              ("control: random walks / Gaussian processes (H2)", c1)]
+    rows = []
+    for role, ids in groups:
+        cnt = lambda f: f"{sum(bool(f(d)) for d in ids)}/{len(ids)}"
+        rows.append({"role": role, "sets": ", ".join(figures.short(d) for d in ids) if len(ids) < 7 else f"{len(ids)} sets",
+                     "loop in top-3 PCs (MC null, p < 0.05)": cnt(lambda d: inv.loc[d, "p_top_loop"] < 0.05),
+                     "A: resolvable fitted hole, goes around": cnt(method_a),
+                     "B: loop, goes around (θ_B, 3D)": cnt(method_b),
+                     "B + top-10 check (full H1-B rule)": cnt(method_b10),
+                     "goes around once, post hoc (3D)": cnt(posthoc)})
+    return tables.md_table(pd.DataFrame(rows), 0)
+
+
 def exp1_table() -> str:
     s = read_json(res("exp1", "summary.json"))
     rows = [{"estimator": k, "macro exact accuracy": v["macro_exact"], "95% CI": f"[{v['ci'][0]:.3f}, {v['ci'][1]:.3f}]",
@@ -156,6 +207,7 @@ SECTIONS = [("exp0_topology", exp0_table, ("exp0", "real_topology.csv")),
             ("exp0_alignment", exp0_alignment_table, ("exp0", "real_alignment.json")),
             ("exp0_family_homotopy", exp0_family_homotopy_table, ("exp0", "synth_test_topology.csv.gz")),
             ("exp1", exp1_table, ("exp1", "summary.json")),
+            ("readme_roles", role_table, ("exp3", "method_b.json")),
             ("exp2", exp2_table, ("exp2", "invariants.csv")),
             ("exp3", exp3_tables, ("exp3", "summary.json")),
             ("coords", coords_table, ("coords", "point_coordinates.csv")),
@@ -210,5 +262,6 @@ def run() -> None:
         figures.fig_real_gallery(["R5a_llama_weekdays", "R5b_llama_months", "R2_grokking_WE", "R7_llama_colors",
                                   "R6_llama_years", "R1_gpt2_wpos", "C3_llama_weekdays_init", "C1_walk_0"], "fig_real_gallery")
         figures.fig_null_tests()
+        figures.anim_clouds()
     if have("exp6_sim", "simulated_steering.json"):
         figures.fig_exp6sim()
