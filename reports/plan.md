@@ -16,9 +16,9 @@ Last updated: 2026-11-15.
 | 7. Exp1: synthetic validation | done |
 | 8. Exp2/Exp3: real-data topology and cyclic tests (+ post hoc D5) | done |
 | 9. Exp4/Exp5: similarity, robustness | done |
-| 10. Audit (independent reviewer) | in progress |
+| 10. Audit (independent reviewer) | done (fixes and post hoc analyses logged as deviation D6) |
 | 11. Reports, paper, site, Hugging Face results | done (paper/main.pdf; explorer on GitHub Pages; results on the HF dataset) |
-| 12. Clean-room replication test | in progress |
+| 12. Clean-room replication test | done (fresh clone from GitHub + Hugging Face; results/replication.json) |
 | Exp6: simulated steering and LLM steering (primary H6) | **postponed by the author**; code ready, not run |
 | Optional Exp0b (refit synthetic clouds with the source checkpoint) | not done (needs model inference; postponed) |
 

@@ -44,7 +44,7 @@ def md_table(df: pd.DataFrame, nd: int = 3) -> str:
 def write_generated(name: str, text: str) -> None:
     p = config.ROOT / "reports" / "generated"
     p.mkdir(parents=True, exist_ok=True)
-    (p / f"{name}.md").write_text(text.strip() + "\n", encoding="utf-8")
+    (p / f"{name}.md").write_text(text.strip() + "\n", encoding="utf-8", newline=chr(10))
 
 
 def addendum() -> str:

@@ -212,6 +212,10 @@ def collect() -> dict:
         inits = sorted({d for d in ph if d.startswith("C3_") for dim in ("3d", "top10") for r in ph[d][dim]["records"]
                         if abs(r["winding"]) == 1})
         n["exp3ph.init_wind1_ids"] = ", ".join(inits) if inits else "none"
+    # Clean-room replication (scripts/compare_results.py output).
+    if _res("replication.json").exists():
+        r = read_json(_res("replication.json"))
+        n["replication.files"], n["replication.identical"], n["replication.date"] = r["files"], r["identical"], r["date"]
     # Exp4 / Exp5.
     if _res("exp4", "summary.json").exists():
         s4 = read_json(_res("exp4", "summary.json"))
