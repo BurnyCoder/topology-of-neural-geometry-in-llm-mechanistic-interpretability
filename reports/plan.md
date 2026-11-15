@@ -7,17 +7,20 @@ Last updated: 2026-11-15.
 | Step | State |
 |---|---|
 | 1. Setup (uv, submodule, GitHub repo) | done |
-| 2. State-of-the-art review | done ([state-of-the-art-review.md](state-of-the-art-review.md)) |
-| 3. Preregistration, plan, README | done (this push) |
-| 4. Core modules (TDD), export, HF inputs | not started |
-| 5. Exp0: exact topology of fitted shapes (+ Method A traversal) | not started |
-| 6. Power simulation and preregistration addendum | not started |
-| 7. Exp1: synthetic validation | not started |
-| 8. Exp2/Exp3: real-data topology and cyclic tests | not started |
-| 9. Exp4/Exp5: similarity, robustness (+ optional Exp0b) | not started |
-| 10. Audit | not started |
-| 11. Reports, paper, site, HF publish | not started |
-| 12. Clean-room replication test | not started |
+| 2. Literature and state-of-the-art reviews | done ([literature-review.md](literature-review.md), [state-of-the-art-review.md](state-of-the-art-review.md)) |
+| 3. Preregistration, plan, README | done (pushed before any topology was computed) |
+| 4. Core modules (TDD), export, Hugging Face inputs | done (inputs pinned at revision 02e4d50; regeneration of synthetic ground truth bit-exact) |
+| 5. Exp0: exact topology of fitted shapes (+ Method A traversal) | done |
+| 5b. Fitted-shape coordinate check (author request, D4) | done |
+| 6. Power simulation and preregistration addendum A1; steering amendment A2 | done |
+| 7. Exp1: synthetic validation | done |
+| 8. Exp2/Exp3: real-data topology and cyclic tests (+ post hoc D5) | done |
+| 9. Exp4/Exp5: similarity, robustness | done |
+| 10. Audit (independent reviewer) | in progress |
+| 11. Reports, paper, site, Hugging Face results | done (paper/main.pdf; explorer on GitHub Pages; results on the HF dataset) |
+| 12. Clean-room replication test | in progress |
+| Exp6: simulated steering and LLM steering (primary H6) | **postponed by the author**; code ready, not run |
+| Optional Exp0b (refit synthetic clouds with the source checkpoint) | not done (needs model inference; postponed) |
 
 The full plan, as approved on 2026-11-15, follows unchanged. Changes to it are logged in [deviations.md](deviations.md).
 

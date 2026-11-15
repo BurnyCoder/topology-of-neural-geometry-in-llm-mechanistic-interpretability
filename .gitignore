@@ -11,7 +11,7 @@ dist/
 .env
 
 # Large inputs fetched from Hugging Face by `run.py fetch` (never committed)
-data/
+/data/
 
 # LaTeX build artefacts (main.pdf is committed)
 paper/*.aux
