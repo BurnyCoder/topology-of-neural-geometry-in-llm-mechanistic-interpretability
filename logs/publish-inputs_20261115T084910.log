@@ -1,0 +1,9 @@
+2026-11-15 08:49:10 INFO root: phase publish-inputs, log file C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\logs\publish-inputs_20261115T084910.log
+2026-11-15 08:49:28 INFO httpx2: HTTP Request: POST https://huggingface.co/api/repos/create "HTTP/1.1 200 OK"
+2026-11-15 08:49:28 INFO httpx2: HTTP Request: POST https://huggingface.co/api/validate-yaml "HTTP/1.1 200 OK"
+2026-11-15 08:49:28 INFO httpx2: HTTP Request: POST https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry/preupload/main "HTTP/1.1 200 OK"
+2026-11-15 08:49:43 INFO httpx2: HTTP Request: POST https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry/commit/main "HTTP/1.1 200 OK"
+2026-11-15 08:49:43 INFO httpx2: HTTP Request: POST https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry/preupload/main "HTTP/1.1 200 OK"
+2026-11-15 08:52:04 INFO httpx2: HTTP Request: POST https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry/commit/main "HTTP/1.1 200 OK"
+2026-11-15 08:52:05 INFO httpx2: HTTP Request: POST https://huggingface.co/api/collections/BurnyCoder/fitting-geometric-shapes-to-neural-geometry-6ae635f979b04232274230ee/items "HTTP/1.1 200 OK"
+2026-11-15 08:52:05 INFO neurotopo.data.hub: uploaded inputs to BurnyCoder/topology-of-neural-geometry at commit 02e4d50b62d75cbf689f6df3d9ec608d2acd6315

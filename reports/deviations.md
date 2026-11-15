@@ -35,3 +35,11 @@ The numpy parametrisation is tested to reproduce the source's fitted shapes to w
 DREiMac with `standard_range=True` (preregistered) raises "The cohomology class selected is too short" when the most persistent class does not outlive twice the landmark cover radius. In that case there is no loop that is non-trivial in the complex DREiMac uses.
 
 This case is now recorded as "no θ_B": alignment p = 1 and winding 0, so H1-B (b) and (c) fail. This follows the preregistered rule "a cyclic set with no loop counts as a failure". It was found in the power simulation (random arrangements), before any real-data θ_B was computed.
+
+## P1 (plan-level, 2026-11-15, before Exp1): dropped the "effective topology of `gt_dense` at r*" secondary ground truth
+
+This item was in the plan but not in the preregistration.
+
+**Why it was dropped:** the stored `gt_dense` grids (24×24 for surfaces) create spurious long H1 bars in alpha complexes. They come from anisotropic grid cells: π ≈ 4 on a torus grid, and ≈ 17 near the poles of a sphere grid (`tests/test_analytic.py`). An effective topology computed from them would be unreliable.
+
+**What replaces it:** the primary ground truth (exact Method A topology of the ground-truth parameters, with resolvability ρ_A) and the reported accuracy as a function of ρ_A already cover multi-scale and borderline cases.

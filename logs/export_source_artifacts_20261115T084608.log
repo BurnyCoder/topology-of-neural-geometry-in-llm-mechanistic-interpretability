@@ -1,0 +1,4 @@
+[08:46:15] copied raw activations
+[08:47:47] test: {'clouds': 39000, 'max_abs_diff_vs_cache': 0.0}
+[08:47:52] val: {'clouds': 1560, 'max_abs_diff_vs_cache': 0.0}
+[08:47:53] wrote 52 files + manifest.json in 98.5 s

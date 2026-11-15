@@ -1,0 +1,14 @@
+[08:45:08] copied raw activations
+Traceback (most recent call last):
+  File "C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\scripts\export_source_artifacts.py", line 169, in <module>
+    main()
+  File "C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\scripts\export_source_artifacts.py", line 155, in main
+    summary[f"{name}_params"] = regenerate_params(cfg, stream, per_cell, cells, out / "synth", name)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\scripts\export_source_artifacts.py", line 112, in regenerate_params
+    rows.append({"family": f.name, "describe": jsonable(f.describe(gt, i)), "raw": raw,
+                                                        ^^^^^^^^^^^^^^^^^
+  File "C:\Users\Happy\Documents\projects\fitting-geometrical-shapes-in-llm-mechanistic-interpretability\src\neurogeom\shapes\pointsets.py", line 320, in describe
+    valid = p["vertex_valid"][i]
+            ~^^^^^^^^^^^^^^^^
+KeyError: 'vertex_valid'

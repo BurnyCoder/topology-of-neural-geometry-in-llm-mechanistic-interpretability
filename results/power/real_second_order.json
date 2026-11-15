@@ -1,0 +1,44 @@
+[
+ {
+  "id": "R5a_llama_weekdays",
+  "N": 49,
+  "D": 4096,
+  "between_fraction": 0.8405567989016215,
+  "top3_explained": 0.6587066978924345
+ },
+ {
+  "id": "R5b_llama_months",
+  "N": 144,
+  "D": 4096,
+  "between_fraction": 0.9140570651757282,
+  "top3_explained": 0.5488783346494348
+ },
+ {
+  "id": "R5c_llama_days_time",
+  "N": 336,
+  "D": 4096,
+  "between_fraction": 0.7721835373959828,
+  "top3_explained": 0.5796628332511563
+ },
+ {
+  "id": "R2_grokking_WE",
+  "N": 113,
+  "D": 128,
+  "between_fraction": 1.0,
+  "top3_explained": 0.3244068050205965
+ },
+ {
+  "id": "C3_llama_weekdays_init",
+  "N": 49,
+  "D": 4096,
+  "between_fraction": 0.6198830971182541,
+  "top3_explained": 0.342068973214059
+ },
+ {
+  "id": "C3_llama_months_init",
+  "N": 144,
+  "D": 4096,
+  "between_fraction": 0.5835189902249367,
+  "top3_explained": 0.18509810528357873
+ }
+]
