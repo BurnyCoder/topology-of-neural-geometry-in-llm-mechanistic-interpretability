@@ -1,1 +1,72 @@
 2026-11-15 10:35:52 INFO root: phase exp3, log file C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\logs\exp3_20261115T103552.log
+2026-11-15 10:36:05 INFO neurotopo.experiments.exp3_cyclic: R5a_llama_weekdays           loop p=0.0940 | theta_B: none
+2026-11-15 10:36:05 INFO neurotopo.experiments.exp3_cyclic: R5b_llama_months             loop p=0.0020 | theta_B: none
+2026-11-15 10:37:11 INFO neurotopo.experiments.exp3_cyclic: R2_grokking_WE               loop p=0.0010 | theta_B: R=0.973 p=1e-05 w=-1
+2026-11-15 10:37:12 INFO neurotopo.experiments.exp3_cyclic: R5c_llama_days_time          loop p=0.0130 | theta_B: none
+2026-11-15 10:37:14 INFO neurotopo.experiments.exp3_cyclic: R1_gpt2_wpos                 loop p=1.0000 | theta_B: none
+2026-11-15 10:37:15 INFO neurotopo.experiments.exp3_cyclic: R4_llama_counting            loop p=1.0000 | theta_B: none
+2026-11-15 10:37:15 INFO neurotopo.experiments.exp3_cyclic: R4b_pythia_counting          loop p=1.0000 | theta_B: none
+2026-11-15 10:37:15 INFO neurotopo.experiments.exp3_cyclic: R6_llama_years               loop p=0.7750 | theta_B: none
+2026-11-15 10:37:15 INFO neurotopo.experiments.exp3_cyclic: R8a_llama_temperature        loop p=1.0000 | theta_B: none
+2026-11-15 10:37:16 INFO neurotopo.experiments.exp3_cyclic: R8b_llama_age                loop p=0.4490 | theta_B: none
+2026-11-15 10:37:16 INFO neurotopo.experiments.exp3_cyclic: C3_llama_weekdays_init       loop p=0.7650 | theta_B: none
+2026-11-15 10:37:16 INFO neurotopo.experiments.exp3_cyclic: C3_llama_months_init         loop p=0.0740 | theta_B: none
+2026-11-15 10:37:16 INFO neurotopo.experiments.exp3_cyclic: C3_grokking_WE_init          loop p=0.0460 | theta_B: none
+2026-11-15 10:37:16 INFO neurotopo.experiments.exp3_cyclic: C1_gp_0                      loop p=1.0000 | theta_B: none
+2026-11-15 10:37:16 INFO neurotopo.experiments.exp3_cyclic: C1_gp_1                      loop p=1.0000 | theta_B: none
+2026-11-15 10:37:17 INFO neurotopo.experiments.exp3_cyclic: C1_gp_2                      loop p=1.0000 | theta_B: none
+2026-11-15 10:37:17 INFO neurotopo.experiments.exp3_cyclic: C1_gp_3                      loop p=1.0000 | theta_B: none
+2026-11-15 10:37:17 INFO neurotopo.experiments.exp3_cyclic: C1_gp_4                      loop p=1.0000 | theta_B: none
+2026-11-15 10:37:17 INFO neurotopo.experiments.exp3_cyclic: C1_gp_5                      loop p=1.0000 | theta_B: none
+2026-11-15 10:37:17 INFO neurotopo.experiments.exp3_cyclic: C1_gp_6                      loop p=1.0000 | theta_B: none
+2026-11-15 10:37:18 INFO neurotopo.experiments.exp3_cyclic: C1_gp_7                      loop p=1.0000 | theta_B: none
+2026-11-15 10:37:18 INFO neurotopo.experiments.exp3_cyclic: C1_gp_8                      loop p=1.0000 | theta_B: none
+2026-11-15 10:37:18 INFO neurotopo.experiments.exp3_cyclic: C1_gp_9                      loop p=1.0000 | theta_B: none
+2026-11-15 10:37:18 INFO neurotopo.experiments.exp3_cyclic: C1_walk_0                    loop p=1.0000 | theta_B: none
+2026-11-15 10:37:18 INFO neurotopo.experiments.exp3_cyclic: C1_walk_1                    loop p=1.0000 | theta_B: none
+2026-11-15 10:37:18 INFO neurotopo.experiments.exp3_cyclic: C1_walk_2                    loop p=1.0000 | theta_B: none
+2026-11-15 10:37:18 INFO neurotopo.experiments.exp3_cyclic: C1_walk_3                    loop p=1.0000 | theta_B: none
+2026-11-15 10:37:19 INFO neurotopo.experiments.exp3_cyclic: C1_walk_4                    loop p=1.0000 | theta_B: none
+2026-11-15 10:37:19 INFO neurotopo.experiments.exp3_cyclic: C1_walk_5                    loop p=1.0000 | theta_B: none
+2026-11-15 10:37:19 INFO neurotopo.experiments.exp3_cyclic: C1_walk_6                    loop p=1.0000 | theta_B: none
+2026-11-15 10:37:19 INFO neurotopo.experiments.exp3_cyclic: C1_walk_7                    loop p=1.0000 | theta_B: none
+2026-11-15 10:37:19 INFO neurotopo.experiments.exp3_cyclic: C1_walk_8                    loop p=1.0000 | theta_B: none
+2026-11-15 10:37:19 INFO neurotopo.experiments.exp3_cyclic: C1_walk_9                    loop p=1.0000 | theta_B: none
+2026-11-15 10:37:28 INFO neurotopo.experiments.exp3_cyclic: R7_llama_colors              loop p=0.0010 | theta_B: R=0.949 p=1e-05 w=-1
+C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\.venv\Lib\site-packages\ripser\ripser.py:251: UserWarning: The input matrix is square, but the distance_matrix flag is off.  Did you mean to indicate that this was a distance matrix?
+  warnings.warn(
+2026-11-15 10:37:28 INFO neurotopo.experiments.exp3_cyclic: R5a_llama_weekdays_means     loop p=0.7310 | theta_B: none
+2026-11-15 10:37:28 INFO neurotopo.experiments.exp3_cyclic: R5b_llama_months_means       loop p=0.0010 | theta_B: none
+2026-11-15 10:37:28 INFO neurotopo.experiments.exp3_cyclic: C3_grokking_WE_memorised     loop p=0.8310 | theta_B: none
+2026-11-15 10:37:30 INFO neurotopo.experiments.exp3_cyclic: C3_gpt2_wpos_init            loop p=0.2990 | theta_B: none
+2026-11-15 10:37:30 INFO neurotopo.experiments.exp3_cyclic: C3_llama_counting_init       loop p=0.8810 | theta_B: none
+2026-11-15 10:37:30 INFO neurotopo.experiments.exp3_cyclic: H1 passes of 3: {'A': 0, 'B': 0}; H2 summary: {'A': {'ordinal_pass': 0, 'init_pass': 0, 'c1_pass': 0, 'falsified': False, 'c1_fpr_ci': (0.0, 0.1684334709830855)}, 'B': {'ordinal_pass': 0, 'init_pass': 0, 'c1_pass': 0, 'falsified': False, 'c1_fpr_ci': (0.0, 0.1684334709830855)}}
+2026-11-15 10:37:30 INFO root: phase exp4, log file C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\logs\exp4_20261115T103730.log
+C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\.venv\Lib\site-packages\sklearn\manifold\_mds.py:735: FutureWarning: The default value of `init` will change from 'random' to 'classical_mds' in 1.10. To suppress this warning, provide some value of `init`.
+  warnings.warn(
+C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\.venv\Lib\site-packages\sklearn\manifold\_mds.py:752: FutureWarning: The `dissimilarity` parameter is deprecated and will be removed in 1.10. Use `metric` instead.
+  warnings.warn(
+2026-11-15 10:38:00 INFO neurotopo.experiments.exp4_similarity: cyclic cohesion: mean within 0.335, exact p = 0.581
+2026-11-15 10:38:00 INFO root: phase exp5, log file C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\logs\exp5_20261115T103800.log
+2026-11-15 10:38:30 INFO neurotopo.experiments.exp5_robustness: projection check:
+                        id  alpha3_pi1  alpha3_b1_univ  rips3_pi1  rips3_b1_univ  rips5_pi1  rips5_b1_univ  rips10_pi1  rips10_b1_univ  ripsD_cos_pi1  ripsD_cos_b1_univ
+0       R5a_llama_weekdays    1.324183               0   1.300449              0   1.193798              0    1.224847               0       1.453589                  0
+1         R5b_llama_months    1.716755               0   1.569561              1   1.214428              0    1.127446               3       1.242050                  0
+2           R2_grokking_WE    2.446454               0   2.305510              0   1.626748              0    1.160763               0       1.306296                  0
+3      R5c_llama_days_time    2.011435               0   1.926962              0   1.729655              0    1.476543               0       1.727378                  1
+4             R1_gpt2_wpos    1.216603               2   1.208525              1   1.018046              3    1.011730               1       1.290413                  6
+5        R4_llama_counting    1.284997               0   1.250422              0   1.245908              0    1.481712               0       1.058345                  0
+6      R4b_pythia_counting    1.322952               0   1.221504              0   1.205728              0    1.332679               0       1.063836                  0
+7           R6_llama_years    1.634593               0   1.555515              0   1.445825              0    1.393387               0       1.682702                  0
+8    R8a_llama_temperature    1.333759               0   1.225863              0   1.426509              0    1.468144               0       1.960120                  0
+9            R8b_llama_age    1.580422               0   1.516664              0   1.763627              0    1.593106               0       2.182582                  0
+10         R7_llama_colors    5.024527               0   4.970824              1   3.609376              1    2.668344               0       4.217178                  0
+11  C3_llama_weekdays_init    1.114439               0   1.000000              0   1.118337              0    1.081945               0       1.020492                  0
+12    C3_llama_months_init    1.429732               0   1.406669              0   1.127250              0    1.109023               0       1.033522                  0
+13     C3_grokking_WE_init    1.840767               0   1.810892              0   1.357217              0    1.237033               0       1.140061                  0
+2026-11-15 10:38:32 INFO neurotopo.experiments.realdata: null R5a_llama_weekdays seed 1 (cluster, M=999): q95 max pi H1 = 1.357, H2 = 1.063
+2026-11-15 10:38:33 INFO neurotopo.experiments.realdata: null R5a_llama_weekdays seed 2 (cluster, M=999): q95 max pi H1 = 1.373, H2 = 1.059
+2026-11-15 10:38:34 INFO neurotopo.experiments.realdata: null R5b_llama_months seed 1 (cluster, M=999): q95 max pi H1 = 1.420, H2 = 1.057
+2026-11-15 10:38:36 INFO neurotopo.experiments.realdata: null R5b_llama_months seed 2 (cluster, M=999): q95 max pi H1 = 1.440, H2 = 1.058
+2026-11-15 10:38:37 INFO neurotopo.experiments.realdata: null R2_grokking_WE seed 1 (gaussian, M=999): q95 max pi H1 = 1.829, H2 = 1.196
+2026-11-15 10:39:40 INFO neurotopo.experiments.realdata: null R2_grokking_WE seed 2 (gaussian, M=999): q95 max pi H1 = 1.819, H2 = 1.192

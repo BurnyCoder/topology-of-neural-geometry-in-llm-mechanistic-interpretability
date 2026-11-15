@@ -16,7 +16,7 @@ import pandas as pd
 
 from neurotopo import config
 from neurotopo.experiments.common import read_json
-from neurotopo.report import figures, tables
+from neurotopo.report import figures, numbers, tables
 
 log = logging.getLogger(__name__)
 R = None
@@ -131,16 +131,41 @@ def exp6sim_table() -> str:
             + tables.md_table(pd.DataFrame(rows), 3))
 
 
+def coords_table() -> str:
+    q = pd.read_csv(res("coords", "point_coordinates.csv"))
+    cols = [c for c in ("id", "family", "coordinate", "variable", "statistic", "n", "R", "p", "winding", "rho", "NMI", "ARI")
+            if c in q.columns]
+    return tables.md_table(q[cols], 3)
+
+
 # ----------------------------------------------------------------------------- orchestration
 SECTIONS = [("exp0_topology", exp0_table, ("exp0", "real_topology.csv")),
             ("exp0_alignment", exp0_alignment_table, ("exp0", "real_alignment.json")),
             ("exp1", exp1_table, ("exp1", "summary.json")),
             ("exp2", exp2_table, ("exp2", "invariants.csv")),
             ("exp3", exp3_tables, ("exp3", "summary.json")),
+            ("coords", coords_table, ("coords", "point_coordinates.csv")),
             ("exp6sim", exp6sim_table, ("exp6_sim", "summary.json"))]
 
 
+def render_templates(nums: dict) -> None:
+    """README.template.md -> README.md and reports/templates/*.md -> reports/*.md with {{key}} placeholders filled;
+    paper/generated/numbers.tex gets one LaTeX macro per number."""
+    root = config.ROOT
+    pairs = [(root / "README.template.md", root / "README.md")]
+    pairs += [(t, root / "reports" / t.name) for t in sorted((root / "reports" / "templates").glob("*.md"))]
+    pairs += [(root / "paper" / "main.template.tex", root / "paper" / "main.tex")]
+    for src, dst in pairs:
+        if src.exists():
+            dst.write_text(numbers.render(src.read_text(encoding="utf-8"), nums), encoding="utf-8")
+    gen = root / "paper" / "generated"
+    gen.mkdir(parents=True, exist_ok=True)
+    (gen / "numbers.tex").write_text(numbers.latex_macros(nums) + "\n", encoding="utf-8")
+
+
 def run() -> None:
+    nums = numbers.collect()
+    render_templates(nums)
     tables.write_generated("prereg_addendum_A1", tables.addendum())
     for key, fn, need in SECTIONS:
         if have(*need):

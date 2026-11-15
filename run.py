@@ -23,6 +23,7 @@ PHASES = {
     "exp1": ("neurotopo.experiments.exp1_synthetic", "run"),
     "exp2": ("neurotopo.experiments.exp2_invariants", "run"),
     "exp3": ("neurotopo.experiments.exp3_cyclic", "run"),
+    "exp3posthoc": ("neurotopo.experiments.exp3_posthoc", "run"),
     "exp4": ("neurotopo.experiments.exp4_similarity", "run"),
     "exp5": ("neurotopo.experiments.exp5_robustness", "run"),
     "exp6sim": ("neurotopo.experiments.exp6_sim", "run"),
@@ -31,7 +32,7 @@ PHASES = {
     "site": ("neurotopo.report.site", "run"),
     "publish": ("neurotopo.report.publish", "run"),
 }
-ALL = ["fetch", "exp0", "coords", "power", "exp1", "exp2", "exp3", "exp4", "exp5", "report", "site"]   # exp6sim / exp6: postponed
+ALL = ["fetch", "exp0", "coords", "power", "exp1", "exp2", "exp3", "exp3posthoc", "exp4", "exp5", "report", "site"]   # exp6sim / exp6: postponed
 
 
 def main(argv=None) -> None:

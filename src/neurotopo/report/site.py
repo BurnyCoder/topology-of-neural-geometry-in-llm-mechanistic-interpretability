@@ -47,7 +47,7 @@ homology (Method B) and travel around the hole. <a href="https://github.com/Burn
 <div id="plots"><div id="cloud"></div><div id="pd"></div></div><div id="info"></div></div>
 <script>
 let manifest, cur;
-const fmt = v => (v === null || v === undefined) ? "-" : (typeof v === "number" ? (Math.abs(v) < 1e-3 && v !== 0 ? v.toExponential(1) : v.toFixed(3)) : v);
+const fmt = v => (v === null || v === undefined) ? "-" : (typeof v === "number" ? (Number.isInteger(v) ? String(v) : (Math.abs(v) < 1e-3 && v !== 0 ? v.toExponential(1) : v.toFixed(3))) : v);
 fetch("data/manifest.json").then(r => r.json()).then(m => { manifest = m; const L = document.getElementById("list");
   for (const [g, ids] of Object.entries(m)) { const h = document.createElement("h3"); h.textContent = g; L.appendChild(h);
     for (const it of ids) { const a = document.createElement("a"); a.textContent = it.label; a.onclick = () => load(it.id, a); L.appendChild(a); } }

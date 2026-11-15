@@ -1,0 +1,7 @@
+2026-11-15 10:58:03 INFO root: phase report, log file C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\logs\report_20261115T105803.log
+2026-11-15 10:58:15 INFO neurotopo.report.build: generated exp0_topology
+2026-11-15 10:58:15 INFO neurotopo.report.build: generated exp0_alignment
+2026-11-15 10:58:15 INFO neurotopo.report.build: generated exp1
+2026-11-15 10:58:15 INFO neurotopo.report.build: generated exp2
+2026-11-15 10:58:15 INFO neurotopo.report.build: generated exp3
+2026-11-15 10:58:15 INFO neurotopo.report.build: generated coords
