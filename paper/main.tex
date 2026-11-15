@@ -3,6 +3,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath,amssymb,booktabs,graphicx,hyperref,xcolor}
 \usepackage[numbers]{natbib}
+\usepackage{xurl}   % lets long URLs break at any character (avoids overfull lines)
 \hypersetup{colorlinks=true,linkcolor=blue!50!black,citecolor=blue!50!black,urlcolor=blue!50!black}
 \graphicspath{ {../docs/figures/} }
 \title{Holes in Neural Geometry: Exact Topology of Fitted Shapes and Persistent Homology\\of Top-3-PCA Activation Clouds, and Whether Cyclic Concepts Travel Around Them}
@@ -122,7 +123,7 @@ A bar is significant if its persistence ratio $\pi = \text{death}/\text{birth}$ 
   \item For residues, the maximum over Fourier frequencies $k$.
 \end{itemize}
 
-\paragraph{Preregistration.} The hypotheses, nulls and decision rules were pushed before any topology was computed. Amendment A2, which makes steering the primary hypothesis, was pushed before any persistent homology of real data. Deviations D1--D5 are logged with dates.
+\paragraph{Preregistration.} The hypotheses, nulls and decision rules were pushed before any topology was computed. Amendment A2, which makes steering the primary hypothesis, was pushed before any persistent homology of real data. Deviations D1--D7 are logged with dates.
 
 \section{Results}
 
@@ -133,6 +134,7 @@ Table~\ref{tab:exp1} reports the results. The preregistered estimator (alpha + u
   \item Persistent homology is better exactly where the family label is topologically ambiguous: open vs closed arcs (0.79 vs 0.58) and caps vs full spheres (0.76 vs 0.61).
   \item On well-resolved clouds ($\rho_A \ge 4$; 18454 clouds) the preregistered estimator scores 0.751 [0.739, 0.763] against 0.820 for the family label (Fig.~\ref{fig:rho}).
   \item Tori and thin ellipses are its weak points.
+  \item Outlier clouds (deviation D7: a point farther than 6 median distances from the true shape) raise its false-positive rate on contractible shapes from 0.031 to 0.065 [0.053, 0.078]. This is below the preregistered 0.10 threshold, so the DTM-filtration ablation was not required.
 \end{itemize}
 
 \begin{table}[t]\centering\small
@@ -167,10 +169,10 @@ Bc: majority vector & 0.555 [0.553, 0.557] & control\\\bottomrule
 \end{itemize}
 
 \begin{figure}[t]\centering\includegraphics[width=0.55\linewidth]{fig_exp0_helix.png}
-\caption{Helix fits: axial-winding alignment is high for cyclic concepts and for smooth random-process controls alike. Closure distinguishes them.}\label{fig:helix}\end{figure}
+\caption{Helix fits: axial-winding alignment is high for cyclic concepts and for smooth random-process controls alike. Only the months' closure gap (0.04 radii) lies below every control's; the weekdays' gap (0.80) lies inside the controls' range (0.33--2.20).}\label{fig:helix}\end{figure}
 
 \subsection{Holes in the data and the cyclic tests}
-Table~\ref{tab:real} and Fig.~\ref{fig:gallery} summarise the results.
+Table~\ref{tab:real} and Figs.~\ref{fig:gallery}--\ref{fig:power} summarise the results.
 \begin{itemize}
   \item Significant loops: colours, residues, months, days-with-times (unstable), and borderline the random-init grokking embedding ($p=0.046$).
   \item After Benjamini--Hochberg over the 44 loop tests, the loops of C3\_tms\_dense, R2\_grokking\_WE, R3\_tms\_n8, R5b\_llama\_months, R5b\_llama\_months\_means, R7\_llama\_colors remain at $q<0.05$.
@@ -208,6 +210,12 @@ GPT-2 positions & 1.22 & 2.16 & 1.000 & -- & 1.01\\\bottomrule
 
 \begin{figure}[t]\centering\includegraphics[width=\linewidth]{fig_real_gallery.png}
 \caption{Top: clouds (PC1--PC2) coloured by concept. Bottom: alpha persistence ratios with the null 95th percentile (red).}\label{fig:gallery}\end{figure}
+
+\begin{figure}[t]\centering\includegraphics[width=\linewidth]{fig_traversal.png}
+\caption{Travel around the hole. Each dot is a concept at the circular mean of its points' hole angle, coloured by semantic position; chords join consecutive concepts. One non-crossing polygon means winding $\pm1$. Colours ($\theta_B$ and the fitted cone's $\theta_A$), residues and, post hoc, months go round once. Weekdays wind around their helix axis, but so does a Gaussian-process control.}\label{fig:traversal}\end{figure}
+
+\begin{figure}[t]\centering\includegraphics[width=0.85\linewidth]{fig_power.png}
+\caption{Corrected power simulation (post hoc): pass rates of the loop test (solid) and of the full conjunction (dashed, rings) for 7 and 12 clusters, against top-3 explained variance; dotted lines mark the real sets. With 7 clusters, an open 300$^\circ$ arc passes as often as a ring.}\label{fig:power}\end{figure}
 
 \section{Discussion}
 

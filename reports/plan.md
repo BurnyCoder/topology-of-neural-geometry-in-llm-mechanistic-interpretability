@@ -21,6 +21,55 @@ Last updated: 2026-11-15.
 | 12. Clean-room replication test | done (fresh clone from GitHub + Hugging Face; results/replication.json) |
 | Exp6: simulated steering and LLM steering (primary H6) | **postponed by the author**; code ready, not run |
 | Optional Exp0b (refit synthetic clouds with the source checkpoint) | not done (needs model inference; postponed) |
+| 13. Plan-completion check (this section) | done; gaps closed (outlier FPR and DTM decision, D7; Exp4 figure; truth-cities prediction; family × Betti table; source-parsing tests; HF dataset card; P2) |
+
+## Completion check against the approved plan (2026-11-15)
+
+Every plan item, and where its evidence is. "Superseded" items were replaced by the preregistration's definitions, with a logged reason.
+
+**Methods**
+
+| Plan item | Status | Evidence |
+|---|---|---|
+| Method A: exact invariants of the 13 families, margin, ρ_A | done | `analytic/topology.py`, `results/exp0/real_topology.csv`, [docs/analytic_topology.md](../docs/analytic_topology.md) |
+| Method A rules checked against PH of dense noise-free samples | done | `results/exp0/dense_check.csv`; `tests/test_analytic.py` |
+| θ_A and travel around the hole on fitted shapes (+ helix axial winding, closure gap) | done | `results/exp0/real_alignment.json`, `results/coords/` |
+| Method B: alpha diagrams, universal null, design-matched MC null | done | `results/exp2/invariants.csv`, `results/nulls/` |
+| b0 rule tuned on validation only | done | `results/power/val_tuning.json` |
+| Invariants at one scale r_c, χ, genus rule, homotopy class | done | `results/exp2/invariants.csv` |
+| θ_B (DREiMac), alignment R, exact or MC permutation p, winding, cyclic order, closure | done | `results/exp3/method_b.json` |
+
+**Experiments**
+
+| Plan item | Status | Evidence |
+|---|---|---|
+| Exp0 on 44 fits + 39,000 synthetic GT shapes | done | `results/exp0/` |
+| Exp0b (refit with the source checkpoint) | postponed (model inference) | — |
+| Power / FPR simulation before the addendum | done; misspecified, corrected post hoc (D6) | `results/power/`, `fig_power.png` |
+| Exp1 with resolvability, cluster-bootstrap CIs, accuracy vs margin/noise, MC subset | done | `results/exp1/summary.json` |
+| Exp1 secondary GT (effective topology at r*) | superseded (P1) | [deviations.md](deviations.md) |
+| Exp1 family × homotopy-class table | done | `reports/exp0_analytic.md` (generated block `exp0_family_homotopy`) |
+| Exp1 outlier false-positive rate (needed by the DTM conditional) | done post hoc (D7) | `results/exp1/outliers.json`, `fig_exp1_outliers.png` |
+| Exp2: both nulls, invariants, 200 × 80% subsamples, comparison with fitter | done | `results/exp2/` |
+| Exp3: H1-A/B, H2, H3, H4, exploratory alignment (BH) | done (+ post hoc D5) | `results/exp3/` |
+| Exp4: bottleneck on significant bars, templates, MDS, dendrogram, nearest template, cohesion test | done | `results/exp4/summary.json`, `fig_exp4.png` |
+| Exp5: alpha vs Rips, top-k PCs, full-D cosine, offset removal, MC seeds | done | `results/exp5/` |
+| Exp5: c ∈ {1, 4} for r* | superseded (P1; replaced by the two alternative ν definitions in the preregistration) | `results/exp5/nu_variants.csv` |
+| Exp5: subsampling under 3 seeds | narrowed by the preregistration to MC seeds 1 and 2 | `results/exp5/summary.json` |
+| Exp5: DTM filtration if the outlier FPR > 10% | evaluated: not required (D7) | `results/exp1/outliers.json` |
+| Exploratory: colours, mod 10/100, truth cities b0 = 2, TMS, grokking memorised, Exp4 | done; truth-cities prediction not supported | `reports/exp2_invariants.md`, `reports/exp3_cyclic.md` |
+| Steering around the loops (amendment A2, H6) | postponed by the author | `src/neurotopo/steering/`, `reports/exp6_steering.md` |
+
+**Verification**
+
+| Plan item | Status | Evidence |
+|---|---|---|
+| Unit tests listed in the plan | done, except two superseded (P2) | `tests/` (`uv run pytest`) |
+| Index → factor parsing matches the prompt templates | done | `tests/test_source_parsing.py` |
+| Clean-room replication from GitHub + Hugging Face only | done for all phases up to PR #6 | `results/replication.json` |
+| End-to-end run, paper compiles, explorer renders | done | `logs/`, `paper/main.pdf`, GitHub Pages |
+
+**Deliverables:** reports per experiment, summary, deviations, methodology, paper, README, explorer, and the HF dataset (inputs, results, card): all done.
 
 The full plan, as approved on 2026-11-15, follows unchanged. Changes to it are logged in [deviations.md](deviations.md).
 

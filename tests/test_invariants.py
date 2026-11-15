@@ -63,3 +63,18 @@ def test_holm_bh_and_ci():
     est, lo, hi = st.cluster_bootstrap(np.r_[np.ones(50), np.zeros(50)], np.repeat(np.arange(4), 25), np.mean,
                                        n_boot=500)
     assert est == 0.5 and lo <= 0.5 <= hi
+
+
+def test_far_points_outlier_proxy():
+    # D7 proxy: points farther than 6 x the median point-to-shape distance. A noisy circle has none; five
+    # points placed at radius 3 (distance 2 from the unit circle, ~40 x the noise) are all flagged.
+    from neurotopo.tda.ground_truth import far_points
+    rng = np.random.default_rng(0)
+    t = rng.uniform(0, 2 * np.pi, 300)
+    circle = np.c_[np.cos(t), np.sin(t), np.zeros_like(t)]
+    shape = np.c_[np.cos(np.linspace(0, 2 * np.pi, 4000)), np.sin(np.linspace(0, 2 * np.pi, 4000)), np.zeros(4000)]
+    noisy = circle + 0.05 * rng.standard_normal(circle.shape)
+    assert far_points(noisy, shape, 6.0) == 0
+    a = rng.uniform(0, 2 * np.pi, 5)
+    far = np.c_[3 * np.cos(a), 3 * np.sin(a), np.zeros(5)]
+    assert far_points(np.r_[noisy, far], shape, 6.0) == 5

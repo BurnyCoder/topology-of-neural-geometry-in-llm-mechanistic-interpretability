@@ -19,6 +19,12 @@ We answer it in two independent ways:
 
 ![Pipeline](docs/figures/fig_pipeline.png)
 
+*Pipeline.* The inputs (left) feed two independent methods.
+- Method A reads the topology off the fitted shape's parameters.
+- Method B computes persistent homology of the cloud itself, with no fit involved.
+
+Each method gives a circle-valued coordinate for the hole (θ_A on the fitted shape, θ_B from persistent cohomology), and both coordinates go through the same travel-around-the-hole statistics. Steering around the loop (right) is designed and postponed.
+
 ## Highlights (all numbers generated from `results/`)
 
 Results per dataset. "Hole" means a significant H1 loop under the design-matched Monte Carlo null (999 draws); "goes around" means the concept's semantic cycle winds exactly once in the loop's circle-valued coordinate. The alignment R and its permutation p measure *ordering*; only winding ±1 carries the cyclic claim.
@@ -72,6 +78,22 @@ Results per dataset. "Hole" means a significant H1 loop under the design-matched
 
 ![Real activation clouds and their persistence](docs/figures/fig_real_gallery.png)
 
+*Real clouds and their holes.*
+- **Top row:** each cloud in its first two principal components, coloured by concept: a cyclic colour map for cyclic concepts, viridis for ordinal ones. The fitted family is in the title.
+- **Bottom row:** the persistence ratio π = death/birth of every H1 bar (loops, circles) and H2 bar (voids, triangles), on a log scale. The red line is the 95th percentile of the null distribution of the largest ratio. A bar above it is a significant hole.
+- Colours, residues and months have a loop above the line. Weekdays, years, GPT-2 positions and the controls do not.
+
+![Travel around the hole](docs/figures/fig_traversal.png)
+
+*Does the concept go around the hole?*
+- **How to read:** each dot is one concept (a hue bin, a residue, a month, a weekday). It sits at the circular mean of its points' hole angle and is coloured by its position in the semantic cycle. A chord joins it to the next concept.
+- If the concept goes around the hole once and in order, the colours run around the circle like a rainbow and the chords form a single non-crossing polygon (winding ±1). The sign only gives the direction.
+- **Results:**
+  - Colours do this in both coordinates: cohomology θ_B and the fitted cone's azimuth θ_A.
+  - Residues mod 113 do it at Fourier frequency 20.
+  - Months do it only in the post hoc relaxed setting.
+- **The last two panels are a warning.** The weekday points also go once around the axis of their fitted helix, but so does a smooth Gaussian-process control that was fitted as a helix. Winding around a helix axis is therefore not evidence of a cyclic concept (8 of 8 such controls wind).
+
 ## Results
 
 ### Method A: exact topology of the 44 fitted shapes (Exp0)
@@ -81,7 +103,21 @@ Results per dataset. "Hole" means a significant H1 loop under the design-matched
 - The analytic rules agree with persistent homology of dense noise-free shape samples for 0.970 of 234 shapes.
 - Full tables: [reports/exp0_analytic.md](reports/exp0_analytic.md); point coordinates on the shapes: [reports/coords_check.md](reports/coords_check.md).
 
+![Exact topology of the fitted shapes](docs/figures/fig_exp0_margin.png)
+
+*Exact topology of every fitted shape (Method A).*
+- Marker shape gives the fitted shape's Betti vector: circle = no hole, square = a hole (b1 = 1), triangle = a void (b2 = 1).
+- The x-axis is the margin ratio ρ_A, the smallest parameter change that would alter the topology divided by twice the data's noise scale (log scale).
+- Right of the dashed line (ρ_A ≥ 1), the noise is small enough for the fitted topology to be resolvable. Fits whose topology cannot change (blob, disc, paraboloid; ρ_A = ∞) are omitted.
+- The cyclic sets' helices lie left of the line: whether those curves are open or closed cannot be decided from the data.
+
 ![Helix fits: winding vs closure](docs/figures/fig_exp0_helix.png)
+
+*Helix fits.*
+- The x-axis is the closure gap: the axial distance between the first and last concept, in units of the helix radius. A closed loop would have gap 0.
+- The y-axis is how well the concepts line up with the helix azimuth (R = 1: perfectly ordered).
+- Cyclic concepts (red) wind about as well as Gaussian-process controls fitted as helices (grey), so winding does not separate them.
+- The closure gap separates only months: their gap (0.04 radii) is below every control's. The weekdays' gap (0.80) lies inside the controls' range (0.33–2.20).
 
 ### Method B: persistent homology of the clouds (Exp2) and the cyclic tests (Exp3)
 
@@ -101,6 +137,35 @@ Results per dataset. "Hole" means a significant H1 loop under the design-matched
 
 All 44 clouds: [reports/exp2_invariants.md](reports/exp2_invariants.md). Hypothesis tests: [reports/exp3_cyclic.md](reports/exp3_cyclic.md).
 
+![Loop tests against the design-matched null](docs/figures/fig_null_tests.png)
+
+*The loop test, dataset by dataset.*
+- **How to read:**
+  - Grey histogram: the largest H1 persistence ratio in each of 999 surrogate clouds with the same design but no planted loop. Prompt-template sets use the cluster-centre null; the others use a full-dimensional matched Gaussian.
+  - Dashed line: the 95th percentile of the null. Solid line: the observed largest ratio.
+- **Results:**
+  - Colours, residues, months and days_time lie beyond the null.
+  - Weekdays fall just short (p = 0.094).
+  - Years, counting, GPT-2 positions, the random-init weekday model and the Gaussian-process control lie inside the null or below it.
+
+![Top-10-PC loop test](docs/figures/fig_top10.png)
+
+*Loops beyond the top-3 PCs (post hoc).*
+- The observed largest Rips H1 ratio in the top-10 principal components (dot) is compared with the 95th percentile of a matched 199-draw null (bar). A filled dot is significant (p < 0.05).
+- In 10 dimensions, ordinal sets get loops too (R5c_llama_days_time, R4_llama_counting, R6_llama_years, R8a_llama_temperature, R8b_llama_age, R7_llama_colors), as expected from Fourier-like features of numbers. **A loop alone is therefore not specific.**
+- Colours are the only set that keeps both a strong loop and a single winding there.
+
+![Power simulation](docs/figures/fig_power.png)
+
+*Why weekdays could hardly pass (corrected power simulation, post hoc).*
+- **Setup:** 7 or 12 concept clusters in ℝ⁴⁰⁹⁶, matched to the real sets' second-order statistics. Plotted against the simulated top-3 explained variance:
+  - the fraction of clouds that pass the loop test (solid);
+  - for rings only, the fraction that pass the full preregistered conjunction (dashed).
+  - The dotted line marks the real weekdays and months.
+- **Results:**
+  - At the weekdays' variance, a true ring passes the loop test in only 0.15 of replicates. Random placements pass at most 0.07, close to the nominal 5%. The full conjunction almost never passes, because the circular-coordinate step rarely builds a coordinate on such small loops.
+  - **The loop test alone cannot tell a ring from a nearly closed arc.** With 7 clusters, an open 300° arc (50° steps and a 60° gap) is almost a ring and passes as often as one. With 12 clusters (a gap of 2.2 steps) the ring passes more often, but the arc still passes often. Only the traversal conditions separate them.
+
 ### Instrument validation on synthetic clouds with exact topology (Exp1)
 
 | Estimator | exact (b0,b1,b2) accuracy, macro over 13 families [95% CI] |
@@ -115,10 +180,33 @@ All 44 clouds: [reports/exp2_invariants.md](reports/exp2_invariants.md). Hypothe
 - The preregistered persistent-homology estimator (P) and the fixed-threshold one (Ba) are **worse** than the family label (Bb) overall. Ba misses thin loops (ellipse: 0.51 vs 0.99) and tori (0.11 vs 1.00).
 - Ba is **better** where the label is topologically ambiguous: arcs, open or closed (0.79 vs 0.58), and spheres, cap or full (0.76 vs 0.61).
 - On well-resolved clouds (ρ_A ≥ 4), the preregistered P scores 0.751 [0.739, 0.763] vs 0.820 [0.812, 0.829] for the family label (macro, cluster-bootstrap CIs).
-- P rarely invents holes: 0.019–0.054 false positives on contractible shapes.
+- P rarely invents holes: 0.019–0.054 false positives on contractible shapes (per N bin), 0.065 on clouds with outliers.
 
 ![Estimators](docs/figures/fig_exp1_estimators.png)
+
+*Exact Betti-vector accuracy on resolvable synthetic clouds.* Macro average over the 13 shape families, with 95% cluster-bootstrap CIs over generator chunks. Blue: persistent-homology estimators. Grey: baselines.
+
 ![Accuracy vs resolvability](docs/figures/fig_exp1_by_rho.png)
+
+*Accuracy against the margin ratio ρ_A, over all 39,000 clouds.*
+- The persistence estimators fail on clouds whose topology is unresolvable (left of the dashed line). The family label degrades less, because it reads the topology off the label rather than off the data.
+- This is why accuracies are scored on resolvable clouds, and why the unresolvable helix fits of the real cyclic sets cannot be called open or closed.
+
+![False positives with and without outliers](docs/figures/fig_exp1_outliers.png)
+
+*False holes on contractible shapes, with and without outliers (deviation D7).*
+- The source generator gives a fraction 0.30 of the clouds uniform outliers, replacing up to a fraction 0.10 of their points. A cloud counts as an outlier cloud if a point lies more than 6 median distances from the true shape.
+- Outliers roughly double the false positives of the universal-null estimators (P, S); the tuned fixed threshold (Ba) is unaffected. For the preregistered P: 0.065 [0.053, 0.078] with outliers vs 0.031 [0.025, 0.037] without.
+- P stays below the preregistered threshold of 0.10 (dashed), so the planned distance-to-measure (DTM) ablation is **not required**.
+
+### Topological similarity between clouds (Exp4, exploratory)
+
+![MDS and dendrogram of bottleneck distances](docs/figures/fig_exp4.png)
+
+*Which clouds have similar persistence diagrams?*
+- **Left:** a 2D multidimensional-scaling map of bottleneck distances between the diagrams of significant bars, for the 44 clouds and 8 ideal templates (stars). **Right:** the average-linkage dendrogram.
+- Clouds with no significant bar are all at distance 0 from each other and from the line, helix and blob templates, so they collapse onto one point (X).
+- The cyclic sets do not cluster together (exact cohesion p = 0.581). Bottleneck distance in absolute radius units is dominated by bar length, not by how persistent a loop is relative to its size. We report this analysis as uninformative ([reports/exp4_exp5.md](reports/exp4_exp5.md)).
 
 ## Architecture
 
@@ -146,11 +234,12 @@ run.py <phase>
   coords       where the labelled points sit on their fitted shapes (curve parameter, azimuth, height, clusters)
   power        validation-stream tuning (b0 rule, baseline thresholds) and the power simulation
   exp1         synthetic validation of the persistent-homology Betti estimators against exact GT topology
+  exp1outliers false-positive rate on outlier clouds; decides the preregistered DTM conditional (deviation D7)
   exp2         persistent homology of the 44 clouds with 999-draw design-matched nulls (cached in results/nulls)
   exp3         preregistered cyclic hypotheses H1-H4 (theta_B, top-10-PC check, Holm)
   exp3posthoc  post hoc: theta_B with DREiMac standard_range=False (deviation D5)
   exp4         bottleneck distances between clouds and ideal templates
-  exp5         robustness: Rips vs alpha, top-k PCs, full-D cosine, offset removal, seeds, noise scale
+  exp5         robustness: Rips vs alpha, top-k PCs (with matched null), full-D cosine, offset removal, seeds, noise scale
   report       regenerate every table, figure and number in README / reports / paper from results/
   site         GitHub Pages explorer (docs/index.html)
   all          everything above, CPU only (about 1.5 h on 16 cores)

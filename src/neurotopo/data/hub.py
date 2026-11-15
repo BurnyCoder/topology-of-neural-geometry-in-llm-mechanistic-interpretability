@@ -92,12 +92,36 @@ Source project: [shape-fitting-in-neural-geometry-in-llm-mechanistic-interpretab
   ones exactly (max |difference| = {diff}).
 - `synth/per_sample.csv`, `synth/probs.npz`, `synth/meta.json`: the source fitter's predictions per test cloud.
 
+## `results/`, `paper.pdf`, `summary.md`, `logs/` (uploaded by `run.py publish`)
+
+- `results/<phase>/`: machine-readable outputs of every analysis phase. Each folder has an `env.json` with
+  package versions and the git commit.
+  - `exp0`: exact topology of the fitted shapes and of the synthetic ground truth;
+  - `coords`: positions of the labelled points on their fitted shapes;
+  - `power`: validation tuning and power simulations;
+  - `exp1`: synthetic validation of the Betti estimators, including `outliers.json`;
+  - `exp2`: persistent homology of the 44 clouds;
+  - `exp3`: cyclic hypothesis tests;
+  - `exp4`: topological similarity;
+  - `exp5`: robustness checks;
+  - `nulls/`: cached Monte Carlo null distributions;
+  - `replication.json`: the clean-room replication check.
+- `paper.pdf`: the paper. `summary.md`: summary of all experiments. `logs/`: timestamped run logs.
+
+Every table and figure in the GitHub repository is regenerated from `results/` with
+`uv run python run.py report site`.
+
 ## Licences
 
 Code of both projects: MIT. Activations derived from Llama-3.1-8B are subject to the
 [Llama 3.1 Community License](https://github.com/meta-llama/llama-models/blob/main/models/llama3_1/LICENSE);
 GPT-2 (MIT), Pythia (Apache-2.0).
 """
+
+
+def dataset_card(manifest: dict) -> str:
+    """The dataset card (README.md of the dataset repo), filled from an inputs manifest."""
+    return DATASET_CARD.format(commit=manifest["source_commit"][:7], diff=manifest["test_params"]["max_abs_diff_vs_cache"])
 
 
 def publish_inputs(staging: Path) -> str:
@@ -108,7 +132,7 @@ def publish_inputs(staging: Path) -> str:
     api.create_repo(repo, repo_type="dataset", private=False, exist_ok=True)
     with open(staging / "manifest.json", encoding="utf-8") as f:
         man = json.load(f)
-    card = DATASET_CARD.format(commit=man["source_commit"][:7], diff=man["test_params"]["max_abs_diff_vs_cache"])
+    card = dataset_card(man)
     api.upload_file(path_or_fileobj=card.encode(), path_in_repo="README.md", repo_id=repo, repo_type="dataset",
                     commit_message="Dataset card")
     info = api.upload_folder(folder_path=str(staging), path_in_repo="inputs", repo_id=repo, repo_type="dataset",

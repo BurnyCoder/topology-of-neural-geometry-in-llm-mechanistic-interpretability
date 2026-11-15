@@ -176,3 +176,76 @@ def run() -> None:
                                       "resolvable_by_family": df.groupby("family_name")["resolvable"].mean().to_dict()})
     for name, v in table.items():
         log.info("%-28s macro exact %.3f [%.3f, %.3f] (n=%d)", name, v["macro_exact"], *v["ci"], v["n"])
+
+
+def expected_outlier_rate(n: np.ndarray, prob: float, frac_max: float) -> float:
+    """Generator's expected fraction of clouds with >= 1 injected outlier (source add_outliers: a cloud gets
+    outliers with probability `prob`, then each point independently with f ~ U(0, frac_max)):
+    prob * (1 - E[(1 - f)^n]), with E[(1 - f)^n] = (1 - (1 - frac_max)^(n + 1)) / (frac_max (n + 1))."""
+    n = np.asarray(n, dtype=np.float64)
+    return float(np.mean(prob * (1 - (1 - (1 - frac_max) ** (n + 1)) / (frac_max * (n + 1)))))
+
+
+def outlier_check() -> None:
+    """Deviation D7: the preregistered DTM conditional (section 7) needs Exp1's outlier false-positive rate.
+
+    Outlier clouds = clouds with >= 1 point farther than far_factor x their median distance to the ground-truth
+    shape (tda.ground_truth.far_points). Reported: FPR of every estimator on resolvable contractible clouds with
+    and without detected outliers (cluster-bootstrap CI over generator chunks, one-sided Fisher test), the
+    decision (DTM ablation iff P's outlier FPR > dtm_fpr_threshold), and the proxy's flag rate per N bin next to
+    the generator's expected rate of clouds with at least one injected outlier (upper bound on the flag rate).
+    """
+    import yaml
+    from neurotopo.stats.tests import fisher_exact
+    from neurotopo.tda.ground_truth import far_points
+    cfg = config.load()
+    out = out_dir("exp1")
+    sset = synthetic.load("test")
+    df = pd.read_csv(out / "per_cloud.csv.gz", low_memory=False)
+    pi = np.load(out / "pi_top.npz")
+    df["pi1_top"], df["pi2_top"] = list(pi["pi1"]), list(pi["pi2"])
+    k = cfg["outliers"]["far_factor"]
+    df["n_far"] = Parallel(n_jobs=-1, batch_size=64)(delayed(far_points)(sset.cloud(i), sset.gt(i), k)
+                                                      for i in range(len(sset)))
+    with open(config.path("submodule") / "configs" / "base.yaml", encoding="utf-8") as f:
+        gen = yaml.safe_load(f)["synth"]
+    flag = df["n_far"].to_numpy() > 0
+    nbin = df["n_bin"].to_numpy()
+    proxy = {int(b): {"flagged": float(flag[nbin == b].mean()), "n_min": int(df["n"][nbin == b].min()),
+                      "n_max": int(df["n"][nbin == b].max()),
+                      "expected_with_outliers": expected_outlier_rate(df["n"].to_numpy()[nbin == b],
+                                                                      gen["outlier_prob"], gen["outlier_frac_max"])}
+             for b in range(4)}
+    contr = df["resolvable"].to_numpy() & np.isin(df["family_name"], list(CONTRACTIBLE))
+    chunks = df["chunk"].to_numpy()
+    nb = cfg["synthetic"]["bootstrap"]
+    rates = {}
+    for name, p in predictions(df, read_json(out / "summary.json")["tuning"]).items():
+        fp = ((p[:, 1] > 0) | (p[:, 2] > 0)).astype(float)
+        r = {}
+        for lab, m in (("outlier", contr & flag), ("clean", contr & ~flag)):
+            est, lo, hi = cluster_bootstrap(fp[m], chunks[m], np.mean, n_boot=nb)
+            r[lab] = {"fpr": est, "ci": [lo, hi], "fp": int(fp[m].sum()), "n": int(m.sum()),
+                      "by_n_bin": {int(b): float(fp[m & (nbin == b)].mean()) if (m & (nbin == b)).any() else None
+                                   for b in range(4)}}
+        r["fisher_p_outlier_gt_clean"] = fisher_exact([[r["outlier"]["fp"], r["outlier"]["n"] - r["outlier"]["fp"]],
+                                                       [r["clean"]["fp"], r["clean"]["n"] - r["clean"]["fp"]]])
+        rates[name] = r
+    # Post-hoc sensitivity of the decision to the proxy's factor (point estimates of P and S only).
+    sens = {}
+    preds = predictions(df, read_json(out / "summary.json")["tuning"])
+    for kf in cfg["outliers"]["far_factor_sensitivity"]:
+        fl = np.array(Parallel(n_jobs=-1, batch_size=64)(delayed(far_points)(sset.cloud(i), sset.gt(i), kf)
+                                                          for i in range(len(sset)))) > 0
+        sens[str(kf)] = {"flagged_fraction": float(fl.mean()), "n_outlier_contractible": int((contr & fl).sum()),
+                         **{name: float((((preds[name][:, 1] > 0) | (preds[name][:, 2] > 0))[contr & fl]).mean())
+                            for name in ("P_alpha_universal", "S_rips_universal")}}
+    thr = cfg["outliers"]["dtm_fpr_threshold"]
+    p_fpr = rates["P_alpha_universal"]["outlier"]["fpr"]
+    res = {"far_factor": k, "threshold": thr, "generator": {"outlier_prob": gen["outlier_prob"],
+                                                            "outlier_frac_max": gen["outlier_frac_max"]},
+           "flagged_fraction": float(flag.mean()), "proxy_by_n_bin": proxy, "fpr": rates,
+           "P_outlier_fpr": p_fpr, "dtm_required": bool(p_fpr > thr), "sensitivity": sens}
+    write_json(out / "outliers.json", res)
+    log.info("outlier proxy: %.3f of clouds flagged; P outlier FPR %.3f (threshold %.2f) -> DTM %s",
+             res["flagged_fraction"], p_fpr, thr, "required" if res["dtm_required"] else "not required")

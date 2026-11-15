@@ -29,6 +29,7 @@ Date: 2026-11-15. Code: `src/neurotopo/experiments/exp2_invariants.py`, `realdat
 - **Weekdays have no significant loop** (π = {{exp2.weekdays.top_pi1:2}} vs {{exp2.weekdays.null_q95_pi1:2}}, p = {{exp2.weekdays.p_top_loop}}).
 - **No ordinal concept has a loop** ({{exp2.ordinal_loops}}/6), and neither do the 20 random-process controls ({{exp2.c1_loops}}/20; max π {{exp2.c1_pi_max:2}}).
 - **GPT-2 W_pos:** fitted as a closed sphere (Method A void), but there is no significant void in the data (H2 π = {{exp2.wpos.top_pi2:2}}). The positions trace a spiral curve, not a surface.
+- **Truth cities (exploratory prediction, preregistration section 6: b0 = 2, true vs false statements):** not supported. The tuned single-linkage rule gives b0 = {{exp2.truth.b0}}, and b0 = {{exp2.truth.b0_rc}} at the characteristic scale. The homotopy class is {{exp2.truth.homotopy}}.
 - **Agreement between Method A and Method B (b1, b2):** {{exp2.agree:3}}.
 - **Benjamini–Hochberg over the 44 loop tests (post hoc, D6):** {{exp2.n_loop_q05}} loops at q < 0.05: {{exp2.loops_q05}}.
 
@@ -36,6 +37,10 @@ Date: 2026-11-15. Code: `src/neurotopo/experiments/exp2_invariants.py`, `realdat
 <!-- END:exp2 -->
 
 ![gallery](../docs/figures/fig_real_gallery.png)
+
+![null distributions](../docs/figures/fig_null_tests.png)
+
+Grey: Monte Carlo null distribution of the largest H1 persistence ratio (999 design-matched draws). Dashed: its 95th percentile. Solid: the observed largest ratio.
 
 ## Interpretation
 
@@ -47,4 +52,4 @@ Date: 2026-11-15. Code: `src/neurotopo/experiments/exp2_invariants.py`, `realdat
 ## Learnings
 
 - The cluster-centre null matters. With a plain Gaussian null, any arrangement of tight clusters would look "loopy".
-- Stability under subsampling separates robust loops (colours 1.0, months 0.9) from fragile ones (days_time 0.03).
+- Stability under subsampling separates robust loops (colours {{exp2.colors.loop_freq:2}}, months {{exp2.months.loop_freq:2}}) from fragile ones (days_time {{exp2.daystime.loop_freq:2}}).

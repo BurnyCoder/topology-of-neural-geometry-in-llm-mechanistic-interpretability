@@ -33,3 +33,15 @@ def margin_ratio(margin: float, nu: float) -> float:
     if not np.isfinite(margin):
         return float("inf")
     return float(margin / (2 * nu)) if nu > 0 else float("inf")
+
+
+def far_points(points: np.ndarray, shape_samples: np.ndarray, factor: float) -> int:
+    """Number of points farther from the shape than `factor` x the cloud's median point-to-shape distance.
+
+    Outlier proxy of deviation D7: the source generator replaces a random fraction of points by uniform draws
+    from the padded bounding box (neurogeom/data/nuisance.py::add_outliers) but does not store which ones.
+    Gaussian noise (isotropic or with per-axis scales in [0.3, 1]) almost never puts a point 6 median distances
+    from the shape, so points beyond that are box outliers; box outliers that land near the shape are missed.
+    """
+    d = cKDTree(np.asarray(shape_samples, dtype=np.float64)).query(np.asarray(points, dtype=np.float64))[0]
+    return int((d > factor * np.median(d)).sum())

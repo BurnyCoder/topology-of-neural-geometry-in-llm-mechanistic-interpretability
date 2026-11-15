@@ -58,3 +58,8 @@ synthetic:
 stability:
   reps: 200                     # 200 subsamples of 80% (prereg; source seeds default_rng(0))
   frac: 0.8
+
+outliers:                        # deviation D7 (reports/deviations.md); fixed before the outlier FPR was computed
+  far_factor: 6.0                # a point is "far" if its distance to the GT shape exceeds 6 x the cloud's median distance
+  far_factor_sensitivity: [4.0, 8.0]   # post hoc: does the DTM decision depend on the 6x choice?
+  dtm_fpr_threshold: 0.10        # prereg section 7: run a DTM filtration only if Exp1's outlier FPR exceeds 10%

@@ -134,6 +134,25 @@ def collect() -> dict:
             for other, a in (("Bb_family_implied", "Bb"), ("Ba_fixed_pi", "Ba"), ("Bc_majority", "Bc")):
                 v = w[f"P - {other}"]
                 n[f"exp1.well.diff.{a}"], n[f"exp1.well.diff.{a}.lo"], n[f"exp1.well.diff.{a}.hi"] = v["estimate"], *v["ci"]
+        if _res("exp1", "outliers.json").exists():                 # D7: outlier FPR and the DTM conditional
+            o = read_json(_res("exp1", "outliers.json"))
+            n["exp1.out.factor"], n["exp1.out.thr"], n["exp1.out.flagged"] = o["far_factor"], o["threshold"], o["flagged_fraction"]
+            n["exp1.out.dtm"] = "required" if o["dtm_required"] else "not required"
+            n["exp1.out.gen.prob"], n["exp1.out.gen.fracmax"] = o["generator"]["outlier_prob"], o["generator"]["outlier_frac_max"]
+            for k, a in ab.items():
+                if k in o["fpr"]:
+                    for lab in ("outlier", "clean"):
+                        v = o["fpr"][k][lab]
+                        n[f"exp1.out.{a}.{lab}"], n[f"exp1.out.{a}.{lab}.lo"], n[f"exp1.out.{a}.{lab}.hi"] = v["fpr"], *v["ci"]
+                        n[f"exp1.out.{a}.{lab}.n"] = v["n"]
+                    n[f"exp1.out.{a}.fisher"] = o["fpr"][k]["fisher_p_outlier_gt_clean"]
+            for b, v in o["proxy_by_n_bin"].items():
+                n[f"exp1.out.bin{b}.flagged"], n[f"exp1.out.bin{b}.expected"] = v["flagged"], v["expected_with_outliers"]
+                n[f"exp1.out.bin{b}.range"] = f"{v['n_min']}–{v['n_max']}"
+            fs = sorted(o["sensitivity"], key=float)
+            n["exp1.out.sens.factors"] = " and ".join(f"{float(f):g}" for f in fs)
+            n["exp1.out.sens.P.min"] = min([o["sensitivity"][f]["P_alpha_universal"] for f in fs] + [o["P_outlier_fpr"]])
+            n["exp1.out.sens.P.max"] = max([o["sensitivity"][f]["P_alpha_universal"] for f in fs] + [o["P_outlier_fpr"]])
         last = list(s["accuracy_by_rho"]["P_alpha_universal"].keys())[-1]
         for a in ("P_alpha_universal", "S_rips_universal", "Ba_fixed_pi", "Bb_family_implied"):
             n[f"exp1.rho4.{ab[a]}"] = s["accuracy_by_rho"][a][last]
@@ -145,6 +164,7 @@ def collect() -> dict:
                 for c in ("top_pi1", "null_q95_pi1", "p_top_loop", "top_pi2", "null_q95_pi2", "p_top_void", "loop_freq"):
                     n[f"exp2.{s}.{c}"] = float(d.loc[i, c])
                 n[f"exp2.{s}.homotopy"] = d.loc[i, "homotopy_rc"]
+                n[f"exp2.{s}.b0"], n[f"exp2.{s}.b0_rc"] = int(d.loc[i, "b0"]), int(d.loc[i, "b0_rc"])
         sm = read_json(_res("exp2", "summary.json"))
         n["exp2.agree"] = sm["agree_b1b2_A_vs_B"]
         n["exp2.n_loop"], n["exp2.n_void"] = sm["n_with_loop_mc"], sm["n_with_void_mc"]
