@@ -26,7 +26,7 @@ The source fits each cloud with a uniquely parametrised shape. What is the exact
   - residues: R = {{exp0.grok.azimuth.R:3}}, winding {{exp0.grok.azimuth.w}}.
 - **Not specific:** {{exp0.gp_wind1}} of {{exp0.gp_helix_n}} Gaussian-process controls fitted as helices also wind (R = {{exp0.gp_R_min:2}}–{{exp0.gp_R_max:2}}), with closure gaps of {{exp0.gp_gap_min:2}}–{{exp0.gp_gap_max:2}} ([fig_exp0_helix](../docs/figures/fig_exp0_helix.png)).
 - **Colours (exploratory):** the cone frustum's azimuth aligns with hue (R = {{exp0.colors.theta.R:3}}, winding {{exp0.colors.theta.w}}). **Years:** the frustum's azimuth does not wind (winding {{exp0.years.theta.w}}).
-- **Numerical check:** agreement {{exp0.dense_agree:3}} over {{exp0.dense_n}} shapes; {{exp0.dense_agree_resolved:3}} where the margin exceeds 4 sample spacings. The failures are apex cones whose 0.001-unit opening is below sampling resolution, and tori whose void needs more samples.
+- **Numerical check:** agreement {{exp0.dense_agree:3}} over {{exp0.dense_n}} shapes; {{exp0.dense_agree_resolved:3}} where the margin exceeds 4 sample spacings. The failures are apex cones whose 0.001-unit opening is below sampling resolution, and tori whose void needs more samples: their voids are born below the counting cut, but their persistence ratio ({{audit3.tori.pi_min:1}}–{{audit3.tori.pi_max:1}}) stays below the threshold of 4 (checked in the third audit, D9).
 - **Synthetic ground truth:** {{exp0.synth_resolvable:3}} of the 39,000 test clouds have resolvable topology.
 
 <!-- BEGIN:exp0_topology -->

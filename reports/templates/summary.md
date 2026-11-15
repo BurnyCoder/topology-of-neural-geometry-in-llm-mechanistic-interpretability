@@ -22,13 +22,14 @@ We checked, without running any model, whether the activation clouds really have
 | 5 | Robustness | key sets | top-k PCs, cosine distance, offset removal, seeds | top-10-PC loop test with matched null (post hoc): significant for {{exp5.top10.sig_ids}}. Loops in 10D are not specific; only colours' values wind around theirs. Months robust to offsets and seeds |
 | 6 | Steering around the holes | – | designed; simulated and LLM steering | **postponed by the author** |
 | 7 | Second audit (post hoc, D8) | stored activations, colour prompts | colour RGB baseline, loop localisation, closure ratio, PCA gaps, size-matched stability, power CIs | the colour prompts' RGB values already have the hue loop (π {{audit.rgb.pi:2}}, p = {{audit.rgb.p}}); the weekday and days_time loops lie inside one cluster; grokking's top PCs are nearly degenerate (5 Fourier frequencies); no verdict changes |
+| 8 | Third audit (post hoc, D9) | stored results, synthetic test set, simulated nulls | loop sensitivity and false-loop rate per estimator; cluster-centre null on hole-free centres; centre loops in other projections | the loop test is not hole-specific: its Gaussian null flags {{audit3.mc.fpr:2}} of hole-free synthetic clouds (spheres and caps {{audit3.mc.fam.sphere_b0:2}}); the cluster-centre null is undetermined at the real variance structure. Ring claims rest on the traversal (colours, residues); months downgraded to "suggestive"; no verdict changes |
 
 ## Datasets (from the source project)
 
 | Dataset | Model / layer | Concept | Fitted family | Hole (Method B)? | Concept goes around? |
 |---|---|---|---|---|---|
 | weekdays | Llama-3.1-8B, layer 5, day token | day (cyclic) | {{exp0.weekdays.family}} | no (p = {{exp2.weekdays.p_top_loop}}; the day centres form no loop) | around the fit's axis yes, but not specific (random-process controls also wind) |
-| months | Llama-3.1-8B, layer 5, month token | month (cyclic) | {{exp0.months.family}} | yes (p = {{exp2.months.p_top_loop}}) | yes in 3D, post hoc only; not in the top-10 PCs |
+| months | Llama-3.1-8B, layer 5, month token | month (cyclic) | {{exp0.months.family}} | loop yes (p = {{exp2.months.p_top_loop}}); ring suggestive | yes in 3D, post hoc only; not in the top-10 PCs |
 | residues | 1-layer transformer, W_E (weights) | a mod 113 (cyclic) | {{exp0.grok.family}} | yes (p = {{exp2.grok.p_top_loop}}) | yes in 3D, not in the top-10 PCs |
 | days with times | Llama-3.1-8B, layer 19, last token | day, time (cyclic) | {{exp0.daystime.family}} | only a small loop inside one day's cluster, unstable (p = {{exp2.daystime.p_top_loop}}) | no ring of days; days ordered linearly along the fitted curve |
 | colours | Llama-3.1-8B, layer 19, last token | hue (cyclic) | {{exp0.colors.family}} | yes (p = {{exp2.colors.p_top_loop}}), but the prompts' RGB values have it too | yes, also in the top-10 PCs |
@@ -46,7 +47,7 @@ We checked, without running any model, whether the activation clouds really have
 - **Euler characteristic χ** = b0 − b1 + b2. **Genus:** the number of handles of a closed surface, b1/2 when b2 = 1.
 - **Persistent homology:** grow balls around every point and record when loops appear (birth) and fill in (death). Long-lived loops are real; short ones are noise.
 - **Persistence ratio π** = death / birth. It is scale-free, so it can be compared across clouds.
-- **Null model:** random clouds that share the data's size and spread but have no structure. A loop counts only if it outlives 95% of the loops found in 999 such random clouds.
+- **Null model:** random Gaussian clouds that share the data's size and spread. A loop counts only if it outlives 95% of the loops found in 999 such random clouds. That rules out "a Gaussian blob", not every hole-free shape: curved sheets, caps and helices also often pass, and so do nearly closed arcs of cluster centres (third audit, D9).
 - **Alpha complex / Rips complex:** two ways of turning points into a shape. Alpha is exact in 3D; Rips works in any dimension but adds spurious features.
 - **Circular coordinate (θ):** an angle assigned to each point, going once around the hole. It comes from the fitted shape (θ_A) or from persistent cohomology (θ_B, DREiMac).
 - **Alignment R:** how well the concepts' angles match their semantic order. R = 1 is perfect. **Winding:** how many times the semantic cycle goes around the hole; 1 means exactly once.
@@ -57,12 +58,12 @@ We checked, without running any model, whether the activation clouds really have
 
 - **Colours** have a robust hole that hue goes around once, but the colour prompts' own RGB values already have that hole (the prompts avoid greys), so this shows that the model keeps its input's hue circle, not that it builds one.
 - **Residues mod 113** have a hole the residues go around once. The top-3 view of it is unstable, because the embeddings spread their variance almost evenly over 5 Fourier frequencies, and it fails the preregistered higher-dimension check.
-- **Months** have a loop through the 12 month clusters; whether it is a closed ring or a nearly closed arc cannot be decided. The months go around it only in a post hoc analysis, and only in the top-3 PCs.
+- **Months** have a loop through the 12 month clusters. Evenly spread hole-free arrangements did not reach its strength in simulation, but whether it is a closed ring or a nearly closed arc cannot be decided. The months go around it only in a post hoc analysis, and only in the top-3 PCs.
 - **Days with times** have no ring of days: the only significant loop is small, lies inside one day's cluster, and is unstable.
 - **Weekdays** are ordered around a circle on the fitted helix, but so are the indices of random smooth processes. In the top-3 PCs the 7 day centres form no loop at all; the test is also weak for 7 clusters, so a ring in other dimensions is not ruled out.
 - **Ordinal concepts** (years, temperatures, ages, positions, counts) and **random controls** have no holes; they lie along open curves, which this null never flags. Because the strict tests never fired for any cyclic set either, this is weak evidence of specificity.
 - **The shape fitter's "helices"** cannot be told apart from closed loops at this noise level. Months come closest to closing.
-- **The topology instrument** is conservative. It is good at telling open from closed curves and caps from spheres, and weak for tori and thin loops.
+- **The topology instrument** is conservative. It is good at telling open from closed curves and caps from spheres, and weak for tori and thin loops. The loop test used on the real data is the opposite: it finds most true holes, but it also flags many hole-free shapes. So on its own, a loop is not proof of a hole.
 - **Not yet tested:** whether steering *around* these loops changes the model's answers in order. That needs model runs, which are postponed.
 
 ## Reports
@@ -75,6 +76,7 @@ We checked, without running any model, whether the activation clouds really have
 - [exp4_exp5.md](exp4_exp5.md)
 - [exp6_steering.md](exp6_steering.md)
 - [exp7_audit.md](exp7_audit.md)
+- [exp8_audit3.md](exp8_audit3.md)
 - [findings_per_dataset.md](findings_per_dataset.md)
 - [preregistration.md](preregistration.md)
 - [deviations.md](deviations.md)

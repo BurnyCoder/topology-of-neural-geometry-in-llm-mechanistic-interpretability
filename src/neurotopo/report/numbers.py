@@ -26,6 +26,9 @@ SHORT = {"R5a_llama_weekdays": "weekdays", "R5b_llama_months": "months", "R2_gro
          "R9_llama_truth_cities": "truth", "C3_gpt2_wpos_init": "wposinit"}
 
 
+ESTSHORT = {"MC": "mc"}            # exp8 per-family rows: estimator label -> number-key prefix (P, S, Ba stay)
+
+
 def _res(*p):
     return config.path("results").joinpath(*p)
 
@@ -331,12 +334,69 @@ def collect() -> dict:
             key = f"audit.power.k{r['k']}.{r['arrangement']}"
             for c in ("nearest_loop", "ci_lo", "ci_hi", "interp_loop", "loop_min", "loop_max", "nearest_top3", "real_top3"):
                 n[f"{key}.{c}"] = r[c]
+            n[f"{key}.nearest_count"] = int(round(40 * r["nearest_loop"]))   # replicates passing (exp7_audit.POWER_REPS)
+    # Exp8 audit (post hoc, D9): specificity of the loop test's Gaussian nulls to holes.
+    if _res("exp8_audit3", "summary.json").exists():
+        a3 = read_json(_res("exp8_audit3", "summary.json"))
+        sy = a3["synthetic"]
+        for key, est in (("MC|subset", "mc"), ("P|all", "P"), ("S|all", "S"), ("Ba|all", "Ba"), ("P|subset", "Psub")):
+            v = sy[key]
+            n[f"audit3.{est}.sens"], n[f"audit3.{est}.fpr"] = v["sensitivity"]["rate"], v["false_loop"]["rate"]
+            n[f"audit3.{est}.sens_lo"], n[f"audit3.{est}.sens_hi"] = v["sensitivity"]["ci"]
+            n[f"audit3.{est}.fpr_lo"], n[f"audit3.{est}.fpr_hi"] = v["false_loop"]["ci"]
+            n[f"audit3.{est}.n_hole"], n[f"audit3.{est}.n_free"] = v["sensitivity"]["n"], v["false_loop"]["n"]
+            for b, r in v["false_loop_by_n_bin"].items():
+                n[f"audit3.{est}.fpr_bin{b}"] = r
+        fam = pd.read_csv(_res("exp8_audit3", "synthetic_by_family.csv"))
+        for r in fam.itertuples():                                     # key suffix _b<true b1>: arcs/cones are mixed
+            n[f"audit3.{ESTSHORT.get(r.estimator, r.estimator)}.fam.{r.family}_b{r.true_b1}"] = float(r.loop_rate)
+        n["audit3.mc.flag_pi_q10"], n["audit3.mc.flag_pi_q50"], n["audit3.mc.flag_pi_q90"] = sy["MC_flagged_hole_free_pi1_q10_50_90"]
+        n["audit3.mc.det_pi_q10"], n["audit3.mc.det_pi_q50"], n["audit3.mc.det_pi_q90"] = sy["MC_detected_holes_pi1_q10_50_90"]
+        for lab in ("outlier", "clean"):
+            v = sy["MC_false_loop_by_outlier_flag"][lab]
+            n[f"audit3.mc.fpr_{lab}"], n[f"audit3.mc.fpr_{lab}_n"] = v["rate"], v["n"]
+            n[f"audit3.mc.fpr_{lab}_lo"], n[f"audit3.mc.fpr_{lab}_hi"] = v["ci"]
+        eq = a3["sampler_equivalence"]
+        n["audit3.eq.median_rel"], n["audit3.eq.max_rel"] = eq["median_abs_rel_diff_q95"], eq["max_abs_rel_diff_q95"]
+        n["audit3.eq.ks_frac"], n["audit3.eq.n"] = eq["frac_ks_p_below_005"], len(eq["clouds"])
+        for k, v in a3["cluster"].items():
+            n[f"audit3.{k}.verdict"], n[f"audit3.{k}.fs"] = v["verdict"], v["fs_nearest"]
+            n[f"audit3.{k}.sim_top3"], n[f"audit3.{k}.real_top3"], n[f"audit3.{k}.real_pi"] = (
+                v["sim_top3_nearest"], v["real_top3"], v["real_top_pi1"])
+            for arr, r in v["arrangements"].items():
+                p = f"audit3.{k}.{arr}"
+                n[f"{p}.pass"], n[f"{p}.n_pass"], n[f"{p}.n"] = r["pass"], r["n_pass"], r["n"]
+                n[f"{p}.ci_lo"], n[f"{p}.ci_hi"] = r["ci"]
+                n[f"{p}.pass_max"], n[f"{p}.frac_pi_ge_real"] = r["pass_max_over_cells"], r["frac_pi_ge_real"]
+                n[f"{p}.median_pi"], n[f"{p}.median_means_pi"] = r["median_pi1"], r["median_means_pi1"]
+                n[f"{p}.n_pi_ge_real_all"], n[f"{p}.n_all"] = r["n_pi_ge_real_all_cells"], r["n_all_cells"]
+            n[f"audit3.{k}.holefree_pi_ge_real_all"] = sum(v["arrangements"][a]["n_pi_ge_real_all_cells"] for a in ("cap", "grid"))
+            n[f"audit3.{k}.holefree_n_all"] = sum(v["arrangements"][a]["n_all_cells"] for a in ("cap", "grid"))
+            n[f"audit3.{k}.holefree_pass_max"] = max(v["arrangements"][a]["pass_max_over_cells"] for a in ("cap", "grid"))
+        for d, v in a3["centres"].items():
+            sh = SHORT[d]
+            n[f"audit3.cen.{sh}.pc12"], n[f"audit3.cen.{sh}.pc123"] = v["pc12_alpha_pi"], v["pc123_alpha_pi"]
+            n[f"audit3.cen.{sh}.pc12_last"] = v["pc12_last_step_over_median"]
+            for k in range(2, 7):
+                n[f"audit3.cen.{sh}.own{k}"] = v[f"own_top{k}_rips_pi"]
+            n[f"audit3.cen.{sh}.own36_max"] = max(v[f"own_top{k}_rips_pi"] for k in range(3, 7))
+        tori = a3["tori"]
+        n["audit3.tori.n"] = len(tori)
+        n["audit3.tori.n_above_cut"] = sum(t["born_above_cut"] for t in tori)
+        n["audit3.tori.terms"] = ", ".join(sorted({t["margin_term"] for t in tori}))
+        if tori:
+            n["audit3.tori.pi_min"], n["audit3.tori.pi_max"] = min(t["void_pi"] for t in tori), max(t["void_pi"] for t in tori)
+            n["audit3.tori.birth_over_cut_min"] = min(t["void_birth"] / t["cut"] for t in tori)
+            n["audit3.tori.birth_over_cut_max"] = max(t["void_birth"] / t["cut"] for t in tori)
     # Percent versions of fractions quoted in the README's plain-language section.
     for k in [k for k in list(n) if k.endswith(".loop_freq")] + ["power2.weekdays.loop", "exp1.P.acc", "exp1.Bb.acc",
                                                                  "exp1.well.Ba.acc", "exp1.well.Bb.acc",
                                                                  "audit.power.k7.ring.interp_loop", "audit.power.k7.ring.ci_lo",
                                                                  "audit.power.k7.ring.ci_hi", "audit.stab.grok.matched",
-                                                                 "audit.rgb.freq", "exp1.well.trivial_frac"]:
+                                                                 "audit.rgb.freq", "exp1.well.trivial_frac"] + \
+            [k for k in list(n) if k.startswith("audit3.") and (".fam." in k or k.split(".")[-1] in
+                                                               ("sens", "fpr", "fpr_lo", "fpr_hi", "pass", "ci_hi", "ci_lo",
+                                                                "fpr_bin0", "fpr_bin3", "fpr_outlier", "fpr_clean"))]:
         if isinstance(n.get(k), float):
             n[k + "_pct"] = int(np.floor(100 * n[k] + 0.5))         # half-up, consistent with the 2-digit text
     return n

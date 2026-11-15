@@ -2,34 +2,42 @@
 
 Do concepts that are cyclic in meaning (days, months, colours, residues mod n) occupy a region of activation space with a **hole that the concept goes around**? This repository answers that question with exact topology and persistent homology, for 44 activation and weight clouds from language models and toy networks.
 
-**Status (2026-11-15):** all preregistered topology analyses are done. They use only stored activations; no model inference was run. A second independent audit added post hoc checks and corrected several plain-language claims; no preregistered verdict changed ([reports/exp7_audit.md](reports/exp7_audit.md)). Model steering and simulated steering are preregistered and **postponed by the author**.
+**Status (2026-11-15):** all preregistered topology analyses are done. They use only stored activations; no model inference was run. A second and a third independent audit added post hoc checks and corrected several plain-language claims; no preregistered verdict changed ([reports/exp7_audit.md](reports/exp7_audit.md), [reports/exp8_audit3.md](reports/exp8_audit3.md)). Model steering and simulated steering are preregistered and **postponed by the author**.
 
 **Links:** [paper (PDF)](paper/main.pdf) · [interactive explorer](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/) · [inputs and results on Hugging Face](https://huggingface.co/datasets/BurnyCoder/topology-of-neural-geometry) · [preregistration](reports/preregistration.md) · [summary of all experiments](reports/summary.md)
 
 ## What we found, in plain words
 
 For each concept we ask two questions:
-1. Do its activations form a **ring with a real hole**, rather than a blob that merely looks round, and does that ring run through the concepts (rather than being a small loop inside one concept's cluster of prompts)?
-2. Does walking through the concept in order (Monday → Tuesday → … → Sunday → Monday) **go around that ring exactly once**?
+1. Do its activations form a **loop** that is more persistent than in random Gaussian clouds of the same spread, and does that loop run through the concepts (rather than being a small loop inside one concept's cluster of prompts)?
+2. Does walking through the concept in order (Monday → Tuesday → … → Sunday → Monday) **go around that loop exactly once**?
+
+A loop alone does not prove a hole. The loop test also flags many hole-free shapes, such as curved sheets and caps ([third audit, D9](reports/exp8_audit3.md)). So we call a loop a **ring** only when the concept also goes around it once.
 
 ![Positive and negative examples](docs/figures/fig_examples.png)
 
 *How to read.*
 - **Top:** each concept's activations, flattened to two dimensions and coloured by position in its cycle (years: by value). Green titles are results that came out as hoped, orange titles are partial, black titles are failures.
-- **Bottom:** the persistence of each cloud's most persistent loop, divided by the 95th percentile of the same statistic in random clouds of the same design. Above the dashed line means a significant loop (p < 0.05). A significant loop is not always a ring of the concepts: for days with times it is a small loop inside one day's cluster (grey bar).
-- **A flat picture can mislead.** The weekdays look round here, but in 3D the 7 day centres form no loop (persistence ratio 1.05 for the centres alone; a regular 7-gon gives 1/sin(π/7) ≈ 2.3).
+- **Bottom:** the persistence of each cloud's most persistent loop, divided by the 95th percentile of the same statistic in random Gaussian clouds of the same design. Above the dashed line means a significant loop (p < 0.05).
+  - A significant loop is not always a ring of the concepts: for days with times it is a small loop inside one day's cluster (grey bar).
+  - A significant loop is not by itself a hole either (D9).
+- **A flat picture can mislead.** The weekdays look round here, but the 7 day centres form only a weak loop even in this plane (persistence ratio 1.19, with a large Sunday → Monday gap) and none in 3D (1.05). A regular 7-gon gives 1/sin(π/7) ≈ 2.3.
 
 **What worked**
-- **Colours form a ring that hue goes around once, but the input already has that ring.**
+- **Colours form a ring that hue goes around once, but the stimuli already have that ring.**
   - The model's colour representations form a clear loop: its persistence is 2.1× the null's 95th percentile, and it is found in 100% of 200 random subsamples.
   - Walking through the hues in order (red, yellow, green, blue, purple, back to red) goes around it exactly once. In a check added after the first results, this still holds with 10 dimensions instead of 3.
-  - **Confounder (found in the second audit, D8):** the 900 prompts' own RGB values already form this loop (2.9× the null's 95th percentile, p = 0.001), and the 36 hue means go around it once. The prompts use only fairly saturated colours (saturation ≥ 0.4), which leaves a hole around the grey axis. So the result shows that the model *keeps* the hue circle of its input. It does not show that the model *builds* one.
+  - **Confounder (found in the second audit, D8):** the 900 prompts' own RGB values already form this loop (2.9× the null's 95th percentile, p = 0.001), and the 36 hue means go around it once (measured by their angle in the RGB cloud's first two PCs).
+    - The stimuli were generated with saturation ≥ 0.4, so the stimulus colours surround the grey axis.
+    - The model reads hex codes, not RGB vectors, so its loop is not trivial. But any representation that encodes the colour continuously would have this loop.
+    - So the result shows that the model *keeps* the hue circle of its stimuli. It does not show that the model *builds* a hue circle of its own.
 - **Residues mod 113 behave like a clock with 113 hours.**
   - In a small network trained to add numbers modulo 113, the number embeddings form a loop (1.3× the null's 95th percentile).
-  - The numbers go around it once, ordered not as 0, 1, 2, … but by 20 × number (mod 113). This is the kind of Fourier-frequency order such networks are known to learn ([Nanda et al. 2023](https://arxiv.org/abs/2301.05217)).
+  - The numbers go around it once, ordered not as 0, 1, 2, … but by 20 × number (mod 113). This is the kind of Fourier-frequency order such networks are known to learn ([Nanda et al. 2023](https://arxiv.org/abs/2301.05217)). This traversal, tested against shuffled residues, is the evidence for a ring here; the loop test alone would not be (D9).
   - Caveat: the 3-dimensional view is unstable. The embeddings use 5 Fourier frequencies (20, 21, 3, 15, 31) with similar shares of the variance (0.16–0.22 each), so the top principal components have nearly equal variance and the top-3 view mixes frequencies. This likely explains why the loop shows up in only 26% of subsamples (33% against a threshold matched to the subsample size) and vanishes in 10 dimensions, where the 5 circles combine and no single loop dominates.
-- **Months: a significant loop, with caveats.**
+- **Months: a loop through the month clusters; a ring is suggestive, not shown.**
   - The 12 months form a loop (1.2× the null's 95th percentile, in 90% of subsamples) that runs through the month clusters.
+  - In simulations, evenly spread hole-free arrangements of 12 centres reached the months' loop strength in 0 of 320 replicates (third audit, D9), so a hole-free sheet of month centres is an unlikely explanation.
   - The loop test cannot tell a closed ring from a nearly closed arc, and the December → January step is the largest of the 12 (1.9× the median step).
   - The months go around it in calendar order, but only with an analysis setting we relaxed after seeing the first results, and only in 3 dimensions.
 - **The random-init controls behaved as chance predicts.** One of 3 random-init networks has a loop at p = 0.046, about what the 5% level predicts, and nothing goes around it.
@@ -49,7 +57,10 @@ For each concept we ask two questions:
   - The test bed was 39,000 synthetic shapes with known holes. The pre-committed detector counted the pieces, holes and voids exactly right 62% of the time (averaged over shape families). Reading the count off the fitter's shape label scored 81%. The label comes from a fitter trained on the same 13 synthetic families, so this comparison is in-distribution for the label.
   - On clouds far from any change of topology (ρ_A ≥ 4, a cut chosen after the results), a tuned version of the detector does best: 92% vs 82% for the label. No torus reaches that cut, and 49% of those clouds are blobs, discs or paraboloids, which have no hole.
 
-All statistics behind these sentences are in [Results](#results). The words are chosen to match them: "loop" means p < 0.05 against the design-matched null; "ring" additionally means that the loop runs through the concept clusters, not inside one ([audit, D8](reports/exp7_audit.md)); "goes around once" means winding number ±1 with significant alignment.
+All statistics behind these sentences are in [Results](#results). The words are chosen to match them:
+- "loop" means p < 0.05 against the design-matched Gaussian null, which also rejects many hole-free shapes ([audit, D9](reports/exp8_audit3.md));
+- "ring" additionally means that the loop runs through the concept clusters, not inside one ([audit, D8](reports/exp7_audit.md)), and that the concept goes around it once in the preregistered analysis ("suggestive" if only post hoc);
+- "goes around once" means winding number ±1 with significant alignment.
 
 ## At a glance
 
@@ -66,11 +77,11 @@ All statistics behind these sentences are in [Results](#results). The words are 
   - **Preregistered:** hypotheses, metrics, nulls and decision rules were pushed before any topology was computed ([preregistration](reports/preregistration.md)). All later changes are logged as dated deviations ([deviations](reports/deviations.md)).
   - **Controls:** six ordinal concepts, random-init networks and 20 random processes.
   - **Multiple testing:** Holm correction over the primary tests, Benjamini–Hochberg for exploratory ones.
-  - **Instrument check:** the estimator is validated on 39,000 synthetic clouds with exact ground-truth topology.
+  - **Instrument check:** the preregistered Betti estimator is validated on 39,000 synthetic clouds with exact ground-truth topology. The Monte Carlo loop test used on the real data was scored only on a 3,120-cloud subset, where it flags a loop on 17% of hole-free clouds ([D9](reports/exp8_audit3.md)).
 - **Results.** Positive and negative examples are in plain words above; every statistic, table and figure is in [Results](#results).
 - **Novelty**, as far as our [state-of-the-art review](reports/state-of-the-art-review.md) found:
   - **Exact topology of uniquely parametrised fitted shapes,** compared with persistent homology of the same clouds.
-  - **A preregistered, null-controlled test** that a hole exists *and* that the semantic cycle winds around it once, with design-matched negative controls. Prior work counts Betti numbers without a null ([Moisescu-Pareja et al.](https://arxiv.org/abs/2512.25060); [Tang et al.](https://arxiv.org/abs/2605.06352)), judges loops by eye ([Modell et al.](https://arxiv.org/abs/2505.18235)), or tests centroids of imposed cycles ([David & Fomin](https://arxiv.org/abs/2607.24425)).
+  - **A preregistered, null-controlled test** that a loop exists *and* that the semantic cycle winds around it once, with design-matched negative controls. Prior work counts Betti numbers without a null ([Moisescu-Pareja et al.](https://arxiv.org/abs/2512.25060); [Tang et al.](https://arxiv.org/abs/2605.06352)), judges loops by eye ([Modell et al.](https://arxiv.org/abs/2505.18235)), or tests centroids of imposed cycles ([David & Fomin](https://arxiv.org/abs/2607.24425)).
   - **Validation of a Betti-number estimator** against exact topology on 39,000 synthetic clouds of 13 families.
 - **Features and technologies.**
   - **Pipeline:** one command (`run.py all`), CPU only. Inputs are pinned and hash-verified on Hugging Face, and a clean-room replication passed.
@@ -142,13 +153,16 @@ Each method gives a circle-valued coordinate for the hole (θ_A, θ_B), and both
 | Monte Carlo seed 0 → 1, 2 | loop p: months 0.002 → 0.001, 0.001; residues 0.001 → 0.001, 0.001; weekdays 0.094 → 0.116, 0.122 |
 | 200 subsamples of 80% of the points | loop kept in: colours 1.00, months 0.90, residues 0.26, days_time 0.03 |
 | Subsample threshold matched to the subsample size (audit, D8) | loop kept in: colours 1.00, months 0.93, residues 0.33, days_time 0.07 |
-| Colour activations → the prompts' own RGB values (audit, D8) | top H1 π 5.02 → 8.01 (null q95 2.76, p = 0.001); the 36 hue means wind once around the RGB loop |
+| Loop test on synthetic clouds of known topology (audit, D9) | the design-(b) Gaussian null detects 0.84 of true holes, but also flags 0.17 of hole-free clouds (spheres and caps 0.73, paraboloids 0.37, helices 0.20; blobs, its own model, 0.06) |
+| Cluster-centre null on hole-free concept centres (audit, D9) | at the real variance structure, rings pass 5/40 and hole-free caps 4/40 (12 clusters), so the result is undetermined; hole-free caps and lattices pass at most 0.100 in any cell, rings up to 1.00 |
+| Colour activations → the prompts' own RGB values (audit, D8) | top H1 π 5.02 → 8.01 (null q95 2.76, p = 0.001); the 36 hue means wind once around the RGB loop (angle in PC1–PC2) |
 | Noise scale ν of Method A: main → median term only → doubled coverage term | resolvable fits: 27 → 41 → 24 of 44 |
 | DREiMac `standard_range` True → False (post hoc, D5) | months: no coordinate → winding 1 (R = 0.72); days_time: no coordinate → winding 0 |
 | Synthetic clouds with vs without outliers (D7) | P's false holes: 0.031 → 0.065; DTM filtration not required (threshold 0.10); outlier-proxy factor 4 and 8 instead of 6: 0.050–0.074 |
 
 **Better or worse, in plain words.**
 - **Test sets vs controls:**
+  - A loop test pass is not by itself a hole: the Gaussian nulls also reject many hole-free shapes (D9). The ring claims rest on the traversal (colours, residues), and the months' traversal is post hoc.
   - Colours pass every step except the preregistered top-10 check, which they pass only post hoc.
   - Residues and months have loops, and the concept goes around them, but only residues do so in the preregistered setting, and both lose the loop in the top-10 PCs.
   - No ordinal concept and no random process has a top-3 loop, but as open curves they were never near the threshold. One random-init network has a borderline loop (p = 0.046), but nothing goes around it.
@@ -157,8 +171,9 @@ Each method gives a circle-valued coordinate for the hole (θ_A, θ_B), and both
 - **Method vs baselines (synthetic):**
   - The preregistered estimator P is **worse** than both the fixed-threshold baseline (Ba) and the family label (Bb), overall and on well-resolved clouds.
   - The family label (Bb) is the most accurate estimator overall. On well-resolved clouds, the tuned persistence baseline Ba is the most accurate: 0.923 [0.915, 0.931] vs 0.820 [0.812, 0.829] for the label.
-  - Persistent homology (Ba) is **better** than the family label exactly where the label cannot fix the topology: arcs, open or closed (0.79 vs 0.58), and spheres, cap or full (0.76 vs 0.61).
-  - It is **worse** on thin loops (ellipses 0.51 vs 0.99) and tori (0.11 vs 1.00).
+  - Persistent homology (Ba) is **better** than the family label where the label cannot fix the topology: arcs, open or closed (0.79 vs 0.58), and spheres, cap or full (0.76 vs 0.61). It is also better on polytopes (0.50 vs 0.35).
+  - It is **worse** on thin loops (ellipses 0.51 vs 0.99), cones (0.53 vs 0.94), tori (0.11 vs 1.00) and helices (0.86 vs 0.99).
+  - The preregistered P rarely finds a true hole: it detects 0.16 of them (false loops 0.02). The Monte Carlo loop test used on the real data detects 0.84, but also flags 0.17 of hole-free clouds (D9).
   - Every estimator scores above the majority-vector control.
 - **Ablations:**
   - Switching the complex from alpha to Rips changes little.
@@ -178,7 +193,7 @@ Each method gives a circle-valued coordinate for the hole (θ_A, θ_B), and both
 
 *The loop test against its null, dataset by dataset.*
 - **How to read:**
-  - Grey: the largest H1 ratio in each of 999 surrogate clouds with the same design but no planted loop. Prompt-template sets use a cluster-centre null; the others use a full-dimensional matched Gaussian.
+  - Grey: the largest H1 ratio in each of 999 Gaussian surrogate clouds with the same design. Prompt-template sets use a cluster-centre null; the others use a full-dimensional matched Gaussian. Being beyond this null means "more persistent than a Gaussian of the same spread", not necessarily a hole (D9).
   - Dashed: the null's 95th percentile. Solid: the observed value.
 - **Results:**
   - Colours, residues, months and days_time lie beyond the null. The days_time loop is a small loop inside one day's cluster, not a ring of days (audit, D8).
@@ -222,7 +237,7 @@ The per-dataset findings, with every statistic, are in [reports/findings_per_dat
   - for rings only, the fraction that pass the full preregistered conjunction (dashed).
   - The dotted line marks the real weekdays and months.
 - **Results:**
-  - In the simulated cell closest to the weekdays' variance (top-3 share 0.646 vs the real 0.659), a ring passes the loop test in 0.15 of 40 replicates (exact 95% CI 0.06–0.30; 0.21 interpolated to the real share). The simulated clusters are tighter than the real ones, and the real day centres show no loop at all, so low power is not the only explanation for the weekdays. Random placements pass at most 0.07, close to the nominal 5%. The full conjunction passes in at most 0.00, because the circular-coordinate step rarely builds a coordinate on such small loops.
+  - In the simulated cell closest to the weekdays' variance (top-3 share 0.646 vs the real 0.659), a ring passes the loop test in 6 of 40 replicates (0.15; exact 95% CI 0.06–0.30; 0.21 interpolated to the real share). The simulated clusters are tighter than the real ones, and the real day centres show no loop at all, so low power is not the only explanation for the weekdays. Random placements pass at most 0.075, close to the nominal 5%. The full conjunction passes in at most 0.00, because the circular-coordinate step rarely builds a coordinate on such small loops.
   - **The loop test alone cannot tell a ring from a nearly closed arc.** With 7 clusters, an open 300° arc (50° steps and a 60° gap) is almost a ring and passes as often as one. With 12 clusters (a gap of 2.2 steps) the ring passes more often, but the arc still passes often. Only the traversal conditions separate them.
 
 ### Method A: exact topology of the 44 fitted shapes (Exp0)
@@ -311,7 +326,8 @@ Full design decisions: [docs/methodology.md](docs/methodology.md). Exact topolog
   - **Instrument validity (H5):** synthetic accuracy against baselines, with cluster-bootstrap CIs.
   - Exploratory tests use Benjamini–Hochberg.
   - **Second audit (post hoc, D8):** a colour stimulus baseline, where each top loop lives relative to the concept clusters, the preregistered closure ratio, PCA eigenvalue gaps, size-matched subsample stability, and CIs for the power simulation ([reports/exp7_audit.md](reports/exp7_audit.md)).
-- **Preregistration and deviations:** the [preregistration](reports/preregistration.md) has a power addendum (A1) and a steering amendment (A2). Every later change is logged with its date and whether it was decided before or after the results ([deviations D1–D8, P1–P2](reports/deviations.md)).
+  - **Third audit (post hoc, D9):** whether the loop test is specific to holes. It covers the sensitivity and false-loop rate of every synthetic estimator, the cluster-centre null on hole-free arrangements of concept centres, centre loops in other projections, and the dense-check tori ([reports/exp8_audit3.md](reports/exp8_audit3.md)).
+- **Preregistration and deviations:** the [preregistration](reports/preregistration.md) has a power addendum (A1) and a steering amendment (A2). Every later change is logged with its date and whether it was decided before or after the results ([deviations D1–D9, P1–P2](reports/deviations.md)).
 
 ## Architecture (graph)
 
@@ -351,6 +367,7 @@ run.py <phase>
   exp4         bottleneck distances between clouds and ideal templates
   exp5         robustness: Rips vs alpha, top-k PCs (with matched null), full-D cosine, offset removal, seeds, noise scale
   audit        post hoc checks of the second audit (D8): colour RGB baseline, loop localisation, closure ratio, PCA gaps, stability
+  audit3       post hoc checks of the third audit (D9): is the loop test specific to holes? (synthetic rates, cluster null, tori)
   report       regenerate every table, figure and number in README / reports / paper from results/
   site         GitHub Pages explorer (docs/index.html)
   all          everything above, CPU only (about 1.5 h on 16 cores)
@@ -438,7 +455,8 @@ uv, Python 3.11, NumPy, SciPy, scikit-learn, pandas, [GUDHI](https://gudhi.inria
 - A distance for comparing clouds that is not dominated by absolute scale (Exp4 was uninformative), for example bottleneck distance in log-π coordinates.
 - Torus and thin-loop detection: the synthetic accuracy for tori is near zero at these sample sizes.
 - Optional Exp0b: refit the synthetic clouds with the published source checkpoint, to score Method A on fitted rather than ground-truth parameters (needs model inference).
-- A clean-room replication run that includes the `exp1outliers` and `audit` phases.
+- A clean-room replication run that includes the `exp1outliers`, `audit` and `audit3` phases.
+- **A hole-specific loop test** (D9). The Gaussian nulls also reject hole-free sheets and caps. A null drawn from hole-free shapes fitted to each cloud (for example, the best hole-free family of the source fitter, resampled at the cloud's noise) would test for a hole rather than for non-Gaussian structure.
 - **Colour controls that need model inference** (postponed): a random-init Llama on the same 900 prompts, and colour prompts by name instead of hex code, to separate the model's hue code from the hue circle of the input.
 
 ## License

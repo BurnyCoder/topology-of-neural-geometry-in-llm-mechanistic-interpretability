@@ -26,7 +26,7 @@ The source fits each cloud with a uniquely parametrised shape. What is the exact
   - residues: R = 0.976, winding -1.
 - **Not specific:** 8 of 8 Gaussian-process controls fitted as helices also wind (R = 0.86–0.98), with closure gaps of 0.33–2.20 ([fig_exp0_helix](../docs/figures/fig_exp0_helix.png)).
 - **Colours (exploratory):** the cone frustum's azimuth aligns with hue (R = 0.984, winding 1). **Years:** the frustum's azimuth does not wind (winding 0).
-- **Numerical check:** agreement 0.970 over 234 shapes; 0.987 where the margin exceeds 4 sample spacings. The failures are apex cones whose 0.001-unit opening is below sampling resolution, and tori whose void needs more samples.
+- **Numerical check:** agreement 0.970 over 234 shapes; 0.987 where the margin exceeds 4 sample spacings. The failures are apex cones whose 0.001-unit opening is below sampling resolution, and tori whose void needs more samples: their voids are born below the counting cut, but their persistence ratio (3.4–3.7) stays below the threshold of 4 (checked in the third audit, D9).
 - **Synthetic ground truth:** 0.772 of the 39,000 test clouds have resolvable topology.
 
 <!-- BEGIN:exp0_topology -->

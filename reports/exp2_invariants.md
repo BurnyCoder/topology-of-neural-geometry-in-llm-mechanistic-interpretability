@@ -91,9 +91,10 @@ Grey: Monte Carlo null distribution of the largest H1 persistence ratio (999 des
 ## Interpretation
 
 - Topology detects loops through the concept clusters in three cyclic sets (hue, residues mod 113, months). The days_time loop lies inside one day's cluster. Topology detects no loop in weekdays, ordinal concepts or random-process controls, and a borderline one in the random-init grokking embedding.
-- **The hue loop is in the input.** The colour prompts' own RGB values have an even more persistent loop (π = 8.01 vs null 2.76, p = 0.001; [exp7_audit.md](exp7_audit.md)).
+- **The hue loop is in the stimuli.** The colour prompts' own RGB values have the loop too (π = 8.01 vs null 2.76, p = 0.001; [exp7_audit.md](exp7_audit.md)). The model reads hex codes, so its loop is not trivial, but any continuous encoding of the stimulus colour would have it.
 - **A loop is not traversal.** The days_time loop is not a ring of days at all. The residue loop is unstable under subsampling (stability 0.26; 0.33 against a size-matched threshold), most likely because its top PCA eigenvalues are nearly equal (0.099 vs 0.096 for the 3rd and 4th), so subsamples rotate the top-3 view.
 - **Weekdays are the exception.** The 7 day centres form no loop in the top-3 PCs, and the most persistent loop of the cloud lies inside one cluster. For 7 evenly spaced tight clusters the ratio of the polygon's loop is 1/sin(π/7) ≈ 2.3, so the loop test has limited power at 7 clusters, but here there is no polygon loop to detect.
+- **A loop is not a hole (third audit, D9).** Both nulls are Gaussian, so a significant loop means "more persistent than a covariance-matched Gaussian". On synthetic clouds of known topology, the design-(b) null flags loops on 0.17 of hole-free clouds (spheres and caps 0.73, paraboloids 0.37). Hole claims need independent evidence: the traversal, the localisation, and the concept centres alone ([exp8_audit3.md](exp8_audit3.md)).
 - **Caveats:** two random-init or toy controls cross the 5% line, consistent with the nominal error rate over this many tests. The days_time loop is unstable under subsampling. For prompt-template designs, the maximum-π statistic does not say *where* a loop lives; the audit's localisation check (D8) is needed to tell a ring of concepts from a loop inside one cluster.
 
 ## Learnings

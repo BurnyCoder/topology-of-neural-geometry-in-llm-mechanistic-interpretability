@@ -44,6 +44,23 @@ How well do persistent-homology estimators recover the exact topology of noisy p
   - Paired P − Bb: -0.070 [-0.084, -0.056]. P − Ba: -0.172 [-0.184, -0.160].
   - Micro-averaged accuracies in the top ρ_A bin, used in an earlier version of the text: P 0.87, Ba 0.94, Bb 0.86.
 - **False positives** (any hole on resolvable contractible shapes): 0.019–0.054 per N-bin for P.
+- **Loop detection, not only exact vectors (third audit, D9; post hoc).** Exact-vector accuracy mixes b0, b1 and b2. The question the real data ask is narrower: does the estimator find a loop when there is one, and stay silent when there is none? Shown below is the fraction of resolvable clouds with at least one significant H1 bar, with cluster-bootstrap 95% CIs ([exp8_audit3.md](exp8_audit3.md)).
+
+  | Estimator | true holes detected (b1 ≥ 1) | false loops (b1 = 0) |
+  |---|---|---|
+  | P (all resolvable) | 0.162 [0.132, 0.194] (n = 5342) | 0.019 [0.015, 0.023] (n = 24772) |
+  | S (all resolvable) | 0.452 [0.415, 0.491] | 0.038 [0.032, 0.043] |
+  | Ba (all resolvable) | 0.566 [0.524, 0.609] | 0.016 [0.013, 0.018] |
+  | MC (3,120-cloud subset) | 0.845 [0.774, 0.909] (n = 445) | 0.174 [0.126, 0.225] (n = 1982) |
+
+  - **P is conservative.** It finds 0.00 of cone holes, 0.00 of tori and 0.29 of ellipses (subset).
+  - **MC is not specific to holes.** It is the design-(b) null of the real data in 3D: a matched Gaussian, with the same distribution as the real-data sampler on rank-3 clouds (median q95 difference 0.012). It flags loops on hole-free clouds by family as follows:
+    - blobs 0.06 (its own model, so calibrated), lines 0.04, open curves 0.00, open arcs 0.08;
+    - polytopes 0.10, discs 0.19, helices 0.20;
+    - paraboloids 0.37, spheres and caps 0.73.
+  - The false-loop rate grows with N, from 0.11 in the smallest N bin to 0.26 in the largest. It is not caused by outliers: 0.21 with outliers vs 0.16 without.
+  - The flagged hole-free clouds have top π 1.39–2.81 (10th–90th percentile; median 2.17). True holes that MC detects have 2.01–9.87.
+  - Why: a Gaussian null fixes the covariance, not the intrinsic dimension. Noise cycles on a 2D surface live longer than in a 3D blob of the same spread. The largest multiplicative persistence of noise cycles grows with the number of points, with constants that depend on dimension ([Bobrowski, Kahle & Skraba 2017](https://doi.org/10.1214/16-AAP1232)). This is consistent with the rise with N; the theorem is for uniform samples, so it explains the pattern rather than proving it here.
 - **Outlier clouds and the preregistered DTM conditional (deviation D7).**
   - The source generator replaces random points by uniform draws from the padded bounding box but does not record which ones. The proxy was fixed before computing: an "outlier cloud" has at least one point farther than 6 × its median distance from the ground-truth shape. That covers 0.193 of all test clouds.
   - False-positive rate on resolvable contractible clouds (95% cluster-bootstrap CI):

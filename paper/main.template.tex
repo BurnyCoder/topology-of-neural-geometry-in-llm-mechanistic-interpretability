@@ -21,16 +21,16 @@ We study the 44 top-3-PCA activation and weight clouds of a sibling shape-fittin
 
 Results per dataset:
 \begin{itemize}
-  \item \textbf{Colour hue:} a robust hole ($p={{exp2.colors.p_top_loop}}$, 999 null draws). Hue winds once around it, also in the top-10 PCs (post hoc), where ordinal concepts have loops too but do not wind. A post hoc audit finds the same hole, with hue winding once, in the colour prompts' own RGB values ($\pi={{audit.rgb.pi:2}}$, $p={{audit.rgb.p}}$): the prompts avoid greys. The model preserves the input's hue circle; this does not show that it constructs one.
-  \item \textbf{Residues mod 113:} a hole ($p={{exp2.grok.p_top_loop}}$) that the residues wind once around. The top-3 view is unstable under subsampling, most likely because the embeddings spread their variance almost evenly over 5 Fourier frequencies (nearly equal top PCA eigenvalues), and it fails the preregistered top-10-PC check.
-  \item \textbf{Months:} a loop through the month clusters ($p={{exp2.months.p_top_loop}}$); a closed ring cannot be told from a nearly closed arc. The months go around it only in a post hoc analysis, and only in the top-3 PCs.
+  \item \textbf{Colour hue:} a robust loop ($p={{exp2.colors.p_top_loop}}$, 999 null draws), far beyond what the null gives hole-free shapes. Hue winds once around it, also in the top-10 PCs (post hoc), where ordinal concepts have loops too but do not wind. A post hoc audit finds the same loop, with hue winding once, in the colour prompts' own RGB values ($\pi={{audit.rgb.pi:2}}$, $p={{audit.rgb.p}}$): the prompts avoid greys. The model reads hex codes, so its loop is not trivial, but it preserves the stimuli's hue circle; this does not show that it constructs a hue circle of its own.
+  \item \textbf{Residues mod 113:} a loop ($p={{exp2.grok.p_top_loop}}$) that the residues wind once around; the winding, not the loop test, is the evidence for a ring. The top-3 view is unstable under subsampling, most likely because the embeddings spread their variance almost evenly over 5 Fourier frequencies (nearly equal top PCA eigenvalues), and it fails the preregistered top-10-PC check.
+  \item \textbf{Months:} a loop through the month clusters ($p={{exp2.months.p_top_loop}}$). Simulated hole-free arrangements of the centres do not reach its strength, but a closed ring cannot be told from a nearly closed arc. The months go around it only in a post hoc analysis, and only in the top-3 PCs, so a ring is suggestive.
   \item \textbf{Days with times:} no ring of days. The only significant loop is small, lies inside one day's cluster, and is unstable.
   \item \textbf{Weekdays:} no ring of days. The 7 day centres form no loop in the top-3 PCs, and the cloud's most persistent loop ($p={{exp2.weekdays.p_top_loop}}$) lies inside one day's cluster. The loop test is also weak at 7 clusters. The days are ordered around their fitted helix's axis, but random smooth processes show the same ordering.
-  \item \textbf{Ordinal concepts and 20 random-process controls:} no holes in the top-3 PCs, but as open curves they never approach the Gaussian null's threshold. Ordinal concepts gain loops in 10 PCs, but their values do not wind around them.
+  \item \textbf{Ordinal concepts and 20 random-process controls:} no loops in the top-3 PCs, but as open curves they never approach the Gaussian null's threshold. Ordinal concepts gain loops in 10 PCs, but their values do not wind around them.
 \end{itemize}
 Whether the fitter's ``helices'' for cyclic concepts are open or closed is unresolvable at the data's noise scale ($\rho_A \approx {{exp0.weekdays.rho:2}}$). Months come closest to closing.
 
-The strict preregistered conjunctions pass for none of the three primary cyclic sets: {{exp3.H1A}}/3 by fitted-shape topology and {{exp3.H1B}}/3 by persistent homology. Specificity holds, but it is weakly informative, because sensitivity is zero.
+The strict preregistered conjunctions pass for none of the three primary cyclic sets: {{exp3.H1A}}/3 by fitted-shape topology and {{exp3.H1B}}/3 by persistent homology. Specificity holds, but it is weakly informative, because sensitivity is zero. A post hoc audit finds that the Gaussian Monte Carlo null behind the loop test also rejects many hole-free shapes (false loops on {{audit3.mc.fpr:2}} of hole-free synthetic clouds, {{audit3.mc.fam.sphere_b0:2}} of spheres and caps). A significant loop is therefore evidence of non-Gaussian structure, and the ring claims rest on the traversal tests.
 
 On 39{,}000 synthetic clouds with exact ground-truth topology, the preregistered estimator recovers the exact Betti vector for {{exp1.P.acc:3}} of resolvable clouds (macro). A fixed threshold scores {{exp1.Ba.acc:3}} and the fitter's family label {{exp1.Bb.acc:3}}. Persistence beats the label only where the label is topologically ambiguous (open vs closed arcs, caps vs spheres).
 Steering experiments are preregistered and postponed.
@@ -114,6 +114,8 @@ A bar is significant if its persistence ratio $\pi = \text{death}/\text{birth}$ 
   \item Prompt-template designs use a cluster-centre null: concept means are redrawn from a Gaussian matched to the covariance of the means, and within-concept residuals are kept.
   \item One-point-per-value designs use a full-dimensional matched Gaussian.
 \end{itemize}
+Both nulls are Gaussian. A significant loop therefore means ``more persistent than a covariance-matched Gaussian'', which is not the same as ``a hole'' (Section~
+ef{sec:specificity}).
 
 \paragraph{Travel around the hole.} The hole coordinate $\theta$ is either the fitted shape's azimuth ($\theta_A$) or DREiMac's circular coordinate of the most persistent class ($\theta_B$; prime 47, at most 200 landmarks, \texttt{standard\_range}).
 \begin{itemize}
@@ -123,7 +125,7 @@ A bar is significant if its persistence ratio $\pi = \text{death}/\text{birth}$ 
   \item For residues, the maximum over Fourier frequencies $k$.
 \end{itemize}
 
-\paragraph{Preregistration.} The hypotheses, nulls and decision rules were pushed before any topology was computed. Amendment A2, which makes steering the primary hypothesis, was pushed before any persistent homology of real data. Deviations D1--D7 are logged with dates.
+\paragraph{Preregistration.} The hypotheses, nulls and decision rules were pushed before any topology was computed. Amendment A2, which makes steering the primary hypothesis, was pushed before any persistent homology of real data. Deviations D1--D9 are logged with dates.
 
 \section{Results}
 
@@ -131,9 +133,9 @@ A bar is significant if its persistence ratio $\pi = \text{death}/\text{birth}$ 
 Table~\ref{tab:exp1} reports the results. The preregistered estimator (alpha + universal null) is calibrated but conservative.
 \begin{itemize}
   \item It is worse than a validation-tuned fixed threshold and than the family-implied baseline. The paired difference vs the family label is {{exp1.diff.Bb:3}} [{{exp1.diff.Bb.lo:3}}, {{exp1.diff.Bb.hi:3}}].
-  \item Persistent homology is better exactly where the family label is topologically ambiguous: open vs closed arcs ({{exp1.Ba.arc:2}} vs {{exp1.Bb.arc:2}}) and caps vs full spheres ({{exp1.Ba.sphere:2}} vs {{exp1.Bb.sphere:2}}).
+  \item Persistent homology (Ba) is better where the family label is topologically ambiguous: open vs closed arcs ({{exp1.Ba.arc:2}} vs {{exp1.Bb.arc:2}}) and caps vs full spheres ({{exp1.Ba.sphere:2}} vs {{exp1.Bb.sphere:2}}). It is also better on polytopes ({{exp1.Ba.polytope:2}} vs {{exp1.Bb.polytope:2}}), and worse on ellipses, cones, tori and helices ({{exp1.Ba.ellipse:2}}, {{exp1.Ba.cone:2}}, {{exp1.Ba.torus:2}}, {{exp1.Ba.helix:2}} vs {{exp1.Bb.ellipse:2}}, {{exp1.Bb.cone:2}}, {{exp1.Bb.torus:2}}, {{exp1.Bb.helix:2}}).
   \item On clouds far from a topology change ($\rho_A \ge 4$, post hoc; {{exp1.well.n}} clouds, no tori, a fraction {{exp1.well.trivial_frac:2}} of hole-free blobs, discs and paraboloids) the preregistered estimator scores {{exp1.well.P.acc:3}} [{{exp1.well.P.lo:3}}, {{exp1.well.P.hi:3}}] against {{exp1.well.Bb.acc:3}} for the family label (Fig.~\ref{fig:rho}).
-  \item Tori and thin ellipses are its weak points.
+  \item It rarely finds a true hole: it detects {{audit3.P.sens:2}} of resolvable clouds with $b_1 \ge 1$ (false loops {{audit3.P.fpr:3}}), and {{audit3.P.fam.cone_b1:2}} of cone holes.
   \item The family label comes from a fitter trained on the same 13-family generator, so the comparison is in-distribution for the label.
   \item Outlier clouds (deviation D7: a point farther than {{exp1.out.factor:0}} median distances from the true shape) raise its false-positive rate on contractible shapes from {{exp1.out.P.clean:3}} to {{exp1.out.P.outlier:3}} [{{exp1.out.P.outlier.lo:3}}, {{exp1.out.P.outlier.hi:3}}]. This is below the preregistered {{exp1.out.thr:2}} threshold, so the DTM-filtration ablation was {{exp1.out.dtm}}.
 \end{itemize}
@@ -195,7 +197,20 @@ Table~\ref{tab:real} and Figs.~\ref{fig:gallery}--\ref{fig:power} summarise the 
     \item random-init controls with a winding record: {{exp3ph.init_wind1_ids}}.
   \end{itemize}
   \item In a top-10-PC loop test with a matched null (post hoc), significant loops are found for {{exp5.top10.sig_ids}}. In 10D, loops are therefore not specific to cyclic concepts; only colours combine a loop with a single winding there.
-  \item In a corrected power simulation (post hoc), a weekday-like ring of 7 clusters passes the loop test in {{audit.power.k7.ring.nearest_loop:2}} of 40 replicates (exact 95\% CI {{audit.power.k7.ring.ci_lo:2}}--{{audit.power.k7.ring.ci_hi:2}}), and a month-like ring in {{power2.months.loop:2}}. The simulated clusters are tighter than the real ones. The full preregistered conjunction passes cluster rings in at most {{power2.months.ring_all_max:2}} of replicates, so H1-B was nearly untestable for weekdays and months.
+  \item In a corrected power simulation (post hoc), a weekday-like ring of 7 clusters passes the loop test in {{audit.power.k7.ring.nearest_count}} of 40 replicates (exact 95\% CI {{audit.power.k7.ring.ci_lo:2}}--{{audit.power.k7.ring.ci_hi:2}}), and a month-like ring in {{power2.months.loop:2}}. The simulated clusters are tighter than the real ones. The full preregistered conjunction passes cluster rings in at most {{power2.months.ring_all_max:2}} of replicates, so H1-B was nearly untestable for weekdays and months.
+\end{itemize}
+
+\subsection{Is the loop test specific to holes? (post hoc, deviation D9)}\label{sec:specificity}
+Both Monte Carlo nulls are Gaussian. They match the covariance, not the intrinsic dimension or the shape.
+\begin{itemize}
+  \item On the 3{,}120-cloud synthetic subset, Exp1 had run the design-(b) null in 3D. On rank-3 clouds this is the same distribution as the real-data sampler (median $|q_{95}$ ratio$-1|={{audit3.eq.median_rel:3}}$).
+  \item It detects {{audit3.mc.sens:2}} [{{audit3.mc.sens_lo:2}}, {{audit3.mc.sens_hi:2}}] of true holes. But it flags {{audit3.mc.fpr:3}} [{{audit3.mc.fpr_lo:3}}, {{audit3.mc.fpr_hi:3}}] of resolvable hole-free clouds: spheres and caps {{audit3.mc.fam.sphere_b0:2}}, paraboloids {{audit3.mc.fam.paraboloid_b0:2}}, helices {{audit3.mc.fam.helix_b0:2}}, discs {{audit3.mc.fam.disc_b0:2}}, but open arcs only {{audit3.mc.fam.arc_b0:2}} and blobs, its own model, {{audit3.mc.fam.blob_b0:2}}.
+  \item The rate rises with $N$ ({{audit3.mc.fpr_bin0:2}} to {{audit3.mc.fpr_bin3:2}}) and is not caused by outliers. This is consistent with the dimension-dependent growth of maximal noise persistence~\citep{bobrowski2017maximally}.
+  \item The flagged hole-free clouds have top $\pi$ of {{audit3.mc.flag_pi_q10:2}}--{{audit3.mc.flag_pi_q90:2}} (10th--90th percentile), which covers the residue, days-with-times and month loops. Only colours ($\pi={{exp2.colors.top_pi1:2}}$) is far above.
+  \item The cluster-centre null (design a) was simulated on hole-free arrangements of concept centres (a hemisphere cap, a planar lattice), next to rings, open arcs and Gaussian centres. At the real variance structure even rings rarely pass ({{audit3.k12.ring.n_pass}}/40 for 12 clusters), so the pre-specified verdict is ``{{audit3.k12.verdict}}''. Across cells, caps and lattices pass at most {{audit3.k12.holefree_pass_max:3}}, whereas rings and open arcs pass in up to {{audit3.k12.ring.pass_max:2}}.
+  \item No cap or lattice replicate reached the months' $\pi$ ({{audit3.k12.holefree_pi_ge_real_all}} of {{audit3.k12.holefree_n_all}}).
+  \item Consequence: a loop alone is not a hole. The colour and residue rings rest on the traversal tests, whose null shuffles concept labels over a fixed coordinate. The months' ring is suggestive.
+  \item The preregistered estimator P, validated in Table~\ref{tab:exp1}, detects few true holes ({{audit3.P.sens:2}}). It is not the test used on the real data.
 \end{itemize}
 
 \begin{table}[t]\centering\small
@@ -223,8 +238,8 @@ GPT-2 positions & {{exp2.wpos.top_pi1:2}} & {{exp2.wpos.null_q95_pi1:2}} & {{exp
 
 \paragraph{Answering the question.}
 \begin{itemize}
-  \item Topology finds a hole that the concept goes around for colour hue, robustly, and for residues mod 113. The colour hole is already present in the stimuli's RGB values.
-  \item For months there is a loop through the month clusters, and the months go around it, but only post hoc and only in the top-3 PCs.
+  \item Topology finds a loop that the concept goes around for colour hue, robustly, and for residues mod 113. The colour loop is already present in the stimuli's RGB values.
+  \item For months there is a loop through the month clusters, and the months go around it, but only post hoc and only in the top-3 PCs. A ring is suggestive.
   \item There is no ring of days for weekdays or days-with-times: the most persistent loop of each lies inside one day's cluster.
   \item There are no holes for ordinal concepts or random controls, but as open curves they were never at risk under this null. Because the strict tests never fired for a cyclic set either, this is weak evidence of specificity.
   \item The fitter's helices for cyclic concepts cannot be told apart from closed loops at this noise level.
@@ -242,12 +257,13 @@ GPT-2 positions & {{exp2.wpos.top_pi1:2}} & {{exp2.wpos.null_q95_pi1:2}} & {{exp
   \item Exp4 bottleneck similarity was uninformative.
   \item The preregistered power simulation was misspecified (corrected post hoc, deviation D6).
   \item The alignment permutation $p$ measures ordering, not looping; only the winding number carries the cyclic claim.
+  \item The loop test's nulls are Gaussian: a significant loop means non-Gaussian structure, which hole-free surfaces, caps and helices also have, as do nearly closed arcs of cluster centres (Section~\ref{sec:specificity}). A hole-specific null, resampling hole-free fitted shapes at the cloud's noise, is future work.
   \item Synthetic accuracy for tori is near zero at these sample sizes.
   \item No causal evidence yet.
 \end{itemize}
 
 \section{Conclusion}
-Persistent homology finds holes that the concept travels around for colour hue (robustly, but inherited from the stimuli), residues mod 113 and, post hoc, months. It finds none for ordinal concepts or random controls, and no ring of days for weekdays or days-with-times. Fitted ``helices'' for cyclic concepts are not resolvable as open curves. Steering around the detected loops is the next, preregistered experiment.
+Persistent homology finds loops that the concept travels around for colour hue (robustly, but inherited from the stimuli), residues mod 113 and, post hoc, months. The loop test alone does not establish a hole; the traversal does. It finds none for ordinal concepts or random controls, and no ring of days for weekdays or days-with-times. Fitted ``helices'' for cyclic concepts are not resolvable as open curves. Steering around the detected loops is the next, preregistered experiment.
 
 \paragraph{Reproducibility.} Code: \url{https://github.com/BurnyCoder/topology-of-neural-geometry-in-llm-mechanistic-interpretability}. Inputs and results (pinned, SHA-256-verified): \url{https://huggingface.co/datasets/BurnyCoder/topology-of-neural-geometry}. Running \texttt{uv run python run.py all} recomputes every number on a CPU.
 
