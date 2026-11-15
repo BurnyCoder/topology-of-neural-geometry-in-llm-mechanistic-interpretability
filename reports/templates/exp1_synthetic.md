@@ -44,6 +44,23 @@ How well do persistent-homology estimators recover the exact topology of noisy p
   - Paired P − Bb: {{exp1.well.diff.Bb:3}} [{{exp1.well.diff.Bb.lo:3}}, {{exp1.well.diff.Bb.hi:3}}]. P − Ba: {{exp1.well.diff.Ba:3}} [{{exp1.well.diff.Ba.lo:3}}, {{exp1.well.diff.Ba.hi:3}}].
   - Micro-averaged accuracies in the top ρ_A bin, used in an earlier version of the text: P {{exp1.rho4.P:2}}, Ba {{exp1.rho4.Ba:2}}, Bb {{exp1.rho4.Bb:2}}.
 - **False positives** (any hole on resolvable contractible shapes): {{exp1.P.fpr_min:3}}–{{exp1.P.fpr_max:3}} per N-bin for P.
+- **Loop detection, not only exact vectors (third audit, D9; post hoc).** Exact-vector accuracy mixes b0, b1 and b2. The question the real data ask is narrower: does the estimator find a loop when there is one, and stay silent when there is none? Shown below is the fraction of resolvable clouds with at least one significant H1 bar, with cluster-bootstrap 95% CIs ([exp8_audit3.md](exp8_audit3.md)).
+
+  | Estimator | true holes detected (b1 ≥ 1) | false loops (b1 = 0) |
+  |---|---|---|
+  | P (all resolvable) | {{audit3.P.sens:3}} [{{audit3.P.sens_lo:3}}, {{audit3.P.sens_hi:3}}] (n = {{audit3.P.n_hole}}) | {{audit3.P.fpr:3}} [{{audit3.P.fpr_lo:3}}, {{audit3.P.fpr_hi:3}}] (n = {{audit3.P.n_free}}) |
+  | S (all resolvable) | {{audit3.S.sens:3}} [{{audit3.S.sens_lo:3}}, {{audit3.S.sens_hi:3}}] | {{audit3.S.fpr:3}} [{{audit3.S.fpr_lo:3}}, {{audit3.S.fpr_hi:3}}] |
+  | Ba (all resolvable) | {{audit3.Ba.sens:3}} [{{audit3.Ba.sens_lo:3}}, {{audit3.Ba.sens_hi:3}}] | {{audit3.Ba.fpr:3}} [{{audit3.Ba.fpr_lo:3}}, {{audit3.Ba.fpr_hi:3}}] |
+  | MC (3,120-cloud subset) | {{audit3.mc.sens:3}} [{{audit3.mc.sens_lo:3}}, {{audit3.mc.sens_hi:3}}] (n = {{audit3.mc.n_hole}}) | {{audit3.mc.fpr:3}} [{{audit3.mc.fpr_lo:3}}, {{audit3.mc.fpr_hi:3}}] (n = {{audit3.mc.n_free}}) |
+
+  - **P is conservative.** It finds {{audit3.P.fam.cone_b1:2}} of cone holes, {{audit3.P.fam.torus_b2:2}} of tori and {{audit3.P.fam.ellipse_b1:2}} of ellipses (subset).
+  - **MC is not specific to holes.** It is the design-(b) null of the real data in 3D: a matched Gaussian, with the same distribution as the real-data sampler on rank-3 clouds (median q95 difference {{audit3.eq.median_rel:3}}). It flags loops on hole-free clouds by family as follows:
+    - blobs {{audit3.mc.fam.blob_b0:2}} (its own model, so calibrated), lines {{audit3.mc.fam.line_b0:2}}, open curves {{audit3.mc.fam.ringing_b0:2}}, open arcs {{audit3.mc.fam.arc_b0:2}};
+    - polytopes {{audit3.mc.fam.polytope_b0:2}}, discs {{audit3.mc.fam.disc_b0:2}}, helices {{audit3.mc.fam.helix_b0:2}};
+    - paraboloids {{audit3.mc.fam.paraboloid_b0:2}}, spheres and caps {{audit3.mc.fam.sphere_b0:2}}.
+  - The false-loop rate grows with N, from {{audit3.mc.fpr_bin0:2}} in the smallest N bin to {{audit3.mc.fpr_bin3:2}} in the largest. It is not caused by outliers: {{audit3.mc.fpr_outlier:2}} with outliers vs {{audit3.mc.fpr_clean:2}} without.
+  - The flagged hole-free clouds have top π {{audit3.mc.flag_pi_q10:2}}–{{audit3.mc.flag_pi_q90:2}} (10th–90th percentile; median {{audit3.mc.flag_pi_q50:2}}). True holes that MC detects have {{audit3.mc.det_pi_q10:2}}–{{audit3.mc.det_pi_q90:2}}.
+  - Why: a Gaussian null fixes the covariance, not the intrinsic dimension. Noise cycles on a 2D surface live longer than in a 3D blob of the same spread. The largest multiplicative persistence of noise cycles grows with the number of points, with constants that depend on dimension ([Bobrowski, Kahle & Skraba 2017](https://doi.org/10.1214/16-AAP1232)). This is consistent with the rise with N; the theorem is for uniform samples, so it explains the pattern rather than proving it here.
 - **Outlier clouds and the preregistered DTM conditional (deviation D7).**
   - The source generator replaces random points by uniform draws from the padded bounding box but does not record which ones. The proxy was fixed before computing: an "outlier cloud" has at least one point farther than {{exp1.out.factor:0}} × its median distance from the ground-truth shape. That covers {{exp1.out.flagged:3}} of all test clouds.
   - False-positive rate on resolvable contractible clouds (95% cluster-bootstrap CI):

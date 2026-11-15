@@ -22,6 +22,10 @@ This page explains *why* each choice was made. The exact rules are in [reports/p
 - The ratio is scale-free.
 - The max-statistic controls family-wise error across bars.
 - The null is matched to the design: a cluster-centre null for prompt-template designs, whose clusters would otherwise make any arrangement look loopy against a plain Gaussian, and a full-dimensional matched Gaussian for one-point-per-value designs.
+- **What it does not test (deviation D9).** Both nulls are Gaussian, so a significant loop means "more persistent than a covariance-matched Gaussian".
+  - Hole-free surfaces, caps and helices often pass too, and for clustered designs so do nearly closed arcs of centres. On synthetic clouds of known topology, the matched-Gaussian null flags a sizeable share of hole-free clouds; the rates are in [reports/exp8_audit3.md](../reports/exp8_audit3.md).
+  - Claims of a hole therefore rest on independent evidence: traversal against a label-permutation null, loop localisation, and the concept centres alone.
+  - A hole-specific null (resampling hole-free fitted shapes at the cloud's noise) is future work.
 
 The universal null of Bobrowski & Skraba (2023) is reported, but it is descriptive. It is calibrated (unit tests), but at our sample sizes it is very conservative on alpha complexes (deviation D1).
 

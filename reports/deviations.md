@@ -148,6 +148,44 @@ Results: [exp7_audit.md](exp7_audit.md). The claims are rewritten in the README,
 
 **No preregistered verdict changes,** and no earlier result file is modified.
 
+## D9 (2026-11-15, after the results): third independent audit
+
+A third audit ignored D6 and D8. It re-read the code, the preregistration and the results, and recomputed quantities from stored data. No model was run and nothing was trained.
+
+**Confirmed:**
+- Every preregistered verdict follows from the rules.
+- The cloud reconstruction, both Monte Carlo samplers, the max-statistic p-values, the exact and Monte Carlo permutation tests (including the max-over-frequency null for residues), Holm, BH and the loop-localisation criterion of D8 are correct.
+- The closing step is the largest step for weekdays, months and days_time.
+- The weekday "no ring" does not hinge on the near-degenerate third PC.
+
+**Found:**
+- **The loop test is not hole-specific (substantive).** Both Monte Carlo nulls are Gaussian, so a significant loop means "more H1 persistence than a covariance-matched Gaussian", not "a hole".
+  - Exp1 had run the design-(b) sampler (on rank-3 clouds) on synthetic clouds of known topology, but it reported only exact-vector accuracy. That analysis shows that the sampler flags loops on many hole-free shapes: surfaces, caps, helices.
+  - For the design-(a) cluster-centre null (months, weekdays, colours), the pre-specified simulation was undetermined at the real sets' variance structure, where rings themselves rarely pass.
+  - The instrument validated on 39,000 clouds was the universal-null estimator P, which is not the test used for real-data loops.
+  - Consequences:
+    - Claims of a hole now rest on the independent evidence (traversal against a label-permutation null, localisation, centre-only loops), not on the loop test alone.
+    - Months are downgraded from "ring" to "suggestive".
+    - The colour and residue conclusions stand.
+- **Instrument reporting.** P detects few true holes. The exact-vector accuracy hid this, and the MC estimator's sensitivity and false-loop rate were never reported.
+- **Minor:**
+  - The Exp1 plain-language comparison omitted families where the label wins (cones, helices) or loses (polytopes).
+  - The colour confounder wording said "the input" for what is the stimulus design, and the RGB winding uses the PC1–PC2 angle, not θ_B (DREiMac builds no usable coordinate on the RGB loop).
+  - The weekday caption did not give the centres' 2D persistence.
+  - Two power-simulation numbers were worded as fractions "of 40 replicates" or rounded down.
+- **A hypothesis of this audit that failed:** the audit suspected that the 3 torus disagreements of Exp0's dense check came from its counting cut (bars born above margin/4). Recomputing the void bars refuted this. The voids are born below the cut, but their persistence ratio is below the counting threshold of 4. That is what the Exp0 report already said: these tori need more samples.
+
+**Analyses added (post hoc), phase `run.py audit3`** (`experiments/exp8_null_specificity.py`, `results/exp8_audit3/`). The decision rule was fixed before running:
+- sensitivity and false-loop rate of every synthetic estimator, per family and N bin, split by the D7 outlier flag;
+- the equivalence of the real-data Gaussian sampler and Exp1's 3D sampler on rank-3 clouds;
+- the cluster-centre null on concept centres in hole-free arrangements (a hemisphere cap, a planar lattice) next to a ring, an open arc and Gaussian centres;
+- the centre loops in other projections;
+- the void bars of the dense-check tori.
+
+Results: [exp8_audit3.md](exp8_audit3.md). Claims are rewritten in the README, the summary, the per-dataset findings, the Exp1 report and the paper. The example figure says "ring" only where the concept goes around the loop in the preregistered analysis.
+
+**No preregistered verdict changes,** and no earlier result file is modified.
+
 ## P2 (plan-level): two planned unit tests superseded by the preregistration's definitions
 
 - **"The margin is 0 exactly at the source's thresholds (arc extent_frac 0.98, sphere cap threshold, r_bot = 0, r = R)."**
