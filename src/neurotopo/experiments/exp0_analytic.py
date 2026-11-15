@@ -111,9 +111,8 @@ def synth_table(name: str) -> pd.DataFrame:
     return df
 
 
-def dense_check(family: str, params: dict) -> dict:
-    """Persistent homology of 10,000 dense noise-free samples: bars with pi > 4 vs the analytic b1, b2."""
-    t = shape_topology(family, params)
+def dense_points(family: str, params: dict) -> np.ndarray:
+    """The dense noise-free sample of a shape used by the dense check (also reused by the D9 audit's torus check)."""
     curve = family not in coords.SURFACES
     pts = coords.random_samples(family, params, DENSE_N_CURVE if curve else DENSE_N, seed=0)
     # Noise-free samples on a space curve (helix-like) can have a Delaunay triangulation of quadratic size
@@ -121,7 +120,13 @@ def dense_check(family: str, params: dict) -> dict:
     # exact predicates become very slow. A small jitter (1e-3 of the RMS radius for curves, 1e-6 for surfaces)
     # makes the input generic; it is far below every feature scale that is counted (pi > 4).
     rms = float(np.sqrt(((pts - pts.mean(0)) ** 2).sum(1).mean()))
-    pts = pts + (1e-3 if curve else 1e-6) * rms * np.random.default_rng(1).normal(size=pts.shape)
+    return pts + (1e-3 if curve else 1e-6) * rms * np.random.default_rng(1).normal(size=pts.shape)
+
+
+def dense_check(family: str, params: dict) -> dict:
+    """Persistent homology of 10,000 dense noise-free samples: bars with pi > 4 vs the analytic b1, b2."""
+    t = shape_topology(family, params)
+    pts = dense_points(family, params)
     d = diagrams.alpha_diagrams(pts)
     # The exact topology holds at scales below the topological margin m: a feature born at ~m/2 is a
     # near-closure (e.g. the two ends of a helix whose gap m is small), which rho_A already quantifies.

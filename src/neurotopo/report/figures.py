@@ -450,11 +450,13 @@ EXAMPLES = [("R7_llama_colors", "Colours"), ("R2_grokking_WE", "Residues mod 113
 
 def fig_examples() -> None:
     """Plain-language positive and negative examples. Top: each cloud (PC1-PC2), coloured by position in its cycle
-    (years: by value), titled with two verdicts read from results (report/verdicts.py): is there a ring (top-3
-    loop beyond the Monte Carlo null that runs through the concept clusters; a significant loop that lies inside one
-    cluster is not a ring of concepts, audit D8), and does the concept go around it once (preregistered theta_B or
-    theta_A; otherwise post hoc only; otherwise no). Bottom: observed top H1 persistence ratio / the null's 95th
-    percentile, so a bar above 1 is a significant loop (p < 0.05)."""
+    (years: by value), titled with two verdicts read from results (report/verdicts.py): is there a ring, and does
+    the concept go around it once (preregistered theta_B or theta_A; otherwise post hoc only; otherwise no). A top-3
+    loop beyond the Gaussian Monte Carlo null is not enough for "ring": that null also rejects many hole-free shapes
+    (audit D9), and a significant loop inside one cluster is not a ring of concepts (audit D8). So "ring: yes" needs a
+    loop through the clusters that the concept goes around once in the preregistered analysis; with only post hoc
+    traversal it is "suggestive". Bottom: observed top H1 persistence ratio / the null's 95th percentile, so a bar
+    above 1 is a significant loop (p < 0.05)."""
     from neurotopo.experiments import realdata
     from neurotopo.report import verdicts as v
     inv = pd.read_csv(config.path("results") / "exp2" / "invariants.csv").set_index("id")
@@ -485,8 +487,10 @@ def fig_examples() -> None:
         inherited = d == "R7_llama_colors" and ring and rgb_loop   # confounder found by the audit (D8)
         ok = (ring and goes == "yes" and not inherited) or (control and not ring)
         verdict = "ring: no (a small loop inside\none cluster)" if small else \
-            "ring: yes, but the RGB input\nhas it too" if inherited else \
-            f"ring: {'yes' if ring else 'no'}" + (" (as expected)" if control and not ring else "")
+            "ring: yes, but the RGB\nstimuli have it too" if inherited else \
+            "ring: yes" if ring and goes == "yes" else \
+            f"loop: yes; ring: {'suggestive' if goes == 'only post hoc' else 'not shown'}" if ring else \
+            "ring: no" + (" (as expected)" if control else "")
         ax.set_title(f"{name}\n{verdict}\ngoes around once: {goes}", fontsize=8.5,
                      color="#1b7837" if ok else ("#b35806" if ring else "#333333"))
         ratios.append(float(inv.loc[d, "top_pi1"] / inv.loc[d, "null_q95_pi1"]))
@@ -499,7 +503,7 @@ def fig_examples() -> None:
     ax.set_xticklabels([n.replace("\n", " ") for _, n in EXAMPLES], fontsize=8)
     ax.set_xlim(-0.5, len(EXAMPLES) - 0.5)
     ax.set_ylim(0, max(ratios) * 1.15)
-    ax.set_ylabel("top loop persistence / null's 95th pct.\n(above 1 = significant loop)", fontsize=8)
+    ax.set_ylabel("top loop persistence / Gaussian null's\n95th pct. (above 1 = significant loop)", fontsize=8)
     for i, r in enumerate(ratios):
         inside_bar = 0.8 < r < 0.97                                 # label just below the dashed line: put it in the bar
         ax.text(i, r - 0.03 if inside_bar else r + 0.03, f"{r:.2f}", ha="center", va="top" if inside_bar else "bottom",

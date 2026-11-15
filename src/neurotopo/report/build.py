@@ -196,6 +196,47 @@ def audit_tables() -> str:
                         tables.md_table(cl, 3)])
 
 
+def audit3_tables() -> str:
+    """Exp8 audit (post hoc, D9): hole sensitivity and false-loop rate of the synthetic estimators (overall and per
+    family), the cluster-centre null on hole-free arrangements of concept centres, centre loops in other projections,
+    and the dense-check tori."""
+    from neurotopo.report.figures import short
+    a = read_json(res("exp8_audit3", "summary.json"))
+    sy = a["synthetic"]
+    est = pd.DataFrame([{"estimator": k.split("|")[0], "clouds": k.split("|")[1],
+                         "hole sensitivity": v["sensitivity"]["rate"], "sens. 95% CI": _ci(v["sensitivity"]["ci"]),
+                         "n (true b1 >= 1)": v["sensitivity"]["n"], "false-loop rate": v["false_loop"]["rate"],
+                         "FPR 95% CI": _ci(v["false_loop"]["ci"]), "n (true b1 = 0)": v["false_loop"]["n"]}
+                        for k, v in sy.items() if "|" in k])
+    fam = pd.read_csv(res("exp8_audit3", "synthetic_by_family.csv"))
+    piv = fam.pivot_table(index=["family", "true_b1"], columns="estimator", values="loop_rate").reset_index()
+    piv = piv.merge(fam[fam["estimator"] == "MC"][["family", "true_b1", "n"]], on=["family", "true_b1"])
+    cl = []
+    for k, v in a["cluster"].items():
+        for arr, r in v["arrangements"].items():
+            cl.append({"design": f"{k[1:]} clusters ({short(v['real_id'])}-like)", "arrangement": arr,
+                       "loop pass": r["pass"], "95% CI": _ci(r["ci"]), "max over cells": r["pass_max_over_cells"],
+                       "median top pi": r["median_pi1"], f"share with pi >= real": r["frac_pi_ge_real"],
+                       "verdict (cap, grid)": v["verdict"]})
+    cen = pd.DataFrame([{"dataset": short(d), "cloud PC1-PC2 (alpha)": v["pc12_alpha_pi"], "cloud top-3 (alpha)": v["pc123_alpha_pi"],
+                         **{f"own top-{k} (Rips)": v[f"own_top{k}_rips_pi"] for k in range(2, 7)}}
+                        for d, v in a["centres"].items()])
+    tor = pd.DataFrame(a["tori"])
+    return "\n\n".join([
+        "Loop detection on synthetic clouds of known topology (resolvable clouds; >= 1 significant H1 bar; "
+        "cluster-bootstrap 95% CIs over generator chunks):", tables.md_table(est, 3),
+        "Fraction of clouds with >= 1 significant H1 bar, per family (resolvable clouds of the 3,120-cloud subset; "
+        "true_b1 = 0 rows are false loops):", tables.md_table(piv, 3),
+        "Cluster-centre null on concept centres in five arrangements (cell nearest the real top-3 share; 40 replicates; "
+        "exact 95% CIs):", tables.md_table(pd.DataFrame(cl), 3),
+        "Largest H1 pi of the concept centres in other projections:", tables.md_table(cen, 3),
+        "Dense-check tori without a counted void:", tables.md_table(tor, 3)])
+
+
+def _ci(ci) -> str:
+    return "-" if ci[0] is None else f"[{tables.fmt(ci[0], 3)}, {tables.fmt(ci[1], 3)}]"
+
+
 def coords_table() -> str:
     q = pd.read_csv(res("coords", "point_coordinates.csv"))
     cols = [c for c in ("id", "family", "coordinate", "variable", "statistic", "n", "R", "p", "winding", "rho", "NMI", "ARI")
@@ -213,6 +254,7 @@ SECTIONS = [("exp0_topology", exp0_table, ("exp0", "real_topology.csv")),
             ("exp3", exp3_tables, ("exp3", "summary.json")),
             ("coords", coords_table, ("coords", "point_coordinates.csv")),
             ("audit", audit_tables, ("exp7_audit", "summary.json")),
+            ("audit3", audit3_tables, ("exp8_audit3", "summary.json")),
             ("exp6sim", exp6sim_table, ("exp6_sim", "summary.json"))]
 
 

@@ -106,6 +106,8 @@ Source project: [shape-fitting-in-neural-geometry-in-llm-mechanistic-interpretab
   - `exp5`: robustness checks;
   - `exp7_audit`: post hoc checks of the second audit (colour RGB baseline, loop localisation, closure ratio,
     PCA gaps, size-matched stability, power CIs; deviation D8);
+  - `exp8_audit3`: post hoc checks of the third audit (is the loop test specific to holes? synthetic sensitivity
+    and false-loop rates, cluster-centre null on hole-free centres, centre loops, dense-check tori; deviation D9);
   - `nulls/`: cached Monte Carlo null distributions;
   - `replication.json`: the clean-room replication check.
 - `paper.pdf`: the paper. `summary.md`: summary of all experiments. `logs/`: timestamped run logs.
