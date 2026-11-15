@@ -26,6 +26,7 @@ from neurotopo.stats import tests as st
 from neurotopo.tda import circular
 
 log = logging.getLogger(__name__)
+THETA_CACHE: dict = {}                     # theta_B per dataset, saved for Exp6-sim and the explorer
 EXPLORATORY = ["R7_llama_colors", "R5a_llama_weekdays_means", "R5b_llama_months_means", "C3_grokking_WE_memorised",
                "C3_gpt2_wpos_init", "C3_llama_counting_init"]
 
@@ -41,6 +42,7 @@ def method_b(dataset_id: str, seed: int) -> dict:
     cc10 = circular.circular_coordinates(y10)
     rec3 = alignment.records(dataset_id, cc3["theta"], c["labels"], seed) if cc3["theta"] is not None else []
     rec10 = alignment.records(dataset_id, cc10["theta"], c["labels"], seed) if cc10["theta"] is not None else []
+    THETA_CACHE[dataset_id] = cc3["theta"]
     return {"id": dataset_id, "p_loop": p_loop, "loop": p_loop < config.load()["tda"]["alpha_level"],
             "theta3_error": cc3["error"], "theta10_error": cc10["error"], "rips_bar3": cc3["bar"],
             "records3": rec3, "records10": rec10}
@@ -102,6 +104,7 @@ def run() -> None:
         log.info("%-28s loop p=%.4f | theta_B: %s", did, mb[did]["p_loop"],
                  "none" if r is None else f"R={r['R']:.3f} p={r['p']:.2g} w={r['winding']}")
     write_json(out / "method_b.json", mb)
+    np.savez_compressed(out / "theta_B.npz", **{k: v for k, v in THETA_CACHE.items() if v is not None})
 
     # Co-primary family: Holm over 6 p-values (3 datasets x Methods A, B).
     prim = g["cyclic_primary"]

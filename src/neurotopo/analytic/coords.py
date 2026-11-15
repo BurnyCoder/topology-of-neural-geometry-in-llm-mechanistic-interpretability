@@ -75,7 +75,7 @@ def _local(family: str, p: dict, u: np.ndarray, v: np.ndarray | None) -> tuple[n
     if family == "cone":
         ph, s = TWO_PI * u, v                              # source: r(s) = r_bot + dr s, height hh (2 s - 1)
         r = float(p["r_bot"]) + float(p["dr"]) * s
-        return np.c_[r * np.cos(ph), r * np.sin(ph), float(p["half_height"]) * (2 * s - 1)], {"theta": ph, "s": s}
+        return np.c_[r * np.cos(ph), r * np.sin(ph), float(p["half_height"]) * (2 * s - 1)], {"theta": ph, "height": s}
     if family == "torus":
         a, b = TWO_PI * u, TWO_PI * v                      # source: ((R + r cos v) cos u, (R + r cos v) sin u, r sin v)
         big = float(p["R"])
@@ -88,7 +88,7 @@ def _local(family: str, p: dict, u: np.ndarray, v: np.ndarray | None) -> tuple[n
         sxy = np.sqrt(np.clip(1 - z * z, 0, None))
         ph = TWO_PI * v
         r = float(p["radius"])
-        return np.c_[r * sxy * np.cos(ph), r * sxy * np.sin(ph), r * z], {"theta": ph}
+        return np.c_[r * sxy * np.cos(ph), r * sxy * np.sin(ph), r * z], {"theta": ph, "height": z}
     if family == "disc":
         rho, t = np.sqrt(u), TWO_PI * v
         a = float(p["a"])

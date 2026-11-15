@@ -43,3 +43,19 @@ This item was in the plan but not in the preregistration.
 **Why it was dropped:** the stored `gt_dense` grids (24×24 for surfaces) create spurious long H1 bars in alpha complexes. They come from anisotropic grid cells: π ≈ 4 on a torus grid, and ≈ 17 near the poles of a sphere grid (`tests/test_analytic.py`). An effective topology computed from them would be unreliable.
 
 **What replaces it:** the primary ground truth (exact Method A topology of the ground-truth parameters, with resolvability ρ_A) and the reported accuracy as a function of ρ_A already cover multi-scale and borderline cases.
+
+## D4 (2026-11-15): simulated steering postponed; fitted-shape coordinate check added (exploratory)
+
+**What the author asked for:**
+- Postpone the simulated steering of amendment A2, step 1, entirely. The code is in `src/neurotopo/steering/offline.py` and `experiments/exp6_sim.py`; it was not run, and the phase is removed from `run.py all`.
+- Instead, check where the original labelled points lie on their fitted shapes.
+- Model inference (A2, step 2) stays postponed.
+
+**Added: phase `coords`** (`experiments/coords_check.py`; exploratory and descriptive; uses only stored data). Every point gets its intrinsic coordinates on its fitted shape. The phase then reports:
+- circular alignment with the concept phases, for angular coordinates;
+- Spearman correlation with the value or concept index, for linear coordinates;
+- NMI and ARI with the concepts, for cluster and vertex assignments.
+
+It also checks the prompt offset "k days from" for weekdays and months, and saturation and lightness for colours, both recovered from the source's row order and labels.
+
+**Post hoc, flagged as such:** the harmonic content of the axial position of helix fits of cyclic concepts. It was added after seeing that the months' axial position is non-monotone in the month index.

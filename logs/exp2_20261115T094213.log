@@ -1,0 +1,89 @@
+2026-11-15 09:42:13 INFO root: phase exp2, log file C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\logs\exp2_20261115T094213.log
+2026-11-15 09:43:21 INFO neurotopo.experiments.realdata: null C1_gp_0 seed 0 (gaussian, M=999): q95 max pi H1 = 1.931, H2 = 1.205
+2026-11-15 09:43:51 INFO neurotopo.experiments.exp2_invariants: C1_gp_0                      N= 200 pi1=1.00 (q95 1.93, p=1.0000) pi2=1.00 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 09:43:57 INFO neurotopo.experiments.realdata: null C1_gp_1 seed 0 (gaussian, M=999): q95 max pi H1 = 1.948, H2 = 1.245
+2026-11-15 09:44:19 INFO neurotopo.experiments.exp2_invariants: C1_gp_1                      N= 200 pi1=1.16 (q95 1.95, p=1.0000) pi2=1.01 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 09:44:24 INFO neurotopo.experiments.realdata: null C1_gp_2 seed 0 (gaussian, M=999): q95 max pi H1 = 1.923, H2 = 1.236
+2026-11-15 09:44:42 INFO neurotopo.experiments.exp2_invariants: C1_gp_2                      N= 200 pi1=1.09 (q95 1.92, p=1.0000) pi2=1.01 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 09:44:48 INFO neurotopo.experiments.realdata: null C1_gp_3 seed 0 (gaussian, M=999): q95 max pi H1 = 1.941, H2 = 1.243
+2026-11-15 09:45:06 INFO neurotopo.experiments.exp2_invariants: C1_gp_3                      N= 200 pi1=1.16 (q95 1.94, p=1.0000) pi2=1.09 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 09:45:12 INFO neurotopo.experiments.realdata: null C1_gp_4 seed 0 (gaussian, M=999): q95 max pi H1 = 1.948, H2 = 1.197
+2026-11-15 09:45:39 INFO neurotopo.experiments.exp2_invariants: C1_gp_4                      N= 200 pi1=1.00 (q95 1.95, p=1.0000) pi2=1.00 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 09:45:45 INFO neurotopo.experiments.realdata: null C1_gp_5 seed 0 (gaussian, M=999): q95 max pi H1 = 1.928, H2 = 1.244
+2026-11-15 09:46:01 INFO neurotopo.experiments.exp2_invariants: C1_gp_5                      N= 200 pi1=1.37 (q95 1.93, p=1.0000) pi2=1.05 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 09:46:07 INFO neurotopo.experiments.realdata: null C1_gp_6 seed 0 (gaussian, M=999): q95 max pi H1 = 1.955, H2 = 1.239
+2026-11-15 09:46:22 INFO neurotopo.experiments.exp2_invariants: C1_gp_6                      N= 200 pi1=1.13 (q95 1.96, p=1.0000) pi2=1.06 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 09:46:29 INFO neurotopo.experiments.realdata: null C1_gp_7 seed 0 (gaussian, M=999): q95 max pi H1 = 1.938, H2 = 1.234
+2026-11-15 09:46:43 INFO neurotopo.experiments.exp2_invariants: C1_gp_7                      N= 200 pi1=1.05 (q95 1.94, p=1.0000) pi2=1.05 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 09:46:49 INFO neurotopo.experiments.realdata: null C1_gp_8 seed 0 (gaussian, M=999): q95 max pi H1 = 1.941, H2 = 1.205
+2026-11-15 09:47:10 INFO neurotopo.experiments.exp2_invariants: C1_gp_8                      N= 200 pi1=1.00 (q95 1.94, p=1.0000) pi2=1.01 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 09:47:17 INFO neurotopo.experiments.realdata: null C1_gp_9 seed 0 (gaussian, M=999): q95 max pi H1 = 1.924, H2 = 1.216
+2026-11-15 09:47:40 INFO neurotopo.experiments.exp2_invariants: C1_gp_9                      N= 200 pi1=1.02 (q95 1.92, p=1.0000) pi2=1.00 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 09:47:45 INFO neurotopo.experiments.realdata: null C1_walk_0 seed 0 (gaussian, M=999): q95 max pi H1 = 1.901, H2 = 1.215
+2026-11-15 09:47:56 INFO neurotopo.experiments.exp2_invariants: C1_walk_0                    N= 200 pi1=1.05 (q95 1.90, p=1.0000) pi2=1.00 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 09:48:02 INFO neurotopo.experiments.realdata: null C1_walk_1 seed 0 (gaussian, M=999): q95 max pi H1 = 1.914, H2 = 1.213
+2026-11-15 09:48:13 INFO neurotopo.experiments.exp2_invariants: C1_walk_1                    N= 200 pi1=1.12 (q95 1.91, p=1.0000) pi2=1.00 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 09:48:19 INFO neurotopo.experiments.realdata: null C1_walk_2 seed 0 (gaussian, M=999): q95 max pi H1 = 1.916, H2 = 1.212
+2026-11-15 09:48:31 INFO neurotopo.experiments.exp2_invariants: C1_walk_2                    N= 200 pi1=1.07 (q95 1.92, p=1.0000) pi2=1.00 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 09:48:37 INFO neurotopo.experiments.realdata: null C1_walk_3 seed 0 (gaussian, M=999): q95 max pi H1 = 1.905, H2 = 1.213
+2026-11-15 09:48:47 INFO neurotopo.experiments.exp2_invariants: C1_walk_3                    N= 200 pi1=1.10 (q95 1.91, p=1.0000) pi2=1.00 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 09:48:54 INFO neurotopo.experiments.realdata: null C1_walk_4 seed 0 (gaussian, M=999): q95 max pi H1 = 1.922, H2 = 1.215
+2026-11-15 09:49:05 INFO neurotopo.experiments.exp2_invariants: C1_walk_4                    N= 200 pi1=1.18 (q95 1.92, p=1.0000) pi2=1.00 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 09:49:11 INFO neurotopo.experiments.realdata: null C1_walk_5 seed 0 (gaussian, M=999): q95 max pi H1 = 1.917, H2 = 1.214
+2026-11-15 09:49:23 INFO neurotopo.experiments.exp2_invariants: C1_walk_5                    N= 200 pi1=1.10 (q95 1.92, p=1.0000) pi2=1.00 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 09:49:27 INFO neurotopo.experiments.realdata: null C1_walk_6 seed 0 (gaussian, M=999): q95 max pi H1 = 1.956, H2 = 1.216
+2026-11-15 09:49:38 INFO neurotopo.experiments.exp2_invariants: C1_walk_6                    N= 200 pi1=1.07 (q95 1.96, p=1.0000) pi2=1.01 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 09:49:41 INFO neurotopo.experiments.realdata: null C1_walk_7 seed 0 (gaussian, M=999): q95 max pi H1 = 1.932, H2 = 1.220
+2026-11-15 09:49:51 INFO neurotopo.experiments.exp2_invariants: C1_walk_7                    N= 200 pi1=1.07 (q95 1.93, p=1.0000) pi2=1.00 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 09:49:53 INFO neurotopo.experiments.realdata: null C1_walk_8 seed 0 (gaussian, M=999): q95 max pi H1 = 1.904, H2 = 1.216
+2026-11-15 09:50:03 INFO neurotopo.experiments.exp2_invariants: C1_walk_8                    N= 200 pi1=1.09 (q95 1.90, p=1.0000) pi2=1.00 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 09:50:06 INFO neurotopo.experiments.realdata: null C1_walk_9 seed 0 (gaussian, M=999): q95 max pi H1 = 1.923, H2 = 1.213
+2026-11-15 09:50:16 INFO neurotopo.experiments.exp2_invariants: C1_walk_9                    N= 200 pi1=1.35 (q95 1.92, p=1.0000) pi2=1.00 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 09:50:55 INFO neurotopo.experiments.realdata: null C3_gpt2_wpos_init seed 0 (gaussian, M=999): q95 max pi H1 = 2.169, H2 = 1.397
+2026-11-15 09:52:57 INFO neurotopo.experiments.exp2_invariants: C3_gpt2_wpos_init            N=1023 pi1=2.03 (q95 2.17, p=0.2990) pi2=1.44 b=(1,0,1)@r_c sphere, stab loop 0.06
+2026-11-15 09:52:58 INFO neurotopo.experiments.realdata: null C3_grokking_WE_init seed 0 (gaussian, M=999): q95 max pi H1 = 1.830, H2 = 1.192
+2026-11-15 09:53:00 INFO neurotopo.experiments.exp2_invariants: C3_grokking_WE_init          N= 113 pi1=1.84 (q95 1.83, p=0.0460) pi2=1.15 b=(1,1,0)@r_c circle-like, stab loop 0.01
+2026-11-15 09:53:01 INFO neurotopo.experiments.realdata: null C3_grokking_WE_memorised seed 0 (gaussian, M=999): q95 max pi H1 = 1.829, H2 = 1.188
+2026-11-15 09:53:04 INFO neurotopo.experiments.exp2_invariants: C3_grokking_WE_memorised     N= 113 pi1=1.50 (q95 1.83, p=0.8310) pi2=1.10 b=(1,0,0)@r_c contractible, stab loop 0.05
+2026-11-15 09:53:05 INFO neurotopo.experiments.realdata: null C3_llama_counting_init seed 0 (gaussian, M=999): q95 max pi H1 = 1.871, H2 = 1.208
+2026-11-15 09:53:27 INFO neurotopo.experiments.exp2_invariants: C3_llama_counting_init       N= 150 pi1=1.54 (q95 1.87, p=0.8810) pi2=1.03 b=(1,0,0)@r_c contractible, stab loop 0.01
+2026-11-15 09:53:28 INFO neurotopo.experiments.realdata: null C3_llama_months_init seed 0 (cluster, M=999): q95 max pi H1 = 1.463, H2 = 1.058
+2026-11-15 09:53:49 INFO neurotopo.experiments.exp2_invariants: C3_llama_months_init         N= 144 pi1=1.43 (q95 1.46, p=0.0740) pi2=1.01 b=(4,0,0)@r_c 4 components, stab loop 0.04
+2026-11-15 09:53:49 INFO neurotopo.experiments.realdata: null C3_llama_weekdays_init seed 0 (cluster, M=999): q95 max pi H1 = 1.277, H2 = 1.029
+2026-11-15 09:53:53 INFO neurotopo.experiments.exp2_invariants: C3_llama_weekdays_init       N=  49 pi1=1.11 (q95 1.28, p=0.7650) pi2=1.03 b=(4,0,1)@r_c other (4,0,1), stab loop 0.02
+2026-11-15 09:53:54 INFO neurotopo.experiments.realdata: null C3_tms_dense seed 0 (gaussian, M=999): q95 max pi H1 = 1.118, H2 = 1.000
+2026-11-15 09:53:54 INFO neurotopo.experiments.exp2_invariants: C3_tms_dense                 N=   5 pi1=1.23 (q95 1.12, p=0.0010) pi2=1.00 b=(1,1,0)@r_c circle-like, stab loop 0.41
+2026-11-15 09:54:11 INFO neurotopo.experiments.realdata: null R1_gpt2_wpos seed 0 (gaussian, M=999): q95 max pi H1 = 2.163, H2 = 1.393
+2026-11-15 09:55:54 INFO neurotopo.experiments.exp2_invariants: R1_gpt2_wpos                 N=1023 pi1=1.22 (q95 2.16, p=1.0000) pi2=1.02 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 09:55:55 INFO neurotopo.experiments.realdata: null R2_grokking_WE seed 0 (gaussian, M=999): q95 max pi H1 = 1.830, H2 = 1.199
+2026-11-15 09:55:58 INFO neurotopo.experiments.exp2_invariants: R2_grokking_WE               N= 113 pi1=2.45 (q95 1.83, p=0.0010) pi2=1.05 b=(1,2,0)@r_c other (1,2,0), stab loop 0.26
+2026-11-15 09:55:58 INFO neurotopo.experiments.realdata: null R3_tms_n20 seed 0 (gaussian, M=999): q95 max pi H1 = 1.437, H2 = 1.062
+2026-11-15 09:55:58 INFO neurotopo.experiments.exp2_invariants: R3_tms_n20                   N=  20 pi1=1.34 (q95 1.44, p=0.1910) pi2=1.47 b=(1,0,1)@r_c sphere, stab loop 0.35
+2026-11-15 09:55:58 INFO neurotopo.experiments.realdata: null R3_tms_n6 seed 0 (gaussian, M=999): q95 max pi H1 = 1.183, H2 = 1.013
+2026-11-15 09:55:58 INFO neurotopo.experiments.exp2_invariants: R3_tms_n6                    N=   6 pi1=1.15 (q95 1.18, p=0.0870) pi2=1.22 b=(1,0,1)@r_c sphere, stab loop 0.00
+2026-11-15 09:55:58 INFO neurotopo.experiments.realdata: null R3_tms_n8 seed 0 (gaussian, M=999): q95 max pi H1 = 1.244, H2 = 1.021
+2026-11-15 09:55:58 INFO neurotopo.experiments.exp2_invariants: R3_tms_n8                    N=   8 pi1=1.41 (q95 1.24, p=0.0040) pi2=1.18 b=(1,0,1)@r_c sphere, stab loop 0.73
+2026-11-15 09:56:00 INFO neurotopo.experiments.realdata: null R4_llama_counting seed 0 (gaussian, M=999): q95 max pi H1 = 1.888, H2 = 1.192
+2026-11-15 09:56:21 INFO neurotopo.experiments.exp2_invariants: R4_llama_counting            N= 150 pi1=1.28 (q95 1.89, p=1.0000) pi2=1.02 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 09:56:23 INFO neurotopo.experiments.realdata: null R4b_pythia_counting seed 0 (gaussian, M=999): q95 max pi H1 = 1.869, H2 = 1.184
+2026-11-15 09:56:31 INFO neurotopo.experiments.exp2_invariants: R4b_pythia_counting          N= 150 pi1=1.32 (q95 1.87, p=1.0000) pi2=1.03 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 09:56:32 INFO neurotopo.experiments.realdata: null R5a_llama_weekdays seed 0 (cluster, M=999): q95 max pi H1 = 1.356, H2 = 1.054
+2026-11-15 09:56:36 INFO neurotopo.experiments.exp2_invariants: R5a_llama_weekdays           N=  49 pi1=1.32 (q95 1.36, p=0.0940) pi2=1.01 b=(5,0,0)@r_c 5 components, stab loop 0.01
+2026-11-15 09:56:36 INFO neurotopo.experiments.realdata: null R5a_llama_weekdays_means seed 0 (gaussian, M=999): q95 max pi H1 = 1.190, H2 = 1.020
+2026-11-15 09:56:36 INFO neurotopo.experiments.exp2_invariants: R5a_llama_weekdays_means     N=   7 pi1=1.05 (q95 1.19, p=0.7310) pi2=1.02 b=(1,0,0)@r_c contractible, stab loop 0.12
+2026-11-15 09:56:38 INFO neurotopo.experiments.realdata: null R5b_llama_months seed 0 (cluster, M=999): q95 max pi H1 = 1.443, H2 = 1.059
+2026-11-15 09:56:59 INFO neurotopo.experiments.exp2_invariants: R5b_llama_months             N= 144 pi1=1.72 (q95 1.44, p=0.0020) pi2=1.02 b=(12,1,0)@r_c other (12,1,0), stab loop 0.90
+2026-11-15 09:56:59 INFO neurotopo.experiments.realdata: null R5b_llama_months_means seed 0 (gaussian, M=999): q95 max pi H1 = 1.334, H2 = 1.040
+2026-11-15 09:57:00 INFO neurotopo.experiments.exp2_invariants: R5b_llama_months_means       N=  12 pi1=1.71 (q95 1.33, p=0.0010) pi2=1.02 b=(1,1,0)@r_c circle-like, stab loop 0.34
+2026-11-15 09:57:07 INFO neurotopo.experiments.realdata: null R5c_llama_days_time seed 0 (cluster, M=999): q95 max pi H1 = 1.873, H2 = 1.093
+2026-11-15 09:57:58 INFO neurotopo.experiments.exp2_invariants: R5c_llama_days_time          N= 336 pi1=2.01 (q95 1.87, p=0.0130) pi2=1.06 b=(6,1,0)@r_c other (6,1,0), stab loop 0.03
+2026-11-15 09:58:00 INFO neurotopo.experiments.realdata: null R6_llama_years seed 0 (gaussian, M=999): q95 max pi H1 = 1.937, H2 = 1.234
+2026-11-15 09:58:32 INFO neurotopo.experiments.exp2_invariants: R6_llama_years               N= 199 pi1=1.63 (q95 1.94, p=0.7750) pi2=1.12 b=(1,0,0)@r_c contractible, stab loop 0.08
+2026-11-15 09:58:54 INFO neurotopo.experiments.realdata: null R7_llama_colors seed 0 (cluster, M=999): q95 max pi H1 = 2.379, H2 = 1.346
+2026-11-15 10:10:06 INFO neurotopo.experiments.exp2_invariants: R7_llama_colors              N= 900 pi1=5.02 (q95 2.38, p=0.0010) pi2=1.24 b=(1,1,0)@r_c circle-like, stab loop 1.00
+2026-11-15 10:10:19 INFO neurotopo.experiments.realdata: null R8a_llama_temperature seed 0 (gaussian, M=999): q95 max pi H1 = 1.889, H2 = 1.190
+2026-11-15 10:10:42 INFO neurotopo.experiments.exp2_invariants: R8a_llama_temperature        N= 150 pi1=1.33 (q95 1.89, p=1.0000) pi2=1.02 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 10:10:43 INFO neurotopo.experiments.realdata: null R8b_llama_age seed 0 (gaussian, M=999): q95 max pi H1 = 1.792, H2 = 1.166
+2026-11-15 10:10:56 INFO neurotopo.experiments.exp2_invariants: R8b_llama_age                N=  99 pi1=1.58 (q95 1.79, p=0.4490) pi2=1.00 b=(1,0,0)@r_c contractible, stab loop 0.04
+2026-11-15 10:12:09 INFO neurotopo.experiments.realdata: null R9_llama_truth_cities seed 0 (gaussian, M=999): q95 max pi H1 = 2.202, H2 = 1.411
+2026-11-15 10:35:04 INFO neurotopo.experiments.exp2_invariants: R9_llama_truth_cities        N=1496 pi1=1.93 (q95 2.20, p=0.8610) pi2=1.29 b=(1,0,0)@r_c contractible, stab loop 0.03
