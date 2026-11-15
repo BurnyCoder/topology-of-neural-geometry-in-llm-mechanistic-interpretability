@@ -22,6 +22,8 @@ Last updated: 2026-11-15.
 | Exp6: simulated steering and LLM steering (primary H6) | **postponed by the author**; code ready, not run |
 | Optional Exp0b (refit synthetic clouds with the source checkpoint) | not done (needs model inference; postponed) |
 | 13. Plan-completion check (this section) | done; gaps closed (outlier FPR and DTM decision, D7; Exp4 figure; truth-cities prediction; family × Betti table; source-parsing tests; HF dataset card; P2) |
+| 14. Second independent audit (post hoc, D8) | done: `run.py audit` (colour RGB baseline, loop localisation, preregistered closure ratio, PCA gaps, size-matched stability, power CIs); claims corrected in README, reports and paper; no verdict changed ([exp7_audit.md](exp7_audit.md)) |
+| Colour controls with model inference (random-init Llama on the 900 prompts; colour names instead of hex codes) | not done (needs model inference; postponed) |
 
 ## Completion check against the approved plan (2026-11-15)
 

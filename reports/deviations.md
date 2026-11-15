@@ -114,6 +114,40 @@ Preregistration section 7 runs a DTM filtration ([Anai et al. 2019](https://arxi
 - Outcome: see `reports/exp1_synthetic.md`. The DTM ablation was not triggered.
 - Code: `run.py exp1outliers` (`experiments/exp1_synthetic.py::outlier_check`), results in `results/exp1/outliers.json`.
 
+## D8 (2026-11-15, after the results): second independent audit
+
+A second independent audit ignored the earlier audits. It re-read the code, the preregistration and the results, and recomputed key quantities from stored data. No model was run.
+
+**Confirmed:** every preregistered verdict (H1-A, H1-B, H2, H3, H4) follows correctly from the rules. The design-matched nulls, permutation tests, Holm and Benjamini–Hochberg procedures are implemented correctly. There is no leakage.
+
+**Found and fixed:**
+- **Confounder.** The colour stimuli sample saturation ≥ 0.4 only, so their RGB values already have the hue loop, with hue winding once. The colour result shows that the model preserves its input's hue circle, not that it builds one.
+- **Loops inside a cluster.** For prompt-template designs, the maximum-π statistic can be won by a loop inside one concept's cluster. The weekday and days-with-times loops are such loops: each dies before any two day clusters touch. The text that called them a weak ring or "a ring, but not the days' ring" was wrong. The post hoc days-with-times coordinate (D5) is built on a different, non-significant Rips class, so it did not test the significant loop.
+- **Overclaims:**
+  - months "a real ring" (the test cannot tell a ring from a nearly closed arc);
+  - "the controls behaved" (the open-curve controls never came near the threshold);
+  - residues "fragile" (the top PCA eigenvalues are nearly equal because W_E uses 5 Fourier frequencies);
+  - "going around once separates the cyclic concepts" in 10D (only colours wind there);
+  - "× chance" (it is × the null's 95th percentile).
+- **Misdescriptions:**
+  - The weekday power figure was the nearest grid cell, without a CI, from a simulation whose clusters are tighter than the real ones.
+  - The ρ_A ≥ 4 Exp1 subset has no tori and is mostly hole-free blobs, discs and paraboloids, so it is not "shapes whose holes stand well above the noise".
+  - The family-label baseline is in-distribution.
+- **Preregistration adherence.** The descriptive closure ratio (section 5) was implemented but never reported. It is now reported.
+
+**Analyses added (post hoc), phase `run.py audit`** (`experiments/exp7_audit.py`, `results/exp7_audit/`):
+- the colour stimulus baseline;
+- loop localisation for cluster designs, with an exact criterion: the bar dies at or below half the smallest distance between points of different concepts;
+- the closure ratio;
+- PCA eigenvalue shares and the grokking Fourier spectrum;
+- subsample stability against a size-matched threshold;
+- the overlap of the relaxed-range θ_B class with the significant alpha bar;
+- exact binomial CIs for the power simulation.
+
+Results: [exp7_audit.md](exp7_audit.md). The claims are rewritten in the README, the summary, the per-dataset findings, the Exp1/2/3/5 reports and the paper. The example figure no longer labels a loop inside one cluster as a ring.
+
+**No preregistered verdict changes,** and no earlier result file is modified.
+
 ## P2 (plan-level): two planned unit tests superseded by the preregistration's definitions
 
 - **"The margin is 0 exactly at the source's thresholds (arc extent_frac 0.98, sphere cap threshold, r_bot = 0, r = R)."**

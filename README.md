@@ -2,51 +2,54 @@
 
 Do concepts that are cyclic in meaning (days, months, colours, residues mod n) occupy a region of activation space with a **hole that the concept goes around**? This repository answers that question with exact topology and persistent homology, for 44 activation and weight clouds from language models and toy networks.
 
-**Status (2026-11-15):** all preregistered topology analyses are done. They use only stored activations; no model inference was run. Model steering and simulated steering are preregistered and **postponed by the author**.
+**Status (2026-11-15):** all preregistered topology analyses are done. They use only stored activations; no model inference was run. A second independent audit added post hoc checks and corrected several plain-language claims; no preregistered verdict changed ([reports/exp7_audit.md](reports/exp7_audit.md)). Model steering and simulated steering are preregistered and **postponed by the author**.
 
 **Links:** [paper (PDF)](paper/main.pdf) · [interactive explorer](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/) · [inputs and results on Hugging Face](https://huggingface.co/datasets/BurnyCoder/topology-of-neural-geometry) · [preregistration](reports/preregistration.md) · [summary of all experiments](reports/summary.md)
 
 ## What we found, in plain words
 
 For each concept we ask two questions:
-1. Do its activations form a **ring with a real hole**, rather than a blob that merely looks round?
+1. Do its activations form a **ring with a real hole**, rather than a blob that merely looks round, and does that ring run through the concepts (rather than being a small loop inside one concept's cluster of prompts)?
 2. Does walking through the concept in order (Monday → Tuesday → … → Sunday → Monday) **go around that ring exactly once**?
 
 ![Positive and negative examples](docs/figures/fig_examples.png)
 
 *How to read.*
 - **Top:** each concept's activations, flattened to two dimensions and coloured by position in its cycle (years: by value). Green titles are results that came out as hoped, orange titles are partial, black titles are failures.
-- **Bottom:** how strong each cloud's ring is, compared with the strongest ring that random clouds of the same design produce 95% of the time. Above the dashed line means a real ring.
-- **A flat picture can mislead.** The weekdays look round here, but their ring is no stronger than the rings that 7 randomly placed clusters with the same spread form, and the third dimension is hidden.
+- **Bottom:** the persistence of each cloud's most persistent loop, divided by the 95th percentile of the same statistic in random clouds of the same design. Above the dashed line means a significant loop (p < 0.05). A significant loop is not always a ring of the concepts: for days with times it is a small loop inside one day's cluster (grey bar).
+- **A flat picture can mislead.** The weekdays look round here, but in 3D the 7 day centres form no loop (persistence ratio 1.05 for the centres alone; a regular 7-gon gives 1/sin(π/7) ≈ 2.3).
 
 **What worked**
-- **Colours behave like a colour wheel.**
-  - The model's colour representations form a clear ring, 2.1× the chance level, found in 100% of 200 random subsamples.
-  - Walking through the hues in order (red, yellow, green, blue, purple, back to red) goes around it exactly once.
-  - In a check added after the first results, this still holds with 10 dimensions instead of 3.
+- **Colours form a ring that hue goes around once, but the input already has that ring.**
+  - The model's colour representations form a clear loop: its persistence is 2.1× the null's 95th percentile, and it is found in 100% of 200 random subsamples.
+  - Walking through the hues in order (red, yellow, green, blue, purple, back to red) goes around it exactly once. In a check added after the first results, this still holds with 10 dimensions instead of 3.
+  - **Confounder (found in the second audit, D8):** the 900 prompts' own RGB values already form this loop (2.9× the null's 95th percentile, p = 0.001), and the 36 hue means go around it once. The prompts use only fairly saturated colours (saturation ≥ 0.4), which leaves a hole around the grey axis. So the result shows that the model *keeps* the hue circle of its input. It does not show that the model *builds* one.
 - **Residues mod 113 behave like a clock with 113 hours.**
-  - In a small network trained to add numbers modulo 113, the number embeddings form a ring (1.3× chance).
+  - In a small network trained to add numbers modulo 113, the number embeddings form a loop (1.3× the null's 95th percentile).
   - The numbers go around it once, ordered not as 0, 1, 2, … but by 20 × number (mod 113). This is the kind of Fourier-frequency order such networks are known to learn ([Nanda et al. 2023](https://arxiv.org/abs/2301.05217)).
-  - Caveat: the ring is fragile. It shows up in only 26% of subsamples and is gone with 10 dimensions.
-- **Months: a real ring, with a caveat.**
-  - The 12 months form a ring (1.2× chance, in 90% of subsamples).
-  - They go around it in calendar order, but only with an analysis setting we relaxed after seeing the first results, and only in 3 dimensions.
-- **The controls behaved.** Concepts with no cycle (years, temperatures, ages, character counts, GPT-2's position embeddings) showed no ring in 3D (0 of 6), and neither did 20 random walks and random smooth curves (0 of 20).
+  - Caveat: the 3-dimensional view is unstable. The embeddings use 5 Fourier frequencies (20, 21, 3, 15, 31) with similar shares of the variance (0.16–0.22 each), so the top principal components have nearly equal variance and the top-3 view mixes frequencies. This likely explains why the loop shows up in only 26% of subsamples (33% against a threshold matched to the subsample size) and vanishes in 10 dimensions, where the 5 circles combine and no single loop dominates.
+- **Months: a significant loop, with caveats.**
+  - The 12 months form a loop (1.2× the null's 95th percentile, in 90% of subsamples) that runs through the month clusters.
+  - The loop test cannot tell a closed ring from a nearly closed arc, and the December → January step is the largest of the 12 (1.9× the median step).
+  - The months go around it in calendar order, but only with an analysis setting we relaxed after seeing the first results, and only in 3 dimensions.
+- **The random-init controls behaved as chance predicts.** One of 3 random-init networks has a loop at p = 0.046, about what the 5% level predicts, and nothing goes around it.
+  - The ordinal concepts (0 of 6) and 20 random walks and smooth curves (0 of 20) showed no loop either. They were never at risk, though: they are open curves, whose most persistent loops (ratio 1.00–1.63) stay far below the thresholds that blob-like random clouds set (1.79–2.16).
 
 **What did not work**
-- **Weekdays: no ring found.**
-  - We expected a 7-hour clock, but the weekday ring is no stronger than chance (0.98×).
-  - The test is weak here: in simulations, even a true ring of 7 tight clusters is detected only 15% of the time.
+- **Weekdays: no ring of days.**
+  - We expected a 7-hour clock. In 3D the 7 day centres form no loop (ratio 1.05; p = 0.731 as a 7-point set), and the Sunday → Monday step is the largest (1.9× the median step).
+  - The cloud's most persistent loop (p = 0.094) is a small loop inside one day's cluster: it dies at radius 0.032, before any two days' clusters touch (radius 0.19).
+  - A weekday ring outside the top 3 dimensions, or with more prompts per day, is not ruled out. In simulations, the loop test detects a ring of 7 clusters in only 21% of cases at the weekdays' variance (95% CI of the nearest simulated cell 6–30%), but those simulated clusters are tighter than the real ones.
   - The days do sit in order around the axis of their fitted helix, but random-curve controls do that too, so it proves nothing.
-- **Days with times of day: a ring, but not the days' ring.** There is a ring (1.07× chance), but going Monday → Sunday does not go around it, and the ring appears in only 3% of subsamples.
+- **Days with times of day: no ring of days.** The significant loop (p = 0.013; q = 0.082 after Benjamini–Hochberg over 44 tests) is a small loop inside one day's cluster: it dies at radius 0.045, before any two days' clusters touch (0.16). It appears in only 3% of subsamples, and the 7 day centres alone form no loop (ratio 1.11).
 - **Our strictest, pre-committed test passed for nothing.** For weekdays, months and residues we committed in advance to three conditions: a ring, going around once, and surviving with 10 dimensions. None passed (0 of 3), and neither did the fitted-shape version (0 of 3).
-- **With 10 dimensions, a ring alone means little.** Years, ages, temperatures and counts also form rings there, but their values do not go around them. Going around once is what separates the cyclic concepts.
+- **With 10 dimensions, a loop alone means little.** Years, ages, temperatures and counts also form loops there, and their values do not go around them. Of the cyclic concepts, only colours still go around once in 10 dimensions; months, residues, weekdays and days with times do not.
 - **"Helix or closed ring?" cannot be decided.** The shape fitter called weekdays, months and residues helices (open curves). At this noise level, a helix and a closed ring look the same.
 - **Our hole detector was less accurate than the shape label.**
-  - The test bed was 39,000 synthetic shapes with known holes. The pre-committed detector counted the pieces, holes and voids exactly right 62% of the time (averaged over shape families). Reading the count off the fitter's shape label scored 81%.
-  - On shapes whose holes stand well above the noise (ρ_A ≥ 4), a tuned version of the detector does best: 92% vs 82% for the label.
+  - The test bed was 39,000 synthetic shapes with known holes. The pre-committed detector counted the pieces, holes and voids exactly right 62% of the time (averaged over shape families). Reading the count off the fitter's shape label scored 81%. The label comes from a fitter trained on the same 13 synthetic families, so this comparison is in-distribution for the label.
+  - On clouds far from any change of topology (ρ_A ≥ 4, a cut chosen after the results), a tuned version of the detector does best: 92% vs 82% for the label. No torus reaches that cut, and 49% of those clouds are blobs, discs or paraboloids, which have no hole.
 
-All statistics behind these sentences are in [Results](#results). The words are chosen to match them: "ring" means p < 0.05 against the design-matched null, and "goes around once" means winding number ±1 with significant alignment.
+All statistics behind these sentences are in [Results](#results). The words are chosen to match them: "loop" means p < 0.05 against the design-matched null; "ring" additionally means that the loop runs through the concept clusters, not inside one ([audit, D8](reports/exp7_audit.md)); "goes around once" means winding number ±1 with significant alignment.
 
 ## At a glance
 
@@ -119,7 +122,7 @@ Each method gives a circle-valued coordinate for the hole (θ_A, θ_B), and both
 
 **Synthetic validation (Exp1): does persistent homology recover the exact topology?** These are 39,000 clouds of 13 families with exact ground-truth Betti numbers. Scores are exact (b0, b1, b2) accuracy, macro-averaged over families, with 95% cluster-bootstrap CIs over generator chunks.
 
-| Role | Estimator | Resolvable clouds (30114) | Well-resolved, ρ_A ≥ 4 (18454) | False holes on contractible outlier clouds |
+| Role | Estimator | Resolvable clouds (30114) | Far from a topology change, ρ_A ≥ 4, post hoc (18454; no tori) | False holes on contractible outlier clouds |
 |---|---|---|---|---|
 | method (preregistered) | P: alpha complex + universal null | 0.618 [0.610, 0.626] | 0.751 [0.739, 0.763] | 0.065 |
 | ablation: Rips instead of alpha (D1) | S: Rips H1 + universal null | 0.660 [0.651, 0.670] | 0.852 [0.838, 0.866] | 0.085 |
@@ -138,6 +141,8 @@ Each method gives a circle-valued coordinate for the hole (θ_A, θ_B), and both
 | Prompt-offset means removed ("k days from …") | loop p: months 0.002 → 0.003; weekdays 0.094 → 0.391 |
 | Monte Carlo seed 0 → 1, 2 | loop p: months 0.002 → 0.001, 0.001; residues 0.001 → 0.001, 0.001; weekdays 0.094 → 0.116, 0.122 |
 | 200 subsamples of 80% of the points | loop kept in: colours 1.00, months 0.90, residues 0.26, days_time 0.03 |
+| Subsample threshold matched to the subsample size (audit, D8) | loop kept in: colours 1.00, months 0.93, residues 0.33, days_time 0.07 |
+| Colour activations → the prompts' own RGB values (audit, D8) | top H1 π 5.02 → 8.01 (null q95 2.76, p = 0.001); the 36 hue means wind once around the RGB loop |
 | Noise scale ν of Method A: main → median term only → doubled coverage term | resolvable fits: 27 → 41 → 24 of 44 |
 | DREiMac `standard_range` True → False (post hoc, D5) | months: no coordinate → winding 1 (R = 0.72); days_time: no coordinate → winding 0 |
 | Synthetic clouds with vs without outliers (D7) | P's false holes: 0.031 → 0.065; DTM filtration not required (threshold 0.10); outlier-proxy factor 4 and 8 instead of 6: 0.050–0.074 |
@@ -146,7 +151,8 @@ Each method gives a circle-valued coordinate for the hole (θ_A, θ_B), and both
 - **Test sets vs controls:**
   - Colours pass every step except the preregistered top-10 check, which they pass only post hoc.
   - Residues and months have loops, and the concept goes around them, but only residues do so in the preregistered setting, and both lose the loop in the top-10 PCs.
-  - No ordinal concept and no random process has a top-3 loop. One random-init network has a borderline loop (p = 0.046), but nothing goes around it.
+  - No ordinal concept and no random process has a top-3 loop, but as open curves they were never near the threshold. One random-init network has a borderline loop (p = 0.046), but nothing goes around it.
+  - The colour loop is already in the colour prompts' RGB values, so it does not show that the model builds a hue circle.
   - Because no cyclic set passed the full preregistered rule, the controls' failures are weak evidence of specificity.
 - **Method vs baselines (synthetic):**
   - The preregistered estimator P is **worse** than both the fixed-threshold baseline (Ba) and the family label (Bb), overall and on well-resolved clouds.
@@ -175,7 +181,7 @@ Each method gives a circle-valued coordinate for the hole (θ_A, θ_B), and both
   - Grey: the largest H1 ratio in each of 999 surrogate clouds with the same design but no planted loop. Prompt-template sets use a cluster-centre null; the others use a full-dimensional matched Gaussian.
   - Dashed: the null's 95th percentile. Solid: the observed value.
 - **Results:**
-  - Colours, residues, months and days_time lie beyond the null.
+  - Colours, residues, months and days_time lie beyond the null. The days_time loop is a small loop inside one day's cluster, not a ring of days (audit, D8).
   - Weekdays fall just short (p = 0.094).
   - Ordinal sets and controls lie inside the null or below it.
 
@@ -192,7 +198,7 @@ The per-dataset findings, with every statistic, are in [reports/findings_per_dat
   - H1-B (persistent homology + traversal + top-10 robustness): 0/3.
   - H3 (days_time): fail.
   - H4: balanced accuracy 0.50 for every criterion. No criterion identified any cyclic set, so the "found more easily" comparison is uninformative.
-  - H2 (specificity) is not falsified. That is weak evidence: sensitivity is zero, and the controls never come near the null threshold.
+  - H2 (specificity) is not falsified. That is weak evidence: sensitivity is zero, and the ordinal and random-process controls, being open curves, never come near the null threshold.
 
 ### Method B on key clouds (Exp2, Exp3)
 
@@ -206,17 +212,17 @@ The per-dataset findings, with every statistic, are in [reports/findings_per_dat
 | years | 1.63 | 1.94 | 0.775 | 1.000 | no coordinate | 0.21, 0 | 1.39 vs 1.35, p = 0.005 |
 | GPT-2 positions | 1.22 | 2.16 | 1.000 | 1.000 | no coordinate | 0.30, 0 | 1.01 vs 1.51, p = 1.000 |
 
-"No coordinate" means DREiMac's preregistered setting, which requires Rips death ≥ 2 × birth, built no circular coordinate. All 44 clouds: [reports/exp2_invariants.md](reports/exp2_invariants.md). Hypothesis tests: [reports/exp3_cyclic.md](reports/exp3_cyclic.md).
+"No coordinate" means DREiMac's preregistered setting, which requires Rips death ≥ 2 × birth, built no circular coordinate. The weekday and days_time loops die before any two day clusters touch, so they are loops inside one cluster (audit, D8). The post hoc days_time coordinate is built on a different, non-significant class ([0.40, 0.43]), which does not overlap the significant loop. All 44 clouds: [reports/exp2_invariants.md](reports/exp2_invariants.md). Hypothesis tests: [reports/exp3_cyclic.md](reports/exp3_cyclic.md).
 
 ![Power simulation](docs/figures/fig_power.png)
 
-*Why weekdays could hardly pass (corrected power simulation, post hoc).*
+*How often the loop test detects simulated rings (corrected power simulation, post hoc).*
 - **Setup:** 7 or 12 concept clusters in ℝ⁴⁰⁹⁶, matched to the real sets' second-order statistics. Plotted against the simulated top-3 explained variance:
   - the fraction of clouds that pass the loop test (solid);
   - for rings only, the fraction that pass the full preregistered conjunction (dashed).
   - The dotted line marks the real weekdays and months.
 - **Results:**
-  - At the weekdays' variance (0.66), a true ring passes the loop test in only 0.15 of replicates. Random placements pass at most 0.07, close to the nominal 5%. The full conjunction passes in at most 0.00, because the circular-coordinate step rarely builds a coordinate on such small loops.
+  - In the simulated cell closest to the weekdays' variance (top-3 share 0.646 vs the real 0.659), a ring passes the loop test in 0.15 of 40 replicates (exact 95% CI 0.06–0.30; 0.21 interpolated to the real share). The simulated clusters are tighter than the real ones, and the real day centres show no loop at all, so low power is not the only explanation for the weekdays. Random placements pass at most 0.07, close to the nominal 5%. The full conjunction passes in at most 0.00, because the circular-coordinate step rarely builds a coordinate on such small loops.
   - **The loop test alone cannot tell a ring from a nearly closed arc.** With 7 clusters, an open 300° arc (50° steps and a 60° gap) is almost a ring and passes as often as one. With 12 clusters (a gap of 2.2 steps) the ring passes more often, but the arc still passes often. Only the traversal conditions separate them.
 
 ### Method A: exact topology of the 44 fitted shapes (Exp0)
@@ -304,7 +310,8 @@ Full design decisions: [docs/methodology.md](docs/methodology.md). Exact topolog
   - **Days with times (H3)** and **criterion comparison (H4).**
   - **Instrument validity (H5):** synthetic accuracy against baselines, with cluster-bootstrap CIs.
   - Exploratory tests use Benjamini–Hochberg.
-- **Preregistration and deviations:** the [preregistration](reports/preregistration.md) has a power addendum (A1) and a steering amendment (A2). Every later change is logged with its date and whether it was decided before or after the results ([deviations D1–D7, P1–P2](reports/deviations.md)).
+  - **Second audit (post hoc, D8):** a colour stimulus baseline, where each top loop lives relative to the concept clusters, the preregistered closure ratio, PCA eigenvalue gaps, size-matched subsample stability, and CIs for the power simulation ([reports/exp7_audit.md](reports/exp7_audit.md)).
+- **Preregistration and deviations:** the [preregistration](reports/preregistration.md) has a power addendum (A1) and a steering amendment (A2). Every later change is logged with its date and whether it was decided before or after the results ([deviations D1–D8, P1–P2](reports/deviations.md)).
 
 ## Architecture (graph)
 
@@ -343,6 +350,7 @@ run.py <phase>
   exp3posthoc  post hoc: theta_B with DREiMac standard_range=False (deviation D5)
   exp4         bottleneck distances between clouds and ideal templates
   exp5         robustness: Rips vs alpha, top-k PCs (with matched null), full-D cosine, offset removal, seeds, noise scale
+  audit        post hoc checks of the second audit (D8): colour RGB baseline, loop localisation, closure ratio, PCA gaps, stability
   report       regenerate every table, figure and number in README / reports / paper from results/
   site         GitHub Pages explorer (docs/index.html)
   all          everything above, CPU only (about 1.5 h on 16 cores)
@@ -430,7 +438,8 @@ uv, Python 3.11, NumPy, SciPy, scikit-learn, pandas, [GUDHI](https://gudhi.inria
 - A distance for comparing clouds that is not dominated by absolute scale (Exp4 was uninformative), for example bottleneck distance in log-π coordinates.
 - Torus and thin-loop detection: the synthetic accuracy for tori is near zero at these sample sizes.
 - Optional Exp0b: refit the synthetic clouds with the published source checkpoint, to score Method A on fitted rather than ground-truth parameters (needs model inference).
-- A clean-room replication run that includes the `exp1outliers` phase.
+- A clean-room replication run that includes the `exp1outliers` and `audit` phases.
+- **Colour controls that need model inference** (postponed): a random-init Llama on the same 900 prompts, and colour prompts by name instead of hex code, to separate the model's hue code from the hue circle of the input.
 
 ## License
 
