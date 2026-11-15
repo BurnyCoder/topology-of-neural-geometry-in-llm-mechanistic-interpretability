@@ -21,33 +21,54 @@ We answer it in two independent ways:
 
 ## Highlights (all numbers generated from `results/`)
 
-- **Clear semantic loops: colours (hue) and grokked residues.**
-  - **Colours:** a significant hole (persistence ratio π = {{exp2.colors.top_pi1:2}} vs null 95th percentile {{exp2.colors.null_q95_pi1:2}}, p = {{exp2.colors.p_top_loop}}). Hue goes **once around it in order**, in the persistent-cohomology coordinate (R = {{exp3.colors.thetaB.R:2}}, p < 1e-4, winding {{exp3.colors.thetaB.w}}) and in the fitted cone's azimuth (R = {{exp0.colors.theta.R:2}}). It is the only loop that persists beyond the top-3 PCs: Rips π = {{exp5.colors.rips10_pi1:2}} in the top-10 PCs and {{exp5.colors.ripsD_cos_pi1:2}} in full-dimensional cosine distance.
-  - **Grokked residues:** a significant hole (π = {{exp2.grok.top_pi1:2}} vs {{exp2.grok.null_q95_pi1:2}}, p = {{exp2.grok.p_top_loop}}). Residues mod 113 wind once around it at Fourier frequency {{exp3.grok.thetaB.k}} (Holm-adjusted p = {{exp3.grok.B.holm}}).
-- **Months: a significant hole under the cluster-aware null** (π = {{exp2.months.top_pi1:2}} vs {{exp2.months.null_q95_pi1:2}}, p = {{exp2.months.p_top_loop}}). It is robust to removing the prompt-offset means (p = {{exp5.offset.months.p_loop}}). Post hoc, with a relaxed circular-coordinate setting, the months go once around it (R = {{exp3ph.months.3d.R:2}}, winding {{exp3ph.months.3d.w}}).
-  - On the fitted shape, the months sit around the helix axis in order (R = {{exp0.months.azimuth.R:2}}, winding {{exp0.months.azimuth.w}}), and the helix almost closes (closure gap {{exp0.months.azimuth.gap:2}} radii).
-  - Post hoc: their position along the axis follows the 2nd Fourier harmonic (R² = {{coords.months.harmonic.h2:2}} vs {{coords.months.harmonic.h1:2}} for the 1st). The months lie on a closed saddle-shaped loop, a circle that the helix family can only approximate.
-- **Weekdays: no detectable hole** (π = {{exp2.weekdays.top_pi1:2}} vs {{exp2.weekdays.null_q95_pi1:2}}, p = {{exp2.weekdays.p_top_loop}}). This holds across seeds and after offset removal. Yet on the fitted helix the days sit around its axis in exact cyclic order (exact p = {{exp0.weekdays.azimuth.p}}, the minimum possible, winding {{exp0.weekdays.azimuth.w}}).
-- **Specificity:** none of the 6 ordinal concepts and none of the 20 random-walk / Gaussian-process controls has a loop the concept travels around.
-  - Ordinal concepts with a significant loop: {{exp2.ordinal_loops}} of 6 (positions, counts, years, temperature, age). Controls: {{exp2.c1_loops}} of 20.
-  - Ordinal concepts are instead ordered *along* open curves: character counts |ρ| = {{coords.counting.curve_parameter_s.value.rho:3}}, temperature {{coords.temperature.curve_parameter_s.value.rho:3}}, GPT-2 positions pole-to-pole {{coords.wpos.polar_height_z.value.rho:3}}.
-- **Fitted helices are not evidence of open curves.** The helix fits of weekdays, months and residues have margin ratios of only {{exp0.weekdays.rho:2}}, {{exp0.months.rho:2}} and {{exp0.grok.rho:2}}, so their "openness" is within the noise.
-  - The axial winding of helix fits is *not* specific: {{exp0.gp_wind1}} of {{exp0.gp_helix_n}} smooth random-process controls fitted as helices also wind (R = {{exp0.gp_R_min:2}}–{{exp0.gp_R_max:2}}).
-  - Closure separates them: the controls' closure gaps are {{exp0.gp_gap_min:2}}–{{exp0.gp_gap_max:2}} radii.
-- **Preregistered co-primary verdicts:**
-  - **H1-A**, a hole in the fitted shape plus traversal: {{exp3.H1A}}/3 cyclic sets pass. All three are fitted as helices, which have no hole.
-  - **H1-B**, persistent homology plus traversal plus robustness: {{exp3.H1B}}/3 pass. Weekdays have no loop. For months, the preregistered DREiMac setting yields no coordinate. The residues fail only the top-10-PC check.
-  - **H2, specificity:** {{exp3.H2.B.falsified}}.
-- **Instrument check on 39,000 synthetic clouds with exact ground-truth topology** ({{exp1.n}} resolvable clouds):
-  - The preregistered estimator (alpha complex + universal null) recovers the exact Betti vector for {{exp1.P.acc:3}} [{{exp1.P.lo:3}}, {{exp1.P.hi:3}}] (macro average). That is worse than a fixed-threshold baseline ({{exp1.Ba.acc:3}}) and than reading topology off the fitter's predicted family ({{exp1.Bb.acc:3}}).
-  - All persistent-homology estimators beat the family label once the topology is well resolved (ρ_A ≥ 4): {{exp1.rho4.Ba:2}} vs {{exp1.rho4.Bb:2}}.
-  - They separate open from closed arcs, and caps from full spheres, which a family label cannot.
+Results per dataset. "Hole" means a significant H1 loop under the design-matched Monte Carlo null (999 draws); "goes around" means the concept's semantic cycle winds exactly once in the loop's circle-valued coordinate. The alignment R and its permutation p measure *ordering*; only winding ±1 carries the cyclic claim.
+
+- **Colours (exploratory set):**
+  - Hole: π = {{exp2.colors.top_pi1:2}} vs null 95th percentile {{exp2.colors.null_q95_pi1:2}}, p = {{exp2.colors.p_top_loop}}, Benjamini–Hochberg q = {{exp2.colors.q_loop}}, stable in {{exp2.colors.loop_freq:2}} of subsamples.
+  - Hue goes around it once, in the cohomology coordinate (R = {{exp3.colors.thetaB.R:2}}, winding {{exp3.colors.thetaB.w}}) and on the fitted cone (R = {{exp0.colors.theta.R:2}}, winding {{exp0.colors.theta.w}}).
+  - In the top-10 PCs, against a matched null (post hoc), the loop is still significant: Rips π = {{exp5.top10.colors.pi:2}} vs {{exp5.top10.colors.q95:2}}, p = {{exp5.top10.colors.p}}. Hue still winds once there (R = {{exp3ph.colors.top10.R:2}}, winding {{exp3ph.colors.top10.w}}).
+  - In 10D a loop by itself is not specific: ordinal concepts have significant top-10 loops too (see below). What singles out colours is that hue goes around its loop.
+- **Grokked residues mod 113:**
+  - Hole: π = {{exp2.grok.top_pi1:2}} vs {{exp2.grok.null_q95_pi1:2}}, p = {{exp2.grok.p_top_loop}}, but stable in only {{exp2.grok.loop_freq:2}} of subsamples.
+  - The residues go around it once at Fourier frequency {{exp3.grok.thetaB.k}} (Holm p = {{exp3.grok.B.holm}}, winding {{exp3.grok.thetaB.w}}).
+  - The preregistered top-10-PC check (d) fails. Top-10 null p = {{exp5.top10.grok.p}}.
+- **Months:**
+  - Hole: π = {{exp2.months.top_pi1:2}} vs {{exp2.months.null_q95_pi1:2}}, p = {{exp2.months.p_top_loop}}. It is robust to removing the prompt-offset means (p = {{exp5.offset.months.p_loop}}) and to the Monte Carlo seed.
+  - The preregistered circular-coordinate setting built no coordinate. Only post hoc (relaxed setting) do the months go around the loop once in 3D (R = {{exp3ph.months.3d.R:2}}, winding {{exp3ph.months.3d.w}}); not in the top-10 PCs (winding {{exp3ph.months.top10.w}}; top-10 null p = {{exp5.top10.months.p}}).
+  - On the fitted helix the two ends nearly meet (closure gap {{exp0.months.azimuth.gap:2}} radii). Post hoc, the axial position follows the 2nd Fourier harmonic (R² = {{coords.months.harmonic.h2:2}} vs {{coords.months.harmonic.h1:2}} for the 1st), as a closed saddle-shaped loop would.
+- **Days with times** (day phase, exploratory):
+  - There is a loop (p = {{exp2.daystime.p_top_loop}}), but it is unstable (stable in {{exp2.daystime.loop_freq:2}} of subsamples).
+  - **The day does not go around it**, even post hoc (R = {{exp3ph.daystime.3d.R:2}}, winding {{exp3ph.daystime.3d.w}}).
+  - On the fitted curve, the days lie in linear order (ρ = {{coords.daystime.curve_parameter_s.day_of_week.rho:2}}).
+- **Weekdays:**
+  - **No detectable hole** (π = {{exp2.weekdays.top_pi1:2}} vs {{exp2.weekdays.null_q95_pi1:2}}, p = {{exp2.weekdays.p_top_loop}}), across seeds and after offset removal.
+  - The test has little power here. In the corrected power simulation (post hoc), a true ring of 7 clusters with weekday-like statistics (top-3 variance {{power2.weekdays.top3:2}}; real {{power2.weekdays.real_top3:2}}) passes the loop test in {{power2.weekdays.loop:2}} of replicates. It passes the full preregistered conjunction in at most {{power2.weekdays.ring_all_max:2}}, because the circular-coordinate step fails on such loops.
+  - So the preregistered H1-B test was nearly incapable of passing for 7- or 12-cluster designs. For 12-cluster rings like months, the conjunction passes in at most {{power2.months.ring_all_max:2}} of replicates.
+  - The days are ordered around the fitted helix's axis (exact p = {{exp0.weekdays.azimuth.p}}, winding {{exp0.weekdays.azimuth.w}}). **This is not specific:** {{exp0.gp_wind1}} of {{exp0.gp_helix_n}} smooth random-process controls fitted as helices wind too, and their closure gaps ({{exp0.gp_gap_min:2}}–{{exp0.gp_gap_max:2}}) include the weekdays' {{exp0.weekdays.azimuth.gap:2}}.
+- **Ordinal concepts and controls:**
+  - In the top-3 PCs, none of the 6 ordinal sets has a loop ({{exp2.ordinal_loops}}/6), and none of the 20 random walks or Gaussian processes ({{exp2.c1_loops}}/20).
+  - In the top-10 PCs (post hoc, matched null), loops are significant for {{exp5.top10.sig_ids}}. Ordinal values do not wind around them; only {{exp3ph.noncyclic_wind1_ids}} has a single winding record among all non-cyclic sets.
+  - The random-init grokking embedding has a borderline loop (p = {{exp2.grokinit.p_top_loop}}, q = {{exp2.grokinit.q_loop}}).
+  - After Benjamini–Hochberg over all 44 loop tests, {{exp2.n_loop_q05}} loops remain at q < 0.05: {{exp2.loops_q05}}.
+  - Ordinal concepts lie in order along open curves: counts ρ = {{coords.counting.curve_parameter_s.value.rho:3}}, temperature {{coords.temperature.curve_parameter_s.value.rho:3}}. GPT-2 positions run from pole to pole of their fitted sphere ({{coords.wpos.polar_height_z.value.rho:3}}) as a spiral curve.
+- **Fitted helices.** The helix fits of weekdays, months and residues have margin ratios of {{exp0.weekdays.rho:2}}, {{exp0.months.rho:2}} and {{exp0.grok.rho:2}}. Whether they are open or closed is **unresolvable** at the data's noise scale. For prompt-template designs, this low ratio is partly a property of the design (gaps between clusters).
+- **Preregistered verdicts:**
+  - H1-A (fitted-shape hole + traversal): {{exp3.H1A}}/3.
+  - H1-B (persistent homology + traversal + top-10 robustness): {{exp3.H1B}}/3.
+  - H3 (days_time): {{exp3.H3.B}}.
+  - H4: balanced accuracy {{exp3.H4.conj_B:2}} for every criterion. No criterion identified any cyclic set, so the "found more easily" comparison is uninformative.
+  - H2 (specificity) is {{exp3.H2.B.falsified}}. That is weak evidence: sensitivity is zero, and the controls never come near the null threshold.
+- **Instrument check on 39,000 synthetic clouds with exact ground-truth topology** ({{exp1.n}} resolvable):
+  - The preregistered estimator (alpha complex + universal null) recovers the exact Betti vector for {{exp1.P.acc:3}} [{{exp1.P.lo:3}}, {{exp1.P.hi:3}}] of clouds (macro). A fixed-threshold baseline scores {{exp1.Ba.acc:3}}, and reading topology off the fitter's family label scores {{exp1.Bb.acc:3}}.
+  - On well-resolved clouds (ρ_A ≥ 4; {{exp1.well.n}} clouds, {{exp1.well.trivial_frac:2}} of them trivially contractible), the preregistered estimator scores {{exp1.well.P.acc:3}} vs {{exp1.well.Bb.acc:3}} for the family label; paired difference {{exp1.well.diff.Bb:3}} [{{exp1.well.diff.Bb.lo:3}}, {{exp1.well.diff.Bb.hi:3}}].
+  - The fixed-threshold persistence estimator beats the family label where the label cannot fix the topology: open vs closed arcs, {{exp1.Ba.arc:2}} vs {{exp1.Bb.arc:2}}; caps vs full spheres, {{exp1.Ba.sphere:2}} vs {{exp1.Bb.sphere:2}}.
 
 **In plain words.**
-- Topology finds the loops that semantics predicts for colours, residues and months. It finds none for ordinal concepts or random controls.
-- The shape fitter calls the cyclic sets "helices", but within noise those helices are closed loops.
-- Weekdays are the exception. They are ordered around a circle on the fitted shape, but the 7 prompt clusters do not form a statistically detectable hole.
-- Whether steering *around* these loops changes the model's answers in semantic order is the next experiment. It is designed, and postponed by the author.
+- Topology finds a hole that the concept goes around for **colours** (robustly) and **residues mod 113**. For **months** there is a hole, and the months go around it, but only in a post hoc analysis and only in the top-3 PCs.
+- It does **not** find one for weekdays. The corrected power simulation shows the test rarely detects 7-cluster rings. It finds a loop in days-with-times, but the day does not go around it.
+- It finds no loops in ordinal concepts or random controls in the top-3 PCs. In 10 dimensions ordinal concepts do get loops, but their values do not travel around them; going around the hole, not having one, is what distinguishes the cyclic concepts. Since the strict tests never fired for any cyclic set, the specificity evidence is weak.
+- The shape fitter's "helices" for cyclic concepts cannot be told apart from closed loops at this noise level. Months come closest to closing.
+- Whether steering around these loops changes the model's answers in semantic order is the next experiment. It is designed, and postponed by the author.
 
 ![Real activation clouds and their persistence](docs/figures/fig_real_gallery.png)
 
@@ -64,15 +85,15 @@ We answer it in two independent ways:
 
 ### Method B: persistent homology of the clouds (Exp2) and the cyclic tests (Exp3)
 
-| Dataset | top H1 π | null q95 | p (loop) | traversal: R, winding (θ_B, preregistered) | traversal post hoc, 3D (relaxed range) | Rips π in top-10 PCs |
-|---|---|---|---|---|---|---|
-| colours (hue) | {{exp2.colors.top_pi1:2}} | {{exp2.colors.null_q95_pi1:2}} | {{exp2.colors.p_top_loop}} | {{exp3.colors.thetaB.R:2}}, {{exp3.colors.thetaB.w}} | {{exp3ph.colors.3d.R:2}}, {{exp3ph.colors.3d.w}} | {{exp5.colors.rips10_pi1:2}} |
-| grokked residues (k = {{exp3.grok.thetaB.k}}) | {{exp2.grok.top_pi1:2}} | {{exp2.grok.null_q95_pi1:2}} | {{exp2.grok.p_top_loop}} | {{exp3.grok.thetaB.R:2}}, {{exp3.grok.thetaB.w}} | {{exp3ph.grok.3d.R:2}}, {{exp3ph.grok.3d.w}} | {{exp5.grok.rips10_pi1:2}} |
-| months | {{exp2.months.top_pi1:2}} | {{exp2.months.null_q95_pi1:2}} | {{exp2.months.p_top_loop}} | no coordinate | {{exp3ph.months.3d.R:2}}, {{exp3ph.months.3d.w}} | {{exp5.months.rips10_pi1:2}} |
-| days with times (day) | {{exp2.daystime.top_pi1:2}} | {{exp2.daystime.null_q95_pi1:2}} | {{exp2.daystime.p_top_loop}} | no coordinate | {{exp3ph.daystime.3d.R:2}}, {{exp3ph.daystime.3d.w}} | {{exp5.daystime.rips10_pi1:2}} |
-| weekdays | {{exp2.weekdays.top_pi1:2}} | {{exp2.weekdays.null_q95_pi1:2}} | {{exp2.weekdays.p_top_loop}} | no coordinate | {{exp3ph.weekdays.3d.R:2}}, {{exp3ph.weekdays.3d.w}} | {{exp5.weekdays.rips10_pi1:2}} |
-| years | {{exp2.years.top_pi1:2}} | {{exp2.years.null_q95_pi1:2}} | {{exp2.years.p_top_loop}} | no coordinate | {{exp3ph.years.3d.R:2}}, {{exp3ph.years.3d.w}} | {{exp5.years.rips10_pi1:2}} |
-| GPT-2 positions | {{exp2.wpos.top_pi1:2}} | {{exp2.wpos.null_q95_pi1:2}} | {{exp2.wpos.p_top_loop}} | no coordinate | {{exp3ph.wpos.3d.R:2}}, {{exp3ph.wpos.3d.w}} | {{exp5.wpos.rips10_pi1:2}} |
+| Dataset | top H1 π | null q95 | p (loop) | BH q | traversal: R, winding (θ_B, preregistered) | traversal post hoc, 3D (relaxed range) | top-10 PCs: Rips π vs null q95, p (post hoc) |
+|---|---|---|---|---|---|---|---|
+| colours (hue) | {{exp2.colors.top_pi1:2}} | {{exp2.colors.null_q95_pi1:2}} | {{exp2.colors.p_top_loop}} | {{exp2.colors.q_loop}} | {{exp3.colors.thetaB.R:2}}, {{exp3.colors.thetaB.w}} | {{exp3ph.colors.3d.R:2}}, {{exp3ph.colors.3d.w}} | {{exp5.top10.colors.pi:2}} vs {{exp5.top10.colors.q95:2}}, p = {{exp5.top10.colors.p}} |
+| grokked residues (k = {{exp3.grok.thetaB.k}}) | {{exp2.grok.top_pi1:2}} | {{exp2.grok.null_q95_pi1:2}} | {{exp2.grok.p_top_loop}} | {{exp2.grok.q_loop}} | {{exp3.grok.thetaB.R:2}}, {{exp3.grok.thetaB.w}} | {{exp3ph.grok.3d.R:2}}, {{exp3ph.grok.3d.w}} | {{exp5.top10.grok.pi:2}} vs {{exp5.top10.grok.q95:2}}, p = {{exp5.top10.grok.p}} |
+| months | {{exp2.months.top_pi1:2}} | {{exp2.months.null_q95_pi1:2}} | {{exp2.months.p_top_loop}} | {{exp2.months.q_loop}} | no coordinate | {{exp3ph.months.3d.R:2}}, {{exp3ph.months.3d.w}} | {{exp5.top10.months.pi:2}} vs {{exp5.top10.months.q95:2}}, p = {{exp5.top10.months.p}} |
+| days with times (day) | {{exp2.daystime.top_pi1:2}} | {{exp2.daystime.null_q95_pi1:2}} | {{exp2.daystime.p_top_loop}} | {{exp2.daystime.q_loop}} | no coordinate | {{exp3ph.daystime.3d.R:2}}, {{exp3ph.daystime.3d.w}} | {{exp5.top10.daystime.pi:2}} vs {{exp5.top10.daystime.q95:2}}, p = {{exp5.top10.daystime.p}} |
+| weekdays | {{exp2.weekdays.top_pi1:2}} | {{exp2.weekdays.null_q95_pi1:2}} | {{exp2.weekdays.p_top_loop}} | {{exp2.weekdays.q_loop}} | no coordinate | {{exp3ph.weekdays.3d.R:2}}, {{exp3ph.weekdays.3d.w}} | {{exp5.top10.weekdays.pi:2}} vs {{exp5.top10.weekdays.q95:2}}, p = {{exp5.top10.weekdays.p}} |
+| years | {{exp2.years.top_pi1:2}} | {{exp2.years.null_q95_pi1:2}} | {{exp2.years.p_top_loop}} | {{exp2.years.q_loop}} | no coordinate | {{exp3ph.years.3d.R:2}}, {{exp3ph.years.3d.w}} | {{exp5.top10.years.pi:2}} vs {{exp5.top10.years.q95:2}}, p = {{exp5.top10.years.p}} |
+| GPT-2 positions | {{exp2.wpos.top_pi1:2}} | {{exp2.wpos.null_q95_pi1:2}} | {{exp2.wpos.p_top_loop}} | {{exp2.wpos.q_loop}} | no coordinate | {{exp3ph.wpos.3d.R:2}}, {{exp3ph.wpos.3d.w}} | {{exp5.top10.wpos.pi:2}} vs {{exp5.top10.wpos.q95:2}}, p = {{exp5.top10.wpos.p}} |
 
 **How to read the table:**
 - The null is a cluster-centre null for prompt-template designs and a full-dimensional matched Gaussian otherwise, with 999 draws.
@@ -91,10 +112,10 @@ All 44 clouds: [reports/exp2_invariants.md](reports/exp2_invariants.md). Hypothe
 | Bc: majority vector | {{exp1.Bc.acc:3}} [{{exp1.Bc.lo:3}}, {{exp1.Bc.hi:3}}] |
 
 **Better or worse, in plain words:**
-- The persistent-homology estimators are **worse** than the family label overall. They miss thin loops (ellipse: {{exp1.Ba.ellipse:2}} vs {{exp1.Bb.ellipse:2}}) and tori ({{exp1.Ba.torus:2}} vs {{exp1.Bb.torus:2}}).
-- They are **better** where the label is topologically ambiguous: arcs, open or closed ({{exp1.Ba.arc:2}} vs {{exp1.Bb.arc:2}}), and spheres, cap or full ({{exp1.Ba.sphere:2}} vs {{exp1.Bb.sphere:2}}).
-- They are **better** wherever the topology is well resolved.
-- They rarely invent holes: {{exp1.P.fpr_min:3}}–{{exp1.P.fpr_max:3}} false positives on contractible shapes.
+- The preregistered persistent-homology estimator (P) and the fixed-threshold one (Ba) are **worse** than the family label (Bb) overall. Ba misses thin loops (ellipse: {{exp1.Ba.ellipse:2}} vs {{exp1.Bb.ellipse:2}}) and tori ({{exp1.Ba.torus:2}} vs {{exp1.Bb.torus:2}}).
+- Ba is **better** where the label is topologically ambiguous: arcs, open or closed ({{exp1.Ba.arc:2}} vs {{exp1.Bb.arc:2}}), and spheres, cap or full ({{exp1.Ba.sphere:2}} vs {{exp1.Bb.sphere:2}}).
+- On well-resolved clouds (ρ_A ≥ 4), the preregistered P scores {{exp1.well.P.acc:3}} [{{exp1.well.P.lo:3}}, {{exp1.well.P.hi:3}}] vs {{exp1.well.Bb.acc:3}} [{{exp1.well.Bb.lo:3}}, {{exp1.well.Bb.hi:3}}] for the family label (macro, cluster-bootstrap CIs).
+- P rarely invents holes: {{exp1.P.fpr_min:3}}–{{exp1.P.fpr_max:3}} false positives on contractible shapes.
 
 ![Estimators](docs/figures/fig_exp1_estimators.png)
 ![Accuracy vs resolvability](docs/figures/fig_exp1_by_rho.png)

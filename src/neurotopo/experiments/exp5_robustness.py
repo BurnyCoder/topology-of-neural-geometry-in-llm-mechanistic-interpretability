@@ -53,6 +53,18 @@ def projection_row(dataset_id: str) -> dict:
     return out
 
 
+def topk_null_row(dataset_id: str, seed: int, k: int = 10, m: int = 199) -> dict:
+    """Top-k loop test with a design-matched MC null (audit, D6): observed max Rips H1 pi of the RMS-normalised
+    top-k cloud vs the same statistic on m null draws pushed through the same top-k projection."""
+    c = realdata.cloud(dataset_id)
+    y, _ = fit_frame(c["x"], k=k)
+    obs = diagrams.max_ratio(diagrams.rips_diagrams(y, maxdim=1)[1])
+    nm = nulls.null_max_rips_topk(c["x"], realdata.design(dataset_id), realdata.groups(dataset_id, c["labels"]), m=m,
+                                  seed=nulls.dataset_seed(dataset_id + f"top{k}", seed), k=k)
+    return {"id": dataset_id, "k": k, "rips_pi1": obs, "null_q95": float(np.quantile(nm, 0.95)),
+            "p_loop": float(nulls.mc_pvalues(np.array([obs]), nm)[0]), "m": m}
+
+
 def offset_removed(dataset_id: str, seed: int) -> dict:
     """Weekdays / months: subtract per-offset means (offset = i % 7 or i % 12; no concept labels used), then
     loop p-value (cluster-centre null, M = 999), theta_B alignment and winding."""
@@ -100,6 +112,9 @@ def run() -> None:
     proj = pd.DataFrame([projection_row(d) for d in KEY])
     proj.to_csv(out / "projection.csv", index=False)
     log.info("projection check:\n%s", proj.to_string())
+    topk = pd.DataFrame([topk_null_row(d, cfg["seed"]) for d in KEY])
+    topk.to_csv(out / "topk_null.csv", index=False)
+    log.info("top-10 loop test with MC null:\n%s", topk.to_string())
     off = [offset_removed(d, cfg["seed"]) for d in ("R5a_llama_weekdays", "R5b_llama_months")]
     seeds = [seed_row(d, s) for d in cfg["groups"]["cyclic_primary"] for s in (1, 2)]
     nu = pd.DataFrame([nu_variants(d) for d in source.dataset_ids()])

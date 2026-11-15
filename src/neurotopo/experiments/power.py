@@ -151,3 +151,68 @@ def run() -> None:
     summ = sim.groupby(["k", "m", "arrangement", "fb"])[["loop", "align", "wind1", "all"]].mean().reset_index()
     summ.to_csv(out / "power_summary.csv", index=False)
     log.info("power summary:\n%s", summ.to_string())
+
+
+# ----------------------------------------------------------------------------- 3. corrected power simulation (post hoc)
+# The preregistered simulation put all between-concept variance on the ring and spread within-concept noise
+# isotropically over D = 4096 dimensions, so almost no noise reached the top-3 PCs and rings passed trivially
+# (independent audit; deviations D6). Real concept means also vary in many directions besides the ring
+# (weekdays: between fraction 0.84 but top-3 explained 0.66). Version 2 draws concept centres as a ring
+# (variance share f_ring) plus random per-concept offsets in 20 further dimensions (share f_B - f_ring), with
+# isotropic within-concept noise (share 1 - f_B); f_B is fixed to the real set's value and f_ring is swept so the
+# simulated top-3 explained variance covers the real one.
+DESIGNS_V2 = [(7, 7, 4096, 0.84), (12, 12, 4096, 0.91), (113, 1, 128, 1.0)]   # (k, m, D, real between fraction)
+FRING_GRID = [0.2, 0.3, 0.45, 0.6]
+
+
+def simulate_cloud_v2(k: int, m: int, d: int, fb: float, fring: float, arrangement: str, rng: np.random.Generator):
+    if arrangement == "random":
+        loc = rng.normal(size=(k, 2))
+    else:
+        span = 2 * np.pi if arrangement == "ring" else 2 * np.pi * 300 / 360
+        t = span * np.arange(k) / (k if arrangement == "ring" else k - 1)
+        loc = np.c_[np.cos(t), np.sin(t)]
+    loc -= loc.mean(0)
+    loc *= np.sqrt(fring / (loc ** 2).sum(1).mean())                    # ring variance share fring (per point)
+    q, _ = np.linalg.qr(rng.normal(size=(d, 22)))                       # 2 ring dims + 20 offset dims
+    off = rng.normal(size=(k, 20))
+    off -= off.mean(0)
+    off *= np.sqrt(max(fb - fring, 0) / max((off ** 2).sum(1).mean(), 1e-12))
+    centres = np.c_[loc, off] @ q.T
+    idx = np.repeat(np.arange(k), m)
+    s = np.sqrt(max(1 - fb, 0) / d)
+    return centres[idx] + s * rng.normal(size=(k * m, d)), idx
+
+
+def simulate_rep_v2(k, m, d, fb, fring, arrangement, seed) -> dict:
+    rng = np.random.default_rng(seed)
+    x, idx = simulate_cloud_v2(k, m, d, fb, fring, arrangement, rng)
+    y, fr = fit_frame(x)
+    top3 = float(fr["eigvals"][:3].sum() / fr["total_var"])
+    dg = diagrams.alpha_diagrams(y)
+    kind, groups = ("cluster", idx) if m > 1 else ("gaussian", None)
+    null = nulls.null_max_ratios(x, kind, groups, m=M_SIM, seed=seed + 1, maxdim=1, n_jobs=1)
+    loop = bool(nulls.mc_pvalues(np.array([diagrams.max_ratio(dg[1])]), null[:, 0])[0] < 0.05)
+    theta = circular.circular_coordinates(y)["theta"]
+    if theta is None:
+        p, w = 1.0, 0
+    else:
+        th = cs.concept_means(theta, idx, k)
+        p = cs.permutation_pvalue(th, 2 * np.pi * np.arange(k) / k, exact_max_n=7, mc=999, rng=rng)
+        w = cs.winding(th)
+    return {"k": k, "m": m, "fb": fb, "fring": fring, "arrangement": arrangement, "top3": top3, "loop": loop,
+            "align": bool(p < 0.05 / 6), "wind1": abs(w) == 1, "all": loop and p < 0.05 / 6 and abs(w) == 1}
+
+
+def run_v2() -> None:
+    cfg = config.load()
+    out = out_dir("power")
+    jobs = [(k, m, d, fb, fr, a, cfg["seed"] * 10 ** 6 + 500000 + 1000 * i + 100 * j + r)
+            for i, (k, m, d, fb) in enumerate(DESIGNS_V2) for j, fr in enumerate(FRING_GRID)
+            for a in ARRANGEMENTS for r in range(REPS)]
+    rows = Parallel(n_jobs=-1, batch_size=4)(delayed(simulate_rep_v2)(*j) for j in jobs)
+    sim = pd.DataFrame(rows)
+    sim.to_csv(out / "power_v2_simulation.csv", index=False)
+    summ = sim.groupby(["k", "m", "fb", "arrangement", "fring"])[["top3", "loop", "align", "wind1", "all"]].mean().reset_index()
+    summ.to_csv(out / "power_v2_summary.csv", index=False)
+    log.info("power v2 summary:\n%s", summ.to_string())

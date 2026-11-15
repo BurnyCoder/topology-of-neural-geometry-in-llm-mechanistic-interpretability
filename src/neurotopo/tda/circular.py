@@ -22,14 +22,16 @@ def circular_coordinates(points: np.ndarray, prime: int = 47, max_landmarks: int
     n_land = int(min(len(pts), max_landmarks))
     cc = CircularCoords(pts, n_landmarks=n_land, prime=prime, maxdim=1)
     dgm1 = np.asarray(cc.dgms_[1]) if hasattr(cc, "dgms_") else np.zeros((0, 2))
+    if dgm1.size == 0:                                   # no H1 class at all (DREiMac would raise IndexError)
+        return {"theta": None, "bar": None, "n_landmarks": n_land, "error": "no H1 class"}
     try:
         # standard_range=True (preregistered) requires Rips death >= 2 x birth (DREiMac EMCoords.get_cover_radius),
         # which guarantees the class is non-trivial in the Cech complex; False only guarantees it in the Rips complex.
         theta = cc.get_coordinates(perc=perc, cocycle_idx=cocycle_idx, standard_range=standard_range)
-    except Exception as exc:  # DREiMac: "The cohomology class selected is too short" (or no H1 class at all)
-        # With standard_range=True DREiMac only builds coordinates for a class that persists past twice the
-        # landmark cover radius, i.e. that is non-trivial in the Cech complex used; otherwise there is no
-        # usable loop and the traversal test counts as failed (reports/deviations.md D3).
+    except Exception as exc:
+        # Only DREiMac's "class too short" refusal means "no usable loop" (deviations D3); anything else is a bug.
+        if "too short" not in str(exc):
+            raise
         return {"theta": None, "bar": None, "n_landmarks": n_land, "error": str(exc)[:120]}
     bar = None
     if dgm1.size:

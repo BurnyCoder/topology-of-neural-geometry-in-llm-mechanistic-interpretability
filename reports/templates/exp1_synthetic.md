@@ -35,7 +35,13 @@ How well do persistent-homology estimators recover the exact topology of noisy p
   - vs Bb: {{exp1.diff.Bb:3}} [{{exp1.diff.Bb.lo:3}}, {{exp1.diff.Bb.hi:3}}]
   - vs Bc: {{exp1.diff.Bc:3}} [{{exp1.diff.Bc.lo:3}}, {{exp1.diff.Bc.hi:3}}]
 - **H5:** the preregistered estimator is significantly *worse* than the fixed-threshold and family-implied baselines, and better than the majority vector.
-- **Well-resolved topology (ρ_A ≥ 4):** P {{exp1.rho4.P:2}}, S {{exp1.rho4.S:2}}, Ba {{exp1.rho4.Ba:2}}, Bb {{exp1.rho4.Bb:2}}.
+- **Well-resolved topology (ρ_A ≥ 4; post hoc, D6).** {{exp1.well.n}} clouds; a fraction {{exp1.well.trivial_frac:2}} of them are always-contractible blobs, discs or paraboloids. Macro, with cluster-bootstrap CIs:
+  - P: {{exp1.well.P.acc:3}} [{{exp1.well.P.lo:3}}, {{exp1.well.P.hi:3}}]
+  - Ba: {{exp1.well.Ba.acc:3}} [{{exp1.well.Ba.lo:3}}, {{exp1.well.Ba.hi:3}}]
+  - Bb: {{exp1.well.Bb.acc:3}} [{{exp1.well.Bb.lo:3}}, {{exp1.well.Bb.hi:3}}]
+  - Bc: {{exp1.well.Bc.acc:3}}
+  - Paired P − Bb: {{exp1.well.diff.Bb:3}} [{{exp1.well.diff.Bb.lo:3}}, {{exp1.well.diff.Bb.hi:3}}]. P − Ba: {{exp1.well.diff.Ba:3}} [{{exp1.well.diff.Ba.lo:3}}, {{exp1.well.diff.Ba.hi:3}}].
+  - Micro-averaged accuracies in the top ρ_A bin, used in an earlier version of the text: P {{exp1.rho4.P:2}}, Ba {{exp1.rho4.Ba:2}}, Bb {{exp1.rho4.Bb:2}}.
 - **False positives** (any hole on resolvable contractible shapes): {{exp1.P.fpr_min:3}}–{{exp1.P.fpr_max:3}} per N-bin for P.
 
 <!-- BEGIN:exp1 -->
@@ -46,7 +52,10 @@ How well do persistent-homology estimators recover the exact topology of noisy p
 
 ## Interpretation
 
-- **Where persistent homology adds information beyond the family label:** whenever the label does not fix the topology. Open vs closed arcs: {{exp1.Ba.arc:2}} vs {{exp1.Bb.arc:2}}. Caps vs full spheres: {{exp1.Ba.sphere:2}} vs {{exp1.Bb.sphere:2}}.
+- **Where persistent homology adds information beyond the family label:** whenever the label does not fix the topology. The fixed-threshold estimator Ba is quoted here:
+  - open vs closed arcs: {{exp1.Ba.arc:2}} vs {{exp1.Bb.arc:2}};
+  - caps vs full spheres: {{exp1.Ba.sphere:2}} vs {{exp1.Bb.sphere:2}}.
+- **The preregistered estimator P is not better than the family label,** even on well-resolved clouds.
 - **Where it loses:** wherever the label fixes the topology but the hole is thin or two-dimensional. Ellipses: {{exp1.Ba.ellipse:2}} vs {{exp1.Bb.ellipse:2}}. Tori: {{exp1.Ba.torus:2}} vs {{exp1.Bb.torus:2}}. Frusta: {{exp1.Ba.cone:2}} vs {{exp1.Bb.cone:2}}.
 - **The alpha-complex universal null is calibrated but conservative.** Its family-wise error on blobs is about 0. This is why it loses to a tuned threshold (deviation D1).
 

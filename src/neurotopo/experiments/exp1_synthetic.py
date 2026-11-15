@@ -106,6 +106,7 @@ def run() -> None:
     df.loc[sub, "b1_mc"] = [m[0] for m in mc]
     df.loc[sub, "b2_mc"] = [m[1] for m in mc]
     df.drop(columns=["pi1_top", "pi2_top"]).to_csv(out / "per_cloud.csv.gz", index=False)
+    np.savez_compressed(out / "pi_top.npz", pi1=np.array(df["pi1_top"].tolist()), pi2=np.array(df["pi2_top"].tolist()))
 
     preds = predictions(df, t)
     res = df["resolvable"].to_numpy()
@@ -156,7 +157,20 @@ def run() -> None:
     bins = [0, 0.25, 0.5, 1, 2, 4, np.inf]
     rb = pd.cut(df["rho_A"].replace(np.inf, 1e9), bins, right=False)
     by_rho = {name: pd.Series(c).groupby(rb, observed=True).mean().rename(str).to_dict() for name, c in corr.items()}
-    write_json(out / "summary.json", {"table": table, "paired_differences": diffs, "fpr_contractible": fpr,
+    # Well-resolved clouds (rho_A >= 4; audit, D6): every estimator, macro over families, cluster-bootstrap CI,
+    # paired differences of the preregistered P against the family label and the fixed threshold, per family.
+    wr = df["rho_A"].to_numpy() >= 4
+    well = {"n": int(wr.sum()), "family_counts": pd.Series(df["family_name"].to_numpy()[wr]).value_counts().to_dict()}
+    for name, c in corr.items():
+        est, lo, hi = cluster_bootstrap(np.c_[c[wr], fam_code[wr]], df["chunk"].to_numpy()[wr], macro, n_boot=nb)
+        well[name] = {"macro_exact": est, "ci": [lo, hi],
+                      "per_family": pd.Series(c[wr]).groupby(df["family_name"].to_numpy()[wr]).mean().to_dict()}
+    for other in ("Bb_family_implied", "Ba_fixed_pi", "Bc_majority"):
+        both = np.c_[corr["P_alpha_universal"][wr], corr[other][wr], fam_code[wr]]
+        f = lambda a: macro(a[:, [0, 2]]) - macro(a[:, [1, 2]])
+        est, lo, hi = cluster_bootstrap(both, df["chunk"].to_numpy()[wr], f, n_boot=nb)
+        well[f"P - {other}"] = {"estimate": est, "ci": [lo, hi]}
+    write_json(out / "summary.json", {"well_resolved": well, "table": table, "paired_differences": diffs, "fpr_contractible": fpr,
                                       "calibration_blobs": calib, "accuracy_by_rho": by_rho,
                                       "resolvable_fraction": float(res.mean()), "tuning": t,
                                       "resolvable_by_family": df.groupby("family_name")["resolvable"].mean().to_dict()})

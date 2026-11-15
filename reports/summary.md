@@ -12,24 +12,24 @@ We checked, without running any model, whether the activation clouds really have
 
 | Exp | What | Data | Method | Main result |
 |---|---|---|---|---|
-| 0 | Exact topology of the fitted shapes | 44 real fits, 40,560 synthetic ground-truth shapes | closed-form Betti numbers, margin ratio, point coordinates on the fit | cyclic sets are fitted as helices (no hole) whose openness is within noise (ρ_A ≈ 0.11); concepts sit around the helix axis in order; the same winding appears in random-process controls |
+| 0 | Exact topology of the fitted shapes | 44 real fits, 40,560 synthetic ground-truth shapes | closed-form Betti numbers, margin ratio, point coordinates on the fit | cyclic sets are fitted as helices (no hole); whether they are open or closed is unresolvable (ρ_A ≈ 0.11); concepts sit around the helix axis in order, but so do the indices of 8 of 8 random-process helix controls |
 | coords | Where labelled points sit on the fit | 44 real fits | intrinsic coordinates; Spearman, circular alignment, NMI | months lie on a closed saddle loop (2nd harmonic R² 0.83, post hoc); ordinal concepts lie along open curves |
-| power | Tuning and power | validation stream; simulated rings, arcs and random sets | Monte Carlo | rings detected at rate ≥ 1.00; random arrangements pass the full test at ≤ 0.00 |
-| 1 | Are the persistent-homology estimators right? | 39,000 synthetic clouds, exact topology | alpha and Rips persistence, universal and Monte Carlo nulls, baselines | preregistered estimator 0.62 vs family label 0.81; persistent homology wins when topology is well resolved (0.94 vs 0.86) |
-| 2 | Holes in the real clouds | 44 real clouds | alpha persistence + design-matched null (999 draws) | loops in colours, residues, months, days_time; none in weekdays, ordinal concepts or controls |
-| 3 | Do cyclic concepts go around the hole? | cyclic, ordinal and control sets | DREiMac circular coordinate, permutation tests, winding | preregistered H1-A 0/3, H1-B 0/3; specificity not falsified; post hoc, months, residues and colours wind once in 3D |
+| power | Tuning and power | validation stream; simulated rings, arcs and random sets | Monte Carlo | preregistered simulation misspecified (rings trivially detected, D6). Corrected simulation (post hoc): the loop test detects weekday-like rings in 0.15, month-like in 0.25, residue-like in 1.00 of replicates; the full conjunction passes cluster rings in ≤ 0.05 |
+| 1 | Are the persistent-homology estimators right? | 39,000 synthetic clouds, exact topology | alpha and Rips persistence, universal and Monte Carlo nulls, baselines | preregistered estimator 0.62 vs fixed threshold 0.71 vs family label 0.81; on well-resolved clouds P 0.75 vs family label 0.82; persistence beats the label for open/closed arcs and caps/spheres |
+| 2 | Holes in the real clouds | 44 real clouds | alpha persistence + design-matched null (999 draws) | loops in colours, residues, months, days_time (unstable) and, borderline, the random-init grokking embedding; none in weekdays, ordinal concepts or random-process controls; after BH over 44 tests: C3_tms_dense, R2_grokking_WE, R3_tms_n8, R5b_llama_months, R5b_llama_months_means, R7_llama_colors |
+| 3 | Do cyclic concepts go around the hole? | cyclic, ordinal and control sets | DREiMac circular coordinate, permutation tests, winding | preregistered H1-A 0/3, H1-B 0/3, H4 balanced accuracy 0.50; specificity not falsified but weakly informative; post hoc, months, residues and colours wind once in 3D, days_time does not |
 | 4 | Topological similarity | 44 clouds + templates | bottleneck distance on significant bars | uninformative (dominated by absolute scale) |
-| 5 | Robustness | key sets | top-k PCs, cosine distance, offset removal, seeds | only the colour loop survives in 10 PCs and full-dimensional cosine distance; months robust to offsets and seeds |
+| 5 | Robustness | key sets | top-k PCs, cosine distance, offset removal, seeds | top-10-PC loop test with matched null (post hoc): significant for R5c_llama_days_time, R4_llama_counting, R6_llama_years, R8a_llama_temperature, R8b_llama_age, R7_llama_colors. Loops in 10D are not specific; only colours' values wind around theirs. Months robust to offsets and seeds |
 | 6 | Steering around the holes | – | designed; simulated and LLM steering | **postponed by the author** |
 
 ## Datasets (from the source project)
 
 | Dataset | Model / layer | Concept | Fitted family | Hole (Method B)? | Concept goes around? |
 |---|---|---|---|---|---|
-| weekdays | Llama-3.1-8B, layer 5, day token | day (cyclic) | helix | no (p = 0.094) | around the fit's axis yes; around a detected hole no |
-| months | Llama-3.1-8B, layer 5, month token | month (cyclic) | helix | yes (p = 0.002) | yes in 3D (post hoc) |
+| weekdays | Llama-3.1-8B, layer 5, day token | day (cyclic) | helix | no (p = 0.094) | around the fit's axis yes, but not specific (random-process controls also wind); no detected hole (low power) |
+| months | Llama-3.1-8B, layer 5, month token | month (cyclic) | helix | yes (p = 0.002) | yes in 3D, post hoc only; not in the top-10 PCs |
 | residues | 1-layer transformer, W_E (weights) | a mod 113 (cyclic) | helix | yes (p = 0.001) | yes in 3D, not in the top-10 PCs |
-| days with times | Llama-3.1-8B, layer 19, last token | day, time (cyclic) | ringing | yes, unstable (p = 0.013) | days ordered linearly along the curve |
+| days with times | Llama-3.1-8B, layer 19, last token | day, time (cyclic) | ringing | yes, unstable (p = 0.013) | no: the day does not go around the loop; days ordered linearly along the fitted curve |
 | colours | Llama-3.1-8B, layer 19, last token | hue (cyclic) | cone | yes (p = 0.001) | yes, also in the top-10 PCs |
 | years, temperature, age | Llama-3.1-8B, layer 19 | ordinal | cone, ringing, clusters | no | no (ordered along a curve) |
 | GPT-2 positions | GPT-2 W_pos (weights) | ordinal | sphere | no (no void either) | spiral, ordered pole to pole |
@@ -54,11 +54,13 @@ We checked, without running any model, whether the activation clouds really have
 
 ## In plain words: what was found
 
-- **Colours, residues mod 113 and months** have real holes, and the concept goes around each hole once (months: post hoc). The colour loop is the most robust: it survives in higher dimensions.
-- **Weekdays** are ordered around a circle on the fitted helix. With only 7 tight clusters, though, the hole is not statistically detectable.
-- **Ordinal concepts** (years, temperatures, ages, positions, counts) and **random controls** have no holes. They lie along open curves.
-- **The shape fitter's "helix" labels hide closed loops.** For months, a closed saddle-shaped loop.
-- **The topology instrument** is reliable when the topology is well resolved. It is conservative in general, and weak for tori and thin loops.
+- **Colours** have a robust hole that hue goes around once. **Residues mod 113** have a hole the residues go around once, but it is fragile under subsampling and fails the preregistered higher-dimension check.
+- **Months** have a hole. The months go around it only in a post hoc analysis, and only in the top-3 PCs.
+- **Days with times** have an unstable loop that the day does not go around.
+- **Weekdays** are ordered around a circle on the fitted helix, but so are the indices of random smooth processes. A hole is not detectable with 7 prompt clusters; the corrected power simulation suggests the test is weak there.
+- **Ordinal concepts** (years, temperatures, ages, positions, counts) and **random controls** have no holes; they lie along open curves. Because the strict tests never fired for any cyclic set either, this is weak evidence of specificity.
+- **The shape fitter's "helices"** cannot be told apart from closed loops at this noise level. Months come closest to closing.
+- **The topology instrument** is conservative. It is good at telling open from closed curves and caps from spheres, and weak for tori and thin loops.
 - **Not yet tested:** whether steering *around* these loops changes the model's answers in order. That needs model runs, which are postponed.
 
 ## Reports

@@ -6,6 +6,11 @@
   "theta3_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "theta10_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "rips_bar3": null,
+  "alpha_top_bar": [
+   0.024505810696704596,
+   0.032450185589942906
+  ],
+  "rips_alpha_overlap": null,
   "records3": [],
   "records10": []
  },
@@ -16,6 +21,11 @@
   "theta3_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "theta10_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "rips_bar3": null,
+  "alpha_top_bar": [
+   0.5017106830513146,
+   0.861314112858744
+  ],
+  "rips_alpha_overlap": null,
   "records3": [],
   "records10": []
  },
@@ -29,6 +39,11 @@
    0.2044311910867691,
    0.47131815552711487
   ],
+  "alpha_top_bar": [
+   0.20443118450540645,
+   0.5001315494431209
+  ],
+  "rips_alpha_overlap": true,
   "records3": [
    {
     "variable": "residue (max over k)",
@@ -51,6 +66,11 @@
   "theta3_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "theta10_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "rips_bar3": null,
+  "alpha_top_bar": [
+   0.022421762192148385,
+   0.04509991136536334
+  ],
+  "rips_alpha_overlap": null,
   "records3": [],
   "records10": []
  },
@@ -61,6 +81,11 @@
   "theta3_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "theta10_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "rips_bar3": null,
+  "alpha_top_bar": [
+   0.27973984967823023,
+   0.3403323233692353
+  ],
+  "rips_alpha_overlap": null,
   "records3": [],
   "records10": []
  },
@@ -71,6 +96,11 @@
   "theta3_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "theta10_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "rips_bar3": null,
+  "alpha_top_bar": [
+   0.02241473326806222,
+   0.028802858692473895
+  ],
+  "rips_alpha_overlap": null,
   "records3": [],
   "records10": []
  },
@@ -81,6 +111,11 @@
   "theta3_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "theta10_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "rips_bar3": null,
+  "alpha_top_bar": [
+   0.04437268092106903,
+   0.05870294479284562
+  ],
+  "rips_alpha_overlap": null,
   "records3": [],
   "records10": []
  },
@@ -91,6 +126,11 @@
   "theta3_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "theta10_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "rips_bar3": null,
+  "alpha_top_bar": [
+   0.08691730428134672,
+   0.14207439656286133
+  ],
+  "rips_alpha_overlap": null,
   "records3": [],
   "records10": []
  },
@@ -101,6 +141,11 @@
   "theta3_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "theta10_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "rips_bar3": null,
+  "alpha_top_bar": [
+   0.10080092631306987,
+   0.1344441033984615
+  ],
+  "rips_alpha_overlap": null,
   "records3": [],
   "records10": []
  },
@@ -111,6 +156,11 @@
   "theta3_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "theta10_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "rips_bar3": null,
+  "alpha_top_bar": [
+   0.20809370348502337,
+   0.32887577396156287
+  ],
+  "rips_alpha_overlap": null,
   "records3": [],
   "records10": []
  },
@@ -118,9 +168,14 @@
   "id": "C3_llama_weekdays_init",
   "p_loop": 0.765,
   "loop": false,
-  "theta3_error": "index 0 is out of bounds for axis 0 with size 0",
+  "theta3_error": "no H1 class",
   "theta10_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "rips_bar3": null,
+  "alpha_top_bar": [
+   0.02171778442673309,
+   0.02420314751584859
+  ],
+  "rips_alpha_overlap": null,
   "records3": [],
   "records10": []
  },
@@ -131,6 +186,11 @@
   "theta3_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "theta10_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "rips_bar3": null,
+  "alpha_top_bar": [
+   0.0912204665045843,
+   0.13042078494989737
+  ],
+  "rips_alpha_overlap": null,
   "records3": [],
   "records10": []
  },
@@ -141,6 +201,11 @@
   "theta3_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "theta10_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "rips_bar3": null,
+  "alpha_top_bar": [
+   0.17770297359649703,
+   0.3271097259684724
+  ],
+  "rips_alpha_overlap": null,
   "records3": [],
   "records10": []
  },
@@ -148,9 +213,14 @@
   "id": "C1_gp_0",
   "p_loop": 1.0,
   "loop": false,
-  "theta3_error": "index 0 is out of bounds for axis 0 with size 0",
-  "theta10_error": "index 0 is out of bounds for axis 0 with size 0",
+  "theta3_error": "no H1 class",
+  "theta10_error": "no H1 class",
   "rips_bar3": null,
+  "alpha_top_bar": [
+   1.0839542205877657,
+   1.0839746217846626
+  ],
+  "rips_alpha_overlap": null,
   "records3": [],
   "records10": []
  },
@@ -159,8 +229,13 @@
   "p_loop": 1.0,
   "loop": false,
   "theta3_error": "The cohomology class selected is too short, try setting standard_range to False.",
-  "theta10_error": "index 0 is out of bounds for axis 0 with size 0",
+  "theta10_error": "no H1 class",
   "rips_bar3": null,
+  "alpha_top_bar": [
+   0.752999107881495,
+   0.8726732131753283
+  ],
+  "rips_alpha_overlap": null,
   "records3": [],
   "records10": []
  },
@@ -169,8 +244,13 @@
   "p_loop": 1.0,
   "loop": false,
   "theta3_error": "The cohomology class selected is too short, try setting standard_range to False.",
-  "theta10_error": "index 0 is out of bounds for axis 0 with size 0",
+  "theta10_error": "no H1 class",
   "rips_bar3": null,
+  "alpha_top_bar": [
+   0.813271091997829,
+   0.8849876929935319
+  ],
+  "rips_alpha_overlap": null,
   "records3": [],
   "records10": []
  },
@@ -181,6 +261,11 @@
   "theta3_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "theta10_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "rips_bar3": null,
+  "alpha_top_bar": [
+   0.7188445399104714,
+   0.8370891417922516
+  ],
+  "rips_alpha_overlap": null,
   "records3": [],
   "records10": []
  },
@@ -188,9 +273,14 @@
   "id": "C1_gp_4",
   "p_loop": 1.0,
   "loop": false,
-  "theta3_error": "index 0 is out of bounds for axis 0 with size 0",
-  "theta10_error": "index 0 is out of bounds for axis 0 with size 0",
+  "theta3_error": "no H1 class",
+  "theta10_error": "no H1 class",
   "rips_bar3": null,
+  "alpha_top_bar": [
+   1.0396367158932136,
+   1.0411995226823785
+  ],
+  "rips_alpha_overlap": null,
   "records3": [],
   "records10": []
  },
@@ -201,6 +291,11 @@
   "theta3_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "theta10_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "rips_bar3": null,
+  "alpha_top_bar": [
+   0.5829698352252621,
+   0.7981658416713494
+  ],
+  "rips_alpha_overlap": null,
   "records3": [],
   "records10": []
  },
@@ -209,8 +304,13 @@
   "p_loop": 1.0,
   "loop": false,
   "theta3_error": "The cohomology class selected is too short, try setting standard_range to False.",
-  "theta10_error": "index 0 is out of bounds for axis 0 with size 0",
+  "theta10_error": "no H1 class",
   "rips_bar3": null,
+  "alpha_top_bar": [
+   0.766833183521063,
+   0.8685553895827965
+  ],
+  "rips_alpha_overlap": null,
   "records3": [],
   "records10": []
  },
@@ -221,6 +321,11 @@
   "theta3_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "theta10_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "rips_bar3": null,
+  "alpha_top_bar": [
+   0.852553304701732,
+   0.8916853402469577
+  ],
+  "rips_alpha_overlap": null,
   "records3": [],
   "records10": []
  },
@@ -228,9 +333,14 @@
   "id": "C1_gp_8",
   "p_loop": 1.0,
   "loop": false,
-  "theta3_error": "index 0 is out of bounds for axis 0 with size 0",
-  "theta10_error": "index 0 is out of bounds for axis 0 with size 0",
+  "theta3_error": "no H1 class",
+  "theta10_error": "no H1 class",
   "rips_bar3": null,
+  "alpha_top_bar": [
+   0.9826349469854977,
+   0.9871246405568415
+  ],
+  "rips_alpha_overlap": null,
   "records3": [],
   "records10": []
  },
@@ -238,9 +348,14 @@
   "id": "C1_gp_9",
   "p_loop": 1.0,
   "loop": false,
-  "theta3_error": "index 0 is out of bounds for axis 0 with size 0",
-  "theta10_error": "index 0 is out of bounds for axis 0 with size 0",
+  "theta3_error": "no H1 class",
+  "theta10_error": "no H1 class",
   "rips_bar3": null,
+  "alpha_top_bar": [
+   0.9404012776511573,
+   0.9587456985016122
+  ],
+  "rips_alpha_overlap": null,
   "records3": [],
   "records10": []
  },
@@ -248,9 +363,14 @@
   "id": "C1_walk_0",
   "p_loop": 1.0,
   "loop": false,
-  "theta3_error": "index 0 is out of bounds for axis 0 with size 0",
-  "theta10_error": "index 0 is out of bounds for axis 0 with size 0",
+  "theta3_error": "no H1 class",
+  "theta10_error": "no H1 class",
   "rips_bar3": null,
+  "alpha_top_bar": [
+   0.010665227924247522,
+   0.011226969684255432
+  ],
+  "rips_alpha_overlap": null,
   "records3": [],
   "records10": []
  },
@@ -258,9 +378,14 @@
   "id": "C1_walk_1",
   "p_loop": 1.0,
   "loop": false,
-  "theta3_error": "index 0 is out of bounds for axis 0 with size 0",
-  "theta10_error": "index 0 is out of bounds for axis 0 with size 0",
+  "theta3_error": "no H1 class",
+  "theta10_error": "no H1 class",
   "rips_bar3": null,
+  "alpha_top_bar": [
+   0.008927167565011176,
+   0.009976991579342941
+  ],
+  "rips_alpha_overlap": null,
   "records3": [],
   "records10": []
  },
@@ -268,9 +393,14 @@
   "id": "C1_walk_2",
   "p_loop": 1.0,
   "loop": false,
-  "theta3_error": "index 0 is out of bounds for axis 0 with size 0",
-  "theta10_error": "index 0 is out of bounds for axis 0 with size 0",
+  "theta3_error": "no H1 class",
+  "theta10_error": "no H1 class",
   "rips_bar3": null,
+  "alpha_top_bar": [
+   0.006652598196780104,
+   0.00708747106800482
+  ],
+  "rips_alpha_overlap": null,
   "records3": [],
   "records10": []
  },
@@ -278,9 +408,14 @@
   "id": "C1_walk_3",
   "p_loop": 1.0,
   "loop": false,
-  "theta3_error": "index 0 is out of bounds for axis 0 with size 0",
-  "theta10_error": "index 0 is out of bounds for axis 0 with size 0",
+  "theta3_error": "no H1 class",
+  "theta10_error": "no H1 class",
   "rips_bar3": null,
+  "alpha_top_bar": [
+   0.005351935946519948,
+   0.005894905497286245
+  ],
+  "rips_alpha_overlap": null,
   "records3": [],
   "records10": []
  },
@@ -289,8 +424,13 @@
   "p_loop": 1.0,
   "loop": false,
   "theta3_error": "The cohomology class selected is too short, try setting standard_range to False.",
-  "theta10_error": "index 0 is out of bounds for axis 0 with size 0",
+  "theta10_error": "no H1 class",
   "rips_bar3": null,
+  "alpha_top_bar": [
+   0.00737378045963717,
+   0.008698376301599631
+  ],
+  "rips_alpha_overlap": null,
   "records3": [],
   "records10": []
  },
@@ -298,9 +438,14 @@
   "id": "C1_walk_5",
   "p_loop": 1.0,
   "loop": false,
-  "theta3_error": "index 0 is out of bounds for axis 0 with size 0",
-  "theta10_error": "index 0 is out of bounds for axis 0 with size 0",
+  "theta3_error": "no H1 class",
+  "theta10_error": "no H1 class",
   "rips_bar3": null,
+  "alpha_top_bar": [
+   0.006112761515154776,
+   0.006749144146947052
+  ],
+  "rips_alpha_overlap": null,
   "records3": [],
   "records10": []
  },
@@ -308,9 +453,14 @@
   "id": "C1_walk_6",
   "p_loop": 1.0,
   "loop": false,
-  "theta3_error": "index 0 is out of bounds for axis 0 with size 0",
-  "theta10_error": "index 0 is out of bounds for axis 0 with size 0",
+  "theta3_error": "no H1 class",
+  "theta10_error": "no H1 class",
   "rips_bar3": null,
+  "alpha_top_bar": [
+   0.010111712398071768,
+   0.010769895656904505
+  ],
+  "rips_alpha_overlap": null,
   "records3": [],
   "records10": []
  },
@@ -318,9 +468,14 @@
   "id": "C1_walk_7",
   "p_loop": 1.0,
   "loop": false,
-  "theta3_error": "index 0 is out of bounds for axis 0 with size 0",
-  "theta10_error": "index 0 is out of bounds for axis 0 with size 0",
+  "theta3_error": "no H1 class",
+  "theta10_error": "no H1 class",
   "rips_bar3": null,
+  "alpha_top_bar": [
+   0.006672584032319151,
+   0.007168387278974986
+  ],
+  "rips_alpha_overlap": null,
   "records3": [],
   "records10": []
  },
@@ -328,9 +483,14 @@
   "id": "C1_walk_8",
   "p_loop": 1.0,
   "loop": false,
-  "theta3_error": "index 0 is out of bounds for axis 0 with size 0",
-  "theta10_error": "index 0 is out of bounds for axis 0 with size 0",
+  "theta3_error": "no H1 class",
+  "theta10_error": "no H1 class",
   "rips_bar3": null,
+  "alpha_top_bar": [
+   0.008477168166276972,
+   0.009208169942121156
+  ],
+  "rips_alpha_overlap": null,
   "records3": [],
   "records10": []
  },
@@ -339,8 +499,13 @@
   "p_loop": 1.0,
   "loop": false,
   "theta3_error": "The cohomology class selected is too short, try setting standard_range to False.",
-  "theta10_error": "index 0 is out of bounds for axis 0 with size 0",
+  "theta10_error": "no H1 class",
   "rips_bar3": null,
+  "alpha_top_bar": [
+   0.009611808698378618,
+   0.01299197182685058
+  ],
+  "rips_alpha_overlap": null,
   "records3": [],
   "records10": []
  },
@@ -354,6 +519,11 @@
    0.17163391411304474,
    0.4650658071041107
   ],
+  "alpha_top_bar": [
+   0.08721312272695321,
+   0.43820467237411104
+  ],
+  "rips_alpha_overlap": true,
   "records3": [
    {
     "variable": "hue",
@@ -413,6 +583,11 @@
   "theta3_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "theta10_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "rips_bar3": null,
+  "alpha_top_bar": [
+   0.9494538680336788,
+   0.9991386770210589
+  ],
+  "rips_alpha_overlap": null,
   "records3": [],
   "records10": []
  },
@@ -423,6 +598,11 @@
   "theta3_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "theta10_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "rips_bar3": null,
+  "alpha_top_bar": [
+   0.5297525721975984,
+   0.9070044452054407
+  ],
+  "rips_alpha_overlap": null,
   "records3": [],
   "records10": []
  },
@@ -433,6 +613,11 @@
   "theta3_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "theta10_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "rips_bar3": null,
+  "alpha_top_bar": [
+   0.208851832784236,
+   0.3136107761644113
+  ],
+  "rips_alpha_overlap": null,
   "records3": [],
   "records10": []
  },
@@ -443,6 +628,11 @@
   "theta3_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "theta10_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "rips_bar3": null,
+  "alpha_top_bar": [
+   0.07072644150976104,
+   0.14342731042712967
+  ],
+  "rips_alpha_overlap": null,
   "records3": [],
   "records10": []
  },
@@ -453,6 +643,11 @@
   "theta3_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "theta10_error": "The cohomology class selected is too short, try setting standard_range to False.",
   "rips_bar3": null,
+  "alpha_top_bar": [
+   0.050431113749713465,
+   0.07745760187698023
+  ],
+  "rips_alpha_overlap": null,
   "records3": [],
   "records10": []
  }

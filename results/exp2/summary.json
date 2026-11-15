@@ -2,5 +2,14 @@
  "n": 44,
  "agree_b1b2_A_vs_B": 0.7045454545454546,
  "n_with_loop_mc": 8,
- "n_with_void_mc": 6
+ "n_with_void_mc": 6,
+ "n_loop_q05": 6,
+ "loops_q05": [
+  "C3_tms_dense",
+  "R2_grokking_WE",
+  "R3_tms_n8",
+  "R5b_llama_months",
+  "R5b_llama_months_means",
+  "R7_llama_colors"
+ ]
 }
