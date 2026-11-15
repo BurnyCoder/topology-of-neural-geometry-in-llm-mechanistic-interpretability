@@ -43,6 +43,6 @@ Date: 2026-11-15. Code: `src/neurotopo/experiments/exp4_similarity.py`, `exp5_ro
 **Interpretation.**
 - Raw persistence ratios are not comparable across dimensions and sample sizes. The top-10 statement therefore rests on the matched null above, which was added post hoc.
 - **In 10 dimensions, loops are not specific to cyclic concepts.** Years, age, counting and temperature have significant top-10 loops, as expected from PCA Lissajous and Fourier features of numbers. Months and residues do not.
-- The post hoc traversal test shows that ordinal values do not wind around those loops. Only colours keep both a loop and a single winding in 10D.
+- The post hoc traversal test shows that ordinal values do not wind around those loops. Only colours keep both a loop and a single winding in 10D, and the colour prompts' own RGB values already have that loop (audit D8, [exp7_audit.md](exp7_audit.md)).
 - The months and residue loops are strongest in the top-3 PCs and fade in higher dimensions. For residues this is expected, because several Fourier circles coexist in other PC pairs.
 - None of the conclusions depends on the Monte Carlo seed or on the offset nuisance factor.

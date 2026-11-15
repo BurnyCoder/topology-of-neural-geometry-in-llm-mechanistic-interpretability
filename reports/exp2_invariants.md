@@ -23,11 +23,11 @@ Date: 2026-11-15. Code: `src/neurotopo/experiments/exp2_invariants.py`, `realdat
   - grokked residues: 2.45 vs 1.83, p = 0.001, stability 0.26;
   - months: 1.72 vs 1.44, p = 0.002, stability 0.90;
   - month means: p = 0.001;
-  - days with times: 2.01 vs 1.87, p = 0.013, stability 0.03;
+  - days with times: 2.01 vs 1.87, p = 0.013, stability 0.03; a small loop inside one day's cluster (bar [0.022, 0.045], clusters first touch at 0.160; audit D8);
   - the grokking model at initialisation (p = 0.046, borderline);
   - the toy-model clouds of superposition (5–8 points).
-- **Weekdays have no significant loop** (π = 1.32 vs 1.36, p = 0.094).
-- **No ordinal concept has a loop** (0/6), and neither do the 20 random-process controls (0/20; max π 1.37).
+- **Weekdays have no significant loop** (π = 1.32 vs 1.36, p = 0.094). That most persistent bar is a small loop inside one day's cluster (it dies at 0.032; clusters first touch at 0.192), and the 7 day centres alone have no loop (π = 1.05).
+- **No ordinal concept has a loop** (0/6), and neither do the 20 random-process controls (0/20; max π 1.37). These open curves were never at risk: their top π (1.00–1.63) is far below the Gaussian null's 95th percentile (1.79–2.16), because a blob of the same spread has more loops than a curve.
 - **GPT-2 W_pos:** fitted as a closed sphere (Method A void), but there is no significant void in the data (H2 π = 1.02). The positions trace a spiral curve, not a surface.
 - **Truth cities (exploratory prediction, preregistration section 6: b0 = 2, true vs false statements):** not supported. The tuned single-linkage rule gives b0 = 1, and b0 = 1 at the characteristic scale. The homotopy class is contractible.
 - **Agreement between Method A and Method B (b1, b2):** 0.705.
@@ -90,12 +90,14 @@ Grey: Monte Carlo null distribution of the largest H1 persistence ratio (999 des
 
 ## Interpretation
 
-- Topology detects loops in four cyclic sets (hue, residues mod 113, months, days_time). It detects none in weekdays, ordinal concepts or random-process controls, and a borderline one in the random-init grokking embedding.
-- **A loop is not traversal.** The day does not go around the days_time loop (Exp3). The residue loop is fragile under subsampling (stability 0.26).
-- **Weekdays are the exception.** The 7 tight prompt clusters do not form a loop more persistent than random arrangements of 7 clusters with the same spread. At 7 clusters the maximum possible ratio is 1/sin(π/7) ≈ 2.3, so the power is inherently limited.
-- **Caveats:** two random-init or toy controls cross the 5% line, consistent with the nominal error rate over this many tests. The days_time loop is unstable under subsampling.
+- Topology detects loops through the concept clusters in three cyclic sets (hue, residues mod 113, months). The days_time loop lies inside one day's cluster. Topology detects no loop in weekdays, ordinal concepts or random-process controls, and a borderline one in the random-init grokking embedding.
+- **The hue loop is in the input.** The colour prompts' own RGB values have an even more persistent loop (π = 8.01 vs null 2.76, p = 0.001; [exp7_audit.md](exp7_audit.md)).
+- **A loop is not traversal.** The days_time loop is not a ring of days at all. The residue loop is unstable under subsampling (stability 0.26; 0.33 against a size-matched threshold), most likely because its top PCA eigenvalues are nearly equal (0.099 vs 0.096 for the 3rd and 4th), so subsamples rotate the top-3 view.
+- **Weekdays are the exception.** The 7 day centres form no loop in the top-3 PCs, and the most persistent loop of the cloud lies inside one cluster. For 7 evenly spaced tight clusters the ratio of the polygon's loop is 1/sin(π/7) ≈ 2.3, so the loop test has limited power at 7 clusters, but here there is no polygon loop to detect.
+- **Caveats:** two random-init or toy controls cross the 5% line, consistent with the nominal error rate over this many tests. The days_time loop is unstable under subsampling. For prompt-template designs, the maximum-π statistic does not say *where* a loop lives; the audit's localisation check (D8) is needed to tell a ring of concepts from a loop inside one cluster.
 
 ## Learnings
 
 - The cluster-centre null matters. With a plain Gaussian null, any arrangement of tight clusters would look "loopy".
-- Stability under subsampling separates robust loops (colours 1.00, months 0.90) from fragile ones (days_time 0.03).
+- Stability under subsampling separates robust loops (colours 1.00, months 0.90) from fragile ones (days_time 0.03). The threshold should be computed at the subsample size, and near-equal PCA eigenvalues make any top-3 view unstable (audit, D8).
+- A significant maximum-π loop in a clustered design must be localised: check whether it dies before the clusters touch.

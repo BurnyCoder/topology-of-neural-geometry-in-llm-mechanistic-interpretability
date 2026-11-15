@@ -21,12 +21,12 @@ We study the 44 top-3-PCA activation and weight clouds of a sibling shape-fittin
 
 Results per dataset:
 \begin{itemize}
-  \item \textbf{Colour hue:} a robust hole ($p=0.001$, 999 null draws). Hue winds once around it, also in the top-10 PCs (post hoc), where ordinal concepts have loops too but do not wind.
-  \item \textbf{Residues mod 113:} a hole ($p=0.001$) that the residues wind once around. It is fragile under subsampling and fails the preregistered top-10-PC check.
-  \item \textbf{Months:} a hole ($p=0.002$). The months go around it only in a post hoc analysis, and only in the top-3 PCs.
-  \item \textbf{Days with times:} an unstable loop that the day does not go around.
-  \item \textbf{Weekdays:} no detectable hole ($p=0.094$). A corrected power simulation shows the preregistered test rarely detects 7-cluster rings. The days are ordered around their fitted helix's axis, but random smooth processes show the same ordering.
-  \item \textbf{Ordinal concepts and 20 random-process controls:} no holes in the top-3 PCs. Ordinal concepts gain loops in 10 PCs, but their values do not wind around them.
+  \item \textbf{Colour hue:} a robust hole ($p=0.001$, 999 null draws). Hue winds once around it, also in the top-10 PCs (post hoc), where ordinal concepts have loops too but do not wind. A post hoc audit finds the same hole, with hue winding once, in the colour prompts' own RGB values ($\pi=8.01$, $p=0.001$): the prompts avoid greys. The model preserves the input's hue circle; this does not show that it constructs one.
+  \item \textbf{Residues mod 113:} a hole ($p=0.001$) that the residues wind once around. The top-3 view is unstable under subsampling, most likely because the embeddings spread their variance almost evenly over 5 Fourier frequencies (nearly equal top PCA eigenvalues), and it fails the preregistered top-10-PC check.
+  \item \textbf{Months:} a loop through the month clusters ($p=0.002$); a closed ring cannot be told from a nearly closed arc. The months go around it only in a post hoc analysis, and only in the top-3 PCs.
+  \item \textbf{Days with times:} no ring of days. The only significant loop is small, lies inside one day's cluster, and is unstable.
+  \item \textbf{Weekdays:} no ring of days. The 7 day centres form no loop in the top-3 PCs, and the cloud's most persistent loop ($p=0.094$) lies inside one day's cluster. The loop test is also weak at 7 clusters. The days are ordered around their fitted helix's axis, but random smooth processes show the same ordering.
+  \item \textbf{Ordinal concepts and 20 random-process controls:} no holes in the top-3 PCs, but as open curves they never approach the Gaussian null's threshold. Ordinal concepts gain loops in 10 PCs, but their values do not wind around them.
 \end{itemize}
 Whether the fitter's ``helices'' for cyclic concepts are open or closed is unresolvable at the data's noise scale ($\rho_A \approx 0.11$). Months come closest to closing.
 
@@ -132,8 +132,9 @@ Table~\ref{tab:exp1} reports the results. The preregistered estimator (alpha + u
 \begin{itemize}
   \item It is worse than a validation-tuned fixed threshold and than the family-implied baseline. The paired difference vs the family label is -0.194 [-0.203, -0.185].
   \item Persistent homology is better exactly where the family label is topologically ambiguous: open vs closed arcs (0.79 vs 0.58) and caps vs full spheres (0.76 vs 0.61).
-  \item On well-resolved clouds ($\rho_A \ge 4$; 18454 clouds) the preregistered estimator scores 0.751 [0.739, 0.763] against 0.820 for the family label (Fig.~\ref{fig:rho}).
+  \item On clouds far from a topology change ($\rho_A \ge 4$, post hoc; 18454 clouds, no tori, a fraction 0.49 of hole-free blobs, discs and paraboloids) the preregistered estimator scores 0.751 [0.739, 0.763] against 0.820 for the family label (Fig.~\ref{fig:rho}).
   \item Tori and thin ellipses are its weak points.
+  \item The family label comes from a fitter trained on the same 13-family generator, so the comparison is in-distribution for the label.
   \item Outlier clouds (deviation D7: a point farther than 6 median distances from the true shape) raise its false-positive rate on contractible shapes from 0.031 to 0.065 [0.053, 0.078]. This is below the preregistered 0.10 threshold, so the DTM-filtration ablation was not required.
 \end{itemize}
 
@@ -174,26 +175,27 @@ Bc: majority vector & 0.555 [0.553, 0.557] & control\\\bottomrule
 \subsection{Holes in the data and the cyclic tests}
 Table~\ref{tab:real} and Figs.~\ref{fig:gallery}--\ref{fig:power} summarise the results.
 \begin{itemize}
-  \item Significant loops: colours, residues, months, days-with-times (unstable), and borderline the random-init grokking embedding ($p=0.046$).
+  \item Significant loops: colours, residues, months, days-with-times, and borderline the random-init grokking embedding ($p=0.046$).
+  \item Localisation (post hoc audit): the colour, residue and month loops run through the concept clusters. The days-with-times loop dies at radius 0.045, before any two day clusters touch (0.160), so it lies inside one cluster and is unstable (stability 0.03).
   \item After Benjamini--Hochberg over the 44 loop tests, the loops of C3\_tms\_dense, R2\_grokking\_WE, R3\_tms\_n8, R5b\_llama\_months, R5b\_llama\_months\_means, R7\_llama\_colors remain at $q<0.05$.
-  \item Weekdays, all six ordinal concepts and all 20 random-process controls have no loop.
+  \item Weekdays, all six ordinal concepts and all 20 random-process controls have no loop. The 7 weekday centres alone have $\pi=1.05$, and the weekdays' most persistent loop lies inside one cluster. The ordinal and random-process clouds are open curves with top $\pi$ of 1.00--1.63, far below their nulls' 95th percentiles (1.79--2.16).
   \item H1-B passes 0/3:
   \begin{itemize}
     \item weekdays fail at the loop step;
     \item months fail at the coordinate step (DREiMac's \texttt{standard\_range} requires a Rips death/birth ratio $\ge 2$);
     \item residues fail only the top-10-PC check.
   \end{itemize}
-  \item H2 (specificity) is not falsified, but this is weakly informative: H4 balanced accuracy is 0.50 for every criterion, and the controls never approach the null threshold.
+  \item H2 (specificity) is not falsified, but this is weakly informative: H4 balanced accuracy is 0.50 for every criterion, and the open-curve controls never approach the null threshold.
   \item Post hoc (\texttt{standard\_range=False}):
   \begin{itemize}
     \item months wind once around their loop in 3D ($R=0.72$), but not in the top-10 PCs;
     \item colours wind once in 3D and in the top-10 PCs ($R=0.97$);
-    \item days-with-times do not wind (winding 0);
+    \item days-with-times do not wind (winding 0), but this coordinate is built on a non-significant class that does not overlap the significant loop;
     \item non-cyclic sets with a winding record (any variable or dimension): R1\_gpt2\_wpos;
     \item random-init controls with a winding record: C3\_llama\_months\_init.
   \end{itemize}
   \item In a top-10-PC loop test with a matched null (post hoc), significant loops are found for R5c\_llama\_days\_time, R4\_llama\_counting, R6\_llama\_years, R8a\_llama\_temperature, R8b\_llama\_age, R7\_llama\_colors. In 10D, loops are therefore not specific to cyclic concepts; only colours combine a loop with a single winding there.
-  \item In a corrected power simulation (post hoc), a true weekday-like ring of 7 clusters passes the loop test in only 0.15 of replicates, and a month-like ring in 0.25. The full preregistered conjunction passes cluster rings in at most 0.05 of replicates, so H1-B was nearly untestable for weekdays and months.
+  \item In a corrected power simulation (post hoc), a weekday-like ring of 7 clusters passes the loop test in 0.15 of 40 replicates (exact 95\% CI 0.06--0.30), and a month-like ring in 0.25. The simulated clusters are tighter than the real ones. The full preregistered conjunction passes cluster rings in at most 0.05 of replicates, so H1-B was nearly untestable for weekdays and months.
 \end{itemize}
 
 \begin{table}[t]\centering\small
@@ -221,19 +223,21 @@ GPT-2 positions & 1.22 & 2.16 & 1.000 & -- & 1.01\\\bottomrule
 
 \paragraph{Answering the question.}
 \begin{itemize}
-  \item Topology finds a hole that the concept goes around for colour hue, robustly, and for residues mod 113.
-  \item For months there is a hole, and the months go around it, but only post hoc and only in the top-3 PCs.
-  \item There is no detectable hole for weekdays, with low power at 7 clusters. Days-with-times has a loop the day does not travel around.
-  \item There are no holes for ordinal concepts or random controls. Because the strict tests never fired for a cyclic set either, this is weak evidence of specificity.
+  \item Topology finds a hole that the concept goes around for colour hue, robustly, and for residues mod 113. The colour hole is already present in the stimuli's RGB values.
+  \item For months there is a loop through the month clusters, and the months go around it, but only post hoc and only in the top-3 PCs.
+  \item There is no ring of days for weekdays or days-with-times: the most persistent loop of each lies inside one day's cluster.
+  \item There are no holes for ordinal concepts or random controls, but as open curves they were never at risk under this null. Because the strict tests never fired for a cyclic set either, this is weak evidence of specificity.
   \item The fitter's helices for cyclic concepts cannot be told apart from closed loops at this noise level.
-  \item Whether steering \emph{around} these loops is semantically meaningful is the causal question. It is designed and preregistered (amendment A2), and postponed by the author. The strongest candidate is colour.
+  \item Whether steering \emph{around} these loops is semantically meaningful is the causal question. It is designed and preregistered (amendment A2), and postponed by the author. Colour is the strongest candidate, with the caveat that its loop is inherited from the input.
 \end{itemize}
 
 \paragraph{Limitations.}
 \begin{itemize}
   \item A convenience sample of 44 clouds, with claims made per dataset.
   \item Not blind: the source's labels and figures were known.
-  \item The power for 7 clusters is bounded ($\pi \le 1/\sin(\pi/7)$).
+  \item The power for 7 clusters is bounded (a regular 7-gon has $\pi = 1/\sin(\pi/7)$).
+  \item For clustered designs, the maximum-$\pi$ statistic does not say where a loop lives; a post hoc localisation check is needed to tell a ring of concepts from a loop inside one cluster.
+  \item The colour stimuli sample saturation $\ge 0.4$ only, so their RGB values already have the hue loop; separating the model's hue code from the input needs controls with model inference (postponed).
   \item DREiMac's \texttt{standard\_range} criterion decided the months verdict.
   \item Exp4 bottleneck similarity was uninformative.
   \item The preregistered power simulation was misspecified (corrected post hoc, deviation D6).
@@ -243,7 +247,7 @@ GPT-2 positions & 1.22 & 2.16 & 1.000 & -- & 1.01\\\bottomrule
 \end{itemize}
 
 \section{Conclusion}
-Persistent homology finds holes that the concept travels around for colour hue (robustly), residues mod 113 and, post hoc, months. It finds none for ordinal concepts or random controls, and it does not detect a hole for weekdays. Fitted ``helices'' for cyclic concepts are not resolvable as open curves. Steering around the detected loops is the next, preregistered experiment.
+Persistent homology finds holes that the concept travels around for colour hue (robustly, but inherited from the stimuli), residues mod 113 and, post hoc, months. It finds none for ordinal concepts or random controls, and no ring of days for weekdays or days-with-times. Fitted ``helices'' for cyclic concepts are not resolvable as open curves. Steering around the detected loops is the next, preregistered experiment.
 
 \paragraph{Reproducibility.} Code: \url{https://github.com/BurnyCoder/topology-of-neural-geometry-in-llm-mechanistic-interpretability}. Inputs and results (pinned, SHA-256-verified): \url{https://huggingface.co/datasets/BurnyCoder/topology-of-neural-geometry}. Running \texttt{uv run python run.py all} recomputes every number on a CPU.
 

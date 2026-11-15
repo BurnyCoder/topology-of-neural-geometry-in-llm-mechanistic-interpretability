@@ -35,7 +35,8 @@ How well do persistent-homology estimators recover the exact topology of noisy p
   - vs Bb: {{exp1.diff.Bb:3}} [{{exp1.diff.Bb.lo:3}}, {{exp1.diff.Bb.hi:3}}]
   - vs Bc: {{exp1.diff.Bc:3}} [{{exp1.diff.Bc.lo:3}}, {{exp1.diff.Bc.hi:3}}]
 - **H5:** the preregistered estimator is significantly *worse* than the fixed-threshold and family-implied baselines, and better than the majority vector.
-- **Well-resolved topology (ρ_A ≥ 4; post hoc, D6).** {{exp1.well.n}} clouds; a fraction {{exp1.well.trivial_frac:2}} of them are always-contractible blobs, discs or paraboloids. Macro, with cluster-bootstrap CIs:
+- **The family label is scored in-distribution.** It comes from the source's shape fitter, which was trained on clouds from the same 13-family generator as this test set, whereas the persistence estimators are generic. The comparison says which instrument is more accurate on these 13 families, not in general.
+- **Well-resolved topology (ρ_A ≥ 4; post hoc, D6).** {{exp1.well.n}} clouds from {{exp1.well.n_families}} of the 13 families: no torus reaches ρ_A ≥ 4 ({{exp1.well.n_torus}} tori), and a fraction {{exp1.well.trivial_frac:2}} are blobs, discs or paraboloids, whose topology cannot change (infinite margin) and which have no hole. The macro average is therefore over a different family mix than the main table, and it drops the family where the label is best (tori). Macro, with cluster-bootstrap CIs:
   - P: {{exp1.well.P.acc:3}} [{{exp1.well.P.lo:3}}, {{exp1.well.P.hi:3}}]
   - Ba: {{exp1.well.Ba.acc:3}} [{{exp1.well.Ba.lo:3}}, {{exp1.well.Ba.hi:3}}]
   - Bb: {{exp1.well.Bb.acc:3}} [{{exp1.well.Bb.lo:3}}, {{exp1.well.Bb.hi:3}}]

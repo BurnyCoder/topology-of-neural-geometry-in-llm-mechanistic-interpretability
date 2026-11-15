@@ -1,0 +1,13 @@
+2026-11-15 19:11:29 INFO root: phase audit, log file C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\logs\audit_20261115T191129.log
+2026-11-15 19:12:20 INFO neurotopo.experiments.exp7_audit: colour stimulus RGB: top pi 8.01 vs null q95 2.76 (p = 0.001); Llama activations 5.02 vs 2.38
+2026-11-15 19:12:23 INFO neurotopo.experiments.exp7_audit: R5a_llama_weekdays       top bar [0.0245, 0.0325]; clusters first touch at 0.1917 -> loop inside one cluster: True; means top pi 1.05
+2026-11-15 19:12:23 INFO neurotopo.experiments.exp7_audit: R5b_llama_months         top bar [0.5017, 0.8613]; clusters first touch at 0.1712 -> loop inside one cluster: False; means top pi 1.71
+2026-11-15 19:12:23 INFO neurotopo.experiments.exp7_audit: R5c_llama_days_time      top bar [0.0224, 0.0451]; clusters first touch at 0.1603 -> loop inside one cluster: True; means top pi 1.11
+2026-11-15 19:12:23 INFO neurotopo.experiments.exp7_audit: R7_llama_colors          top bar [0.0872, 0.4382]; clusters first touch at 0.0080 -> loop inside one cluster: False; means top pi 4.33
+2026-11-15 19:12:23 INFO neurotopo.experiments.exp7_audit: C3_llama_weekdays_init   top bar [0.0217, 0.0242]; clusters first touch at 0.1400 -> loop inside one cluster: True; means top pi 1.03
+2026-11-15 19:12:23 INFO neurotopo.experiments.exp7_audit: C3_llama_months_init     top bar [0.0912, 0.1304]; clusters first touch at 0.0229 -> loop inside one cluster: False; means top pi 1.07
+2026-11-15 19:20:34 INFO neurotopo.experiments.exp7_audit: R7_llama_colors          stability: 1.00 (full-size threshold 2.379) vs 1.00 (size-matched 2.347)
+2026-11-15 19:20:34 INFO neurotopo.experiments.exp7_audit: R5b_llama_months         stability: 0.90 (full-size threshold 1.443) vs 0.93 (size-matched 1.426)
+2026-11-15 19:20:34 INFO neurotopo.experiments.exp7_audit: R2_grokking_WE           stability: 0.26 (full-size threshold 1.830) vs 0.33 (size-matched 1.802)
+2026-11-15 19:20:34 INFO neurotopo.experiments.exp7_audit: R5c_llama_days_time      stability: 0.03 (full-size threshold 1.873) vs 0.07 (size-matched 1.800)
+2026-11-15 19:20:34 INFO neurotopo.experiments.exp7_audit: wrote C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\results\exp7_audit\summary.json

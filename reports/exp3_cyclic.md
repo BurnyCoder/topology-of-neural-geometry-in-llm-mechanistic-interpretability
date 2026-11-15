@@ -33,6 +33,8 @@ This changes no verdict.
 - **Residues:** 3D R = 0.96, winding -1; top-10 R = 0.20, winding 0.
 - **Colours:** 3D R = 0.94, winding -1; top-10 R = 0.97, winding -1.
 - **Weekdays:** 3D R = 0.06, winding 0.
+- **Days with times (day):** 3D R = 0.18, winding 0. Its Rips class [0.40, 0.43] does not overlap the significant alpha bar (overlap: no; audit D8), so this coordinate does not describe the significant loop, which lies inside one day's cluster.
+- **Overlap of the relaxed-range class with the significant alpha bar (audit D8):** months yes, residues yes, colours yes, weekdays no, days_time no.
 - **Month means (12 points):** 3D R = 0.83, winding 1; top-10 winding 1.
 - **Non-cyclic records with |winding| = 1** (ordinal sets and random-process controls, 3D and top-10): 1.
 
@@ -79,12 +81,13 @@ Each dot is one concept, placed at the circular mean of its points' hole angle a
 - **The strict preregistered answer is negative.** No primary cyclic set passes all conditions.
   - The residues come closest, failing only the top-10-PC check.
   - Months fail at the coordinate-construction step, not at the alignment.
-  - Weekdays fail at the loop step.
+  - Weekdays fail at the loop step: the 7 day centres form no loop, and the cloud's most persistent loop lies inside one day's cluster (audit D8).
 - **Specificity holds, but it is weakly informative.**
   - No ordinal or control set passes any conjunction.
   - Sensitivity is zero, though: H4 balanced accuracy is 0.5 for every criterion.
-  - The controls' loop statistics never approach the null threshold, so they barely exercise the test.
-- **Post hoc,** the semantic order goes around the loop once in 3D for colours, residues and months, but **not for days_time**, whose loop the day does not travel around. Only colours keep a winding loop in the top-10 PCs.
+  - The ordinal and random-process controls are open curves, whose loop statistics never approach the null threshold, so they barely exercise the test. The random-init networks are the informative calibration (1 of 3 below 0.05).
+- **Post hoc,** the semantic order goes around the loop once in 3D for colours, residues and months. Days_time has no ring of days to go around. Only colours keep a winding loop in the top-10 PCs, so in 10 dimensions winding separates 1 of 5 cyclic sets from the ordinal sets, not the cyclic concepts as a group.
+- **The colour result is confounded by the input.** The colour prompts' RGB values already have the hue loop, and hue winds once around it (audit D8). The colour traversal therefore shows that the model preserves the input's hue circle.
 - **The alignment R and its permutation p measure ordering, not looping.** For example, nearly constant coordinates of random-process controls give small p with tiny R. Only winding ±1 carries the cyclic claim. The cyclic-order check was fixed to require a single winding (D6).
 - **DREiMac class vs alpha bar overlap** (preregistration §4.6): colours yes, residues yes.
 
