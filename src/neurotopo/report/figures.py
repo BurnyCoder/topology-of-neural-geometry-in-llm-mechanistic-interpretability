@@ -406,3 +406,38 @@ def fig_exp1_outliers() -> None:
     ax.set_xlabel("false-positive rate (any H1/H2 on a contractible shape), 95% CI")
     ax.legend(fontsize=7, loc="lower right")
     save(fig, "fig_exp1_outliers")
+
+
+def anim_clouds() -> None:
+    """Rotating 3D views (animated GIF) of four clouds in their top-3 PCs, coloured by semantic position:
+    colours (hue, a robust loop), residues mod 113 (ordered by k r mod 113, k from theta_B), months, weekdays.
+    matplotlib.animation.FuncAnimation + PillowWriter (https://matplotlib.org/stable/api/animation_api.html)."""
+    from matplotlib.animation import FuncAnimation, PillowWriter
+    from neurotopo.experiments import realdata
+    k = read_json(config.path("results") / "exp3" / "method_b.json")["R2_grokking_WE"]["records3"][0]["k"]
+    sets = [("R7_llama_colors", "colours (hue)"), ("R2_grokking_WE", f"residues mod 113 (k = {k})"),
+            ("R5b_llama_months", "months"), ("R5a_llama_weekdays", "weekdays")]
+    fig = plt.figure(figsize=(12, 3.6))
+    axes = []
+    for j, (d, title) in enumerate(sets):
+        c = realdata.cloud(d)
+        if d == "R2_grokking_WE":
+            pos = (k * np.array([int(s) for s in c["labels"]])) % 113 / 113
+        else:
+            con = source.concepts(d, c["labels"])
+            pos = con.index / len(con.phase)
+        ax = fig.add_subplot(1, len(sets), j + 1, projection="3d")
+        ax.scatter(*c["y"].T, c=pos, cmap="twilight", s=6 if len(pos) > 200 else 14, depthshade=False)
+        ax.set_title(title, fontsize=9)
+        ax.set_axis_off()
+        axes.append(ax)
+    fig.suptitle("Top-3 PCA clouds, coloured by position in the semantic cycle (cyclic colour map)", fontsize=9)
+    fig.subplots_adjust(left=0, right=1, bottom=0, top=0.88, wspace=0)
+
+    def turn(i):
+        for ax in axes:
+            ax.view_init(elev=20, azim=i * 10)
+        return axes
+
+    FuncAnimation(fig, turn, frames=36).save(config.path("figures") / "anim_clouds.gif", writer=PillowWriter(fps=10), dpi=80)
+    plt.close(fig)

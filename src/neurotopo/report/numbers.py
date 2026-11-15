@@ -256,12 +256,16 @@ def collect() -> dict:
                     n[f"exp5.top10.{sh}.pi"], n[f"exp5.top10.{sh}.q95"], n[f"exp5.top10.{sh}.p"] = (
                         float(tk.loc[d, "rips_pi1"]), float(tk.loc[d, "null_q95"]), float(tk.loc[d, "p_loop"]))
             n["exp5.top10.n_sig"] = int((tk["p_loop"] < 0.05).sum())
+            n["exp5.top10.n"] = len(tk)
             n["exp5.top10.sig_ids"] = ", ".join(tk.index[tk["p_loop"] < 0.05])
+            if _res("exp2", "invariants.csv").exists():             # same sets, 3D loop test (Exp2), for the ablation table
+                inv = pd.read_csv(_res("exp2", "invariants.csv")).set_index("id")
+                n["exp5.top3.n_sig"] = int((inv.loc[tk.index, "p_top_loop"] < 0.05).sum())
         pr = pd.read_csv(_res("exp5", "projection.csv")).set_index("id")
         for d in pr.index:
             sh = SHORT.get(d)
             if sh:
-                for c in ("rips3_pi1", "rips5_pi1", "rips10_pi1", "ripsD_cos_pi1"):
+                for c in ("alpha3_pi1", "rips3_pi1", "rips5_pi1", "rips10_pi1", "ripsD_cos_pi1"):
                     n[f"exp5.{sh}.{c}"] = float(pr.loc[d, c])
     return n
 
