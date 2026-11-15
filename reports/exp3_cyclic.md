@@ -70,6 +70,10 @@ Exploratory alignment records (BH q-values):
 | R6_llama_years | A | value mod 100 | 0.351 | 1.0e-05 | 1.3e-05 | 0 | - | hole |
 <!-- END:exp3 -->
 
+![travel around the hole](../docs/figures/fig_traversal.png)
+
+Each dot is one concept, placed at the circular mean of its points' hole angle and coloured by its position in the semantic cycle. Chords join consecutive concepts. Going round once in order gives a single non-crossing polygon (winding ±1).
+
 ## Interpretation
 
 - **The strict preregistered answer is negative.** No primary cyclic set passes all conditions.

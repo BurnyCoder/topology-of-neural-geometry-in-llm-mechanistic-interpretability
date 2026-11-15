@@ -108,14 +108,36 @@ The source fits each cloud with a uniquely parametrised shape. What is the exact
 | R7_llama_colors | theta | hole | hue | 0.984 | 1.0e-05 | 1 | - |
 <!-- END:exp0_alignment -->
 
+**Topologically equivalent families (synthetic ground truth).** Families in the same column share a homotopy type: for example, blobs, lines, helices, ringing curves, discs and paraboloids are all contractible, while closed arcs, ellipses and cone frusta are circles up to homotopy.
+
+<!-- BEGIN:exp0_family_homotopy -->
+Clouds per family and exact ground-truth Betti vector (in brackets: resolvable, rho_A >= 1).
+
+| family | (1, 0, 0) | (1, 0, 1) | (1, 1, 0) | (1, 2, 1) | (k, 0, 0), k >= 2 |
+|---|---|---|---|---|---|
+| arc | 1764 (1450) | 0 (0) | 1236 (1042) | 0 (0) | 0 (0) |
+| blob | 3000 (3000) | 0 (0) | 0 (0) | 0 (0) | 0 (0) |
+| clusters | 0 (0) | 0 (0) | 0 (0) | 0 (0) | 3000 (1843) |
+| cone | 0 (0) | 0 (0) | 3000 (1340) | 0 (0) | 0 (0) |
+| disc | 3000 (3000) | 0 (0) | 0 (0) | 0 (0) | 0 (0) |
+| ellipse | 0 (0) | 0 (0) | 3000 (2092) | 0 (0) | 0 (0) |
+| helix | 3000 (1658) | 0 (0) | 0 (0) | 0 (0) | 0 (0) |
+| line | 3000 (2966) | 0 (0) | 0 (0) | 0 (0) | 0 (0) |
+| paraboloid | 3000 (3000) | 0 (0) | 0 (0) | 0 (0) | 0 (0) |
+| polytope | 0 (0) | 0 (0) | 0 (0) | 0 (0) | 3000 (2932) |
+| ringing | 3000 (2803) | 0 (0) | 0 (0) | 0 (0) | 0 (0) |
+| sphere | 2021 (1353) | 979 (767) | 0 (0) | 0 (0) | 0 (0) |
+| torus | 0 (0) | 0 (0) | 0 (0) | 3000 (868) | 0 (0) |
+<!-- END:exp0_family_homotopy -->
+
 ![margin ratios](../docs/figures/fig_exp0_margin.png)
 
 ## Interpretation
 
-- A fitted helix is topologically an open curve. For the cyclic concepts, though, ρ_A ≈ 0.1: whether the curve is open or closed is **unresolvable** at the data's noise scale. That is not evidence of closure.
+- A fitted helix is topologically an open curve. For the cyclic concepts, though, ρ_A = 0.11 (weekdays), 0.11 (months) and 0.23 (residues): whether the curve is open or closed is **unresolvable** at the data's noise scale. That is not evidence of closure.
 - For prompt-template designs (7 or 12 tight clusters), the coverage term of ν is dominated by the gaps between clusters, so a low ρ_A is largely a property of the design.
 - The concepts sit around the helix axis in cyclic order, but so do the indices of smooth random processes that the fitter also calls helices, with the same minimum permutation p and winding ±1.
-- **Only months stand out by closure:** a gap of 0.04 radii, outside the controls' range. The weekdays' gap (0.80) lies inside it.
+- **Only months stand out by closure:** a gap of 0.04 radii, below the controls' range (0.33–2.20). The weekdays' gap (0.80) lies inside it.
 - Method A therefore cannot by itself establish a semantic hole here.
 
 ## Learnings

@@ -43,6 +43,26 @@ How well do persistent-homology estimators recover the exact topology of noisy p
   - Paired P − Bb: -0.070 [-0.084, -0.056]. P − Ba: -0.172 [-0.184, -0.160].
   - Micro-averaged accuracies in the top ρ_A bin, used in an earlier version of the text: P 0.87, Ba 0.94, Bb 0.86.
 - **False positives** (any hole on resolvable contractible shapes): 0.019–0.054 per N-bin for P.
+- **Outlier clouds and the preregistered DTM conditional (deviation D7).**
+  - The source generator replaces random points by uniform draws from the padded bounding box but does not record which ones. The proxy was fixed before computing: an "outlier cloud" has at least one point farther than 6 × its median distance from the ground-truth shape. That covers 0.193 of all test clouds.
+  - False-positive rate on resolvable contractible clouds (95% cluster-bootstrap CI):
+
+    | Estimator | outlier clouds | clean clouds | one-sided Fisher p |
+    |---|---|---|---|
+    | P | 0.065 [0.053, 0.078] (n = 3547) | 0.031 [0.025, 0.037] (n = 12880) | 2.3e-18 |
+    | S | 0.085 [0.070, 0.101] | 0.048 [0.041, 0.057] | 5.0e-16 |
+    | Ba | 0.017 [0.012, 0.022] | 0.015 [0.012, 0.019] | 0.220 |
+    | Bb | 0.014 [0.011, 0.018] | 0.035 [0.029, 0.041] | 1.000 |
+
+  - **Decision:** outliers roughly double the false positives of the universal-null estimators (P, S), while the tuned fixed threshold (Ba) is unaffected. P stays below the preregistered threshold of 0.10, so the DTM filtration is **not required**.
+  - With factors 4 and 8 instead of 6 (post hoc), P's outlier false-positive rate ranges over 0.050–0.074, so the decision does not depend on the factor.
+  - **Proxy check:** flagged fraction vs the generator's expected fraction of clouds with at least one injected outlier, per N bin:
+    - N 5–12: 0.05 vs 0.09;
+    - N 13–64: 0.15 vs 0.20;
+    - N 65–254: 0.26 vs 0.28;
+    - N 257–1020: 0.32 vs 0.29.
+
+    The proxy misses outliers that land near the shape. In the largest clouds it also flags some extreme noise points, because there the flagged fraction exceeds the expected one.
 
 <!-- BEGIN:exp1 -->
 | estimator | macro exact accuracy | 95% CI | n clouds |
@@ -107,6 +127,7 @@ Resolvable fraction of test clouds: 0.772.
 
 ![estimators](../docs/figures/fig_exp1_estimators.png)
 ![by rho](../docs/figures/fig_exp1_by_rho.png)
+![outliers](../docs/figures/fig_exp1_outliers.png)
 
 ## Interpretation
 

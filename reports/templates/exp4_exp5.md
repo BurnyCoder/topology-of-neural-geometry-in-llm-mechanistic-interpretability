@@ -11,6 +11,8 @@ Date: 2026-11-15. Code: `src/neurotopo/experiments/exp4_similarity.py`, `exp5_ro
 - Almost every cloud is nearest to the topologically trivial templates (helix / line / blob, tied). Only months is nearest a ring of clusters.
 - Even colours, with π ≈ 5, is closest to the trivial templates. Its loop bar is short in absolute radius units, and the bottleneck distance works in absolute units.
 
+![MDS and dendrogram](../docs/figures/fig_exp4.png)
+
 **Learning.** Bottleneck distance in absolute radius units is dominated by bar length, not by π. A scale-free variant, for example log-coordinates of bars, is listed in the to-do. This exploratory analysis is reported as uninformative.
 
 ## Exp5: robustness
@@ -33,6 +35,10 @@ Date: 2026-11-15. Code: `src/neurotopo/experiments/exp4_similarity.py`, `exp5_ro
   - months: {{exp5.top10.months.pi:2}} vs {{exp5.top10.months.q95:2}} (p = {{exp5.top10.months.p}});
   - weekdays: p = {{exp5.top10.weekdays.p}};
   - significant overall: {{exp5.top10.sig_ids}}.
+
+  ![top-10 loop test](../docs/figures/fig_top10.png)
+
+- **DTM filtration (preregistered conditional):** {{exp1.out.dtm}}. P's false-positive rate on outlier clouds is {{exp1.out.P.outlier:3}}, below the {{exp1.out.thr:2}} threshold (deviation D7; `reports/exp1_synthetic.md`).
 
 **Interpretation.**
 - Raw persistence ratios are not comparable across dimensions and sample sizes. The top-10 statement therefore rests on the matched null above, which was added post hoc.

@@ -56,6 +56,19 @@ def exp0_alignment_table() -> str:
     return tables.md_table(pd.DataFrame(rows), 3)
 
 
+def exp0_family_homotopy_table() -> str:
+    """Family x exact ground-truth Betti vector on the 39,000 synthetic test clouds (all / resolvable): which
+    geometric families are topologically equivalent (plan, Exp1)."""
+    d = pd.read_csv(res("exp0", "synth_test_topology.csv.gz"), usecols=["family_name", "b0", "b1", "b2", "resolvable"])
+    d["Betti vector"] = ["(" + ", ".join(map(str, v)) + ")" if v[0] <= 1 else "(k, 0, 0), k >= 2"
+                         for v in d[["b0", "b1", "b2"]].itertuples(index=False)]
+    t = pd.crosstab(d["family_name"], d["Betti vector"])
+    r = pd.crosstab(d.loc[d["resolvable"], "family_name"], d.loc[d["resolvable"], "Betti vector"])
+    out = t.astype(str) + " (" + r.reindex_like(t).fillna(0).astype(int).astype(str) + ")"
+    head = "Clouds per family and exact ground-truth Betti vector (in brackets: resolvable, rho_A >= 1)."
+    return head + "\n\n" + tables.md_table(out.reset_index().rename(columns={"family_name": "family"}), 0)
+
+
 def exp1_table() -> str:
     s = read_json(res("exp1", "summary.json"))
     rows = [{"estimator": k, "macro exact accuracy": v["macro_exact"], "95% CI": f"[{v['ci'][0]:.3f}, {v['ci'][1]:.3f}]",
@@ -141,6 +154,7 @@ def coords_table() -> str:
 # ----------------------------------------------------------------------------- orchestration
 SECTIONS = [("exp0_topology", exp0_table, ("exp0", "real_topology.csv")),
             ("exp0_alignment", exp0_alignment_table, ("exp0", "real_alignment.json")),
+            ("exp0_family_homotopy", exp0_family_homotopy_table, ("exp0", "synth_test_topology.csv.gz")),
             ("exp1", exp1_table, ("exp1", "summary.json")),
             ("exp2", exp2_table, ("exp2", "invariants.csv")),
             ("exp3", exp3_tables, ("exp3", "summary.json")),
@@ -182,8 +196,19 @@ def run() -> None:
     if have("exp1", "summary.json"):
         figures.fig_exp1_estimators()
         figures.fig_exp1_by_rho()
+    if have("exp1", "outliers.json"):
+        figures.fig_exp1_outliers()
+    if have("power", "power_v2_summary.csv"):
+        figures.fig_power()
+    if have("exp3", "method_b.json") and have("exp3", "posthoc_relaxed_range.json"):
+        figures.fig_traversal()
+    if have("exp4", "summary.json"):
+        figures.fig_exp4()
+    if have("exp5", "topk_null.csv"):
+        figures.fig_top10()
     if have("exp2", "invariants.csv"):
         figures.fig_real_gallery(["R5a_llama_weekdays", "R5b_llama_months", "R2_grokking_WE", "R7_llama_colors",
                                   "R6_llama_years", "R1_gpt2_wpos", "C3_llama_weekdays_init", "C1_walk_0"], "fig_real_gallery")
+        figures.fig_null_tests()
     if have("exp6_sim", "simulated_steering.json"):
         figures.fig_exp6sim()

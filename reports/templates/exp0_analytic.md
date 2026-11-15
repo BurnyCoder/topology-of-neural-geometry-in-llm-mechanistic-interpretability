@@ -35,14 +35,19 @@ The source fits each cloud with a uniquely parametrised shape. What is the exact
 <!-- BEGIN:exp0_alignment -->
 <!-- END:exp0_alignment -->
 
+**Topologically equivalent families (synthetic ground truth).** Families in the same column share a homotopy type: for example, blobs, lines, helices, ringing curves, discs and paraboloids are all contractible, while closed arcs, ellipses and cone frusta are circles up to homotopy.
+
+<!-- BEGIN:exp0_family_homotopy -->
+<!-- END:exp0_family_homotopy -->
+
 ![margin ratios](../docs/figures/fig_exp0_margin.png)
 
 ## Interpretation
 
-- A fitted helix is topologically an open curve. For the cyclic concepts, though, ρ_A ≈ 0.1: whether the curve is open or closed is **unresolvable** at the data's noise scale. That is not evidence of closure.
+- A fitted helix is topologically an open curve. For the cyclic concepts, though, ρ_A = {{exp0.weekdays.rho:2}} (weekdays), {{exp0.months.rho:2}} (months) and {{exp0.grok.rho:2}} (residues): whether the curve is open or closed is **unresolvable** at the data's noise scale. That is not evidence of closure.
 - For prompt-template designs (7 or 12 tight clusters), the coverage term of ν is dominated by the gaps between clusters, so a low ρ_A is largely a property of the design.
 - The concepts sit around the helix axis in cyclic order, but so do the indices of smooth random processes that the fitter also calls helices, with the same minimum permutation p and winding ±1.
-- **Only months stand out by closure:** a gap of 0.04 radii, outside the controls' range. The weekdays' gap (0.80) lies inside it.
+- **Only months stand out by closure:** a gap of {{exp0.months.azimuth.gap:2}} radii, below the controls' range ({{exp0.gp_gap_min:2}}–{{exp0.gp_gap_max:2}}). The weekdays' gap ({{exp0.weekdays.azimuth.gap:2}}) lies inside it.
 - Method A therefore cannot by itself establish a semantic hole here.
 
 ## Learnings

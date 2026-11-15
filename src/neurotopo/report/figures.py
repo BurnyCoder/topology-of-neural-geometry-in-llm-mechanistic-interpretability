@@ -65,7 +65,7 @@ def fig_pipeline() -> None:
         "tA": (0.52, 0.62, "hole coordinate theta_A\n(parameter on the fit)", "#f4f1de"),
         "tB": (0.52, 0.12, "hole coordinate theta_B\n(persistent cohomology,\nDREiMac)", "#f4f1de"),
         "T": (0.78, 0.62, "travel around the hole:\nalignment R, permutation p,\nwinding = +-1", "#e8f5e9"),
-        "S": (0.78, 0.12, "steering around the loop\n(simulated now, LLM later):\nconcept goes round once?", "#e8f5e9"),
+        "S": (0.78, 0.12, "steering around the loop\n(postponed):\nconcept goes round once?", "#e8f5e9"),
     }
     for k, (x, y, t, c) in boxes.items():
         ax.add_patch(FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.01", fc=c, ec="#555"))
@@ -100,7 +100,8 @@ def fig_exp0_helix() -> None:
     ax.set_xlim(left=0)
     ax.set_ylim(0, 1.02)
     ax.legend(fontsize=8, loc="lower right")
-    ax.set_title("Method A, helix fits: winding is not specific, closure is", fontsize=10)
+    ax.set_title("Method A, helix fits: winding is not specific;\nonly months close more tightly than every control",
+                 fontsize=10)
     save(fig, "fig_exp0_helix")
 
 
@@ -221,3 +222,187 @@ def fig_exp6sim() -> None:
     ax.legend(fontsize=7, loc="lower right")
     ax.invert_yaxis()
     save(fig, "fig_exp6sim")
+
+
+def _concept_ring(ax, th: np.ndarray, title: str, first: str) -> None:
+    """Concept circular means on the unit circle (x = cos, y = sin), coloured by semantic position (cyclic
+    colour map) and joined by chords in semantic order. One clean polygon = the cycle goes round once in order."""
+    th = np.asarray(th, dtype=np.float64)
+    ok = np.flatnonzero(np.isfinite(th))
+    t = np.linspace(0, 2 * np.pi, 200)
+    ax.plot(np.cos(t), np.sin(t), color="#dddddd", lw=0.8, zorder=0)
+    loop = np.r_[ok, ok[:1]]
+    ax.plot(np.cos(th[loop]), np.sin(th[loop]), color="#777777", lw=0.7, zorder=1)
+    ax.scatter(np.cos(th[ok]), np.sin(th[ok]), c=plt.cm.twilight(ok / th.size), s=30 if th.size < 40 else 9,
+               edgecolor="k", lw=0.3, zorder=2)
+    x0, y0 = np.cos(th[ok[0]]), np.sin(th[ok[0]])
+    ax.annotate(first, (x0, y0), xytext=(1.3 * x0, 1.3 * y0), fontsize=7, ha="center", va="center",
+                arrowprops=dict(arrowstyle="-", color="#555555", lw=0.5))
+    ax.set_xlim(-1.5, 1.5)
+    ax.set_ylim(-1.5, 1.5)
+    ax.set_aspect("equal")
+    ax.axis("off")
+    ax.set_title(title, fontsize=8)
+
+
+def fig_traversal() -> None:
+    """Travel around the hole: per-concept mean hole angle for the cyclic sets with a coordinate (theta_B from
+    persistent cohomology, theta_A from the fitted shape) and, for contrast, the weekday helix fit and a
+    Gaussian-process control fitted as a helix (its azimuth also winds: axial winding is not specific)."""
+    from neurotopo.stats import circular as cs
+    res = config.path("results")
+    mb = read_json(res / "exp3" / "method_b.json")
+    ph = read_json(res / "exp3" / "posthoc_relaxed_range.json")
+    a0 = read_json(res / "exp0" / "real_alignment.json")
+
+    def pick(d, var):
+        return next(r for r in a0 if r["id"] == d and r["variable"] == var)
+
+    col = mb["R7_llama_colors"]["records3"][0]
+    grok = mb["R2_grokking_WE"]["records3"][0]
+    tb = np.load(res / "exp3" / "theta_B.npz")["R2_grokking_WE"]
+    labels = np.array([int(s) for s in source.load_viz("R2_grokking_WE")["labels"]])
+    grok_th = cs.concept_means(tb, (grok["k"] * labels) % 113, 113)      # residues ordered around the k-circle
+    mon = ph["R5b_llama_months"]["3d"]["records"][0]
+    cone, wk, gp = pick("R7_llama_colors", "hue"), pick("R5a_llama_weekdays", "day of week"), pick("C1_gp_3", "value in 7 bins")
+    panels = [
+        (col["concept_theta"], f"colours, theta_B (prereg.)\nR = {col['R']:.2f}, winding {col['winding']}", "hue 0"),
+        (cone["concept_theta"], f"colours, theta_A (fitted cone)\nR = {cone['R']:.2f}, winding {cone['winding']}", "hue 0"),
+        (grok_th, f"residues mod 113, theta_B, k = {grok['k']}\nR = {grok['R']:.2f}, winding {grok['winding']}", "r = 0"),
+        (mon["concept_theta"], f"months, theta_B (post hoc)\nR = {mon['R']:.2f}, winding {mon['winding']}", "Jan"),
+        (wk["concept_theta"], f"weekdays, helix azimuth\nR = {wk['R']:.2f}, winding {wk['winding']}", "Mon"),
+        (gp["concept_theta"], f"control (Gaussian process),\nhelix azimuth R = {gp['R']:.2f}, winding {gp['winding']}", "bin 1"),
+    ]
+    fig, axes = plt.subplots(1, len(panels), figsize=(2.4 * len(panels), 2.9))
+    for ax, (th, title, first) in zip(axes, panels):
+        _concept_ring(ax, th, title, first)
+    save(fig, "fig_traversal")
+
+
+def fig_null_tests() -> None:
+    """Loop test per dataset: Monte Carlo null distribution of the maximum H1 persistence ratio (999 draws,
+    design-matched) with the observed top ratio (solid line) and the null's 95th percentile (dashed)."""
+    inv = pd.read_csv(config.path("results") / "exp2" / "invariants.csv").set_index("id")
+    ids = ["R7_llama_colors", "R2_grokking_WE", "R5b_llama_months", "R5c_llama_days_time", "R5a_llama_weekdays",
+           "R6_llama_years", "R4_llama_counting", "R1_gpt2_wpos", "C3_llama_weekdays_init", "C1_gp_0"]
+    fig, axes = plt.subplots(2, 5, figsize=(14, 5.2))
+    for ax, d in zip(axes.ravel(), ids):
+        nm = np.load(config.path("results") / "nulls" / f"{d}_seed0.npy")[:, 0]
+        obs = float(inv.loc[d, "top_pi1"])
+        hi = max(float(np.nanmax(nm)), obs) * 1.05
+        ax.hist(nm, bins=np.linspace(1, hi, 40), color="#bbbbbb")
+        ax.axvline(inv.loc[d, "null_q95_pi1"], color="k", ls="--", lw=0.8)
+        ax.axvline(obs, color=COL[group_of(d)], lw=2)
+        ax.set_title(f"{short(d)}: p = {inv.loc[d, 'p_top_loop']:.3f}", fontsize=8)
+        ax.set_xlim(0.97, hi)                                 # observed pi can be ~1 (no real loop)
+        ax.tick_params(labelsize=7)
+    for ax in axes[1]:
+        ax.set_xlabel("max H1 persistence ratio pi", fontsize=8)
+    for ax in axes[:, 0]:
+        ax.set_ylabel("null draws", fontsize=8)
+    fig.tight_layout()
+    save(fig, "fig_null_tests")
+
+
+def fig_top10() -> None:
+    """Top-10-PC loop test (post hoc, D6): observed max Rips H1 ratio vs the matched null's 95th percentile."""
+    t = pd.read_csv(config.path("results") / "exp5" / "topk_null.csv")
+    fig, ax = plt.subplots(figsize=(6.5, 4.4))
+    for i, r in enumerate(t.itertuples()):
+        c = COL[group_of(r.id)]
+        ax.plot([r.null_q95, r.rips_pi1], [i, i], color="#cccccc", lw=2, zorder=0)
+        ax.scatter(r.null_q95, i, marker="|", c="k", s=120, zorder=1)
+        ax.scatter(r.rips_pi1, i, c=c if r.p_loop < 0.05 else "w", edgecolor=c, s=45, lw=1.2, zorder=2)
+    ax.set_yticks(range(len(t)))
+    ax.set_yticklabels([short(d) for d in t["id"]], fontsize=8)
+    ax.invert_yaxis()
+    ax.set_xlabel("max Rips H1 persistence ratio in the top-10 PCs (|: null 95th percentile)")
+    ax.scatter([], [], c="k", label="p < 0.05 (filled)")
+    ax.scatter([], [], c="w", edgecolor="k", label="p >= 0.05 (open)")
+    ax.legend(fontsize=7, loc="lower right")
+    ax.set_title("Top-10 PCs: loops are not specific to cyclic concepts", fontsize=10)
+    save(fig, "fig_top10")
+
+
+def fig_power() -> None:
+    """Corrected power simulation (post hoc, v2): pass rate of the loop test and of the full preregistered
+    conjunction for rings, open 300-degree arcs and random placements of 7 or 12 clusters vs top-3 variance."""
+    s = pd.read_csv(config.path("results") / "power" / "power_v2_summary.csv")
+    real = {r["id"]: r["top3_explained"] for r in read_json(config.path("results") / "power" / "real_second_order.json")}
+    fig, axes = plt.subplots(1, 2, figsize=(10, 3.6), sharey=True)
+    for ax, (k, d) in zip(axes, ((7, "R5a_llama_weekdays"), (12, "R5b_llama_months"))):
+        for arr, c in (("ring", COL["cyclic"]), ("arc300", COL["ordinal"]), ("random", COL["control"])):
+            q = s[(s["k"] == k) & (s["arrangement"] == arr)].sort_values("top3")
+            ax.plot(q["top3"], q["loop"], marker="o", color=c, label=f"{arr}: loop test")
+            if arr == "ring":
+                ax.plot(q["top3"], q["all"], marker="s", ls="--", color=c, label="ring: full conjunction")
+        ax.axvline(real[d], color="k", ls=":", lw=1)
+        ax.text(real[d], 1.03, f" real {short(d)}", fontsize=7)
+        ax.set_ylim(0, 1.1)
+        ax.set_xlabel("top-3 explained variance of the simulated cloud")
+        ax.set_title(f"{k} clusters of {k} points in R^4096", fontsize=9)
+    axes[0].set_ylabel("fraction of replicates passing")
+    h, lab = axes[0].get_legend_handles_labels()
+    fig.legend(h, lab, fontsize=7, loc="lower center", ncol=4, bbox_to_anchor=(0.5, -0.08))
+    save(fig, "fig_power")
+
+
+def fig_exp4() -> None:
+    """Exp4: MDS map of bottleneck distances on significant bars (clouds and ideal templates) and the
+    average-linkage dendrogram."""
+    from scipy.cluster.hierarchy import dendrogram
+    s = read_json(config.path("results") / "exp4" / "summary.json")
+    names, mds = s["names"], np.asarray(s["mds"])
+    tmpl = {i for i, k in enumerate(s["kinds"]) if k == "template"}
+    # Clouds without significant bars all have distance 0 to each other and to the line/helix/blob templates,
+    # so they share one MDS point: draw it once with a group label instead of overlapping labels.
+    empty = np.flatnonzero(np.linalg.norm(mds - mds[names.index("template: line")], axis=1) < 1e-6)
+    fig, (a, b) = plt.subplots(1, 2, figsize=(14, 5.5), gridspec_kw={"width_ratios": [1, 1.4]})
+    for i, d in enumerate(names):
+        if i in empty:
+            continue
+        if i in tmpl:
+            a.scatter(*mds[i], marker="*", s=120, c="k")
+            a.annotate(d.replace("template: ", ""), mds[i], fontsize=7, xytext=(5, 3), textcoords="offset points")
+        else:
+            a.scatter(*mds[i], c=COL[group_of(d)], s=30, edgecolor="k", lw=0.3)
+            if group_of(d) in ("cyclic", "colours", "ordinal") or d == "C3_llama_counting_init":
+                a.annotate(short(d), mds[i], fontsize=6, xytext=(3, -8), textcoords="offset points")
+    n_cl = sum(i not in tmpl for i in empty)
+    a.scatter(*mds[empty[0]], marker="X", s=90, c="#555555")
+    a.annotate(f"no significant bars:\n{n_cl} clouds + line, helix,\nblob templates", mds[empty[0]], fontsize=6,
+               xytext=(-120, 25), textcoords="offset points", arrowprops=dict(arrowstyle="-", color="#555555", lw=0.5))
+    for g in ("cyclic", "colours", "ordinal", "control", "other"):
+        a.scatter([], [], c=COL[g], label=g)
+    a.scatter([], [], marker="*", c="k", label="ideal template")
+    a.legend(fontsize=7)
+    a.set_title("MDS of bottleneck distances (significant bars)", fontsize=9)
+    a.set_xlabel("MDS 1")
+    a.set_ylabel("MDS 2")
+    dendrogram(np.asarray(s["linkage"]), labels=[f"*{d}" if i in tmpl else short(d) for i, d in enumerate(names)],
+               ax=b, leaf_font_size=6, color_threshold=0, above_threshold_color="#555555")
+    b.set_ylabel("bottleneck distance (average linkage)")
+    b.set_title("Dendrogram (* = ideal template)", fontsize=9)
+    save(fig, "fig_exp4")
+
+
+def fig_exp1_outliers() -> None:
+    """Exp1 (D7): false-positive rate on resolvable contractible clouds with and without detected outliers,
+    per estimator, with 95% cluster-bootstrap CIs and the preregistered 10% DTM threshold."""
+    s = read_json(config.path("results") / "exp1" / "outliers.json")
+    names = [k for k in s["fpr"] if k != "Bc_majority"]
+    fig, ax = plt.subplots(figsize=(7, 3.2))
+    for j, (lab, c) in enumerate((("clean", "#bbbbbb"), ("outlier", "#d1495b"))):
+        est = np.array([s["fpr"][n][lab]["fpr"] for n in names])
+        ci = np.array([s["fpr"][n][lab]["ci"] for n in names])
+        ax.barh(np.arange(len(names)) + (j - 0.5) * 0.38, est, height=0.38, color=c,
+                xerr=[est - ci[:, 0], ci[:, 1] - est], capsize=2, label=f"{lab} clouds")
+    ax.axvline(s["threshold"], color="k", ls="--", lw=0.8)
+    ax.text(s["threshold"], -0.6, " DTM threshold (prereg.)", fontsize=7)
+    ax.set_yticks(range(len(names)))
+    ax.set_yticklabels(names, fontsize=8)
+    ax.invert_yaxis()
+    ax.set_xlim(0, max(0.15, max(s["fpr"][n]["outlier"]["ci"][1] for n in names) * 1.1))
+    ax.set_xlabel("false-positive rate (any H1/H2 on a contractible shape), 95% CI")
+    ax.legend(fontsize=7, loc="lower right")
+    save(fig, "fig_exp1_outliers")

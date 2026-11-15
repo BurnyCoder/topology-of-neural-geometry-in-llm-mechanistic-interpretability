@@ -43,12 +43,33 @@ How well do persistent-homology estimators recover the exact topology of noisy p
   - Paired P − Bb: {{exp1.well.diff.Bb:3}} [{{exp1.well.diff.Bb.lo:3}}, {{exp1.well.diff.Bb.hi:3}}]. P − Ba: {{exp1.well.diff.Ba:3}} [{{exp1.well.diff.Ba.lo:3}}, {{exp1.well.diff.Ba.hi:3}}].
   - Micro-averaged accuracies in the top ρ_A bin, used in an earlier version of the text: P {{exp1.rho4.P:2}}, Ba {{exp1.rho4.Ba:2}}, Bb {{exp1.rho4.Bb:2}}.
 - **False positives** (any hole on resolvable contractible shapes): {{exp1.P.fpr_min:3}}–{{exp1.P.fpr_max:3}} per N-bin for P.
+- **Outlier clouds and the preregistered DTM conditional (deviation D7).**
+  - The source generator replaces random points by uniform draws from the padded bounding box but does not record which ones. The proxy was fixed before computing: an "outlier cloud" has at least one point farther than {{exp1.out.factor:0}} × its median distance from the ground-truth shape. That covers {{exp1.out.flagged:3}} of all test clouds.
+  - False-positive rate on resolvable contractible clouds (95% cluster-bootstrap CI):
+
+    | Estimator | outlier clouds | clean clouds | one-sided Fisher p |
+    |---|---|---|---|
+    | P | {{exp1.out.P.outlier:3}} [{{exp1.out.P.outlier.lo:3}}, {{exp1.out.P.outlier.hi:3}}] (n = {{exp1.out.P.outlier.n}}) | {{exp1.out.P.clean:3}} [{{exp1.out.P.clean.lo:3}}, {{exp1.out.P.clean.hi:3}}] (n = {{exp1.out.P.clean.n}}) | {{exp1.out.P.fisher}} |
+    | S | {{exp1.out.S.outlier:3}} [{{exp1.out.S.outlier.lo:3}}, {{exp1.out.S.outlier.hi:3}}] | {{exp1.out.S.clean:3}} [{{exp1.out.S.clean.lo:3}}, {{exp1.out.S.clean.hi:3}}] | {{exp1.out.S.fisher}} |
+    | Ba | {{exp1.out.Ba.outlier:3}} [{{exp1.out.Ba.outlier.lo:3}}, {{exp1.out.Ba.outlier.hi:3}}] | {{exp1.out.Ba.clean:3}} [{{exp1.out.Ba.clean.lo:3}}, {{exp1.out.Ba.clean.hi:3}}] | {{exp1.out.Ba.fisher}} |
+    | Bb | {{exp1.out.Bb.outlier:3}} [{{exp1.out.Bb.outlier.lo:3}}, {{exp1.out.Bb.outlier.hi:3}}] | {{exp1.out.Bb.clean:3}} [{{exp1.out.Bb.clean.lo:3}}, {{exp1.out.Bb.clean.hi:3}}] | {{exp1.out.Bb.fisher}} |
+
+  - **Decision:** outliers roughly double the false positives of the universal-null estimators (P, S), while the tuned fixed threshold (Ba) is unaffected. P stays below the preregistered threshold of {{exp1.out.thr:2}}, so the DTM filtration is **{{exp1.out.dtm}}**.
+  - With factors {{exp1.out.sens.factors}} instead of {{exp1.out.factor:0}} (post hoc), P's outlier false-positive rate ranges over {{exp1.out.sens.P.min:3}}–{{exp1.out.sens.P.max:3}}, so the decision does not depend on the factor.
+  - **Proxy check:** flagged fraction vs the generator's expected fraction of clouds with at least one injected outlier, per N bin:
+    - N {{exp1.out.bin0.range}}: {{exp1.out.bin0.flagged:2}} vs {{exp1.out.bin0.expected:2}};
+    - N {{exp1.out.bin1.range}}: {{exp1.out.bin1.flagged:2}} vs {{exp1.out.bin1.expected:2}};
+    - N {{exp1.out.bin2.range}}: {{exp1.out.bin2.flagged:2}} vs {{exp1.out.bin2.expected:2}};
+    - N {{exp1.out.bin3.range}}: {{exp1.out.bin3.flagged:2}} vs {{exp1.out.bin3.expected:2}}.
+
+    The proxy misses outliers that land near the shape. In the largest clouds it also flags some extreme noise points, because there the flagged fraction exceeds the expected one.
 
 <!-- BEGIN:exp1 -->
 <!-- END:exp1 -->
 
 ![estimators](../docs/figures/fig_exp1_estimators.png)
 ![by rho](../docs/figures/fig_exp1_by_rho.png)
+![outliers](../docs/figures/fig_exp1_outliers.png)
 
 ## Interpretation
 

@@ -29,6 +29,7 @@ Date: 2026-11-15. Code: `src/neurotopo/experiments/exp2_invariants.py`, `realdat
 - **Weekdays have no significant loop** (π = 1.32 vs 1.36, p = 0.094).
 - **No ordinal concept has a loop** (0/6), and neither do the 20 random-process controls (0/20; max π 1.37).
 - **GPT-2 W_pos:** fitted as a closed sphere (Method A void), but there is no significant void in the data (H2 π = 1.02). The positions trace a spiral curve, not a surface.
+- **Truth cities (exploratory prediction, preregistration section 6: b0 = 2, true vs false statements):** not supported. The tuned single-linkage rule gives b0 = 1, and b0 = 1 at the characteristic scale. The homotopy class is contractible.
 - **Agreement between Method A and Method B (b1, b2):** 0.705.
 - **Benjamini–Hochberg over the 44 loop tests (post hoc, D6):** 6 loops at q < 0.05: C3_tms_dense, R2_grokking_WE, R3_tms_n8, R5b_llama_months, R5b_llama_months_means, R7_llama_colors.
 
@@ -83,6 +84,10 @@ Date: 2026-11-15. Code: `src/neurotopo/experiments/exp2_invariants.py`, `realdat
 
 ![gallery](../docs/figures/fig_real_gallery.png)
 
+![null distributions](../docs/figures/fig_null_tests.png)
+
+Grey: Monte Carlo null distribution of the largest H1 persistence ratio (999 design-matched draws). Dashed: its 95th percentile. Solid: the observed largest ratio.
+
 ## Interpretation
 
 - Topology detects loops in four cyclic sets (hue, residues mod 113, months, days_time). It detects none in weekdays, ordinal concepts or random-process controls, and a borderline one in the random-init grokking embedding.
@@ -93,4 +98,4 @@ Date: 2026-11-15. Code: `src/neurotopo/experiments/exp2_invariants.py`, `realdat
 ## Learnings
 
 - The cluster-centre null matters. With a plain Gaussian null, any arrangement of tight clusters would look "loopy".
-- Stability under subsampling separates robust loops (colours 1.0, months 0.9) from fragile ones (days_time 0.03).
+- Stability under subsampling separates robust loops (colours 1.00, months 0.90) from fragile ones (days_time 0.03).
