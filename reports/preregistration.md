@@ -207,6 +207,67 @@ Within-concept noise is isotropic; top-3 variance and the within/between spread 
   - the source project's figures and its shape labels (helix for weekdays, months and grokking; sphere for W_pos; cone for years and colours);
   - while checking the parameter schema, three fitted parameter values: W_pos closed sphere; years cone with r_bot ≈ 0.79 > 0; C1_gp_0 helix with 4.6 turns.
 
-## Addendum (to be added before any real-data analysis)
+## Addendum A1 (2026-11-15): validation tuning and power simulation (before any Method B result on real data)
 
-_Empty at the time of the first push._
+The values below were produced by `run.py power` on the synthetic **validation** stream and on simulated designs only. The generated values are in [generated/prereg_addendum_A1.md](generated/prereg_addendum_A1.md), and the raw results are in `results/power/`.
+- The b0 rule and the fixed-π baseline thresholds are fixed to the values that file reports. The chosen τ0 is the largest value in the preregistered grid; this is reported, not changed.
+- The family-implied baseline map is fixed to the map that file reports.
+- **Power simulation.** Conditions (a)–(c) of H1-B detect closed rings of 7×7, 12×12 and 113×1 concepts at every between-concept variance fraction simulated (0.3–0.9), which brackets the real sets' values.
+  - Random arrangements essentially never pass the conjunction.
+  - Open 300° arcs of clusters pass the loop condition (a), because their gap is about one inter-cluster step, so they are nearly rings. They are mostly rejected by (b)–(c).
+  - No rule is changed.
+
+**Disclosure.** Exp0 (Method A, including its travel-around-the-hole records) ran before this addendum, as planned. Its results were seen before this addendum was written:
+- the three primary fits are helices (b1 = 0);
+- the helix axial winding also appears in the smooth Gaussian-process controls;
+- the colour fit is a frustum that hue goes around;
+- GPT-2 W_pos is fitted as a closed sphere.
+
+## Amendment A2 (2026-11-15): the primary hypothesis is the steering hypothesis
+
+The author clarified that the primary hypothesis is:
+
+> Can you do semantically meaningful manifold steering around a hole in a circular loop path every time there is a hole, and can the hole be found more easily using topology?
+
+This amendment was written before any persistent homology of real clouds (Method B), and before any steering, simulated or with a model. The disclosure in A1 applies. H1–H5 stay as preregistered. They now serve as supporting analyses: H4 compares how easily topology and shape fitting find holes.
+
+- **H6 (primary, steering).** Whenever topology detects a hole in a concept cloud, moving a prompt's concept-token activation around the loop that encircles the hole makes the represented concept go around the semantic cycle exactly once, in order, while staying on the data manifold. This is inspired by manifold steering ([Wurgaft et al. 2026](https://arxiv.org/abs/2605.05115)).
+- **Loops.** All loops live in un-normalised top-3 PCA coordinates, mapped to the full space through the PCA basis.
+  - **B (primary, fit-free):** the points' θ_B, binned into 2n equal-width bins (at most 72), with the bin means joined by a periodic cubic spline (`scipy.interpolate.CubicSpline(bc_type="periodic")`). No concept labels are used.
+  - **A (fitted shape, helix and cone fits):** the circle around the fitted axis at each prompt's own axial height.
+  - **Chord (linear-steering baseline of Wurgaft et al.):** the closed polygon through the concept centroids in semantic order.
+  - **Random loops (null):** M loops with the same centre and mean radius as loop B, each in a uniformly random 2D plane of the top-10 PC space.
+- **Steering displacement.** h(Δ) = h + (γ(φ(h) + Δ) − γ(φ(h))) @ basisᵀ, where φ(h) is the parameter of the nearest loop point and Δ = 2πj/K with K = 4n (K = 72 for colours, 2·113 for residues).
+- **Step 1, simulated steering (now; no model is run).** The readout is a decoder trained on the stored activations of the *other* prompts.
+  - **Cross-validation folds:**
+    - weekdays: leave one offset out;
+    - months: leave one offset out;
+    - days_time: leave one time of day out;
+    - colours: leave one (saturation, lightness) pair out;
+    - one-point-per-value datasets (ordinal sets in 7 bins, C1 controls): leave one point out.
+  - **Primary decoder:** the nearest concept centroid in the full activation space, with Euclidean distance.
+  - **Secondary decoder:** ridge regression from the full activation to (cos φ_c, sin φ_c) of the concept phase, with α = 1 times the mean squared row norm. For grokking residues this probe is used alone, at the frequency k* that is best aligned with θ_B, because each residue has only one point.
+  - **Per prompt:** the decoded phase ψ(Δ), then R, the winding number, and the on-manifold fraction. The on-manifold fraction is the share of steps whose steered activation lies within the 95th percentile of training points' distances to their own concept centroid.
+  - **Per dataset:** T = mean R over prompts.
+  - **H6-sim passes for a dataset if all three hold:**
+    - p < 0.05 against M = 100 random loops, where p = (1 + #{T_random ≥ T_B}) / 101;
+    - |winding| = 1 for at least 50% of prompts;
+    - the mean on-manifold fraction is at least 0.5.
+  - **Datasets:**
+    - every dataset with concept structure: the cyclic primary and secondary sets, colours, the ordinal sets (7 bins), the C3 init controls, the C1 controls, and grokking (k* probe only);
+    - "every time there is a hole" is evaluated on the datasets where H1-B (a) detects a significant hole;
+    - the rest are reported descriptively. They show whether a hole is needed for steerability.
+  - **Verdict:** H6-sim is supported if every cyclic dataset with a detected hole passes; partially supported if some do; not supported if none do.
+  - **Specificity:** ordinal sets and controls with a detected hole should not pass. This is the simulated counterpart of "a hole without semantic traversal".
+  - **Comparisons (descriptive):** loop B vs loop A vs chord vs random, on T and on the on-manifold fraction.
+  - **Evidence type:** simulation of steering under the assumption that the model reads the concept the way a decoder trained on its activations does. It is correlational, not causal.
+- **Step 2, model steering (postponed by the author; run later).** This uses the same loops and displacement, applied as a forward hook to `hidden_states[layer]` of meta-llama/Llama-3.1-8B in bf16, at the steered token of the source templates.
+  - **Readout:** the next-token distribution over the concept words:
+    - weekdays: "… {k} day(s) from {d} is" → (d + k) mod 7;
+    - months: → (m + k) mod 12;
+    - days_time: "It's {t} on {d}. The next day is" → d + 1;
+    - colours: the next colour word, decoded as the hue-weighted circular mean of 8 basic colour words.
+  - **Grokking:** a model retrained with the source's grokking recipe (seed 0), steered at the position-0 residual, decoding (argmax − b) mod 113 on the k* circle.
+  - **Controls:** M = 20 random loops on one prompt per concept; the chord path; and the grokking model's initial and memorised checkpoints.
+  - **H6 passes for a dataset if all three hold:** p < 0.05 against the random loops; |winding| = 1 for at least 50% of prompts; mean in-vocabulary probability mass of at least 0.5.
+  - The code is in `src/neurotopo/steering/` and `src/neurotopo/experiments/exp6_steering.py`.

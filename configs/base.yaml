@@ -1,0 +1,60 @@
+# All analysis settings. Values marked (prereg) are fixed by reports/preregistration.md.
+seed: 0                         # main seed; Exp5 repeats Monte Carlo parts with seeds 1 and 2 (prereg)
+
+paths:
+  submodule: external/shape-fitting          # source project, pinned commit 4c5f3b6
+  source_run: results/main_s0                # inside the submodule: viz JSON, real_results.json
+  inputs: data/hf/inputs                     # filled by `run.py fetch` from Hugging Face (never committed)
+  results: results
+  figures: docs/figures
+  logs: logs
+
+hf:
+  dataset: BurnyCoder/topology-of-neural-geometry
+  revision: 02e4d50b62d75cbf689f6df3d9ec608d2acd6315   # inputs/ upload of 2026-11-15 (pinned; run.py fetch verifies SHA-256)
+  collection: BurnyCoder/fitting-geometric-shapes-to-neural-geometry-6ae635f979b04232274230ee
+
+source_commit: 4c5f3b665381380c81af22827bb3959032dac417
+
+tda:
+  alpha_precision: safe         # GUDHI AlphaComplex precision (prereg)
+  universal_A_alpha: 0.5        # Bobrowski & Skraba 2023: A = 1/2 for Cech/alpha (prereg)
+  universal_A_rips: 1.0         # A = 1 for Vietoris-Rips (prereg)
+  alpha_level: 0.05             # significance level (prereg)
+  mc_draws: 999                 # Monte Carlo null draws M (prereg)
+  b0_tau_grid: [1.5, 2, 3, 4, 6, 8, 12]      # tuned on the validation stream (prereg)
+  b0_minfrac_grid: [0.0, 0.01, 0.02, 0.05]   # tuned on the validation stream (prereg)
+  b0_tau: null                  # filled in by the addendum after tuning
+  b0_minfrac: null
+
+circular:
+  prime: 47                     # DREiMac coefficient field Z_47 (prereg; Gardner et al. 2022)
+  max_landmarks: 200            # n_landmarks = min(N, 200) (prereg)
+  perc: 0.5                     # DREiMac get_coordinates(perc=0.5) (prereg)
+  perm_mc: 99999                # Monte Carlo permutations when n > 7 (prereg)
+  exact_max_n: 7                # exact enumeration of all n! assignments up to n = 7 (prereg)
+  grok_kmax: 56                 # Fourier frequencies k = 1..56 for residues mod 113 (prereg)
+  ordinal_bins: [7, 12]         # equal-width bins for ordinal sets (prereg)
+  topk_check: 10                # top-10 PCs for condition (d) of H1-B (prereg)
+
+analytic:
+  curve_grid: 4096              # parameter grid for curves (prereg)
+  surface_grid: 256             # 256 x 256 grid for surfaces (prereg)
+  resolvable_ratio: 1.0         # rho_A = m / (2 nu) >= 1 (prereg)
+
+groups:                          # (prereg)
+  cyclic_primary: [R5a_llama_weekdays, R5b_llama_months, R2_grokking_WE]
+  cyclic_secondary: [R5c_llama_days_time]
+  ordinal: [R1_gpt2_wpos, R4_llama_counting, R4b_pythia_counting, R6_llama_years, R8a_llama_temperature, R8b_llama_age]
+  init_controls: [C3_llama_weekdays_init, C3_llama_months_init, C3_grokking_WE_init]
+  cluster_designs: [R5a_llama_weekdays, R5b_llama_months, R5c_llama_days_time, R7_llama_colors, C3_llama_weekdays_init, C3_llama_months_init]
+
+synthetic:
+  bootstrap: 2000               # cluster bootstrap resamples over generator chunks of 25 (prereg)
+  chunk: 25
+  mc_subset: baseline           # MC null only on the 3,120-cloud baseline subset (prereg)
+  mc_draws_synth: 99            # MC draws per synthetic cloud in the subset
+
+stability:
+  reps: 200                     # 200 subsamples of 80% (prereg; source seeds default_rng(0))
+  frac: 0.8

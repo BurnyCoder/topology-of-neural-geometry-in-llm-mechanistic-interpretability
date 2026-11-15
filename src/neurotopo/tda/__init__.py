@@ -1,0 +1,1 @@
+"""neurotopo.tda subpackage."""
