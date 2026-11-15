@@ -1,0 +1,61 @@
+id,variable,n,closure_ratio
+R5a_llama_weekdays,day of week,7,2.230836402047175
+R5b_llama_months,month,12,1.7042794869695046
+R2_grokking_WE,residue mod 113,113,0.9555482565116045
+R5c_llama_days_time,day of week,7,1.4908191735367224
+R7_llama_colors,hue,36,3.810310745595532
+R1_gpt2_wpos,value in 7 bins,7,2.203411364965982
+R1_gpt2_wpos,value in 12 bins,12,4.263827895257968
+R4_llama_counting,value in 7 bins,7,16.15401027896935
+R4_llama_counting,value in 12 bins,12,43.080915778892255
+R4b_pythia_counting,value in 7 bins,7,33.50662282727235
+R4b_pythia_counting,value in 12 bins,12,78.01161649632765
+R6_llama_years,value in 7 bins,7,2.984809359124074
+R6_llama_years,value in 12 bins,12,3.5368326511742283
+R8a_llama_temperature,value in 7 bins,7,5.924832966782585
+R8a_llama_temperature,value in 12 bins,12,14.731524918759993
+R8b_llama_age,value in 7 bins,7,3.5223243762039322
+R8b_llama_age,value in 12 bins,12,10.482064894434945
+C3_llama_weekdays_init,day of week,7,1.0016943591732348
+C3_llama_months_init,month,12,0.960901213754997
+C3_grokking_WE_init,residue mod 113,113,0.9211286003055281
+C1_gp_0,value in 7 bins,7,8.78797290567791
+C1_gp_0,value in 12 bins,12,24.685910331313227
+C1_gp_1,value in 7 bins,7,3.5665889302899294
+C1_gp_1,value in 12 bins,12,8.7871480340834
+C1_gp_2,value in 7 bins,7,3.840341825649805
+C1_gp_2,value in 12 bins,12,9.86534062081008
+C1_gp_3,value in 7 bins,7,2.7942207557269683
+C1_gp_3,value in 12 bins,12,6.424508891677831
+C1_gp_4,value in 7 bins,7,8.538705308989881
+C1_gp_4,value in 12 bins,12,23.08415596772294
+C1_gp_5,value in 7 bins,7,1.9965121863794277
+C1_gp_5,value in 12 bins,12,4.062617999712205
+C1_gp_6,value in 7 bins,7,3.4163143548040367
+C1_gp_6,value in 12 bins,12,8.201482095490482
+C1_gp_7,value in 7 bins,7,4.1394219701517
+C1_gp_7,value in 12 bins,12,10.85757458475226
+C1_gp_8,value in 7 bins,7,7.556289673700714
+C1_gp_8,value in 12 bins,12,20.714092501419604
+C1_gp_9,value in 7 bins,7,6.681729839308999
+C1_gp_9,value in 12 bins,12,17.740522826596028
+C1_walk_0,value in 7 bins,7,7.708149876201508
+C1_walk_0,value in 12 bins,12,14.410596718470703
+C1_walk_1,value in 7 bins,7,7.539860205919249
+C1_walk_1,value in 12 bins,12,15.214979563429997
+C1_walk_2,value in 7 bins,7,7.147218132605412
+C1_walk_2,value in 12 bins,12,13.266079452331335
+C1_walk_3,value in 7 bins,7,7.109101135951987
+C1_walk_3,value in 12 bins,12,14.880803194159691
+C1_walk_4,value in 7 bins,7,6.900972312953907
+C1_walk_4,value in 12 bins,12,12.256394978796374
+C1_walk_5,value in 7 bins,7,6.915501220119954
+C1_walk_5,value in 12 bins,12,13.522202051160633
+C1_walk_6,value in 7 bins,7,7.842257858992291
+C1_walk_6,value in 12 bins,12,15.140743900171403
+C1_walk_7,value in 7 bins,7,7.002776229649795
+C1_walk_7,value in 12 bins,12,13.371658373009017
+C1_walk_8,value in 7 bins,7,6.933401463716127
+C1_walk_8,value in 12 bins,12,13.756224719060173
+C1_walk_9,value in 7 bins,7,7.221950082957586
+C1_walk_9,value in 12 bins,12,13.84943377321971
