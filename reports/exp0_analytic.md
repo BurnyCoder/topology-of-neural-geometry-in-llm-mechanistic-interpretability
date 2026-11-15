@@ -112,9 +112,11 @@ The source fits each cloud with a uniquely parametrised shape. What is the exact
 
 ## Interpretation
 
-- A fitted helix is topologically an open curve. For the cyclic concepts, though, the openness is far below the noise scale (ρ_A ≈ 0.1), so the fit cannot distinguish a helix from a closed loop.
-- The concepts sit around the helix axis in cyclic order. The same holds for smooth random processes, which the fitter also calls helices. The closure gap, near 0 for months, is the geometric quantity that separates the two.
-- Method A therefore cannot by itself detect a semantic hole here: the family set lacks a "closed curve with a warp" shape, and the helix absorbs it.
+- A fitted helix is topologically an open curve. For the cyclic concepts, though, ρ_A ≈ 0.1: whether the curve is open or closed is **unresolvable** at the data's noise scale. That is not evidence of closure.
+- For prompt-template designs (7 or 12 tight clusters), the coverage term of ν is dominated by the gaps between clusters, so a low ρ_A is largely a property of the design.
+- The concepts sit around the helix axis in cyclic order, but so do the indices of smooth random processes that the fitter also calls helices, with the same minimum permutation p and winding ±1.
+- **Only months stand out by closure:** a gap of 0.04 radii, outside the controls' range. The weekdays' gap (0.80) lies inside it.
+- Method A therefore cannot by itself establish a semantic hole here.
 
 ## Learnings
 

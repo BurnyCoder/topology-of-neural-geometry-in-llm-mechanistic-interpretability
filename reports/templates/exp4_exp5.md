@@ -27,7 +27,16 @@ Date: 2026-11-15. Code: `src/neurotopo/experiments/exp4_similarity.py`, `exp5_ro
   - weekdays {{exp5.seed1.weekdays.p_loop}} and {{exp5.seed2.weekdays.p_loop}}.
 - **Noise-scale definition of Method A:** resolvable fits number {{exp5.resolvable.rho_main}} under the main definition, {{exp5.resolvable.rho_median_only}} with the median term only, and {{exp5.resolvable.rho_coverage_x2}} with doubled coverage. The three cyclic helices stay unresolvable under all three.
 
+- **Top-10-PC loop test with a design-matched Monte Carlo null** (post hoc, D6; 199 draws; Rips π vs null 95th percentile):
+  - colours: {{exp5.top10.colors.pi:2}} vs {{exp5.top10.colors.q95:2}} (p = {{exp5.top10.colors.p}});
+  - residues: {{exp5.top10.grok.pi:2}} vs {{exp5.top10.grok.q95:2}} (p = {{exp5.top10.grok.p}});
+  - months: {{exp5.top10.months.pi:2}} vs {{exp5.top10.months.q95:2}} (p = {{exp5.top10.months.p}});
+  - weekdays: p = {{exp5.top10.weekdays.p}};
+  - significant overall: {{exp5.top10.sig_ids}}.
+
 **Interpretation.**
-- The colour loop is a property of the representation, not of the 3D projection.
+- Raw persistence ratios are not comparable across dimensions and sample sizes. The top-10 statement therefore rests on the matched null above, which was added post hoc.
+- **In 10 dimensions, loops are not specific to cyclic concepts.** Years, age, counting and temperature have significant top-10 loops, as expected from PCA Lissajous and Fourier features of numbers. Months and residues do not.
+- The post hoc traversal test shows that ordinal values do not wind around those loops. Only colours keep both a loop and a single winding in 10D.
 - The months and residue loops are strongest in the top-3 PCs and fade in higher dimensions. For residues this is expected, because several Fourier circles coexist in other PC pairs.
 - None of the conclusions depends on the Monte Carlo seed or on the offset nuisance factor.

@@ -70,3 +70,30 @@ It also checks the prompt offset "k days from" for weekdays and months, and satu
 **Post hoc analysis** (phase `exp3posthoc`, `results/exp3/posthoc_relaxed_range.json`). θ_B is recomputed with `standard_range=False`, which guarantees the class only in the Rips complex, as DREiMac's own error message suggests. This is done in 3D and in the top-10 PCs, and the alignment tests are repeated.
 - It is reported as exploratory.
 - **It does not change any preregistered verdict.**
+
+## D6 (2026-11-15, after the results): fixes and additions from the independent audit
+
+An independent reviewer (a separate agent given the code and results, not the conclusions) found no errors in the core mathematics. It did find overclaims, methodological gaps and bugs. All of the following were decided after seeing the results and are labelled post hoc where they add analyses.
+
+**Bugs fixed** (affected phases re-run):
+- `cyclic_order_matches` returned True for a monotone arc, for example post hoc weekdays spanning 0.38 rad with winding 0. It now requires that the closed semantic cycle winds exactly once.
+- In Exp3, variable matching used substring tests, so "day" also matched "time of day". It now uses exact names. No outcome changed.
+- The DREiMac wrapper's `except Exception` hid an IndexError raised when a cloud has no H1 class at all. That case is now recorded as "no H1 class", and only DREiMac's "class too short" message is treated as "no usable loop". Any other error is raised.
+- `pytest` at the repository root collected the submodule's torch-based tests. Added `testpaths = ["tests"]`.
+
+**Analyses added (post hoc):**
+- **Corrected power simulation (`run.py power2`).**
+  - The preregistered simulation (A1) put all between-concept variance on the ring and spread the within-concept noise isotropically over 4,096 dimensions. Almost no noise reached the top-3 PCs, so rings were detected trivially. The simulation was also not swept over top-3 explained variance, as section 8 had promised.
+  - The A1 claim that the grid "brackets the real sets" was wrong for months (0.914) and grokking (1.0). A1 also did not mention that open 300° arcs pass the full conjunction up to 25% of the time (k = 7, f_B = 0.3).
+  - Version 2 draws concept centres as a ring plus random per-concept offsets in 20 further dimensions. f_B is fixed to the real value and the ring's variance share is swept so that the simulated top-3 explained variance covers the real one.
+- **Top-10-PC loop test with a design-matched Monte Carlo null** (Exp5, 199 draws). "Only the colour loop persists beyond the top-3 PCs" previously rested on raw π, which is not comparable across dimensions without a null.
+- **Exp1, well-resolved clouds (ρ_A ≥ 4).** The preregistered estimator P is now reported with a macro average, a cluster-bootstrap CI, paired differences against the family label and the fixed threshold, and per-family accuracies. The earlier text quoted the best baseline (Ba) as "persistent homology".
+- **Benjamini–Hochberg q-values across the 44 loop and void tests** (Exp2, descriptive).
+- **The preregistered (section 4.6) check that the DREiMac class overlaps the alpha H1 bar** is now reported.
+
+**Claims rewritten:**
+- No "holes appear exactly for the cyclic concepts" without listing the exceptions: weekdays have no loop; days_time has a loop the day does not travel around; the grokking random-init control has a borderline loop.
+- No "helices are closed loops within noise". ρ_A < 1 means open vs closed is unresolvable, and for cluster designs low ρ_A is largely a property of the design.
+- "Specificity holds" is reported together with its weakness: sensitivity is zero (H4 balanced accuracy 0.5), and the controls never approach the null threshold.
+- The weekday "exact cyclic order" is reported as non-specific: 7 of 8 Gaussian-process helix controls reach the same minimum p with winding ±1.
+- The alignment R and its permutation p measure *ordering*. Only |winding| = 1 carries the cyclic claim.

@@ -216,6 +216,11 @@ The values below were produced by `run.py power` on the synthetic **validation**
   - Random arrangements essentially never pass the conjunction.
   - Open 300° arcs of clusters pass the loop condition (a), because their gap is about one inter-cluster step, so they are nearly rings. They are mostly rejected by (b)–(c).
   - No rule is changed.
+  - **Correction (added after the results; see [deviations.md](deviations.md), D6):**
+    - The grid does not bracket months (0.914) or grokking (1.0).
+    - Open 300° arcs pass the full conjunction up to 25% of the time (k = 7, f_B = 0.3).
+    - The simulation is misspecified: isotropic noise in 4,096 dimensions barely reaches the top-3 PCs, so rings pass trivially.
+    - A corrected simulation is reported separately (`run.py power2`).
 
 **Disclosure.** Exp0 (Method A, including its travel-around-the-hole records) ran before this addendum, as planned. Its results were seen before this addendum was written:
 - the three primary fits are helices (b1 = 0);

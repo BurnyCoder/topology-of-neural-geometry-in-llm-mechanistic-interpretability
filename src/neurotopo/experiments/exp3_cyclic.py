@@ -24,6 +24,7 @@ from neurotopo.experiments.common import env_record, out_dir, read_json, write_j
 from neurotopo.geometry.pca import fit_frame
 from neurotopo.stats import tests as st
 from neurotopo.tda import circular
+from neurotopo.tda.diagrams import ratios
 
 log = logging.getLogger(__name__)
 THETA_CACHE: dict = {}                     # theta_B per dataset, saved for Exp6-sim and the explorer
@@ -43,15 +44,28 @@ def method_b(dataset_id: str, seed: int) -> dict:
     rec3 = alignment.records(dataset_id, cc3["theta"], c["labels"], seed) if cc3["theta"] is not None else []
     rec10 = alignment.records(dataset_id, cc10["theta"], c["labels"], seed) if cc10["theta"] is not None else []
     THETA_CACHE[dataset_id] = cc3["theta"]
+    d1 = realdata.alpha(dataset_id)[1]
+    pis = ratios(d1)
+    top = d1[int(np.nanargmax(pis))] if pis.size and np.isfinite(pis).any() else None   # most persistent alpha bar
+    overlap = None
+    if top is not None and cc3["bar"] is not None:
+        overlap = bool(min(top[1], cc3["bar"][1]) > max(top[0], cc3["bar"][0]))  # intervals intersect (prereg 4.6)
     return {"id": dataset_id, "p_loop": p_loop, "loop": p_loop < config.load()["tda"]["alpha_level"],
             "theta3_error": cc3["error"], "theta10_error": cc10["error"], "rips_bar3": cc3["bar"],
+            "alpha_top_bar": None if top is None else top.tolist(), "rips_alpha_overlap": overlap,
             "records3": rec3, "records10": rec10}
 
 
-def _first(recs: list[dict], variable_contains: str | None = None) -> dict | None:
-    """The record of the dataset's primary variable (first record, or the one whose variable matches)."""
+VARS = {None: None, "day": "day of week", "time": "time of day", "7 bins": "value in 7 bins",
+        "12 bins": "value in 12 bins"}
+
+
+def _first(recs: list[dict], variable: str | None = None) -> dict | None:
+    """The record of a variable: the dataset's first (primary) record for None, otherwise the record whose
+    variable name equals the full name (exact match, so "day" cannot match "time of day"; audit fix, D6)."""
+    full = VARS.get(variable, variable)
     for r in recs:
-        if variable_contains is None or variable_contains in r["variable"]:
+        if full is None or r["variable"] == full:
             return r
     return None
 
@@ -74,14 +88,14 @@ def a_records(exp0: list[dict], dataset_id: str) -> list[dict]:
 def a_pass(topo: pd.Series, recs: list[dict], var: str | None, p_adj: float | None, alpha: float = 0.05) -> dict:
     """H1-A: exact hole with rho_A >= 1, and theta_A alignment significant with |w| = 1 (any torus angle)."""
     hole = bool(topo["b1"] >= 1 and topo["rho_A"] >= 1)
-    holes = [r for r in recs if r["kind"] == "hole" and (var is None or var in r["variable"])]
+    holes = [r for r in recs if r["kind"] == "hole" and (var is None or r["variable"] == VARS.get(var, var))]
     ok = any((p_adj if p_adj is not None else r["p"]) < alpha and abs(r["winding"]) == 1 for r in holes)
     return {"hole_resolvable": hole, "traversal": bool(ok), "pass": bool(hole and ok)}
 
 
 def a_pvalue(topo: pd.Series, recs: list[dict], var: str | None) -> float:
     """Co-primary H1-A p-value: smallest theta_A alignment p over hole coordinates; 1 if the fit has no hole."""
-    holes = [r for r in recs if r["kind"] == "hole" and (var is None or var in r["variable"])]
+    holes = [r for r in recs if r["kind"] == "hole" and (var is None or r["variable"] == VARS.get(var, var))]
     if topo["b1"] < 1 or not holes:
         return 1.0
     return float(min(r["p"] for r in holes))

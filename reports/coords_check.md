@@ -38,7 +38,7 @@ The author asked: project the original labelled points onto the fitted shape, an
 - **Ordinal sets:**
   - counting: ρ = 0.999 along the curve;
   - temperature: -0.997;
-  - GPT-2 positions: polar height 0.978; the azimuth winds twice (a spiral on the fitted sphere);
+  - GPT-2 positions (sphere fit): ordered from pole to pole, polar height 0.978; the positions trace a spiral curve on the fitted sphere;
   - years (cone): height -0.36, no winding;
   - age (clusters): NMI with 7 age bins 0.62.
 
@@ -134,11 +134,12 @@ The author asked: project the original labelled points onto the fitted shape, an
 
 ## Interpretation
 
-- **The helices of the cyclic concepts are circles around their axis.**
+- **The helices of the cyclic concepts carry the concept order around their axis.**
+  - This ordering is not specific: random smooth processes fitted as helices show the same (Exp0).
   - The concept order is on the azimuth.
   - The axial direction is neither the concept order nor the prompt offset.
   - For months, the axial position is a second harmonic of the month angle. That is the signature of a closed, saddle-shaped loop (cos φ, sin φ, cos 2φ), like a tennis-ball seam, which the helix family can only approximate.
-- **Ordinal concepts lie along open curves.** For counts and temperature this is a PCA horseshoe; for GPT-2 positions it is a spiral.
+- **Ordinal concepts lie in order along curves:** a PCA horseshoe for counts and temperature, a spiral on a sphere fit for GPT-2 positions.
 - **Days with times** (Llama layer 19, last token) represent the day linearly along an open curve. Monday and Sunday are at opposite ends.
 
 ## Learnings

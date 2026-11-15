@@ -65,3 +65,11 @@ def test_closure_ratio():
     assert math.isclose(circular.closure_ratio(ring, metric="euclidean"), 1.0)
     arc = np.c_[np.cos(phase * 300 / 360), np.sin(phase * 300 / 360)]
     assert circular.closure_ratio(arc, metric="euclidean") > 1.0
+
+
+def test_monotone_arc_is_not_a_cyclic_order():
+    # Audit regression: concepts ordered along a short arc (0.38 rad, winding 0) must not count as cyclic.
+    th = np.linspace(0.0, 0.38, 7)
+    assert circular.winding(th) == 0
+    assert not circular.cyclic_order_matches(th)
+    assert circular.cyclic_order_matches(np.linspace(0, 2 * np.pi, 7, endpoint=False))

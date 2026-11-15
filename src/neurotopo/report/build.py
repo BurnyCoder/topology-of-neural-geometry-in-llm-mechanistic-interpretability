@@ -157,7 +157,8 @@ def render_templates(nums: dict) -> None:
     pairs += [(root / "paper" / "main.template.tex", root / "paper" / "main.tex")]
     for src, dst in pairs:
         if src.exists():
-            dst.write_text(numbers.render(src.read_text(encoding="utf-8"), nums), encoding="utf-8")
+            dst.write_text(numbers.render(src.read_text(encoding="utf-8"), nums, latex=src.suffix == ".tex"),
+                           encoding="utf-8")
     gen = root / "paper" / "generated"
     gen.mkdir(parents=True, exist_ok=True)
     (gen / "numbers.tex").write_text(numbers.latex_macros(nums) + "\n", encoding="utf-8")

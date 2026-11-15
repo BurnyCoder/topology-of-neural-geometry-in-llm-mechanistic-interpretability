@@ -87,6 +87,22 @@ def collect() -> dict:
         n["power.random_all_max"] = float(ps[ps["arrangement"] == "random"]["all"].max())
         n["power.random_loop_max"] = float(ps[ps["arrangement"] == "random"]["loop"].max())
         n["power.arc_all_max"] = float(ps[ps["arrangement"] == "arc300"]["all"].max())
+        if _res("power", "power_v2_summary.csv").exists():
+            p2 = pd.read_csv(_res("power", "power_v2_summary.csv"))
+            names = {7: "weekdays", 12: "months", 113: "grok"}
+            real_top3 = {"weekdays": 0.0, "months": 0.0, "grok": 0.0}
+            so = {r["id"]: r for r in read_json(_res("power", "real_second_order.json"))}
+            real_top3 = {"weekdays": so["R5a_llama_weekdays"]["top3_explained"], "months": so["R5b_llama_months"]["top3_explained"],
+                         "grok": so["R2_grokking_WE"]["top3_explained"]}
+            for k, nm in names.items():
+                ring = p2[(p2["k"] == k) & (p2["arrangement"] == "ring")]
+                rnd = p2[(p2["k"] == k) & (p2["arrangement"] == "random")]
+                j = (ring["top3"] - real_top3[nm]).abs().idxmin()       # cell closest to the real top-3 variance
+                n[f"power2.{nm}.top3"], n[f"power2.{nm}.loop"], n[f"power2.{nm}.all"] = (
+                    float(ring.loc[j, "top3"]), float(ring.loc[j, "loop"]), float(ring.loc[j, "all"]))
+                n[f"power2.{nm}.real_top3"] = real_top3[nm]
+                n[f"power2.{nm}.random_loop_max"] = float(rnd["loop"].max())
+                n[f"power2.{nm}.ring_all_min"], n[f"power2.{nm}.ring_all_max"] = float(ring["all"].min()), float(ring["all"].max())
     # Exp1.
     if _res("exp1", "summary.json").exists():
         s = read_json(_res("exp1", "summary.json"))
@@ -105,6 +121,19 @@ def collect() -> dict:
         n["exp1.P.fpr_max"] = max(s["fpr_contractible"]["P_alpha_universal"].values())
         n["exp1.P.fpr_min"] = min(s["fpr_contractible"]["P_alpha_universal"].values())
         n["exp1.resolvable"] = s["resolvable_fraction"]
+        if "well_resolved" in s:
+            w = s["well_resolved"]
+            n["exp1.well.n"] = w["n"]
+            triv = sum(v for f, v in w["family_counts"].items() if f in ("blob", "disc", "paraboloid"))
+            n["exp1.well.trivial_frac"] = triv / w["n"]
+            for k, a in ab.items():
+                if k in w:
+                    n[f"exp1.well.{a}.acc"], n[f"exp1.well.{a}.lo"], n[f"exp1.well.{a}.hi"] = w[k]["macro_exact"], *w[k]["ci"]
+                    for fam, acc in w[k]["per_family"].items():
+                        n[f"exp1.well.{a}.{fam}"] = acc
+            for other, a in (("Bb_family_implied", "Bb"), ("Ba_fixed_pi", "Ba"), ("Bc_majority", "Bc")):
+                v = w[f"P - {other}"]
+                n[f"exp1.well.diff.{a}"], n[f"exp1.well.diff.{a}.lo"], n[f"exp1.well.diff.{a}.hi"] = v["estimate"], *v["ci"]
         last = list(s["accuracy_by_rho"]["P_alpha_universal"].keys())[-1]
         for a in ("P_alpha_universal", "S_rips_universal", "Ba_fixed_pi", "Bb_family_implied"):
             n[f"exp1.rho4.{ab[a]}"] = s["accuracy_by_rho"][a][last]
@@ -119,6 +148,12 @@ def collect() -> dict:
         sm = read_json(_res("exp2", "summary.json"))
         n["exp2.agree"] = sm["agree_b1b2_A_vs_B"]
         n["exp2.n_loop"], n["exp2.n_void"] = sm["n_with_loop_mc"], sm["n_with_void_mc"]
+        if "n_loop_q05" in sm:
+            n["exp2.n_loop_q05"] = sm["n_loop_q05"]
+            n["exp2.loops_q05"] = ", ".join(sm["loops_q05"])
+            for i, sh in SHORT.items():
+                if i in d.index and "q_top_loop" in d.columns:
+                    n[f"exp2.{sh}.q_loop"] = float(d.loc[i, "q_top_loop"])
         c1 = d[d.index.str.startswith("C1_")]
         n["exp2.c1_loops"] = int((c1["p_top_loop"] < 0.05).sum())
         n["exp2.c1_pi_max"] = float(c1["top_pi1"].max())
@@ -154,6 +189,8 @@ def collect() -> dict:
                     n[f"exp3.{sh}.thetaB.k"] = r["k"]
             if sh:
                 n[f"exp3.{sh}.thetaB"] = "none (no usable class)" if v["theta3_error"] else "computed"
+                if v.get("rips_alpha_overlap") is not None:
+                    n[f"exp3.{sh}.overlap"] = "yes" if v["rips_alpha_overlap"] else "no"
     # Exp3 post hoc (relaxed DREiMac range).
     if _res("exp3", "posthoc_relaxed_range.json").exists():
         ph = read_json(_res("exp3", "posthoc_relaxed_range.json"))
@@ -168,8 +205,13 @@ def collect() -> dict:
                     n[f"exp3ph.{sh}.{dim}.R"], n[f"exp3ph.{sh}.{dim}.p"], n[f"exp3ph.{sh}.{dim}.w"] = r["R"], r["p"], r["winding"]
         non = [d for d in ph if d.startswith("C1_") or d in ("R1_gpt2_wpos", "R4_llama_counting", "R4b_pythia_counting",
                                                              "R6_llama_years", "R8a_llama_temperature", "R8b_llama_age")]
-        n["exp3ph.noncyclic_wind1"] = sum(1 for d in non for dim in ("3d", "top10")
-                                          for r in ph[d][dim]["records"][:2] if abs(r["winding"]) == 1)
+        hits = sorted({d for d in non for dim in ("3d", "top10") for r in ph[d][dim]["records"]
+                       if abs(r["winding"]) == 1 and "mod" not in r["variable"]})
+        n["exp3ph.noncyclic_wind1"] = len(hits)
+        n["exp3ph.noncyclic_wind1_ids"] = ", ".join(hits) if hits else "none"
+        inits = sorted({d for d in ph if d.startswith("C3_") for dim in ("3d", "top10") for r in ph[d][dim]["records"]
+                        if abs(r["winding"]) == 1})
+        n["exp3ph.init_wind1_ids"] = ", ".join(inits) if inits else "none"
     # Exp4 / Exp5.
     if _res("exp4", "summary.json").exists():
         s4 = read_json(_res("exp4", "summary.json"))
@@ -182,6 +224,15 @@ def collect() -> dict:
             n[f"exp5.seed{r['seed']}.{SHORT[r['id']]}.p_loop"] = r["p_loop"]
         for k, v in s5["nu_variant_resolvable_counts"].items():
             n[f"exp5.resolvable.{k}"] = v
+        if _res("exp5", "topk_null.csv").exists():
+            tk = pd.read_csv(_res("exp5", "topk_null.csv")).set_index("id")
+            for d in tk.index:
+                sh = SHORT.get(d)
+                if sh:
+                    n[f"exp5.top10.{sh}.pi"], n[f"exp5.top10.{sh}.q95"], n[f"exp5.top10.{sh}.p"] = (
+                        float(tk.loc[d, "rips_pi1"]), float(tk.loc[d, "null_q95"]), float(tk.loc[d, "p_loop"]))
+            n["exp5.top10.n_sig"] = int((tk["p_loop"] < 0.05).sum())
+            n["exp5.top10.sig_ids"] = ", ".join(tk.index[tk["p_loop"] < 0.05])
         pr = pd.read_csv(_res("exp5", "projection.csv")).set_index("id")
         for d in pr.index:
             sh = SHORT.get(d)
@@ -191,14 +242,16 @@ def collect() -> dict:
     return n
 
 
-def render(text: str, nums: dict) -> str:
-    """Replace {{key}} or {{key:digits}} with formatted values; unknown keys are left visible as ??key??."""
+def render(text: str, nums: dict, latex: bool = False) -> str:
+    """Replace {{key}} or {{key:digits}} with formatted values; unknown keys are left visible as ??key??.
+    latex=True escapes underscores (dataset ids) so values are valid LaTeX text."""
     def sub(m):
         key, _, nd = m.group(1).partition(":")
         if key not in nums:
             return f"??{key}??"
         v = nums[key]
-        return fmt(v, int(nd)) if nd else fmt(v, 3)
+        out = fmt(v, int(nd)) if nd else fmt(v, 3)
+        return out.replace("_", r"\_") if latex else out
     return re.sub(r"\{\{([^}]+)\}\}", sub, text)
 
 

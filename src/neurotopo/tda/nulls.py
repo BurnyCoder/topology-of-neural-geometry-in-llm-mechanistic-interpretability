@@ -68,6 +68,21 @@ def mc_pvalues(pi_obs: np.ndarray, null_max: np.ndarray) -> np.ndarray:
     return np.where(np.isfinite(pi_obs), p, np.nan)
 
 
+def _topk_scores(y: np.ndarray, rng: np.random.Generator, k: int) -> np.ndarray:
+    """Top-k principal scores of y (dense SVD for small matrices, ARPACK otherwise), zero-padded to k columns."""
+    yc = y - y.mean(0)
+    if min(yc.shape) <= 400 or k >= min(yc.shape) - 1:
+        u, s, _ = np.linalg.svd(yc, full_matrices=False)
+        kk = min(k, s.size)
+        sc = u[:, :kk] * s[:kk]
+    else:
+        u, s, _ = svds(yc, k=k, v0=rng.normal(size=min(yc.shape)))
+        sc = u * s
+    if sc.shape[1] < k:
+        sc = np.concatenate([sc, np.zeros((sc.shape[0], k - sc.shape[1]))], 1)
+    return sc
+
+
 def _top3_scores(y: np.ndarray, rng: np.random.Generator) -> np.ndarray:
     """Top-3 principal scores of a centred matrix y (N x q): dense SVD for small matrices, ARPACK otherwise.
     Rotations and sign flips of the scores do not change homology, so only the subspace matters."""
@@ -157,6 +172,34 @@ def _chunk_max_ratios(sampler, seeds: list[np.random.SeedSequence], maxdim: int)
             y = rms_normalise(sampler.draw_scores(rng))
             dg = alpha_diagrams(y, maxdim=maxdim)
             out[i] = [max_ratio(dg[k]) for k in range(1, maxdim + 1)]
+    return out
+
+
+def _chunk_max_rips_topk(sampler, seeds: list[np.random.SeedSequence], k: int) -> np.ndarray:
+    """Worker: max Rips H1 pi of the RMS-normalised top-k scores of each null draw."""
+    from neurotopo.tda.diagrams import rips_diagrams
+    out = np.ones(len(seeds))
+    with threadpool_limits(1):
+        for i, ss in enumerate(seeds):
+            rng = np.random.default_rng(ss)
+            raw = sampler.draw_raw(rng)
+            y = rms_normalise(_topk_scores(raw, rng, k))
+            out[i] = max_ratio(rips_diagrams(y, maxdim=1)[1])
+    return out
+
+
+def null_max_rips_topk(x: np.ndarray, kind: str, groups: np.ndarray | None, m: int, seed: int, k: int = 10,
+                       n_jobs: int = -1) -> np.ndarray:
+    """Null distribution (m,) of the max Rips H1 pi in the top-k PCs (design-matched sampler), for the
+    projection-robustness check of Exp5 (audit, deviations D6)."""
+    sampler = make_sampler(x, kind, groups)
+    seeds = np.random.SeedSequence(seed).spawn(m)
+    n_chunks = max(1, min(m, 64))
+    chunks = [seeds[i::n_chunks] for i in range(n_chunks)]
+    res = Parallel(n_jobs=n_jobs)(delayed(_chunk_max_rips_topk)(sampler, c, k) for c in chunks)
+    out = np.ones(m)
+    for i in range(n_chunks):
+        out[i::n_chunks] = res[i]
     return out
 
 

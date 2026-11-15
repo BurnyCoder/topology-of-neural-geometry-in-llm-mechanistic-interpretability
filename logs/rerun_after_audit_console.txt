@@ -1,0 +1,358 @@
+2026-11-15 11:27:39 INFO root: phase exp0, log file C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\logs\exp0_20261115T112739.log
+2026-11-15 11:27:50 INFO neurotopo.experiments.exp0_analytic: C1_gp_0                      helix     b=(1,0,0) chi=1 rho_A=0.06 records=2
+2026-11-15 11:27:51 INFO neurotopo.experiments.exp0_analytic: C1_gp_1                      ringing   b=(1,0,0) chi=1 rho_A=4.06 records=0
+2026-11-15 11:27:51 INFO neurotopo.experiments.exp0_analytic: C1_gp_2                      helix     b=(1,0,0) chi=1 rho_A=0.16 records=2
+2026-11-15 11:27:51 INFO neurotopo.experiments.exp0_analytic: C1_gp_3                      helix     b=(1,0,0) chi=1 rho_A=0.16 records=2
+2026-11-15 11:27:51 INFO neurotopo.experiments.exp0_analytic: C1_gp_4                      ringing   b=(1,0,0) chi=1 rho_A=2.30 records=0
+2026-11-15 11:27:51 INFO neurotopo.experiments.exp0_analytic: C1_gp_5                      helix     b=(1,0,0) chi=1 rho_A=0.17 records=2
+2026-11-15 11:27:52 INFO neurotopo.experiments.exp0_analytic: C1_gp_6                      helix     b=(1,0,0) chi=1 rho_A=0.11 records=2
+2026-11-15 11:27:52 INFO neurotopo.experiments.exp0_analytic: C1_gp_7                      helix     b=(1,0,0) chi=1 rho_A=0.10 records=2
+2026-11-15 11:27:52 INFO neurotopo.experiments.exp0_analytic: C1_gp_8                      helix     b=(1,0,0) chi=1 rho_A=0.07 records=2
+2026-11-15 11:27:53 INFO neurotopo.experiments.exp0_analytic: C1_gp_9                      helix     b=(1,0,0) chi=1 rho_A=0.08 records=2
+2026-11-15 11:27:53 INFO neurotopo.experiments.exp0_analytic: C1_walk_0                    ringing   b=(1,0,0) chi=1 rho_A=14.75 records=0
+2026-11-15 11:27:53 INFO neurotopo.experiments.exp0_analytic: C1_walk_1                    ringing   b=(1,0,0) chi=1 rho_A=14.88 records=0
+2026-11-15 11:27:53 INFO neurotopo.experiments.exp0_analytic: C1_walk_2                    ringing   b=(1,0,0) chi=1 rho_A=18.93 records=0
+2026-11-15 11:27:53 INFO neurotopo.experiments.exp0_analytic: C1_walk_3                    ringing   b=(1,0,0) chi=1 rho_A=18.10 records=0
+2026-11-15 11:27:53 INFO neurotopo.experiments.exp0_analytic: C1_walk_4                    ringing   b=(1,0,0) chi=1 rho_A=26.58 records=0
+2026-11-15 11:27:53 INFO neurotopo.experiments.exp0_analytic: C1_walk_5                    ringing   b=(1,0,0) chi=1 rho_A=20.54 records=0
+2026-11-15 11:27:53 INFO neurotopo.experiments.exp0_analytic: C1_walk_6                    ringing   b=(1,0,0) chi=1 rho_A=21.13 records=0
+2026-11-15 11:27:53 INFO neurotopo.experiments.exp0_analytic: C1_walk_7                    ringing   b=(1,0,0) chi=1 rho_A=22.13 records=0
+2026-11-15 11:27:53 INFO neurotopo.experiments.exp0_analytic: C1_walk_8                    ringing   b=(1,0,0) chi=1 rho_A=20.65 records=0
+2026-11-15 11:27:53 INFO neurotopo.experiments.exp0_analytic: C1_walk_9                    ringing   b=(1,0,0) chi=1 rho_A=18.64 records=0
+2026-11-15 11:27:53 INFO neurotopo.experiments.exp0_analytic: C3_gpt2_wpos_init            blob      b=(1,0,0) chi=1 rho_A=inf records=0
+2026-11-15 11:27:53 INFO neurotopo.experiments.exp0_analytic: C3_grokking_WE_init          blob      b=(1,0,0) chi=1 rho_A=inf records=0
+2026-11-15 11:27:53 INFO neurotopo.experiments.exp0_analytic: C3_grokking_WE_memorised     blob      b=(1,0,0) chi=1 rho_A=inf records=0
+2026-11-15 11:27:53 INFO neurotopo.experiments.exp0_analytic: C3_llama_counting_init       clusters  b=(3,0,0) chi=3 rho_A=11.78 records=0
+2026-11-15 11:27:53 INFO neurotopo.experiments.exp0_analytic: C3_llama_months_init         clusters  b=(6,0,0) chi=6 rho_A=0.20 records=0
+2026-11-15 11:27:53 INFO neurotopo.experiments.exp0_analytic: C3_llama_weekdays_init       polytope  b=(4,0,0) chi=4 rho_A=1.67 records=0
+2026-11-15 11:27:53 INFO neurotopo.experiments.exp0_analytic: C3_tms_dense                 polytope  b=(4,0,0) chi=4 rho_A=2.38 records=0
+2026-11-15 11:27:53 INFO neurotopo.experiments.exp0_analytic: R1_gpt2_wpos                 sphere    b=(1,0,1) chi=2 rho_A=1.89 records=0
+2026-11-15 11:29:16 INFO neurotopo.experiments.exp0_analytic: R2_grokking_WE               helix     b=(1,0,0) chi=1 rho_A=0.23 records=1
+2026-11-15 11:29:16 INFO neurotopo.experiments.exp0_analytic: R3_tms_n20                   sphere    b=(1,0,0) chi=1 rho_A=0.16 records=0
+2026-11-15 11:29:16 INFO neurotopo.experiments.exp0_analytic: R3_tms_n6                    polytope  b=(6,0,0) chi=6 rho_A=128.39 records=0
+2026-11-15 11:29:16 INFO neurotopo.experiments.exp0_analytic: R3_tms_n8                    polytope  b=(8,0,0) chi=8 rho_A=13.47 records=0
+2026-11-15 11:29:16 INFO neurotopo.experiments.exp0_analytic: R4_llama_counting            ringing   b=(1,0,0) chi=1 rho_A=3.60 records=0
+2026-11-15 11:29:16 INFO neurotopo.experiments.exp0_analytic: R4b_pythia_counting          ringing   b=(1,0,0) chi=1 rho_A=6.49 records=0
+2026-11-15 11:29:16 INFO neurotopo.experiments.exp0_analytic: R5a_llama_weekdays           helix     b=(1,0,0) chi=1 rho_A=0.11 records=1
+2026-11-15 11:29:16 INFO neurotopo.experiments.exp0_analytic: R5a_llama_weekdays_means     sphere    b=(1,0,0) chi=1 rho_A=0.09 records=0
+2026-11-15 11:29:16 INFO neurotopo.experiments.exp0_analytic: R5b_llama_months             helix     b=(1,0,0) chi=1 rho_A=0.11 records=1
+2026-11-15 11:29:17 INFO neurotopo.experiments.exp0_analytic: R5b_llama_months_means       helix     b=(1,0,0) chi=1 rho_A=0.11 records=1
+2026-11-15 11:29:17 INFO neurotopo.experiments.exp0_analytic: R5c_llama_days_time          ringing   b=(1,0,0) chi=1 rho_A=2.13 records=0
+2026-11-15 11:29:18 INFO neurotopo.experiments.exp0_analytic: R6_llama_years               cone      b=(1,1,0) chi=0 rho_A=0.44 records=4
+2026-11-15 11:29:19 INFO neurotopo.experiments.exp0_analytic: R7_llama_colors              cone      b=(1,1,0) chi=0 rho_A=1.64 records=1
+2026-11-15 11:29:19 INFO neurotopo.experiments.exp0_analytic: R8a_llama_temperature        ringing   b=(1,0,0) chi=1 rho_A=1.79 records=0
+2026-11-15 11:29:19 INFO neurotopo.experiments.exp0_analytic: R8b_llama_age                clusters  b=(6,0,0) chi=6 rho_A=0.47 records=0
+2026-11-15 11:29:19 INFO neurotopo.experiments.exp0_analytic: R9_llama_truth_cities        ringing   b=(1,0,0) chi=1 rho_A=3.07 records=0
+2026-11-15 11:30:51 INFO neurotopo.experiments.exp0_analytic: dense check: 97.0% agree (98.7% where margin >= 4 spacings, n=228)
+2026-11-15 11:30:51 INFO root: phase coords, log file C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\logs\coords_20261115T113051.log
+2026-11-15 11:30:52 INFO neurotopo.experiments.coords_check: C1_gp_0                    helix    curve parameter t        value                  {'rho': 0.1201, 'p': 0.0902}
+2026-11-15 11:30:52 INFO neurotopo.experiments.coords_check: C1_gp_0                    helix    azimuth                  value in 7 bins        {'R': 0.8554, 'p': 0.0028, 'winding': 1}
+2026-11-15 11:30:52 INFO neurotopo.experiments.coords_check: C1_gp_0                    helix    azimuth                  value in 12 bins       {'R': 0.852, 'p': 0.0, 'winding': 1}
+2026-11-15 11:30:52 INFO neurotopo.experiments.coords_check: C1_gp_0                    helix    axial position           value                  {'rho': -0.1201, 'p': 0.0902}
+2026-11-15 11:30:52 INFO neurotopo.experiments.coords_check: C1_gp_1                    ringing  curve parameter s        value                  {'rho': 0.9998, 'p': 0.0}
+2026-11-15 11:30:52 INFO neurotopo.experiments.coords_check: C1_gp_2                    helix    curve parameter t        value                  {'rho': -1.0, 'p': 0.0}
+2026-11-15 11:30:52 INFO neurotopo.experiments.coords_check: C1_gp_2                    helix    azimuth                  value in 7 bins        {'R': 0.9783, 'p': 0.0028, 'winding': -1}
+2026-11-15 11:30:52 INFO neurotopo.experiments.coords_check: C1_gp_2                    helix    azimuth                  value in 12 bins       {'R': 0.9775, 'p': 0.0, 'winding': -1}
+2026-11-15 11:30:52 INFO neurotopo.experiments.coords_check: C1_gp_2                    helix    axial position           value                  {'rho': 1.0, 'p': 0.0}
+2026-11-15 11:30:52 INFO neurotopo.experiments.coords_check: C1_gp_3                    helix    curve parameter t        value                  {'rho': 0.9177, 'p': 0.0}
+2026-11-15 11:30:52 INFO neurotopo.experiments.coords_check: C1_gp_3                    helix    azimuth                  value in 7 bins        {'R': 0.9668, 'p': 0.0028, 'winding': 1}
+2026-11-15 11:30:52 INFO neurotopo.experiments.coords_check: C1_gp_3                    helix    azimuth                  value in 12 bins       {'R': 0.9655, 'p': 0.0, 'winding': 1}
+2026-11-15 11:30:52 INFO neurotopo.experiments.coords_check: C1_gp_3                    helix    axial position           value                  {'rho': -0.9177, 'p': 0.0}
+2026-11-15 11:30:52 INFO neurotopo.experiments.coords_check: C1_gp_4                    ringing  curve parameter s        value                  {'rho': 1.0, 'p': 0.0}
+2026-11-15 11:30:52 INFO neurotopo.experiments.coords_check: C1_gp_5                    helix    curve parameter t        value                  {'rho': 0.9264, 'p': 0.0}
+2026-11-15 11:30:52 INFO neurotopo.experiments.coords_check: C1_gp_5                    helix    azimuth                  value in 7 bins        {'R': 0.9015, 'p': 0.0056, 'winding': 1}
+2026-11-15 11:30:52 INFO neurotopo.experiments.coords_check: C1_gp_5                    helix    azimuth                  value in 12 bins       {'R': 0.8993, 'p': 0.0, 'winding': 1}
+2026-11-15 11:30:52 INFO neurotopo.experiments.coords_check: C1_gp_5                    helix    axial position           value                  {'rho': -0.9264, 'p': 0.0}
+2026-11-15 11:30:52 INFO neurotopo.experiments.coords_check: C1_gp_6                    helix    curve parameter t        value                  {'rho': -0.9427, 'p': 0.0}
+2026-11-15 11:30:52 INFO neurotopo.experiments.coords_check: C1_gp_6                    helix    azimuth                  value in 7 bins        {'R': 0.9426, 'p': 0.0028, 'winding': 1}
+2026-11-15 11:30:52 INFO neurotopo.experiments.coords_check: C1_gp_6                    helix    azimuth                  value in 12 bins       {'R': 0.942, 'p': 0.0, 'winding': 1}
+2026-11-15 11:30:52 INFO neurotopo.experiments.coords_check: C1_gp_6                    helix    axial position           value                  {'rho': 0.9427, 'p': 0.0}
+2026-11-15 11:30:52 INFO neurotopo.experiments.coords_check: C1_gp_7                    helix    curve parameter t        value                  {'rho': 0.517, 'p': 0.0}
+2026-11-15 11:30:52 INFO neurotopo.experiments.coords_check: C1_gp_7                    helix    azimuth                  value in 7 bins        {'R': 0.9726, 'p': 0.0028, 'winding': -1}
+2026-11-15 11:30:52 INFO neurotopo.experiments.coords_check: C1_gp_7                    helix    azimuth                  value in 12 bins       {'R': 0.9705, 'p': 0.0, 'winding': -1}
+2026-11-15 11:30:52 INFO neurotopo.experiments.coords_check: C1_gp_7                    helix    axial position           value                  {'rho': -0.517, 'p': 0.0}
+2026-11-15 11:30:53 INFO neurotopo.experiments.coords_check: C1_gp_8                    helix    curve parameter t        value                  {'rho': 0.2893, 'p': 0.0}
+2026-11-15 11:30:53 INFO neurotopo.experiments.coords_check: C1_gp_8                    helix    azimuth                  value in 7 bins        {'R': 0.896, 'p': 0.0028, 'winding': 1}
+2026-11-15 11:30:53 INFO neurotopo.experiments.coords_check: C1_gp_8                    helix    azimuth                  value in 12 bins       {'R': 0.8932, 'p': 0.0, 'winding': 1}
+2026-11-15 11:30:53 INFO neurotopo.experiments.coords_check: C1_gp_8                    helix    axial position           value                  {'rho': -0.2893, 'p': 0.0}
+2026-11-15 11:30:53 INFO neurotopo.experiments.coords_check: C1_gp_9                    helix    curve parameter t        value                  {'rho': -0.4513, 'p': 0.0}
+2026-11-15 11:30:53 INFO neurotopo.experiments.coords_check: C1_gp_9                    helix    azimuth                  value in 7 bins        {'R': 0.9372, 'p': 0.0028, 'winding': 1}
+2026-11-15 11:30:53 INFO neurotopo.experiments.coords_check: C1_gp_9                    helix    azimuth                  value in 12 bins       {'R': 0.9346, 'p': 0.0, 'winding': 1}
+2026-11-15 11:30:53 INFO neurotopo.experiments.coords_check: C1_gp_9                    helix    axial position           value                  {'rho': 0.4513, 'p': 0.0}
+2026-11-15 11:30:53 INFO neurotopo.experiments.coords_check: C1_walk_0                  ringing  curve parameter s        value                  {'rho': 1.0, 'p': 0.0}
+2026-11-15 11:30:53 INFO neurotopo.experiments.coords_check: C1_walk_1                  ringing  curve parameter s        value                  {'rho': 1.0, 'p': 0.0}
+2026-11-15 11:30:53 INFO neurotopo.experiments.coords_check: C1_walk_2                  ringing  curve parameter s        value                  {'rho': -1.0, 'p': 0.0}
+2026-11-15 11:30:53 INFO neurotopo.experiments.coords_check: C1_walk_3                  ringing  curve parameter s        value                  {'rho': -1.0, 'p': 0.0}
+2026-11-15 11:30:53 INFO neurotopo.experiments.coords_check: C1_walk_4                  ringing  curve parameter s        value                  {'rho': 1.0, 'p': 0.0}
+2026-11-15 11:30:53 INFO neurotopo.experiments.coords_check: C1_walk_5                  ringing  curve parameter s        value                  {'rho': -0.9999, 'p': 0.0}
+2026-11-15 11:30:53 INFO neurotopo.experiments.coords_check: C1_walk_6                  ringing  curve parameter s        value                  {'rho': -1.0, 'p': 0.0}
+2026-11-15 11:30:53 INFO neurotopo.experiments.coords_check: C1_walk_7                  ringing  curve parameter s        value                  {'rho': -0.9999, 'p': 0.0}
+2026-11-15 11:30:53 INFO neurotopo.experiments.coords_check: C1_walk_8                  ringing  curve parameter s        value                  {'rho': -0.9998, 'p': 0.0}
+2026-11-15 11:30:53 INFO neurotopo.experiments.coords_check: C1_walk_9                  ringing  curve parameter s        value                  {'rho': 0.9999, 'p': 0.0}
+2026-11-15 11:30:53 INFO neurotopo.experiments.coords_check: C3_llama_counting_init     clusters nearest centroid/vertex  value in 7 bins        {'NMI': 0.0258, 'ARI': -0.0001}
+2026-11-15 11:30:53 INFO neurotopo.experiments.coords_check: C3_llama_counting_init     clusters nearest centroid/vertex  value in 12 bins       {'NMI': 0.0262, 'ARI': -0.0}
+2026-11-15 11:30:53 INFO neurotopo.experiments.coords_check: C3_llama_months_init       clusters nearest centroid/vertex  month                  {'NMI': 0.6473, 'ARI': 0.2608}
+2026-11-15 11:30:53 INFO neurotopo.experiments.coords_check: C3_llama_weekdays_init     polytope nearest centroid/vertex  day of week            {'NMI': 0.7925, 'ARI': 0.5152}
+2026-11-15 11:30:53 INFO neurotopo.experiments.coords_check: R1_gpt2_wpos               sphere   azimuth                  value in 7 bins        {'R': 0.2743, 'p': 0.875, 'winding': 2}
+2026-11-15 11:30:53 INFO neurotopo.experiments.coords_check: R1_gpt2_wpos               sphere   azimuth                  value in 12 bins       {'R': 0.2911, 'p': 0.6639, 'winding': 2}
+2026-11-15 11:30:53 INFO neurotopo.experiments.coords_check: R1_gpt2_wpos               sphere   polar height z           value                  {'rho': 0.9784, 'p': 0.0}
+2026-11-15 11:35:49 INFO neurotopo.experiments.coords_check: R2_grokking_WE             helix    curve parameter t        position on the k=20 circle {'rho': -0.0491, 'p': 0.6057}
+2026-11-15 11:35:49 INFO neurotopo.experiments.coords_check: R2_grokking_WE             helix    azimuth                  residue (max over k)   {'R': 0.9761, 'p': 0.0, 'winding': -1}
+2026-11-15 11:35:49 INFO neurotopo.experiments.coords_check: R2_grokking_WE             helix    axial position           position on the k=20 circle {'rho': 0.0491, 'p': 0.6057}
+2026-11-15 11:35:49 INFO neurotopo.experiments.coords_check: R4_llama_counting          ringing  curve parameter s        value                  {'rho': 0.9985, 'p': 0.0}
+2026-11-15 11:35:49 INFO neurotopo.experiments.coords_check: R4b_pythia_counting        ringing  curve parameter s        value                  {'rho': 0.9998, 'p': 0.0}
+2026-11-15 11:36:00 INFO neurotopo.experiments.coords_check: R5a_llama_weekdays         helix    curve parameter t        offset k               {'rho': -0.1036, 'p': 0.4788}
+2026-11-15 11:36:00 INFO neurotopo.experiments.coords_check: R5a_llama_weekdays         helix    curve parameter t        day of week            {'rho': 0.0, 'p': 1.0}
+2026-11-15 11:36:00 INFO neurotopo.experiments.coords_check: R5a_llama_weekdays         helix    azimuth                  day of week            {'R': 0.8343, 'p': 0.0028, 'winding': 1}
+2026-11-15 11:36:00 INFO neurotopo.experiments.coords_check: R5a_llama_weekdays         helix    axial position           offset k               {'rho': 0.1036, 'p': 0.4788}
+2026-11-15 11:36:00 INFO neurotopo.experiments.coords_check: R5a_llama_weekdays         helix    axial position           day of week            {'rho': 0.0, 'p': 1.0}
+2026-11-15 11:36:05 INFO neurotopo.experiments.coords_check: R5a_llama_weekdays_means   sphere   azimuth                  day of week            {'R': 0.8631, 'p': 0.0028, 'winding': 1}
+2026-11-15 11:36:05 INFO neurotopo.experiments.coords_check: R5a_llama_weekdays_means   sphere   polar height z           day of week            {'rho': -0.4286, 'p': 0.3536}
+2026-11-15 11:36:05 INFO neurotopo.experiments.coords_check: R5b_llama_months           helix    curve parameter t        offset k               {'rho': 0.0045, 'p': 0.9577}
+2026-11-15 11:36:05 INFO neurotopo.experiments.coords_check: R5b_llama_months           helix    curve parameter t        month                  {'rho': -0.2098, 'p': 0.5128}
+2026-11-15 11:36:05 INFO neurotopo.experiments.coords_check: R5b_llama_months           helix    azimuth                  month                  {'R': 0.9308, 'p': 0.0, 'winding': 1}
+2026-11-15 11:36:05 INFO neurotopo.experiments.coords_check: R5b_llama_months           helix    axial position           offset k               {'rho': -0.0045, 'p': 0.9577}
+2026-11-15 11:36:05 INFO neurotopo.experiments.coords_check: R5b_llama_months           helix    axial position           month                  {'rho': 0.2098, 'p': 0.5128}
+2026-11-15 11:36:05 INFO neurotopo.experiments.coords_check: R5b_llama_months_means     helix    curve parameter t        month                  {'rho': -0.2098, 'p': 0.5128}
+2026-11-15 11:36:05 INFO neurotopo.experiments.coords_check: R5b_llama_months_means     helix    azimuth                  month                  {'R': 0.9271, 'p': 0.0, 'winding': 1}
+2026-11-15 11:36:05 INFO neurotopo.experiments.coords_check: R5b_llama_months_means     helix    axial position           month                  {'rho': 0.2098, 'p': 0.5128}
+2026-11-15 11:36:11 INFO neurotopo.experiments.coords_check: R5c_llama_days_time        ringing  curve parameter s        day of week            {'rho': -1.0, 'p': 0.0004}
+2026-11-15 11:36:11 INFO neurotopo.experiments.coords_check: R5c_llama_days_time        ringing  curve parameter s        time of day            {'rho': -0.8587, 'p': 0.0}
+2026-11-15 11:36:14 INFO neurotopo.experiments.coords_check: R6_llama_years             cone     azimuth                  value in 7 bins        {'R': 0.5364, 'p': 0.2, 'winding': 0}
+2026-11-15 11:36:14 INFO neurotopo.experiments.coords_check: R6_llama_years             cone     azimuth                  value in 12 bins       {'R': 0.4943, 'p': 0.0341, 'winding': 0}
+2026-11-15 11:36:14 INFO neurotopo.experiments.coords_check: R6_llama_years             cone     azimuth                  value mod 10           {'R': 0.5605, 'p': 0.0016, 'winding': 0}
+2026-11-15 11:36:14 INFO neurotopo.experiments.coords_check: R6_llama_years             cone     azimuth                  value mod 100          {'R': 0.3512, 'p': 0.0, 'winding': 0}
+2026-11-15 11:36:14 INFO neurotopo.experiments.coords_check: R6_llama_years             cone     height s                 value                  {'rho': -0.3628, 'p': 0.0}
+2026-11-15 11:36:14 INFO neurotopo.experiments.coords_check: R7_llama_colors            cone     azimuth                  hue                    {'R': 0.9836, 'p': 0.0, 'winding': 1}
+2026-11-15 11:36:14 INFO neurotopo.experiments.coords_check: R7_llama_colors            cone     height s                 saturation             {'rho': 0.3412, 'p': 0.0}
+2026-11-15 11:36:14 INFO neurotopo.experiments.coords_check: R7_llama_colors            cone     height s                 lightness              {'rho': -0.6714, 'p': 0.0}
+2026-11-15 11:36:14 INFO neurotopo.experiments.coords_check: R7_llama_colors            cone     height s                 hue                    {'rho': 0.5215, 'p': 0.0011}
+2026-11-15 11:36:14 INFO neurotopo.experiments.coords_check: R8a_llama_temperature      ringing  curve parameter s        value                  {'rho': -0.9968, 'p': 0.0}
+2026-11-15 11:36:14 INFO neurotopo.experiments.coords_check: R8b_llama_age              clusters nearest centroid/vertex  value in 7 bins        {'NMI': 0.6158, 'ARI': 0.4297}
+2026-11-15 11:36:14 INFO neurotopo.experiments.coords_check: R8b_llama_age              clusters nearest centroid/vertex  value in 12 bins       {'NMI': 0.6112, 'ARI': 0.3281}
+2026-11-15 11:36:14 INFO neurotopo.experiments.coords_check: post hoc R5a_llama_weekdays axial harmonic R2: {'h1': 0.38029430507118456, 'h2': 0.3943697629310976, 'h3': 0.22533593199771818}
+2026-11-15 11:36:14 INFO neurotopo.experiments.coords_check: post hoc R5b_llama_months axial harmonic R2: {'h1': 0.09842615500273222, 'h2': 0.8292747029661534, 'h3': 0.014961882596963072}
+2026-11-15 11:36:14 INFO neurotopo.experiments.coords_check: post hoc R5b_llama_months_means axial harmonic R2: {'h1': 0.17355634871999892, 'h2': 0.8059139746796962, 'h3': 0.007459878760399441}
+2026-11-15 11:36:14 INFO root: phase power2, log file C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\logs\power2_20261115T113614.log
+2026-11-15 11:40:57 INFO neurotopo.experiments.power: power v2 summary:
+      k   m    fb arrangement  fring      top3   loop  align  wind1    all
+0     7   7  0.84      arc300   0.20  0.630552  0.050  0.000  0.000  0.000
+1     7   7  0.84      arc300   0.30  0.646420  0.150  0.000  0.000  0.000
+2     7   7  0.84      arc300   0.45  0.701159  0.425  0.000  0.000  0.000
+3     7   7  0.84      arc300   0.60  0.764148  0.975  0.000  0.000  0.000
+4     7   7  0.84      random   0.20  0.632651  0.050  0.000  0.000  0.000
+5     7   7  0.84      random   0.30  0.653926  0.050  0.000  0.000  0.000
+6     7   7  0.84      random   0.45  0.706343  0.075  0.000  0.000  0.000
+7     7   7  0.84      random   0.60  0.761406  0.000  0.000  0.000  0.000
+8     7   7  0.84        ring   0.20  0.630523  0.075  0.000  0.000  0.000
+9     7   7  0.84        ring   0.30  0.646357  0.150  0.000  0.000  0.000
+10    7   7  0.84        ring   0.45  0.701247  0.425  0.000  0.000  0.000
+11    7   7  0.84        ring   0.60  0.764172  1.000  0.000  0.000  0.000
+12   12  12  0.91      arc300   0.20  0.517297  0.025  0.000  0.000  0.000
+13   12  12  0.91      arc300   0.30  0.558129  0.200  0.000  0.000  0.000
+14   12  12  0.91      arc300   0.45  0.637567  0.650  0.000  0.000  0.000
+15   12  12  0.91      arc300   0.60  0.728574  0.925  0.000  0.000  0.000
+16   12  12  0.91      random   0.20  0.521260  0.050  0.000  0.000  0.000
+17   12  12  0.91      random   0.30  0.561909  0.050  0.000  0.000  0.000
+18   12  12  0.91      random   0.45  0.641119  0.075  0.000  0.000  0.000
+19   12  12  0.91      random   0.60  0.726223  0.050  0.000  0.000  0.000
+20   12  12  0.91        ring   0.20  0.516550  0.050  0.000  0.000  0.000
+21   12  12  0.91        ring   0.30  0.557733  0.250  0.000  0.000  0.000
+22   12  12  0.91        ring   0.45  0.637601  0.875  0.000  0.000  0.000
+23   12  12  0.91        ring   0.60  0.728610  1.000  0.050  0.050  0.050
+24  113   1  1.00      arc300   0.20  0.298636  0.100  0.025  0.025  0.025
+25  113   1  1.00      arc300   0.30  0.381158  0.325  0.000  0.000  0.000
+26  113   1  1.00      arc300   0.45  0.512370  0.475  0.000  0.000  0.000
+27  113   1  1.00      arc300   0.60  0.645443  0.675  0.000  0.000  0.000
+28  113   1  1.00      random   0.20  0.297739  0.025  0.000  0.000  0.000
+29  113   1  1.00      random   0.30  0.381463  0.075  0.000  0.000  0.000
+30  113   1  1.00      random   0.45  0.512160  0.025  0.000  0.000  0.000
+31  113   1  1.00      random   0.60  0.645383  0.075  0.000  0.000  0.000
+32  113   1  1.00        ring   0.20  0.297312  1.000  1.000  1.000  1.000
+33  113   1  1.00        ring   0.30  0.380796  1.000  1.000  1.000  1.000
+34  113   1  1.00        ring   0.45  0.512361  1.000  1.000  1.000  1.000
+35  113   1  1.00        ring   0.60  0.645500  1.000  1.000  1.000  1.000
+2026-11-15 11:40:57 INFO root: phase exp1, log file C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\logs\exp1_20261115T114057.log
+2026-11-15 11:40:58 INFO neurotopo.experiments.exp1_synthetic: summarising 39000 test clouds
+2026-11-15 11:57:12 INFO neurotopo.experiments.exp1_synthetic: P_alpha_universal            macro exact 0.618 [0.610, 0.626] (n=30114)
+2026-11-15 11:57:12 INFO neurotopo.experiments.exp1_synthetic: S_rips_universal             macro exact 0.660 [0.651, 0.670] (n=30114)
+2026-11-15 11:57:12 INFO neurotopo.experiments.exp1_synthetic: Ba_fixed_pi                  macro exact 0.714 [0.703, 0.725] (n=30114)
+2026-11-15 11:57:12 INFO neurotopo.experiments.exp1_synthetic: Bb_family_implied            macro exact 0.812 [0.807, 0.816] (n=30114)
+2026-11-15 11:57:12 INFO neurotopo.experiments.exp1_synthetic: Bc_majority                  macro exact 0.555 [0.553, 0.557] (n=30114)
+2026-11-15 11:57:12 INFO neurotopo.experiments.exp1_synthetic: MC_gaussian3d (subset)       macro exact 0.594 [0.561, 0.629] (n=2427)
+2026-11-15 11:57:12 INFO neurotopo.experiments.exp1_synthetic: P_alpha_universal (subset)   macro exact 0.615 [0.588, 0.644] (n=2427)
+2026-11-15 11:57:12 INFO neurotopo.experiments.exp1_synthetic: S_rips_universal (subset)    macro exact 0.674 [0.640, 0.703] (n=2427)
+2026-11-15 11:57:12 INFO root: phase exp2, log file C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\logs\exp2_20261115T115712.log
+2026-11-15 11:57:31 INFO neurotopo.experiments.exp2_invariants: C1_gp_0                      N= 200 pi1=1.00 (q95 1.93, p=1.0000) pi2=1.00 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 11:57:45 INFO neurotopo.experiments.exp2_invariants: C1_gp_1                      N= 200 pi1=1.16 (q95 1.95, p=1.0000) pi2=1.01 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 11:57:58 INFO neurotopo.experiments.exp2_invariants: C1_gp_2                      N= 200 pi1=1.09 (q95 1.92, p=1.0000) pi2=1.01 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 11:58:11 INFO neurotopo.experiments.exp2_invariants: C1_gp_3                      N= 200 pi1=1.16 (q95 1.94, p=1.0000) pi2=1.09 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 11:58:29 INFO neurotopo.experiments.exp2_invariants: C1_gp_4                      N= 200 pi1=1.00 (q95 1.95, p=1.0000) pi2=1.00 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 11:58:43 INFO neurotopo.experiments.exp2_invariants: C1_gp_5                      N= 200 pi1=1.37 (q95 1.93, p=1.0000) pi2=1.05 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 11:58:55 INFO neurotopo.experiments.exp2_invariants: C1_gp_6                      N= 200 pi1=1.13 (q95 1.96, p=1.0000) pi2=1.06 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 11:59:07 INFO neurotopo.experiments.exp2_invariants: C1_gp_7                      N= 200 pi1=1.05 (q95 1.94, p=1.0000) pi2=1.05 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 11:59:24 INFO neurotopo.experiments.exp2_invariants: C1_gp_8                      N= 200 pi1=1.00 (q95 1.94, p=1.0000) pi2=1.01 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 11:59:43 INFO neurotopo.experiments.exp2_invariants: C1_gp_9                      N= 200 pi1=1.02 (q95 1.92, p=1.0000) pi2=1.00 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 11:59:53 INFO neurotopo.experiments.exp2_invariants: C1_walk_0                    N= 200 pi1=1.05 (q95 1.90, p=1.0000) pi2=1.00 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 12:00:03 INFO neurotopo.experiments.exp2_invariants: C1_walk_1                    N= 200 pi1=1.12 (q95 1.91, p=1.0000) pi2=1.00 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 12:00:13 INFO neurotopo.experiments.exp2_invariants: C1_walk_2                    N= 200 pi1=1.07 (q95 1.92, p=1.0000) pi2=1.00 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 12:00:23 INFO neurotopo.experiments.exp2_invariants: C1_walk_3                    N= 200 pi1=1.10 (q95 1.91, p=1.0000) pi2=1.00 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 12:00:32 INFO neurotopo.experiments.exp2_invariants: C1_walk_4                    N= 200 pi1=1.18 (q95 1.92, p=1.0000) pi2=1.00 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 12:00:43 INFO neurotopo.experiments.exp2_invariants: C1_walk_5                    N= 200 pi1=1.10 (q95 1.92, p=1.0000) pi2=1.00 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 12:00:52 INFO neurotopo.experiments.exp2_invariants: C1_walk_6                    N= 200 pi1=1.07 (q95 1.96, p=1.0000) pi2=1.01 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 12:01:02 INFO neurotopo.experiments.exp2_invariants: C1_walk_7                    N= 200 pi1=1.07 (q95 1.93, p=1.0000) pi2=1.00 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 12:01:12 INFO neurotopo.experiments.exp2_invariants: C1_walk_8                    N= 200 pi1=1.09 (q95 1.90, p=1.0000) pi2=1.00 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 12:01:24 INFO neurotopo.experiments.exp2_invariants: C1_walk_9                    N= 200 pi1=1.35 (q95 1.92, p=1.0000) pi2=1.00 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 12:03:22 INFO neurotopo.experiments.exp2_invariants: C3_gpt2_wpos_init            N=1023 pi1=2.03 (q95 2.17, p=0.2990) pi2=1.44 b=(1,0,1)@r_c sphere, stab loop 0.06
+2026-11-15 12:03:24 INFO neurotopo.experiments.exp2_invariants: C3_grokking_WE_init          N= 113 pi1=1.84 (q95 1.83, p=0.0460) pi2=1.15 b=(1,1,0)@r_c circle-like, stab loop 0.01
+2026-11-15 12:03:26 INFO neurotopo.experiments.exp2_invariants: C3_grokking_WE_memorised     N= 113 pi1=1.50 (q95 1.83, p=0.8310) pi2=1.10 b=(1,0,0)@r_c contractible, stab loop 0.05
+2026-11-15 12:03:47 INFO neurotopo.experiments.exp2_invariants: C3_llama_counting_init       N= 150 pi1=1.54 (q95 1.87, p=0.8810) pi2=1.03 b=(1,0,0)@r_c contractible, stab loop 0.01
+2026-11-15 12:04:06 INFO neurotopo.experiments.exp2_invariants: C3_llama_months_init         N= 144 pi1=1.43 (q95 1.46, p=0.0740) pi2=1.01 b=(4,0,0)@r_c 4 components, stab loop 0.04
+2026-11-15 12:04:10 INFO neurotopo.experiments.exp2_invariants: C3_llama_weekdays_init       N=  49 pi1=1.11 (q95 1.28, p=0.7650) pi2=1.03 b=(4,0,1)@r_c other (4,0,1), stab loop 0.02
+2026-11-15 12:04:10 INFO neurotopo.experiments.exp2_invariants: C3_tms_dense                 N=   5 pi1=1.23 (q95 1.12, p=0.0010) pi2=1.00 b=(1,1,0)@r_c circle-like, stab loop 0.41
+2026-11-15 12:05:50 INFO neurotopo.experiments.exp2_invariants: R1_gpt2_wpos                 N=1023 pi1=1.22 (q95 2.16, p=1.0000) pi2=1.02 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 12:05:53 INFO neurotopo.experiments.exp2_invariants: R2_grokking_WE               N= 113 pi1=2.45 (q95 1.83, p=0.0010) pi2=1.05 b=(1,2,0)@r_c other (1,2,0), stab loop 0.26
+2026-11-15 12:05:53 INFO neurotopo.experiments.exp2_invariants: R3_tms_n20                   N=  20 pi1=1.34 (q95 1.44, p=0.1910) pi2=1.47 b=(1,0,1)@r_c sphere, stab loop 0.35
+2026-11-15 12:05:53 INFO neurotopo.experiments.exp2_invariants: R3_tms_n6                    N=   6 pi1=1.15 (q95 1.18, p=0.0870) pi2=1.22 b=(1,0,1)@r_c sphere, stab loop 0.00
+2026-11-15 12:05:53 INFO neurotopo.experiments.exp2_invariants: R3_tms_n8                    N=   8 pi1=1.41 (q95 1.24, p=0.0040) pi2=1.18 b=(1,0,1)@r_c sphere, stab loop 0.73
+2026-11-15 12:06:14 INFO neurotopo.experiments.exp2_invariants: R4_llama_counting            N= 150 pi1=1.28 (q95 1.89, p=1.0000) pi2=1.02 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 12:06:22 INFO neurotopo.experiments.exp2_invariants: R4b_pythia_counting          N= 150 pi1=1.32 (q95 1.87, p=1.0000) pi2=1.03 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 12:06:27 INFO neurotopo.experiments.exp2_invariants: R5a_llama_weekdays           N=  49 pi1=1.32 (q95 1.36, p=0.0940) pi2=1.01 b=(5,0,0)@r_c 5 components, stab loop 0.01
+2026-11-15 12:06:27 INFO neurotopo.experiments.exp2_invariants: R5a_llama_weekdays_means     N=   7 pi1=1.05 (q95 1.19, p=0.7310) pi2=1.02 b=(1,0,0)@r_c contractible, stab loop 0.12
+2026-11-15 12:06:46 INFO neurotopo.experiments.exp2_invariants: R5b_llama_months             N= 144 pi1=1.72 (q95 1.44, p=0.0020) pi2=1.02 b=(12,1,0)@r_c other (12,1,0), stab loop 0.90
+2026-11-15 12:06:46 INFO neurotopo.experiments.exp2_invariants: R5b_llama_months_means       N=  12 pi1=1.71 (q95 1.33, p=0.0010) pi2=1.02 b=(1,1,0)@r_c circle-like, stab loop 0.34
+2026-11-15 12:07:41 INFO neurotopo.experiments.exp2_invariants: R5c_llama_days_time          N= 336 pi1=2.01 (q95 1.87, p=0.0130) pi2=1.06 b=(6,1,0)@r_c other (6,1,0), stab loop 0.03
+2026-11-15 12:08:09 INFO neurotopo.experiments.exp2_invariants: R6_llama_years               N= 199 pi1=1.63 (q95 1.94, p=0.7750) pi2=1.12 b=(1,0,0)@r_c contractible, stab loop 0.08
+2026-11-15 12:15:00 INFO neurotopo.experiments.exp2_invariants: R7_llama_colors              N= 900 pi1=5.02 (q95 2.38, p=0.0010) pi2=1.24 b=(1,1,0)@r_c circle-like, stab loop 1.00
+2026-11-15 12:15:32 INFO neurotopo.experiments.exp2_invariants: R8a_llama_temperature        N= 150 pi1=1.33 (q95 1.89, p=1.0000) pi2=1.02 b=(1,0,0)@r_c contractible, stab loop 0.00
+2026-11-15 12:15:51 INFO neurotopo.experiments.exp2_invariants: R8b_llama_age                N=  99 pi1=1.58 (q95 1.79, p=0.4490) pi2=1.00 b=(1,0,0)@r_c contractible, stab loop 0.04
+2026-11-15 12:34:16 INFO neurotopo.experiments.exp2_invariants: R9_llama_truth_cities        N=1496 pi1=1.93 (q95 2.20, p=0.8610) pi2=1.29 b=(1,0,0)@r_c contractible, stab loop 0.03
+2026-11-15 12:34:16 INFO root: phase exp3, log file C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\logs\exp3_20261115T123416.log
+2026-11-15 12:34:17 INFO neurotopo.experiments.exp3_cyclic: R5a_llama_weekdays           loop p=0.0940 | theta_B: none
+2026-11-15 12:34:17 INFO neurotopo.experiments.exp3_cyclic: R5b_llama_months             loop p=0.0020 | theta_B: none
+2026-11-15 12:35:47 INFO neurotopo.experiments.exp3_cyclic: R2_grokking_WE               loop p=0.0010 | theta_B: R=0.973 p=1e-05 w=-1
+2026-11-15 12:35:48 INFO neurotopo.experiments.exp3_cyclic: R5c_llama_days_time          loop p=0.0130 | theta_B: none
+2026-11-15 12:35:49 INFO neurotopo.experiments.exp3_cyclic: R1_gpt2_wpos                 loop p=1.0000 | theta_B: none
+2026-11-15 12:35:49 INFO neurotopo.experiments.exp3_cyclic: R4_llama_counting            loop p=1.0000 | theta_B: none
+2026-11-15 12:35:49 INFO neurotopo.experiments.exp3_cyclic: R4b_pythia_counting          loop p=1.0000 | theta_B: none
+2026-11-15 12:35:50 INFO neurotopo.experiments.exp3_cyclic: R6_llama_years               loop p=0.7750 | theta_B: none
+2026-11-15 12:35:50 INFO neurotopo.experiments.exp3_cyclic: R8a_llama_temperature        loop p=1.0000 | theta_B: none
+2026-11-15 12:35:50 INFO neurotopo.experiments.exp3_cyclic: R8b_llama_age                loop p=0.4490 | theta_B: none
+2026-11-15 12:35:50 INFO neurotopo.experiments.exp3_cyclic: C3_llama_weekdays_init       loop p=0.7650 | theta_B: none
+2026-11-15 12:35:51 INFO neurotopo.experiments.exp3_cyclic: C3_llama_months_init         loop p=0.0740 | theta_B: none
+2026-11-15 12:35:51 INFO neurotopo.experiments.exp3_cyclic: C3_grokking_WE_init          loop p=0.0460 | theta_B: none
+2026-11-15 12:35:51 INFO neurotopo.experiments.exp3_cyclic: C1_gp_0                      loop p=1.0000 | theta_B: none
+2026-11-15 12:35:51 INFO neurotopo.experiments.exp3_cyclic: C1_gp_1                      loop p=1.0000 | theta_B: none
+2026-11-15 12:35:51 INFO neurotopo.experiments.exp3_cyclic: C1_gp_2                      loop p=1.0000 | theta_B: none
+2026-11-15 12:35:51 INFO neurotopo.experiments.exp3_cyclic: C1_gp_3                      loop p=1.0000 | theta_B: none
+2026-11-15 12:35:51 INFO neurotopo.experiments.exp3_cyclic: C1_gp_4                      loop p=1.0000 | theta_B: none
+2026-11-15 12:35:51 INFO neurotopo.experiments.exp3_cyclic: C1_gp_5                      loop p=1.0000 | theta_B: none
+2026-11-15 12:35:52 INFO neurotopo.experiments.exp3_cyclic: C1_gp_6                      loop p=1.0000 | theta_B: none
+2026-11-15 12:35:52 INFO neurotopo.experiments.exp3_cyclic: C1_gp_7                      loop p=1.0000 | theta_B: none
+2026-11-15 12:35:52 INFO neurotopo.experiments.exp3_cyclic: C1_gp_8                      loop p=1.0000 | theta_B: none
+2026-11-15 12:35:52 INFO neurotopo.experiments.exp3_cyclic: C1_gp_9                      loop p=1.0000 | theta_B: none
+2026-11-15 12:35:52 INFO neurotopo.experiments.exp3_cyclic: C1_walk_0                    loop p=1.0000 | theta_B: none
+2026-11-15 12:35:52 INFO neurotopo.experiments.exp3_cyclic: C1_walk_1                    loop p=1.0000 | theta_B: none
+2026-11-15 12:35:52 INFO neurotopo.experiments.exp3_cyclic: C1_walk_2                    loop p=1.0000 | theta_B: none
+2026-11-15 12:35:52 INFO neurotopo.experiments.exp3_cyclic: C1_walk_3                    loop p=1.0000 | theta_B: none
+2026-11-15 12:35:53 INFO neurotopo.experiments.exp3_cyclic: C1_walk_4                    loop p=1.0000 | theta_B: none
+2026-11-15 12:35:53 INFO neurotopo.experiments.exp3_cyclic: C1_walk_5                    loop p=1.0000 | theta_B: none
+2026-11-15 12:35:53 INFO neurotopo.experiments.exp3_cyclic: C1_walk_6                    loop p=1.0000 | theta_B: none
+2026-11-15 12:35:53 INFO neurotopo.experiments.exp3_cyclic: C1_walk_7                    loop p=1.0000 | theta_B: none
+2026-11-15 12:35:53 INFO neurotopo.experiments.exp3_cyclic: C1_walk_8                    loop p=1.0000 | theta_B: none
+2026-11-15 12:35:53 INFO neurotopo.experiments.exp3_cyclic: C1_walk_9                    loop p=1.0000 | theta_B: none
+2026-11-15 12:36:00 INFO neurotopo.experiments.exp3_cyclic: R7_llama_colors              loop p=0.0010 | theta_B: R=0.949 p=1e-05 w=-1
+C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\.venv\Lib\site-packages\ripser\ripser.py:251: UserWarning: The input matrix is square, but the distance_matrix flag is off.  Did you mean to indicate that this was a distance matrix?
+  warnings.warn(
+2026-11-15 12:36:00 INFO neurotopo.experiments.exp3_cyclic: R5a_llama_weekdays_means     loop p=0.7310 | theta_B: none
+2026-11-15 12:36:00 INFO neurotopo.experiments.exp3_cyclic: R5b_llama_months_means       loop p=0.0010 | theta_B: none
+2026-11-15 12:36:00 INFO neurotopo.experiments.exp3_cyclic: C3_grokking_WE_memorised     loop p=0.8310 | theta_B: none
+2026-11-15 12:36:01 INFO neurotopo.experiments.exp3_cyclic: C3_gpt2_wpos_init            loop p=0.2990 | theta_B: none
+2026-11-15 12:36:01 INFO neurotopo.experiments.exp3_cyclic: C3_llama_counting_init       loop p=0.8810 | theta_B: none
+2026-11-15 12:36:01 INFO neurotopo.experiments.exp3_cyclic: H1 passes of 3: {'A': 0, 'B': 0}; H2 summary: {'A': {'ordinal_pass': 0, 'init_pass': 0, 'c1_pass': 0, 'falsified': False, 'c1_fpr_ci': (0.0, 0.1684334709830855)}, 'B': {'ordinal_pass': 0, 'init_pass': 0, 'c1_pass': 0, 'falsified': False, 'c1_fpr_ci': (0.0, 0.1684334709830855)}}
+2026-11-15 12:36:01 INFO root: phase exp3posthoc, log file C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\logs\exp3posthoc_20261115T123601.log
+2026-11-15 12:36:04 INFO neurotopo.experiments.exp3_posthoc: R5a_llama_weekdays         3D: R=0.06057950024470547 p=0.23055555555555557 w=0 | top10: R=0.5735021790713528 p=0.016666666666666666 w=0
+2026-11-15 12:36:07 INFO neurotopo.experiments.exp3_posthoc: R5b_llama_months           3D: R=0.7185559717763618 p=1e-05 w=1 | top10: R=0.3063608081502688 p=0.00352 w=0
+2026-11-15 12:38:55 INFO neurotopo.experiments.exp3_posthoc: R2_grokking_WE             3D: R=0.9588346980060091 p=1e-05 w=-1 | top10: R=0.1969208641183392 p=3e-05 w=0
+2026-11-15 12:39:00 INFO neurotopo.experiments.exp3_posthoc: R5c_llama_days_time        3D: R=0.1807849392178058 p=0.03333333333333333 w=0 | top10: R=0.4181998990564369 p=0.008333333333333333 w=0
+2026-11-15 12:39:02 INFO neurotopo.experiments.exp3_posthoc: R1_gpt2_wpos               3D: R=0.2959841228718358 p=0.9972222222222222 w=0 | top10: R=0.5263774523523463 p=0.002777777777777778 w=0
+2026-11-15 12:39:04 INFO neurotopo.experiments.exp3_posthoc: R4_llama_counting          3D: R=0.03050057452739944 p=0.30833333333333335 w=0 | top10: R=0.06146072907934615 p=0.058333333333333334 w=0
+2026-11-15 12:39:06 INFO neurotopo.experiments.exp3_posthoc: R4b_pythia_counting        3D: R=0.17216031412865426 p=0.06388888888888888 w=0 | top10: R=0.03368843418777961 p=0.08333333333333333 w=0
+2026-11-15 12:39:11 INFO neurotopo.experiments.exp3_posthoc: R6_llama_years             3D: R=0.21381300706088285 p=0.46944444444444444 w=0 | top10: R=0.07449172682918799 p=0.2638888888888889 w=0
+2026-11-15 12:39:13 INFO neurotopo.experiments.exp3_posthoc: R8a_llama_temperature      3D: R=0.18045083188187744 p=0.08611111111111111 w=0 | top10: R=0.06100683640304522 p=0.019444444444444445 w=0
+2026-11-15 12:39:15 INFO neurotopo.experiments.exp3_posthoc: R8b_llama_age              3D: R=0.5455914585624537 p=0.005555555555555556 w=0 | top10: R=0.3211331642125402 p=0.011111111111111112 w=0
+2026-11-15 12:39:16 INFO neurotopo.experiments.exp3_posthoc: C3_llama_weekdays_init     3D: R=None p=None w=None | top10: R=0.06107641763074853 p=0.8333333333333334 w=0
+2026-11-15 12:39:18 INFO neurotopo.experiments.exp3_posthoc: C3_llama_months_init       3D: R=0.4316844164469314 p=0.13793 w=1 | top10: R=0.019659356796627152 p=1.0 w=0
+2026-11-15 12:41:29 INFO neurotopo.experiments.exp3_posthoc: C3_grokking_WE_init        3D: R=0.06648478394004469 p=0.82954 w=0 | top10: R=0.06176008950110854 p=0.4024 w=0
+2026-11-15 12:41:29 INFO neurotopo.experiments.exp3_posthoc: C1_gp_0                    3D: R=None p=None w=None | top10: R=None p=None w=None
+2026-11-15 12:41:30 INFO neurotopo.experiments.exp3_posthoc: C1_gp_1                    3D: R=0.11824086702236268 p=0.058333333333333334 w=0 | top10: R=None p=None w=None
+2026-11-15 12:41:31 INFO neurotopo.experiments.exp3_posthoc: C1_gp_2                    3D: R=0.03660026805270677 p=0.08055555555555556 w=0 | top10: R=None p=None w=None
+2026-11-15 12:41:33 INFO neurotopo.experiments.exp3_posthoc: C1_gp_3                    3D: R=0.3571252059477811 p=0.008333333333333333 w=0 | top10: R=0.07625657851861471 p=0.11388888888888889 w=0
+2026-11-15 12:41:33 INFO neurotopo.experiments.exp3_posthoc: C1_gp_4                    3D: R=None p=None w=None | top10: R=None p=None w=None
+2026-11-15 12:41:36 INFO neurotopo.experiments.exp3_posthoc: C1_gp_5                    3D: R=0.7246014805322304 p=0.002777777777777778 w=0 | top10: R=0.21391149206547141 p=0.05 w=0
+2026-11-15 12:41:37 INFO neurotopo.experiments.exp3_posthoc: C1_gp_6                    3D: R=0.11144382087705154 p=0.058333333333333334 w=0 | top10: R=None p=None w=None
+2026-11-15 12:41:39 INFO neurotopo.experiments.exp3_posthoc: C1_gp_7                    3D: R=0.01335100952357893 p=0.09166666666666666 w=0 | top10: R=0.02317740670016155 p=0.2388888888888889 w=0
+2026-11-15 12:41:39 INFO neurotopo.experiments.exp3_posthoc: C1_gp_8                    3D: R=None p=None w=None | top10: R=None p=None w=None
+2026-11-15 12:41:39 INFO neurotopo.experiments.exp3_posthoc: C1_gp_9                    3D: R=None p=None w=None | top10: R=None p=None w=None
+2026-11-15 12:41:39 INFO neurotopo.experiments.exp3_posthoc: C1_walk_0                  3D: R=None p=None w=None | top10: R=None p=None w=None
+2026-11-15 12:41:39 INFO neurotopo.experiments.exp3_posthoc: C1_walk_1                  3D: R=None p=None w=None | top10: R=None p=None w=None
+2026-11-15 12:41:39 INFO neurotopo.experiments.exp3_posthoc: C1_walk_2                  3D: R=None p=None w=None | top10: R=None p=None w=None
+2026-11-15 12:41:39 INFO neurotopo.experiments.exp3_posthoc: C1_walk_3                  3D: R=None p=None w=None | top10: R=None p=None w=None
+2026-11-15 12:41:40 INFO neurotopo.experiments.exp3_posthoc: C1_walk_4                  3D: R=0.025704578462143017 p=1.0 w=0 | top10: R=None p=None w=None
+2026-11-15 12:41:40 INFO neurotopo.experiments.exp3_posthoc: C1_walk_5                  3D: R=None p=None w=None | top10: R=None p=None w=None
+2026-11-15 12:41:40 INFO neurotopo.experiments.exp3_posthoc: C1_walk_6                  3D: R=None p=None w=None | top10: R=None p=None w=None
+2026-11-15 12:41:41 INFO neurotopo.experiments.exp3_posthoc: C1_walk_7                  3D: R=None p=None w=None | top10: R=None p=None w=None
+2026-11-15 12:41:41 INFO neurotopo.experiments.exp3_posthoc: C1_walk_8                  3D: R=None p=None w=None | top10: R=None p=None w=None
+2026-11-15 12:41:42 INFO neurotopo.experiments.exp3_posthoc: C1_walk_9                  3D: R=0.0542454364344363 p=1.0 w=0 | top10: R=None p=None w=None
+C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\.venv\Lib\site-packages\dreimac\emcoords.py:181: UserWarning: There are 161 point not covered by a landmark
+  warnings.warn("There are {} point not covered by a landmark".format(nzero))
+2026-11-15 12:41:50 INFO neurotopo.experiments.exp3_posthoc: R7_llama_colors            3D: R=0.9388914559563737 p=1e-05 w=-1 | top10: R=0.9651314277540115 p=1e-05 w=-1
+C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\.venv\Lib\site-packages\ripser\ripser.py:251: UserWarning: The input matrix is square, but the distance_matrix flag is off.  Did you mean to indicate that this was a distance matrix?
+  warnings.warn(
+2026-11-15 12:41:52 INFO neurotopo.experiments.exp3_posthoc: R5a_llama_weekdays_means   3D: R=0.4510357061452054 p=0.06666666666666667 w=1 | top10: R=0.5630399473036012 p=0.011111111111111112 w=1
+2026-11-15 12:41:53 INFO neurotopo.experiments.exp3_posthoc: R5b_llama_months_means     3D: R=0.8290927452883848 p=1e-05 w=1 | top10: R=0.42287869107998344 p=0.00099 w=1
+2026-11-15 12:44:05 INFO neurotopo.experiments.exp3_posthoc: C3_grokking_WE_memorised   3D: R=0.07957240349084267 p=0.31205 w=0 | top10: R=0.125463308141648 p=0.30784 w=0
+C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\.venv\Lib\site-packages\dreimac\emcoords.py:181: UserWarning: There are 782 point not covered by a landmark
+  warnings.warn("There are {} point not covered by a landmark".format(nzero))
+2026-11-15 12:44:08 INFO neurotopo.experiments.exp3_posthoc: C3_gpt2_wpos_init          3D: R=0.0015182263523219406 p=0.31666666666666665 w=0 | top10: R=0.0024803959844544887 p=0.3527777777777778 w=0
+2026-11-15 12:44:10 INFO neurotopo.experiments.exp3_posthoc: C3_llama_counting_init     3D: R=0.03997552098291568 p=0.11388888888888889 w=0 | top10: R=0.002993093385046706 p=0.6333333333333333 w=0
+2026-11-15 12:44:10 INFO root: phase exp4, log file C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\logs\exp4_20261115T124410.log
+C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\.venv\Lib\site-packages\sklearn\manifold\_mds.py:735: FutureWarning: The default value of `init` will change from 'random' to 'classical_mds' in 1.10. To suppress this warning, provide some value of `init`.
+  warnings.warn(
+C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\.venv\Lib\site-packages\sklearn\manifold\_mds.py:752: FutureWarning: The `dissimilarity` parameter is deprecated and will be removed in 1.10. Use `metric` instead.
+  warnings.warn(
+2026-11-15 12:44:36 INFO neurotopo.experiments.exp4_similarity: cyclic cohesion: mean within 0.335, exact p = 0.581
+2026-11-15 12:44:36 INFO root: phase exp5, log file C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\logs\exp5_20261115T124436.log
+2026-11-15 12:45:06 INFO neurotopo.experiments.exp5_robustness: projection check:
+                        id  alpha3_pi1  alpha3_b1_univ  rips3_pi1  rips3_b1_univ  rips5_pi1  rips5_b1_univ  rips10_pi1  rips10_b1_univ  ripsD_cos_pi1  ripsD_cos_b1_univ
+0       R5a_llama_weekdays    1.324183               0   1.300449              0   1.193798              0    1.224847               0       1.453589                  0
+1         R5b_llama_months    1.716755               0   1.569561              1   1.214428              0    1.127446               3       1.242050                  0
+2           R2_grokking_WE    2.446454               0   2.305510              0   1.626748              0    1.160763               0       1.306296                  0
+3      R5c_llama_days_time    2.011435               0   1.926962              0   1.729655              0    1.476543               0       1.727378                  1
+4             R1_gpt2_wpos    1.216603               2   1.208525              1   1.018046              3    1.011730               1       1.290413                  6
+5        R4_llama_counting    1.284997               0   1.250422              0   1.245908              0    1.481712               0       1.058345                  0
+6      R4b_pythia_counting    1.322952               0   1.221504              0   1.205728              0    1.332679               0       1.063836                  0
+7           R6_llama_years    1.634593               0   1.555515              0   1.445825              0    1.393387               0       1.682702                  0
+8    R8a_llama_temperature    1.333759               0   1.225863              0   1.426509              0    1.468144               0       1.960120                  0
+9            R8b_llama_age    1.580422               0   1.516664              0   1.763627              0    1.593106               0       2.182582                  0
+10         R7_llama_colors    5.024527               0   4.970824              1   3.609376              1    2.668344               0       4.217178                  0
+11  C3_llama_weekdays_init    1.114439               0   1.000000              0   1.118337              0    1.081945               0       1.020492                  0
+12    C3_llama_months_init    1.429732               0   1.406669              0   1.127250              0    1.109023               0       1.033522                  0
+13     C3_grokking_WE_init    1.840767               0   1.810892              0   1.357217              0    1.237033               0       1.140061                  0
+2026-11-15 12:45:49 INFO neurotopo.experiments.exp5_robustness: top-10 loop test with MC null:
+                        id   k  rips_pi1  null_q95  p_loop    m
+0       R5a_llama_weekdays  10  1.224847  1.385030   0.945  199
+1         R5b_llama_months  10  1.127446  1.234235   0.550  199
+2           R2_grokking_WE  10  1.160763  1.321016   1.000  199
+3      R5c_llama_days_time  10  1.476543  1.413441   0.010  199
+4             R1_gpt2_wpos  10  1.011730  1.505482   1.000  199
+5        R4_llama_counting  10  1.481712  1.378517   0.010  199
+6      R4b_pythia_counting  10  1.332679  1.383349   0.175  199
+7           R6_llama_years  10  1.393387  1.345073   0.005  199
+8    R8a_llama_temperature  10  1.468144  1.461263   0.045  199
+9            R8b_llama_age  10  1.593106  1.433442   0.010  199
+10         R7_llama_colors  10  2.668344  1.607029   0.005  199
+11  C3_llama_weekdays_init  10  1.081945  1.190037   0.200  199
+12    C3_llama_months_init  10  1.109023  1.204572   0.730  199
+13     C3_grokking_WE_init  10  1.237033  1.322912   0.655  199
+exit 0

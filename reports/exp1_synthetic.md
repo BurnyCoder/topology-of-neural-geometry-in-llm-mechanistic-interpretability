@@ -35,7 +35,13 @@ How well do persistent-homology estimators recover the exact topology of noisy p
   - vs Bb: -0.194 [-0.203, -0.185]
   - vs Bc: 0.063 [0.055, 0.071]
 - **H5:** the preregistered estimator is significantly *worse* than the fixed-threshold and family-implied baselines, and better than the majority vector.
-- **Well-resolved topology (ρ_A ≥ 4):** P 0.87, S 0.90, Ba 0.94, Bb 0.86.
+- **Well-resolved topology (ρ_A ≥ 4; post hoc, D6).** 18454 clouds; a fraction 0.49 of them are always-contractible blobs, discs or paraboloids. Macro, with cluster-bootstrap CIs:
+  - P: 0.751 [0.739, 0.763]
+  - Ba: 0.923 [0.915, 0.931]
+  - Bb: 0.820 [0.812, 0.829]
+  - Bc: 0.600
+  - Paired P − Bb: -0.070 [-0.084, -0.056]. P − Ba: -0.172 [-0.184, -0.160].
+  - Micro-averaged accuracies in the top ρ_A bin, used in an earlier version of the text: P 0.87, Ba 0.94, Bb 0.86.
 - **False positives** (any hole on resolvable contractible shapes): 0.019–0.054 per N-bin for P.
 
 <!-- BEGIN:exp1 -->
@@ -104,7 +110,10 @@ Resolvable fraction of test clouds: 0.772.
 
 ## Interpretation
 
-- **Where persistent homology adds information beyond the family label:** whenever the label does not fix the topology. Open vs closed arcs: 0.79 vs 0.58. Caps vs full spheres: 0.76 vs 0.61.
+- **Where persistent homology adds information beyond the family label:** whenever the label does not fix the topology. The fixed-threshold estimator Ba is quoted here:
+  - open vs closed arcs: 0.79 vs 0.58;
+  - caps vs full spheres: 0.76 vs 0.61.
+- **The preregistered estimator P is not better than the family label,** even on well-resolved clouds.
 - **Where it loses:** wherever the label fixes the topology but the hole is thin or two-dimensional. Ellipses: 0.51 vs 0.99. Tori: 0.11 vs 1.00. Frusta: 0.53 vs 0.94.
 - **The alpha-complex universal null is calibrated but conservative.** Its family-wise error on blobs is about 0. This is why it loses to a tuned threshold (deviation D1).
 

@@ -1,0 +1,41 @@
+2026-11-15 12:34:16 INFO root: phase exp3, log file C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\logs\exp3_20261115T123416.log
+2026-11-15 12:34:17 INFO neurotopo.experiments.exp3_cyclic: R5a_llama_weekdays           loop p=0.0940 | theta_B: none
+2026-11-15 12:34:17 INFO neurotopo.experiments.exp3_cyclic: R5b_llama_months             loop p=0.0020 | theta_B: none
+2026-11-15 12:35:47 INFO neurotopo.experiments.exp3_cyclic: R2_grokking_WE               loop p=0.0010 | theta_B: R=0.973 p=1e-05 w=-1
+2026-11-15 12:35:48 INFO neurotopo.experiments.exp3_cyclic: R5c_llama_days_time          loop p=0.0130 | theta_B: none
+2026-11-15 12:35:49 INFO neurotopo.experiments.exp3_cyclic: R1_gpt2_wpos                 loop p=1.0000 | theta_B: none
+2026-11-15 12:35:49 INFO neurotopo.experiments.exp3_cyclic: R4_llama_counting            loop p=1.0000 | theta_B: none
+2026-11-15 12:35:49 INFO neurotopo.experiments.exp3_cyclic: R4b_pythia_counting          loop p=1.0000 | theta_B: none
+2026-11-15 12:35:50 INFO neurotopo.experiments.exp3_cyclic: R6_llama_years               loop p=0.7750 | theta_B: none
+2026-11-15 12:35:50 INFO neurotopo.experiments.exp3_cyclic: R8a_llama_temperature        loop p=1.0000 | theta_B: none
+2026-11-15 12:35:50 INFO neurotopo.experiments.exp3_cyclic: R8b_llama_age                loop p=0.4490 | theta_B: none
+2026-11-15 12:35:50 INFO neurotopo.experiments.exp3_cyclic: C3_llama_weekdays_init       loop p=0.7650 | theta_B: none
+2026-11-15 12:35:51 INFO neurotopo.experiments.exp3_cyclic: C3_llama_months_init         loop p=0.0740 | theta_B: none
+2026-11-15 12:35:51 INFO neurotopo.experiments.exp3_cyclic: C3_grokking_WE_init          loop p=0.0460 | theta_B: none
+2026-11-15 12:35:51 INFO neurotopo.experiments.exp3_cyclic: C1_gp_0                      loop p=1.0000 | theta_B: none
+2026-11-15 12:35:51 INFO neurotopo.experiments.exp3_cyclic: C1_gp_1                      loop p=1.0000 | theta_B: none
+2026-11-15 12:35:51 INFO neurotopo.experiments.exp3_cyclic: C1_gp_2                      loop p=1.0000 | theta_B: none
+2026-11-15 12:35:51 INFO neurotopo.experiments.exp3_cyclic: C1_gp_3                      loop p=1.0000 | theta_B: none
+2026-11-15 12:35:51 INFO neurotopo.experiments.exp3_cyclic: C1_gp_4                      loop p=1.0000 | theta_B: none
+2026-11-15 12:35:51 INFO neurotopo.experiments.exp3_cyclic: C1_gp_5                      loop p=1.0000 | theta_B: none
+2026-11-15 12:35:52 INFO neurotopo.experiments.exp3_cyclic: C1_gp_6                      loop p=1.0000 | theta_B: none
+2026-11-15 12:35:52 INFO neurotopo.experiments.exp3_cyclic: C1_gp_7                      loop p=1.0000 | theta_B: none
+2026-11-15 12:35:52 INFO neurotopo.experiments.exp3_cyclic: C1_gp_8                      loop p=1.0000 | theta_B: none
+2026-11-15 12:35:52 INFO neurotopo.experiments.exp3_cyclic: C1_gp_9                      loop p=1.0000 | theta_B: none
+2026-11-15 12:35:52 INFO neurotopo.experiments.exp3_cyclic: C1_walk_0                    loop p=1.0000 | theta_B: none
+2026-11-15 12:35:52 INFO neurotopo.experiments.exp3_cyclic: C1_walk_1                    loop p=1.0000 | theta_B: none
+2026-11-15 12:35:52 INFO neurotopo.experiments.exp3_cyclic: C1_walk_2                    loop p=1.0000 | theta_B: none
+2026-11-15 12:35:52 INFO neurotopo.experiments.exp3_cyclic: C1_walk_3                    loop p=1.0000 | theta_B: none
+2026-11-15 12:35:53 INFO neurotopo.experiments.exp3_cyclic: C1_walk_4                    loop p=1.0000 | theta_B: none
+2026-11-15 12:35:53 INFO neurotopo.experiments.exp3_cyclic: C1_walk_5                    loop p=1.0000 | theta_B: none
+2026-11-15 12:35:53 INFO neurotopo.experiments.exp3_cyclic: C1_walk_6                    loop p=1.0000 | theta_B: none
+2026-11-15 12:35:53 INFO neurotopo.experiments.exp3_cyclic: C1_walk_7                    loop p=1.0000 | theta_B: none
+2026-11-15 12:35:53 INFO neurotopo.experiments.exp3_cyclic: C1_walk_8                    loop p=1.0000 | theta_B: none
+2026-11-15 12:35:53 INFO neurotopo.experiments.exp3_cyclic: C1_walk_9                    loop p=1.0000 | theta_B: none
+2026-11-15 12:36:00 INFO neurotopo.experiments.exp3_cyclic: R7_llama_colors              loop p=0.0010 | theta_B: R=0.949 p=1e-05 w=-1
+2026-11-15 12:36:00 INFO neurotopo.experiments.exp3_cyclic: R5a_llama_weekdays_means     loop p=0.7310 | theta_B: none
+2026-11-15 12:36:00 INFO neurotopo.experiments.exp3_cyclic: R5b_llama_months_means       loop p=0.0010 | theta_B: none
+2026-11-15 12:36:00 INFO neurotopo.experiments.exp3_cyclic: C3_grokking_WE_memorised     loop p=0.8310 | theta_B: none
+2026-11-15 12:36:01 INFO neurotopo.experiments.exp3_cyclic: C3_gpt2_wpos_init            loop p=0.2990 | theta_B: none
+2026-11-15 12:36:01 INFO neurotopo.experiments.exp3_cyclic: C3_llama_counting_init       loop p=0.8810 | theta_B: none
+2026-11-15 12:36:01 INFO neurotopo.experiments.exp3_cyclic: H1 passes of 3: {'A': 0, 'B': 0}; H2 summary: {'A': {'ordinal_pass': 0, 'init_pass': 0, 'c1_pass': 0, 'falsified': False, 'c1_fpr_ci': (0.0, 0.1684334709830855)}, 'B': {'ordinal_pass': 0, 'init_pass': 0, 'c1_pass': 0, 'falsified': False, 'c1_fpr_ci': (0.0, 0.1684334709830855)}}

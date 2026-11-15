@@ -88,7 +88,13 @@ def run() -> None:
     df = df.merge(a[["id", "family", "b0", "b1", "b2", "rho_A"]].rename(columns={"b0": "A_b0", "b1": "A_b1", "b2": "A_b2"}),
                   on="id")
     df["agree_b1b2"] = (df["A_b1"] == df["b1_mc"]) & (df["A_b2"] == df["b2_mc"])
+    # Descriptive multiplicity control across the 44 loop / void tests (audit, D6): Benjamini-Hochberg q-values.
+    from neurotopo.stats.tests import bh
+    df["q_top_loop"] = bh(df["p_top_loop"].to_numpy())
+    df["q_top_void"] = bh(df["p_top_void"].to_numpy())
     df.to_csv(out / "invariants.csv", index=False)
     write_json(out / "summary.json", {"n": int(len(df)), "agree_b1b2_A_vs_B": float(df["agree_b1b2"].mean()),
                                       "n_with_loop_mc": int((df["b1_mc"] > 0).sum()),
-                                      "n_with_void_mc": int((df["b2_mc"] > 0).sum())})
+                                      "n_with_void_mc": int((df["b2_mc"] > 0).sum()),
+                                      "n_loop_q05": int((df["q_top_loop"] < 0.05).sum()),
+                                      "loops_q05": df.loc[df["q_top_loop"] < 0.05, "id"].tolist()})

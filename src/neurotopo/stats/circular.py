@@ -117,15 +117,16 @@ def winding(theta_c: np.ndarray) -> int:
 
 
 def cyclic_order_matches(theta_c: np.ndarray) -> bool:
-    """True if the circular order of the concept means equals the semantic cycle 0..n-1 up to rotation and
-    reflection (every step goes the same way around and the cycle winds exactly once)."""
+    """True if the concept means are in the semantic cyclic order 0, 1, ..., n-1 (up to rotation and reflection)
+    AND the closed semantic cycle winds exactly once: every wrapped step c -> c+1 goes the same way around and
+    the steps sum to +-2 pi. A monotone arc that covers only part of the circle is NOT a match (it orders the
+    concepts but does not go around a hole); this was a bug found by the independent audit (deviations D6)."""
     th = np.asarray(theta_c, dtype=np.float64)
-    if not np.all(np.isfinite(th)):
+    if th.size < 3 or not np.all(np.isfinite(th)):
         return False
-    order = np.argsort(wrap(th))                     # concepts sorted by angle around the circle
-    n = order.size
-    d = (np.roll(order, -1) - order) % n             # successive concept differences around the circle
-    return bool(np.all(d == 1) or np.all(d == n - 1))
+    steps = wrap(np.roll(th, -1) - th)                   # wrapped steps of the closed cycle c -> c + 1
+    same_way = bool(np.all(steps > 0) or np.all(steps < 0))
+    return same_way and abs(winding(th)) == 1
 
 
 def cyclic_order_p(n: int) -> float:

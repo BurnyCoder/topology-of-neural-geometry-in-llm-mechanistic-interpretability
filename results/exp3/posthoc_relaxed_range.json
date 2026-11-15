@@ -14,7 +14,7 @@
      "s": 1,
      "p": 0.23055555555555557,
      "winding": 0,
-     "order_match": true,
+     "order_match": false,
      "order_p": 0.002777777777777778,
      "concept_theta": [
       -0.10500685597001952,
@@ -105,7 +105,7 @@
      "s": 1,
      "p": 0.00352,
      "winding": 0,
-     "order_match": true,
+     "order_match": false,
      "order_p": 5.010421677088344e-08,
      "concept_theta": [
       -1.269798616526349,
@@ -182,7 +182,7 @@
      "s": 1,
      "p": 0.03333333333333333,
      "winding": 0,
-     "order_match": true,
+     "order_match": false,
      "order_p": 0.002777777777777778,
      "concept_theta": [
       -0.1591307598709351,
@@ -270,7 +270,7 @@
      "s": -1,
      "p": 0.008333333333333333,
      "winding": 0,
-     "order_match": true,
+     "order_match": false,
      "order_p": 0.002777777777777778,
      "concept_theta": [
       -0.24605423284096462,
@@ -412,7 +412,7 @@
      "s": 1,
      "p": 0.002777777777777778,
      "winding": 0,
-     "order_match": true,
+     "order_match": false,
      "order_p": 0.002777777777777778,
      "concept_theta": [
       -0.7449521723757534,
@@ -678,7 +678,7 @@
      "s": 1,
      "p": 0.46944444444444444,
      "winding": 0,
-     "order_match": true,
+     "order_match": false,
      "order_p": 0.002777777777777778,
      "concept_theta": [
       0.17543869985497812,
@@ -1202,7 +1202,7 @@
      "s": -1,
      "p": 0.005555555555555556,
      "winding": 0,
-     "order_match": true,
+     "order_match": false,
      "order_p": 0.002777777777777778,
      "concept_theta": [
       -2.970141901266254,
@@ -1276,7 +1276,7 @@
      "s": 1,
      "p": 0.011111111111111112,
      "winding": 0,
-     "order_match": true,
+     "order_match": false,
      "order_p": 0.002777777777777778,
      "concept_theta": [
       -0.8875159117516832,
@@ -1339,7 +1339,7 @@
  },
  "C3_llama_weekdays_init": {
   "3d": {
-   "error": "index 0 is out of bounds for axis 0 with size 0",
+   "error": "no H1 class",
    "rips_bar": null,
    "records": []
   },
@@ -1484,12 +1484,12 @@
  },
  "C1_gp_0": {
   "3d": {
-   "error": "index 0 is out of bounds for axis 0 with size 0",
+   "error": "no H1 class",
    "rips_bar": null,
    "records": []
   },
   "top10": {
-   "error": "index 0 is out of bounds for axis 0 with size 0",
+   "error": "no H1 class",
    "rips_bar": null,
    "records": []
   }
@@ -1548,7 +1548,7 @@
    ]
   },
   "top10": {
-   "error": "index 0 is out of bounds for axis 0 with size 0",
+   "error": "no H1 class",
    "rips_bar": null,
    "records": []
   }
@@ -1607,7 +1607,7 @@
    ]
   },
   "top10": {
-   "error": "index 0 is out of bounds for axis 0 with size 0",
+   "error": "no H1 class",
    "rips_bar": null,
    "records": []
   }
@@ -1627,7 +1627,7 @@
      "s": 1,
      "p": 0.008333333333333333,
      "winding": 0,
-     "order_match": true,
+     "order_match": false,
      "order_p": 0.002777777777777778,
      "concept_theta": [
       -0.6363976538902603,
@@ -1646,7 +1646,7 @@
      "s": 1,
      "p": 5e-05,
      "winding": 0,
-     "order_match": true,
+     "order_match": false,
      "order_p": 5.010421677088344e-08,
      "concept_theta": [
       -0.6522082136032681,
@@ -1679,7 +1679,7 @@
      "s": 1,
      "p": 0.11388888888888889,
      "winding": 0,
-     "order_match": true,
+     "order_match": false,
      "order_p": 0.002777777777777778,
      "concept_theta": [
       -0.19152528207802638,
@@ -1720,12 +1720,12 @@
  },
  "C1_gp_4": {
   "3d": {
-   "error": "index 0 is out of bounds for axis 0 with size 0",
+   "error": "no H1 class",
    "rips_bar": null,
    "records": []
   },
   "top10": {
-   "error": "index 0 is out of bounds for axis 0 with size 0",
+   "error": "no H1 class",
    "rips_bar": null,
    "records": []
   }
@@ -1745,7 +1745,7 @@
      "s": 1,
      "p": 0.002777777777777778,
      "winding": 0,
-     "order_match": true,
+     "order_match": false,
      "order_p": 0.002777777777777778,
      "concept_theta": [
       -1.1673918759839257,
@@ -1797,7 +1797,7 @@
      "s": 1,
      "p": 0.05,
      "winding": 0,
-     "order_match": true,
+     "order_match": false,
      "order_p": 0.002777777777777778,
      "concept_theta": [
       -0.3174963951394592,
@@ -1890,7 +1890,7 @@
    ]
   },
   "top10": {
-   "error": "index 0 is out of bounds for axis 0 with size 0",
+   "error": "no H1 class",
    "rips_bar": null,
    "records": []
   }
@@ -1962,7 +1962,7 @@
      "s": 1,
      "p": 0.2388888888888889,
      "winding": 0,
-     "order_match": true,
+     "order_match": false,
      "order_p": 0.002777777777777778,
      "concept_theta": [
       -0.07224645869729915,
@@ -1981,7 +1981,7 @@
      "s": 1,
      "p": 0.08346,
      "winding": 0,
-     "order_match": true,
+     "order_match": false,
      "order_p": 5.010421677088344e-08,
      "concept_theta": [
       -0.09168283926400823,
@@ -2003,72 +2003,72 @@
  },
  "C1_gp_8": {
   "3d": {
-   "error": "index 0 is out of bounds for axis 0 with size 0",
+   "error": "no H1 class",
    "rips_bar": null,
    "records": []
   },
   "top10": {
-   "error": "index 0 is out of bounds for axis 0 with size 0",
+   "error": "no H1 class",
    "rips_bar": null,
    "records": []
   }
  },
  "C1_gp_9": {
   "3d": {
-   "error": "index 0 is out of bounds for axis 0 with size 0",
+   "error": "no H1 class",
    "rips_bar": null,
    "records": []
   },
   "top10": {
-   "error": "index 0 is out of bounds for axis 0 with size 0",
+   "error": "no H1 class",
    "rips_bar": null,
    "records": []
   }
  },
  "C1_walk_0": {
   "3d": {
-   "error": "index 0 is out of bounds for axis 0 with size 0",
+   "error": "no H1 class",
    "rips_bar": null,
    "records": []
   },
   "top10": {
-   "error": "index 0 is out of bounds for axis 0 with size 0",
+   "error": "no H1 class",
    "rips_bar": null,
    "records": []
   }
  },
  "C1_walk_1": {
   "3d": {
-   "error": "index 0 is out of bounds for axis 0 with size 0",
+   "error": "no H1 class",
    "rips_bar": null,
    "records": []
   },
   "top10": {
-   "error": "index 0 is out of bounds for axis 0 with size 0",
+   "error": "no H1 class",
    "rips_bar": null,
    "records": []
   }
  },
  "C1_walk_2": {
   "3d": {
-   "error": "index 0 is out of bounds for axis 0 with size 0",
+   "error": "no H1 class",
    "rips_bar": null,
    "records": []
   },
   "top10": {
-   "error": "index 0 is out of bounds for axis 0 with size 0",
+   "error": "no H1 class",
    "rips_bar": null,
    "records": []
   }
  },
  "C1_walk_3": {
   "3d": {
-   "error": "index 0 is out of bounds for axis 0 with size 0",
+   "error": "no H1 class",
    "rips_bar": null,
    "records": []
   },
   "top10": {
-   "error": "index 0 is out of bounds for axis 0 with size 0",
+   "error": "no H1 class",
    "rips_bar": null,
    "records": []
   }
@@ -2088,7 +2088,7 @@
      "s": 1,
      "p": 1.0,
      "winding": 0,
-     "order_match": true,
+     "order_match": false,
      "order_p": 0.002777777777777778,
      "concept_theta": [
       0.0,
@@ -2107,7 +2107,7 @@
      "s": 1,
      "p": 1.0,
      "winding": 0,
-     "order_match": true,
+     "order_match": false,
      "order_p": 5.010421677088344e-08,
      "concept_theta": [
       0.0,
@@ -2127,55 +2127,55 @@
    ]
   },
   "top10": {
-   "error": "index 0 is out of bounds for axis 0 with size 0",
+   "error": "no H1 class",
    "rips_bar": null,
    "records": []
   }
  },
  "C1_walk_5": {
   "3d": {
-   "error": "index 0 is out of bounds for axis 0 with size 0",
+   "error": "no H1 class",
    "rips_bar": null,
    "records": []
   },
   "top10": {
-   "error": "index 0 is out of bounds for axis 0 with size 0",
+   "error": "no H1 class",
    "rips_bar": null,
    "records": []
   }
  },
  "C1_walk_6": {
   "3d": {
-   "error": "index 0 is out of bounds for axis 0 with size 0",
+   "error": "no H1 class",
    "rips_bar": null,
    "records": []
   },
   "top10": {
-   "error": "index 0 is out of bounds for axis 0 with size 0",
+   "error": "no H1 class",
    "rips_bar": null,
    "records": []
   }
  },
  "C1_walk_7": {
   "3d": {
-   "error": "index 0 is out of bounds for axis 0 with size 0",
+   "error": "no H1 class",
    "rips_bar": null,
    "records": []
   },
   "top10": {
-   "error": "index 0 is out of bounds for axis 0 with size 0",
+   "error": "no H1 class",
    "rips_bar": null,
    "records": []
   }
  },
  "C1_walk_8": {
   "3d": {
-   "error": "index 0 is out of bounds for axis 0 with size 0",
+   "error": "no H1 class",
    "rips_bar": null,
    "records": []
   },
   "top10": {
-   "error": "index 0 is out of bounds for axis 0 with size 0",
+   "error": "no H1 class",
    "rips_bar": null,
    "records": []
   }
@@ -2195,7 +2195,7 @@
      "s": -1,
      "p": 1.0,
      "winding": 0,
-     "order_match": true,
+     "order_match": false,
      "order_p": 0.002777777777777778,
      "concept_theta": [
       -0.3820371209175787,
@@ -2214,7 +2214,7 @@
      "s": 1,
      "p": 0.18124,
      "winding": 0,
-     "order_match": true,
+     "order_match": false,
      "order_p": 5.010421677088344e-08,
      "concept_theta": [
       -0.6996471484895803,
@@ -2234,7 +2234,7 @@
    ]
   },
   "top10": {
-   "error": "index 0 is out of bounds for axis 0 with size 0",
+   "error": "no H1 class",
    "rips_bar": null,
    "records": []
   }
@@ -2370,7 +2370,7 @@
      "s": 1,
      "p": 0.06666666666666667,
      "winding": 1,
-     "order_match": true,
+     "order_match": false,
      "order_p": 0.002777777777777778,
      "concept_theta": [
       -1.0771174812307864,
@@ -2398,7 +2398,7 @@
      "s": 1,
      "p": 0.011111111111111112,
      "winding": 1,
-     "order_match": true,
+     "order_match": false,
      "order_p": 0.002777777777777778,
      "concept_theta": [
       -1.1540544441758434,

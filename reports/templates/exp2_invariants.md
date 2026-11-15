@@ -30,6 +30,7 @@ Date: 2026-11-15. Code: `src/neurotopo/experiments/exp2_invariants.py`, `realdat
 - **No ordinal concept has a loop** ({{exp2.ordinal_loops}}/6), and neither do the 20 random-process controls ({{exp2.c1_loops}}/20; max π {{exp2.c1_pi_max:2}}).
 - **GPT-2 W_pos:** fitted as a closed sphere (Method A void), but there is no significant void in the data (H2 π = {{exp2.wpos.top_pi2:2}}). The positions trace a spiral curve, not a surface.
 - **Agreement between Method A and Method B (b1, b2):** {{exp2.agree:3}}.
+- **Benjamini–Hochberg over the 44 loop tests (post hoc, D6):** {{exp2.n_loop_q05}} loops at q < 0.05: {{exp2.loops_q05}}.
 
 <!-- BEGIN:exp2 -->
 <!-- END:exp2 -->
@@ -38,7 +39,8 @@ Date: 2026-11-15. Code: `src/neurotopo/experiments/exp2_invariants.py`, `realdat
 
 ## Interpretation
 
-- Topology detects loops exactly where the concept is cyclic: hue, residues mod 113, months, and day-of-week in the days_time set. It detects none for ordinal concepts or random controls.
+- Topology detects loops in four cyclic sets (hue, residues mod 113, months, days_time). It detects none in weekdays, ordinal concepts or random-process controls, and a borderline one in the random-init grokking embedding.
+- **A loop is not traversal.** The day does not go around the days_time loop (Exp3). The residue loop is fragile under subsampling (stability {{exp2.grok.loop_freq:2}}).
 - **Weekdays are the exception.** The 7 tight prompt clusters do not form a loop more persistent than random arrangements of 7 clusters with the same spread. At 7 clusters the maximum possible ratio is 1/sin(π/7) ≈ 2.3, so the power is inherently limited.
 - **Caveats:** two random-init or toy controls cross the 5% line, consistent with the nominal error rate over this many tests. The days_time loop is unstable under subsampling.
 
