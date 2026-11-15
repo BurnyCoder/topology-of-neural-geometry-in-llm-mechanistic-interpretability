@@ -164,9 +164,9 @@ def train_grokking(p: int = 113, epochs: int = 25000, seed: int = 0, device: str
 
 
 def env_hf_home() -> None:
-    """Point the HF cache at HF_HOME from .env (e.g. D:/AI/hf_cache, where Llama-3.1-8B is cached)."""
-    from dotenv import load_dotenv
-    from neurotopo.config import ROOT
-    load_dotenv(ROOT / ".env")
-    if os.environ.get("HF_HOME"):
-        log.info("HF_HOME = %s", os.environ["HF_HOME"])
+    """Point the HF cache at NEUROTOPO_LLAMA_HF_HOME from .env (e.g. D:/AI/hf_cache, where Llama-3.1-8B is cached).
+    Only the steering phase does this, so the rest of the pipeline keeps the default HF cache and login token."""
+    path = os.environ.get("NEUROTOPO_LLAMA_HF_HOME")
+    if path:
+        os.environ["HF_HOME"] = path
+        log.info("HF_HOME = %s", path)
