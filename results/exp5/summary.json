@@ -1,0 +1,67 @@
+{
+ "offset_removed": [
+  {
+   "id": "R5a_llama_weekdays",
+   "p_loop": 0.391,
+   "R": null,
+   "p_align": 1.0,
+   "winding": 0
+  },
+  {
+   "id": "R5b_llama_months",
+   "p_loop": 0.003,
+   "R": null,
+   "p_align": 1.0,
+   "winding": 0
+  }
+ ],
+ "seeds": [
+  {
+   "id": "R5a_llama_weekdays",
+   "seed": 1,
+   "p_loop": 0.116,
+   "p_align": 1.0,
+   "winding": 0
+  },
+  {
+   "id": "R5a_llama_weekdays",
+   "seed": 2,
+   "p_loop": 0.122,
+   "p_align": 1.0,
+   "winding": 0
+  },
+  {
+   "id": "R5b_llama_months",
+   "seed": 1,
+   "p_loop": 0.001,
+   "p_align": 1.0,
+   "winding": 0
+  },
+  {
+   "id": "R5b_llama_months",
+   "seed": 2,
+   "p_loop": 0.001,
+   "p_align": 1.0,
+   "winding": 0
+  },
+  {
+   "id": "R2_grokking_WE",
+   "seed": 1,
+   "p_loop": 0.001,
+   "p_align": 1e-05,
+   "winding": -1
+  },
+  {
+   "id": "R2_grokking_WE",
+   "seed": 2,
+   "p_loop": 0.001,
+   "p_align": 1e-05,
+   "winding": -1
+  }
+ ],
+ "nu_variant_resolvable_counts": {
+  "rho_main": 27,
+  "rho_median_only": 41,
+  "rho_coverage_x2": 24
+ }
+}

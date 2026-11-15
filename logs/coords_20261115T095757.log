@@ -1,0 +1,80 @@
+2026-11-15 09:57:57 INFO root: phase coords, log file C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\logs\coords_20261115T095757.log
+2026-11-15 09:58:06 INFO neurotopo.experiments.coords_check: C1_gp_0                    helix    curve parameter t        value                  {'rho': 0.1201, 'p': 0.0902}
+2026-11-15 09:58:06 INFO neurotopo.experiments.coords_check: C1_gp_0                    helix    azimuth                  value in 7 bins        {'R': 0.8554, 'p': 0.0028, 'winding': 1}
+2026-11-15 09:58:06 INFO neurotopo.experiments.coords_check: C1_gp_0                    helix    azimuth                  value in 12 bins       {'R': 0.852, 'p': 0.0, 'winding': 1}
+2026-11-15 09:58:06 INFO neurotopo.experiments.coords_check: C1_gp_0                    helix    axial position           value                  {'rho': -0.1201, 'p': 0.0902}
+2026-11-15 09:58:06 INFO neurotopo.experiments.coords_check: C1_gp_1                    ringing  curve parameter s        value                  {'rho': 0.9998, 'p': 0.0}
+2026-11-15 09:58:06 INFO neurotopo.experiments.coords_check: C1_gp_2                    helix    curve parameter t        value                  {'rho': -1.0, 'p': 0.0}
+2026-11-15 09:58:06 INFO neurotopo.experiments.coords_check: C1_gp_2                    helix    azimuth                  value in 7 bins        {'R': 0.9783, 'p': 0.0028, 'winding': -1}
+2026-11-15 09:58:06 INFO neurotopo.experiments.coords_check: C1_gp_2                    helix    azimuth                  value in 12 bins       {'R': 0.9775, 'p': 0.0, 'winding': -1}
+2026-11-15 09:58:06 INFO neurotopo.experiments.coords_check: C1_gp_2                    helix    axial position           value                  {'rho': 1.0, 'p': 0.0}
+2026-11-15 09:58:06 INFO neurotopo.experiments.coords_check: C1_gp_3                    helix    curve parameter t        value                  {'rho': 0.9177, 'p': 0.0}
+2026-11-15 09:58:06 INFO neurotopo.experiments.coords_check: C1_gp_3                    helix    azimuth                  value in 7 bins        {'R': 0.9668, 'p': 0.0028, 'winding': 1}
+2026-11-15 09:58:06 INFO neurotopo.experiments.coords_check: C1_gp_3                    helix    azimuth                  value in 12 bins       {'R': 0.9655, 'p': 0.0, 'winding': 1}
+2026-11-15 09:58:06 INFO neurotopo.experiments.coords_check: C1_gp_3                    helix    axial position           value                  {'rho': -0.9177, 'p': 0.0}
+2026-11-15 09:58:06 INFO neurotopo.experiments.coords_check: C1_gp_4                    ringing  curve parameter s        value                  {'rho': 1.0, 'p': 0.0}
+2026-11-15 09:58:07 INFO neurotopo.experiments.coords_check: C1_gp_5                    helix    curve parameter t        value                  {'rho': 0.9264, 'p': 0.0}
+2026-11-15 09:58:07 INFO neurotopo.experiments.coords_check: C1_gp_5                    helix    azimuth                  value in 7 bins        {'R': 0.9015, 'p': 0.0056, 'winding': 1}
+2026-11-15 09:58:07 INFO neurotopo.experiments.coords_check: C1_gp_5                    helix    azimuth                  value in 12 bins       {'R': 0.8993, 'p': 0.0, 'winding': 1}
+2026-11-15 09:58:07 INFO neurotopo.experiments.coords_check: C1_gp_5                    helix    axial position           value                  {'rho': -0.9264, 'p': 0.0}
+2026-11-15 09:58:07 INFO neurotopo.experiments.coords_check: C1_gp_6                    helix    curve parameter t        value                  {'rho': -0.9427, 'p': 0.0}
+2026-11-15 09:58:07 INFO neurotopo.experiments.coords_check: C1_gp_6                    helix    azimuth                  value in 7 bins        {'R': 0.9426, 'p': 0.0028, 'winding': 1}
+2026-11-15 09:58:07 INFO neurotopo.experiments.coords_check: C1_gp_6                    helix    azimuth                  value in 12 bins       {'R': 0.942, 'p': 0.0, 'winding': 1}
+2026-11-15 09:58:07 INFO neurotopo.experiments.coords_check: C1_gp_6                    helix    axial position           value                  {'rho': 0.9427, 'p': 0.0}
+2026-11-15 09:58:07 INFO neurotopo.experiments.coords_check: C1_gp_7                    helix    curve parameter t        value                  {'rho': 0.517, 'p': 0.0}
+2026-11-15 09:58:07 INFO neurotopo.experiments.coords_check: C1_gp_7                    helix    azimuth                  value in 7 bins        {'R': 0.9726, 'p': 0.0028, 'winding': -1}
+2026-11-15 09:58:07 INFO neurotopo.experiments.coords_check: C1_gp_7                    helix    azimuth                  value in 12 bins       {'R': 0.9705, 'p': 0.0, 'winding': -1}
+2026-11-15 09:58:07 INFO neurotopo.experiments.coords_check: C1_gp_7                    helix    axial position           value                  {'rho': -0.517, 'p': 0.0}
+2026-11-15 09:58:07 INFO neurotopo.experiments.coords_check: C1_gp_8                    helix    curve parameter t        value                  {'rho': 0.2893, 'p': 0.0}
+2026-11-15 09:58:07 INFO neurotopo.experiments.coords_check: C1_gp_8                    helix    azimuth                  value in 7 bins        {'R': 0.896, 'p': 0.0028, 'winding': 1}
+2026-11-15 09:58:07 INFO neurotopo.experiments.coords_check: C1_gp_8                    helix    azimuth                  value in 12 bins       {'R': 0.8932, 'p': 0.0, 'winding': 1}
+2026-11-15 09:58:07 INFO neurotopo.experiments.coords_check: C1_gp_8                    helix    axial position           value                  {'rho': -0.2893, 'p': 0.0}
+2026-11-15 09:58:07 INFO neurotopo.experiments.coords_check: C1_gp_9                    helix    curve parameter t        value                  {'rho': -0.4513, 'p': 0.0}
+2026-11-15 09:58:07 INFO neurotopo.experiments.coords_check: C1_gp_9                    helix    azimuth                  value in 7 bins        {'R': 0.9372, 'p': 0.0028, 'winding': 1}
+2026-11-15 09:58:07 INFO neurotopo.experiments.coords_check: C1_gp_9                    helix    azimuth                  value in 12 bins       {'R': 0.9346, 'p': 0.0, 'winding': 1}
+2026-11-15 09:58:07 INFO neurotopo.experiments.coords_check: C1_gp_9                    helix    axial position           value                  {'rho': 0.4513, 'p': 0.0}
+2026-11-15 09:58:07 INFO neurotopo.experiments.coords_check: C1_walk_0                  ringing  curve parameter s        value                  {'rho': 1.0, 'p': 0.0}
+2026-11-15 09:58:07 INFO neurotopo.experiments.coords_check: C1_walk_1                  ringing  curve parameter s        value                  {'rho': 1.0, 'p': 0.0}
+2026-11-15 09:58:07 INFO neurotopo.experiments.coords_check: C1_walk_2                  ringing  curve parameter s        value                  {'rho': -1.0, 'p': 0.0}
+2026-11-15 09:58:07 INFO neurotopo.experiments.coords_check: C1_walk_3                  ringing  curve parameter s        value                  {'rho': -1.0, 'p': 0.0}
+2026-11-15 09:58:07 INFO neurotopo.experiments.coords_check: C1_walk_4                  ringing  curve parameter s        value                  {'rho': 1.0, 'p': 0.0}
+2026-11-15 09:58:07 INFO neurotopo.experiments.coords_check: C1_walk_5                  ringing  curve parameter s        value                  {'rho': -0.9999, 'p': 0.0}
+2026-11-15 09:58:07 INFO neurotopo.experiments.coords_check: C1_walk_6                  ringing  curve parameter s        value                  {'rho': -1.0, 'p': 0.0}
+2026-11-15 09:58:07 INFO neurotopo.experiments.coords_check: C1_walk_7                  ringing  curve parameter s        value                  {'rho': -0.9999, 'p': 0.0}
+2026-11-15 09:58:07 INFO neurotopo.experiments.coords_check: C1_walk_8                  ringing  curve parameter s        value                  {'rho': -0.9998, 'p': 0.0}
+2026-11-15 09:58:07 INFO neurotopo.experiments.coords_check: C1_walk_9                  ringing  curve parameter s        value                  {'rho': 0.9999, 'p': 0.0}
+2026-11-15 09:58:07 INFO neurotopo.experiments.coords_check: C3_llama_counting_init     clusters nearest centroid/vertex  value in 7 bins        {'NMI': 0.0258, 'ARI': -0.0001}
+2026-11-15 09:58:07 INFO neurotopo.experiments.coords_check: C3_llama_counting_init     clusters nearest centroid/vertex  value in 12 bins       {'NMI': 0.0262, 'ARI': -0.0}
+2026-11-15 09:58:08 INFO neurotopo.experiments.coords_check: C3_llama_months_init       clusters nearest centroid/vertex  month                  {'NMI': 0.6473, 'ARI': 0.2608}
+2026-11-15 09:58:08 INFO neurotopo.experiments.coords_check: C3_llama_weekdays_init     polytope nearest centroid/vertex  day of week            {'NMI': 0.7925, 'ARI': 0.5152}
+2026-11-15 09:58:08 INFO neurotopo.experiments.coords_check: R1_gpt2_wpos               sphere   azimuth                  value in 7 bins        {'R': 0.2743, 'p': 0.875, 'winding': 2}
+2026-11-15 09:58:08 INFO neurotopo.experiments.coords_check: R1_gpt2_wpos               sphere   azimuth                  value in 12 bins       {'R': 0.2911, 'p': 0.6639, 'winding': 2}
+2026-11-15 09:58:08 INFO neurotopo.experiments.coords_check: R1_gpt2_wpos               sphere   polar height z           value                  {'rho': 0.9784, 'p': 0.0}
+2026-11-15 10:02:16 INFO neurotopo.experiments.coords_check: R2_grokking_WE             helix    curve parameter t        position on the k=20 circle {'rho': -0.0491, 'p': 0.6057}
+2026-11-15 10:02:16 INFO neurotopo.experiments.coords_check: R2_grokking_WE             helix    azimuth                  residue (max over k)   {'R': 0.9761, 'p': 0.0, 'winding': -1}
+2026-11-15 10:02:16 INFO neurotopo.experiments.coords_check: R2_grokking_WE             helix    axial position           position on the k=20 circle {'rho': 0.0491, 'p': 0.6057}
+2026-11-15 10:02:16 INFO neurotopo.experiments.coords_check: R4_llama_counting          ringing  curve parameter s        value                  {'rho': 0.9985, 'p': 0.0}
+2026-11-15 10:02:16 INFO neurotopo.experiments.coords_check: R4b_pythia_counting        ringing  curve parameter s        value                  {'rho': 0.9998, 'p': 0.0}
+2026-11-15 10:02:20 INFO neurotopo.experiments.coords_check: R5a_llama_weekdays         helix    curve parameter t        day of week            {'rho': 0.0, 'p': 1.0}
+2026-11-15 10:02:20 INFO neurotopo.experiments.coords_check: R5a_llama_weekdays         helix    azimuth                  day of week            {'R': 0.8343, 'p': 0.0028, 'winding': 1}
+2026-11-15 10:02:20 INFO neurotopo.experiments.coords_check: R5a_llama_weekdays         helix    axial position           day of week            {'rho': 0.0, 'p': 1.0}
+2026-11-15 10:02:22 INFO neurotopo.experiments.coords_check: R5a_llama_weekdays_means   sphere   azimuth                  day of week            {'R': 0.8631, 'p': 0.0028, 'winding': 1}
+2026-11-15 10:02:22 INFO neurotopo.experiments.coords_check: R5a_llama_weekdays_means   sphere   polar height z           day of week            {'rho': -0.4286, 'p': 0.3536}
+2026-11-15 10:02:22 INFO neurotopo.experiments.coords_check: R5b_llama_months           helix    curve parameter t        month                  {'rho': -0.2098, 'p': 0.5128}
+2026-11-15 10:02:22 INFO neurotopo.experiments.coords_check: R5b_llama_months           helix    azimuth                  month                  {'R': 0.9308, 'p': 0.0, 'winding': 1}
+2026-11-15 10:02:22 INFO neurotopo.experiments.coords_check: R5b_llama_months           helix    axial position           month                  {'rho': 0.2098, 'p': 0.5128}
+2026-11-15 10:02:23 INFO neurotopo.experiments.coords_check: R5b_llama_months_means     helix    curve parameter t        month                  {'rho': -0.2098, 'p': 0.5128}
+2026-11-15 10:02:23 INFO neurotopo.experiments.coords_check: R5b_llama_months_means     helix    azimuth                  month                  {'R': 0.9271, 'p': 0.0, 'winding': 1}
+2026-11-15 10:02:23 INFO neurotopo.experiments.coords_check: R5b_llama_months_means     helix    axial position           month                  {'rho': 0.2098, 'p': 0.5128}
+2026-11-15 10:02:25 INFO neurotopo.experiments.coords_check: R5c_llama_days_time        ringing  curve parameter s        day of week            {'rho': -1.0, 'p': 0.0004}
+2026-11-15 10:02:25 INFO neurotopo.experiments.coords_check: R5c_llama_days_time        ringing  curve parameter s        time of day            {'rho': -0.8587, 'p': 0.0}
+2026-11-15 10:02:27 INFO neurotopo.experiments.coords_check: R6_llama_years             cone     azimuth                  value in 7 bins        {'R': 0.5364, 'p': 0.2, 'winding': 0}
+2026-11-15 10:02:27 INFO neurotopo.experiments.coords_check: R6_llama_years             cone     azimuth                  value in 12 bins       {'R': 0.4943, 'p': 0.0341, 'winding': 0}
+2026-11-15 10:02:27 INFO neurotopo.experiments.coords_check: R6_llama_years             cone     azimuth                  value mod 10           {'R': 0.5605, 'p': 0.0016, 'winding': 0}
+2026-11-15 10:02:27 INFO neurotopo.experiments.coords_check: R6_llama_years             cone     azimuth                  value mod 100          {'R': 0.3512, 'p': 0.0, 'winding': 0}
+2026-11-15 10:02:27 INFO neurotopo.experiments.coords_check: R6_llama_years             cone     height s                 value                  {'rho': -0.3628, 'p': 0.0}
+2026-11-15 10:02:28 INFO neurotopo.experiments.coords_check: R7_llama_colors            cone     azimuth                  hue                    {'R': 0.9836, 'p': 0.0, 'winding': 1}
+2026-11-15 10:02:28 INFO neurotopo.experiments.coords_check: R7_llama_colors            cone     height s                 hue                    {'rho': 0.5215, 'p': 0.0011}
+2026-11-15 10:02:28 INFO neurotopo.experiments.coords_check: R8a_llama_temperature      ringing  curve parameter s        value                  {'rho': -0.9968, 'p': 0.0}
+2026-11-15 10:02:28 INFO neurotopo.experiments.coords_check: R8b_llama_age              clusters nearest centroid/vertex  value in 7 bins        {'NMI': 0.6158, 'ARI': 0.4297}
+2026-11-15 10:02:28 INFO neurotopo.experiments.coords_check: R8b_llama_age              clusters nearest centroid/vertex  value in 12 bins       {'NMI': 0.6112, 'ARI': 0.3281}

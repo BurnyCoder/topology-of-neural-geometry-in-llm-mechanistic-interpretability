@@ -94,7 +94,13 @@ def run() -> None:
     emb = MDS(n_components=2, dissimilarity="precomputed", random_state=0, n_init=8).fit_transform(dm)
     link = linkage(squareform(dm, checks=False), method="average")
     nt = len(names) - 44
-    nearest = {names[i]: names[44 + int(np.argmin(dm[i, 44:]))].replace("template: ", "") for i in range(44)}
+    # Nearest template(s): every template within 1e-9 of the minimum (clouds without significant features are
+    # equidistant from all topologically trivial templates, so ties are reported, not broken by list order).
+    def nearest_of(i):
+        row = dm[i, 44:]
+        tied = np.flatnonzero(row <= row.min() + 1e-9)
+        return " / ".join(names[44 + j].replace("template: ", "") for j in tied)
+    nearest = {names[i]: nearest_of(i) for i in range(44)}
     # Cohesion of the cyclic group among the 10 cyclic + ordinal datasets (exact over all 4-subsets).
     g = cfg["groups"]
     pool = g["cyclic_primary"] + g["cyclic_secondary"] + g["ordinal"]

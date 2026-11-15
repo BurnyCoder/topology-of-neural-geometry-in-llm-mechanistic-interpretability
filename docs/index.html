@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>Topology of neural geometry - explorer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+<style>
+body{font-family:system-ui,sans-serif;margin:0;display:flex;height:100vh;color:#222}
+#side{width:250px;overflow:auto;border-right:1px solid #ddd;padding:8px;font-size:13px}
+#side h3{margin:10px 0 4px;font-size:13px;color:#555}
+#side a{display:block;padding:2px 4px;cursor:pointer;color:#30638e;text-decoration:none}
+#side a.sel{background:#e0ecf4}
+#main{flex:1;display:flex;flex-direction:column}
+#plots{display:flex;flex:1}
+#cloud{flex:3}#pd{flex:2}
+#info{height:34%;overflow:auto;border-top:1px solid #ddd;padding:8px 12px;font-size:13px}
+table{border-collapse:collapse}td,th{border:1px solid #ddd;padding:2px 6px}
+.ctl{padding:6px 12px;font-size:13px}
+</style></head><body>
+<div id="side"><b>Topology of neural geometry</b><br><small>Exact topology of fitted shapes (Method A), persistent
+homology (Method B) and travel around the hole. <a href="https://github.com/BurnyCoder/topology-of-neural-geometry-in-llm-mechanistic-interpretability">GitHub</a></small>
+<div id="list"></div></div>
+<div id="main"><div class="ctl">colour by: <select id="colour"><option value="concept">concept</option>
+<option value="theta">theta_B (cohomology coordinate)</option></select>
+<label><input type="checkbox" id="showshape" checked> fitted shape</label>
+<label><input type="checkbox" id="showloop" checked> loop B</label></div>
+<div id="plots"><div id="cloud"></div><div id="pd"></div></div><div id="info"></div></div>
+<script>
+let manifest, cur;
+const fmt = v => (v === null || v === undefined) ? "-" : (typeof v === "number" ? (Number.isInteger(v) ? String(v) : (Math.abs(v) < 1e-3 && v !== 0 ? v.toExponential(1) : v.toFixed(3))) : v);
+fetch("data/manifest.json").then(r => r.json()).then(m => { manifest = m; const L = document.getElementById("list");
+  for (const [g, ids] of Object.entries(m)) { const h = document.createElement("h3"); h.textContent = g; L.appendChild(h);
+    for (const it of ids) { const a = document.createElement("a"); a.textContent = it.label; a.onclick = () => load(it.id, a); L.appendChild(a); } }
+  load(Object.values(m)[0][0].id, L.querySelector("a")); });
+function load(id, el) { document.querySelectorAll("#side a").forEach(a => a.classList.remove("sel")); if (el) el.classList.add("sel");
+  fetch("data/" + id + ".json").then(r => r.json()).then(d => { cur = d; draw(); }); }
+["colour", "showshape", "showloop"].forEach(i => document.getElementById(i).onchange = () => draw());
+function draw() { const d = cur, P = d.points, byTheta = document.getElementById("colour").value === "theta" && d.theta;
+  const col = byTheta ? d.theta : d.colour, tr = [{type: "scatter3d", mode: "markers", x: P.map(p => p[0]), y: P.map(p => p[1]), z: P.map(p => p[2]),
+    text: d.labels, marker: {size: 3, color: col, colorscale: d.cyclic || byTheta ? "Twilight" : "Viridis"}, name: "points"}];
+  if (document.getElementById("showshape").checked && d.shape) tr.push({type: "scatter3d", mode: "markers", x: d.shape.map(p => p[0]), y: d.shape.map(p => p[1]), z: d.shape.map(p => p[2]), marker: {size: 1.5, color: "#999"}, name: "fitted " + d.family});
+  if (document.getElementById("showloop").checked && d.loop) tr.push({type: "scatter3d", mode: "lines", x: d.loop.map(p => p[0]), y: d.loop.map(p => p[1]), z: d.loop.map(p => p[2]), line: {width: 6, color: "#d1495b"}, name: "loop B"});
+  Plotly.react("cloud", tr, {margin: {l: 0, r: 0, t: 30, b: 0}, title: {text: d.id, font: {size: 13}}, showlegend: true});
+  const pd = [], mx = Math.max(1e-3, ...d.h1.flat(), ...d.h2.flat());
+  pd.push({x: d.h1.map(b => b[0]), y: d.h1.map(b => b[1]), mode: "markers", name: "H1", marker: {size: 6}});
+  pd.push({x: d.h2.map(b => b[0]), y: d.h2.map(b => b[1]), mode: "markers", name: "H2", marker: {symbol: "triangle-up", size: 7}});
+  pd.push({x: [0, mx], y: [0, mx], mode: "lines", line: {color: "#999"}, name: "diagonal"});
+  if (d.q95_pi1) pd.push({x: [0, mx / d.q95_pi1], y: [0, mx], mode: "lines", line: {color: "red", dash: "dot"}, name: "H1 null q95 (pi)"});
+  Plotly.react("pd", pd, {margin: {l: 45, r: 10, t: 30, b: 40}, title: {text: "alpha persistence (radius units)", font: {size: 12}},
+    xaxis: {title: "birth"}, yaxis: {title: "death"}});
+  let h = "<table><tr><th></th><th>Method A (fitted " + d.family + ")</th><th>Method B (persistent homology)</th></tr>";
+  for (const [k, a, b] of d.rows) h += "<tr><td>" + k + "</td><td>" + fmt(a) + "</td><td>" + fmt(b) + "</td></tr>";
+  h += "</table><p>" + (d.notes || "") + "</p>"; document.getElementById("info").innerHTML = h; }
+</script></body></html>

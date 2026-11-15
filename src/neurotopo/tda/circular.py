@@ -15,7 +15,7 @@ from dreimac import CircularCoords
 
 
 def circular_coordinates(points: np.ndarray, prime: int = 47, max_landmarks: int = 200, perc: float = 0.5,
-                         cocycle_idx: int = 0) -> dict:
+                         cocycle_idx: int = 0, standard_range: bool = True) -> dict:
     """theta_B (N,) for the most persistent Rips cohomology class, plus that class's (birth, death) in radius
     units for comparison with the alpha H1 bar. DREiMac's diagrams are Rips diameters, hence the / 2."""
     pts = np.asarray(points, dtype=np.float64)
@@ -23,7 +23,9 @@ def circular_coordinates(points: np.ndarray, prime: int = 47, max_landmarks: int
     cc = CircularCoords(pts, n_landmarks=n_land, prime=prime, maxdim=1)
     dgm1 = np.asarray(cc.dgms_[1]) if hasattr(cc, "dgms_") else np.zeros((0, 2))
     try:
-        theta = cc.get_coordinates(perc=perc, cocycle_idx=cocycle_idx, standard_range=True)
+        # standard_range=True (preregistered) requires Rips death >= 2 x birth (DREiMac EMCoords.get_cover_radius),
+        # which guarantees the class is non-trivial in the Cech complex; False only guarantees it in the Rips complex.
+        theta = cc.get_coordinates(perc=perc, cocycle_idx=cocycle_idx, standard_range=standard_range)
     except Exception as exc:  # DREiMac: "The cohomology class selected is too short" (or no H1 class at all)
         # With standard_range=True DREiMac only builds coordinates for a class that persists past twice the
         # landmark cover radius, i.e. that is non-trivial in the Cech complex used; otherwise there is no

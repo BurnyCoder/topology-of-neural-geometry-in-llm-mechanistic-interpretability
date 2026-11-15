@@ -43,3 +43,30 @@ This item was in the plan but not in the preregistration.
 **Why it was dropped:** the stored `gt_dense` grids (24×24 for surfaces) create spurious long H1 bars in alpha complexes. They come from anisotropic grid cells: π ≈ 4 on a torus grid, and ≈ 17 near the poles of a sphere grid (`tests/test_analytic.py`). An effective topology computed from them would be unreliable.
 
 **What replaces it:** the primary ground truth (exact Method A topology of the ground-truth parameters, with resolvability ρ_A) and the reported accuracy as a function of ρ_A already cover multi-scale and borderline cases.
+
+## D4 (2026-11-15): simulated steering postponed; fitted-shape coordinate check added (exploratory)
+
+**What the author asked for:**
+- Postpone the simulated steering of amendment A2, step 1, entirely. The code is in `src/neurotopo/steering/offline.py` and `experiments/exp6_sim.py`; it was not run, and the phase is removed from `run.py all`.
+- Instead, check where the original labelled points lie on their fitted shapes.
+- Model inference (A2, step 2) stays postponed.
+
+**Added: phase `coords`** (`experiments/coords_check.py`; exploratory and descriptive; uses only stored data). Every point gets its intrinsic coordinates on its fitted shape. The phase then reports:
+- circular alignment with the concept phases, for angular coordinates;
+- Spearman correlation with the value or concept index, for linear coordinates;
+- NMI and ARI with the concepts, for cluster and vertex assignments.
+
+It also checks the prompt offset "k days from" for weekdays and months, and saturation and lightness for colours, both recovered from the source's row order and labels.
+
+**Post hoc, flagged as such:** the harmonic content of the axial position of helix fits of cyclic concepts. It was added after seeing that the months' axial position is non-monotone in the month index.
+
+## D5 (2026-11-15, after the Exp3 results): post hoc θ_B with DREiMac `standard_range=False`
+
+**Observation.**
+- With the preregistered `standard_range=True`, DREiMac builds a circular coordinate only for a Rips class whose death is at least twice its birth. This is the condition that guarantees the class is non-trivial in the Čech complex (`EMCoords.get_cover_radius` in DREiMac 0.3.2).
+- The weekday, month and days_time loops are weaker than that, so H1-B (b)–(d) failed there before any alignment could be computed. For months this happened even though the alpha-complex loop is significant under the cluster-centre null.
+- No dataset has a qualifying class in the top-10 PCs.
+
+**Post hoc analysis** (phase `exp3posthoc`, `results/exp3/posthoc_relaxed_range.json`). θ_B is recomputed with `standard_range=False`, which guarantees the class only in the Rips complex, as DREiMac's own error message suggests. This is done in 3D and in the top-10 PCs, and the alignment tests are repeated.
+- It is reported as exploratory.
+- **It does not change any preregistered verdict.**

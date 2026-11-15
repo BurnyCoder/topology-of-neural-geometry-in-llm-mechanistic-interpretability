@@ -1,0 +1,480 @@
+{
+ "H1": {
+  "R5a_llama_weekdays": {
+   "A": {
+    "hole_resolvable": false,
+    "traversal": false,
+    "pass": false,
+    "p_raw": 1.0,
+    "p_holm": 1.0
+   },
+   "B": {
+    "a_loop": false,
+    "b_align": false,
+    "c_wind1": false,
+    "d_top10": false,
+    "pass": false,
+    "p_raw": 1.0,
+    "p_holm": 1.0
+   }
+  },
+  "R5b_llama_months": {
+   "A": {
+    "hole_resolvable": false,
+    "traversal": false,
+    "pass": false,
+    "p_raw": 1.0,
+    "p_holm": 1.0
+   },
+   "B": {
+    "a_loop": true,
+    "b_align": false,
+    "c_wind1": false,
+    "d_top10": false,
+    "pass": false,
+    "p_raw": 1.0,
+    "p_holm": 1.0
+   }
+  },
+  "R2_grokking_WE": {
+   "A": {
+    "hole_resolvable": false,
+    "traversal": false,
+    "pass": false,
+    "p_raw": 1.0,
+    "p_holm": 1.0
+   },
+   "B": {
+    "a_loop": true,
+    "b_align": true,
+    "c_wind1": true,
+    "d_top10": false,
+    "pass": false,
+    "p_raw": 1e-05,
+    "p_holm": 6.000000000000001e-05
+   }
+  }
+ },
+ "H1_verdict_passes_of_3": {
+  "A": 0,
+  "B": 0
+ },
+ "H2": {
+  "R1_gpt2_wpos": {
+   "7 bins": {
+    "A": false,
+    "B": false
+   },
+   "12 bins": {
+    "A": false,
+    "B": false
+   }
+  },
+  "R4_llama_counting": {
+   "7 bins": {
+    "A": false,
+    "B": false
+   },
+   "12 bins": {
+    "A": false,
+    "B": false
+   }
+  },
+  "R4b_pythia_counting": {
+   "7 bins": {
+    "A": false,
+    "B": false
+   },
+   "12 bins": {
+    "A": false,
+    "B": false
+   }
+  },
+  "R6_llama_years": {
+   "7 bins": {
+    "A": false,
+    "B": false
+   },
+   "12 bins": {
+    "A": false,
+    "B": false
+   }
+  },
+  "R8a_llama_temperature": {
+   "7 bins": {
+    "A": false,
+    "B": false
+   },
+   "12 bins": {
+    "A": false,
+    "B": false
+   }
+  },
+  "R8b_llama_age": {
+   "7 bins": {
+    "A": false,
+    "B": false
+   },
+   "12 bins": {
+    "A": false,
+    "B": false
+   }
+  },
+  "C3_llama_weekdays_init": {
+   "concept": {
+    "A": false,
+    "B": false
+   }
+  },
+  "C3_llama_months_init": {
+   "concept": {
+    "A": false,
+    "B": false
+   }
+  },
+  "C3_grokking_WE_init": {
+   "concept": {
+    "A": false,
+    "B": false
+   }
+  },
+  "C1_gp_0": {
+   "7 bins": {
+    "A": false,
+    "B": false
+   },
+   "12 bins": {
+    "A": false,
+    "B": false
+   }
+  },
+  "C1_gp_1": {
+   "7 bins": {
+    "A": false,
+    "B": false
+   },
+   "12 bins": {
+    "A": false,
+    "B": false
+   }
+  },
+  "C1_gp_2": {
+   "7 bins": {
+    "A": false,
+    "B": false
+   },
+   "12 bins": {
+    "A": false,
+    "B": false
+   }
+  },
+  "C1_gp_3": {
+   "7 bins": {
+    "A": false,
+    "B": false
+   },
+   "12 bins": {
+    "A": false,
+    "B": false
+   }
+  },
+  "C1_gp_4": {
+   "7 bins": {
+    "A": false,
+    "B": false
+   },
+   "12 bins": {
+    "A": false,
+    "B": false
+   }
+  },
+  "C1_gp_5": {
+   "7 bins": {
+    "A": false,
+    "B": false
+   },
+   "12 bins": {
+    "A": false,
+    "B": false
+   }
+  },
+  "C1_gp_6": {
+   "7 bins": {
+    "A": false,
+    "B": false
+   },
+   "12 bins": {
+    "A": false,
+    "B": false
+   }
+  },
+  "C1_gp_7": {
+   "7 bins": {
+    "A": false,
+    "B": false
+   },
+   "12 bins": {
+    "A": false,
+    "B": false
+   }
+  },
+  "C1_gp_8": {
+   "7 bins": {
+    "A": false,
+    "B": false
+   },
+   "12 bins": {
+    "A": false,
+    "B": false
+   }
+  },
+  "C1_gp_9": {
+   "7 bins": {
+    "A": false,
+    "B": false
+   },
+   "12 bins": {
+    "A": false,
+    "B": false
+   }
+  },
+  "C1_walk_0": {
+   "7 bins": {
+    "A": false,
+    "B": false
+   },
+   "12 bins": {
+    "A": false,
+    "B": false
+   }
+  },
+  "C1_walk_1": {
+   "7 bins": {
+    "A": false,
+    "B": false
+   },
+   "12 bins": {
+    "A": false,
+    "B": false
+   }
+  },
+  "C1_walk_2": {
+   "7 bins": {
+    "A": false,
+    "B": false
+   },
+   "12 bins": {
+    "A": false,
+    "B": false
+   }
+  },
+  "C1_walk_3": {
+   "7 bins": {
+    "A": false,
+    "B": false
+   },
+   "12 bins": {
+    "A": false,
+    "B": false
+   }
+  },
+  "C1_walk_4": {
+   "7 bins": {
+    "A": false,
+    "B": false
+   },
+   "12 bins": {
+    "A": false,
+    "B": false
+   }
+  },
+  "C1_walk_5": {
+   "7 bins": {
+    "A": false,
+    "B": false
+   },
+   "12 bins": {
+    "A": false,
+    "B": false
+   }
+  },
+  "C1_walk_6": {
+   "7 bins": {
+    "A": false,
+    "B": false
+   },
+   "12 bins": {
+    "A": false,
+    "B": false
+   }
+  },
+  "C1_walk_7": {
+   "7 bins": {
+    "A": false,
+    "B": false
+   },
+   "12 bins": {
+    "A": false,
+    "B": false
+   }
+  },
+  "C1_walk_8": {
+   "7 bins": {
+    "A": false,
+    "B": false
+   },
+   "12 bins": {
+    "A": false,
+    "B": false
+   }
+  },
+  "C1_walk_9": {
+   "7 bins": {
+    "A": false,
+    "B": false
+   },
+   "12 bins": {
+    "A": false,
+    "B": false
+   }
+  }
+ },
+ "H2_summary": {
+  "A": {
+   "ordinal_pass": 0,
+   "init_pass": 0,
+   "c1_pass": 0,
+   "falsified": false,
+   "c1_fpr_ci": [
+    0.0,
+    0.1684334709830855
+   ]
+  },
+  "B": {
+   "ordinal_pass": 0,
+   "init_pass": 0,
+   "c1_pass": 0,
+   "falsified": false,
+   "c1_fpr_ci": [
+    0.0,
+    0.1684334709830855
+   ]
+  }
+ },
+ "H3": {
+  "A": {
+   "hole_resolvable": false,
+   "traversal": false,
+   "pass": false
+  },
+  "B": {
+   "a_loop": true,
+   "b_align": false,
+   "c_wind1": false,
+   "d_top10": false,
+   "pass": false
+  }
+ },
+ "H4": {
+  "balanced_accuracy": {
+   "hole_only_A": 0.5,
+   "conj_A": 0.5,
+   "conj_B": 0.5
+  },
+  "criteria": {
+   "hole_only_A": {
+    "R5a_llama_weekdays": false,
+    "R5b_llama_months": false,
+    "R2_grokking_WE": false,
+    "R5c_llama_days_time": false,
+    "R1_gpt2_wpos": false,
+    "R4_llama_counting": false,
+    "R4b_pythia_counting": false,
+    "R6_llama_years": false,
+    "R8a_llama_temperature": false,
+    "R8b_llama_age": false
+   },
+   "conj_A": {
+    "R5a_llama_weekdays": false,
+    "R5b_llama_months": false,
+    "R2_grokking_WE": false,
+    "R5c_llama_days_time": false,
+    "R1_gpt2_wpos": false,
+    "R4_llama_counting": false,
+    "R4b_pythia_counting": false,
+    "R6_llama_years": false,
+    "R8a_llama_temperature": false,
+    "R8b_llama_age": false
+   },
+   "conj_B": {
+    "R5a_llama_weekdays": false,
+    "R5b_llama_months": false,
+    "R2_grokking_WE": false,
+    "R5c_llama_days_time": false,
+    "R1_gpt2_wpos": false,
+    "R4_llama_counting": false,
+    "R4b_pythia_counting": false,
+    "R6_llama_years": false,
+    "R8a_llama_temperature": false,
+    "R8b_llama_age": false
+   }
+  },
+  "mcnemar": {
+   "hole_only_A vs conj_A": 1.0,
+   "hole_only_A vs conj_B": 1.0,
+   "conj_A vs conj_B": 1.0
+  }
+ },
+ "exploratory": [
+  {
+   "id": "R7_llama_colors",
+   "method": "B",
+   "variable": "hue",
+   "R": 0.949310292343678,
+   "p": 1e-05,
+   "winding": -1,
+   "loop": true,
+   "q_bh": 1.25e-05
+  },
+  {
+   "id": "R7_llama_colors",
+   "method": "A",
+   "variable": "hue",
+   "kind": "hole",
+   "R": 0.9836187002567928,
+   "p": 1e-05,
+   "winding": 1,
+   "q_bh": 1.25e-05
+  },
+  {
+   "id": "R5b_llama_months_means",
+   "method": "A",
+   "variable": "month",
+   "kind": "axial winding (descriptive)",
+   "R": 0.9270527270693111,
+   "p": 1e-05,
+   "winding": 1,
+   "q_bh": 1.25e-05
+  },
+  {
+   "id": "R6_llama_years",
+   "method": "A",
+   "variable": "value mod 10",
+   "kind": "hole",
+   "R": 0.5605207419212651,
+   "p": 0.00157,
+   "winding": 0,
+   "q_bh": 0.0015699999999999998
+  },
+  {
+   "id": "R6_llama_years",
+   "method": "A",
+   "variable": "value mod 100",
+   "kind": "hole",
+   "R": 0.35123133391223116,
+   "p": 1e-05,
+   "winding": 0,
+   "q_bh": 1.25e-05
+  }
+ ]
+}

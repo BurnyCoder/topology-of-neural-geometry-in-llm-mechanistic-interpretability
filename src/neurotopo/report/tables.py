@@ -26,7 +26,7 @@ def fmt(v, nd: int = 3) -> str:
             return "-"
         if math.isinf(v):
             return "inf"
-        if v != 0 and abs(v) < 10 ** -nd:
+        if v != 0 and abs(v) < 10 ** -nd and nd >= 3:     # small p-values: scientific notation
             return f"{v:.1e}"
         return f"{v:.{nd}f}"
     return str(v)
