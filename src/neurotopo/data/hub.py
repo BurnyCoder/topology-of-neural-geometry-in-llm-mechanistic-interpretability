@@ -104,6 +104,8 @@ Source project: [shape-fitting-in-neural-geometry-in-llm-mechanistic-interpretab
   - `exp3`: cyclic hypothesis tests;
   - `exp4`: topological similarity;
   - `exp5`: robustness checks;
+  - `exp7_audit`: post hoc checks of the second audit (colour RGB baseline, loop localisation, closure ratio,
+    PCA gaps, size-matched stability, power CIs; deviation D8);
   - `nulls/`: cached Monte Carlo null distributions;
   - `replication.json`: the clean-room replication check.
 - `paper.pdf`: the paper. `summary.md`: summary of all experiments. `logs/`: timestamped run logs.
