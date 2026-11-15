@@ -1,8 +1,9 @@
 """Entry point: run the pipeline phases in order (`uv run python run.py <phase> [<phase> ...]`).
 
 Global context: each phase is one imported function from `neurotopo`; this file only wires them together.
-`all` = fetch -> exp0 -> power -> exp1 -> exp2 -> exp3 -> exp4 -> exp5 -> report -> site, needs no GPU and no
-local files beyond the GitHub clone (inputs come from the pinned Hugging Face dataset revision).
+`all` = fetch -> exp0 -> coords -> power -> power2 -> exp1 -> exp1outliers -> exp2 -> exp3 -> exp3posthoc -> exp4
+-> exp5 -> report -> site, needs no GPU and no local files beyond the GitHub clone (inputs come from the pinned
+Hugging Face dataset revision). exp6sim / exp6 (steering) are postponed and not part of `all`.
 `publish-inputs` is maintainer-only (uploads the export of scripts/export_source_artifacts.py).
 """
 
@@ -22,6 +23,7 @@ PHASES = {
     "power": ("neurotopo.experiments.power", "run"),
     "power2": ("neurotopo.experiments.power", "run_v2"),
     "exp1": ("neurotopo.experiments.exp1_synthetic", "run"),
+    "exp1outliers": ("neurotopo.experiments.exp1_synthetic", "outlier_check"),
     "exp2": ("neurotopo.experiments.exp2_invariants", "run"),
     "exp3": ("neurotopo.experiments.exp3_cyclic", "run"),
     "exp3posthoc": ("neurotopo.experiments.exp3_posthoc", "run"),
@@ -33,7 +35,7 @@ PHASES = {
     "site": ("neurotopo.report.site", "run"),
     "publish": ("neurotopo.report.publish", "run"),
 }
-ALL = ["fetch", "exp0", "coords", "power", "power2", "exp1", "exp2", "exp3", "exp3posthoc", "exp4", "exp5", "report", "site"]   # exp6sim / exp6: postponed
+ALL = ["fetch", "exp0", "coords", "power", "power2", "exp1", "exp1outliers", "exp2", "exp3", "exp3posthoc", "exp4", "exp5", "report", "site"]   # exp6sim / exp6: postponed
 
 
 def main(argv=None) -> None:

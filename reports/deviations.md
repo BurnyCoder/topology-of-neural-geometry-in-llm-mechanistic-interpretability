@@ -97,3 +97,27 @@ An independent reviewer (a separate agent given the code and results, not the co
 - "Specificity holds" is reported together with its weakness: sensitivity is zero (H4 balanced accuracy 0.5), and the controls never approach the null threshold.
 - The weekday "exact cyclic order" is reported as non-specific: 7 of 8 Gaussian-process helix controls reach the same minimum p with winding ±1.
 - The alignment R and its permutation p measure *ordering*. Only |winding| = 1 carries the cyclic claim.
+
+## D7 (2026-11-15, after the results, during the plan-completion check): the outlier false-positive rate behind the DTM conditional
+
+Preregistration section 7 runs a DTM filtration ([Anai et al. 2019](https://arxiv.org/abs/1811.04757)) only "if the outlier false-positive rate in Exp1 exceeds 10%". Exp1 did not compute that rate, so the conditional was never evaluated.
+
+**Problem:** the source generator gives 30% of clouds outliers, replacing up to 10% of their points with uniform draws from the padded bounding box (`neurogeom/data/nuisance.py::add_outliers`; `outlier_prob`, `outlier_frac_max` in the source `configs/base.yaml`). It does not store *which* clouds or points were replaced, and neither does the Hugging Face export.
+
+**Proxy, fixed in `configs/base.yaml` (`outliers.far_factor = 6`) before the rate was computed:** a cloud is an "outlier cloud" if at least one point lies farther from the ground-truth shape (`gt_dense`) than 6 × the cloud's median point-to-shape distance (`tda.ground_truth.far_points`). The false-positive rate is computed exactly as in Exp1: any H1 or H2 feature on a resolvable cloud of an always-contractible family. It is reported for outlier clouds and for clean clouds, with cluster-bootstrap CIs over generator chunks. The decision uses the preregistered primary estimator P.
+
+**Why this proxy:** Gaussian noise almost never puts a point 6 median distances from a curve. For a surface it is about 4σ, so large clouds of surfaces get a few false flags. Box outliers that land near the shape are missed, but those cannot create spurious holes anyway. The proxy is checked against the generator's expected fraction of clouds with at least one injected outlier, per N bin (reported in `reports/exp1_synthetic.md`).
+
+**Post hoc addition:** a sensitivity check with factors 4 and 8, to show the decision does not hinge on the factor.
+
+**Outcome and code:**
+- Outcome: see `reports/exp1_synthetic.md`. The DTM ablation was not triggered.
+- Code: `run.py exp1outliers` (`experiments/exp1_synthetic.py::outlier_check`), results in `results/exp1/outliers.json`.
+
+## P2 (plan-level): two planned unit tests superseded by the preregistration's definitions
+
+- **"The margin is 0 exactly at the source's thresholds (arc extent_frac 0.98, sphere cap threshold, r_bot = 0, r = R)."**
+  - The plan defined the arc margin as |extent_frac − 0.98| · 2πr.
+  - The preregistration (section 3) instead defines every margin as a geometric distance to a change in topology: endpoint gap, cap-opening chord, min(r_bot, r_top), min(r, R − r). This avoids treating the source's 0.98 classification threshold as a topological boundary.
+  - `tests/test_analytic.py` checks these margins, including margin 0 for an apex cone (r_bot = 0).
+- **"An ambiguity flag near r*."** This belonged to the effective-topology ground truth at the scale r*, which was dropped (P1). Accuracy as a function of ρ_A replaces it.
