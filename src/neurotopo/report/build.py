@@ -39,7 +39,7 @@ def replace_block(path: Path, key: str, text: str) -> None:
     if not pat.search(s):
         return
     s = pat.sub(lambda m: m.group(1) + "\n" + text.strip() + "\n" + m.group(3), s)
-    path.write_text(s, encoding="utf-8")
+    path.write_text(s, encoding="utf-8", newline=chr(10))
 
 
 # ----------------------------------------------------------------------------- tables
@@ -158,10 +158,10 @@ def render_templates(nums: dict) -> None:
     for src, dst in pairs:
         if src.exists():
             dst.write_text(numbers.render(src.read_text(encoding="utf-8"), nums, latex=src.suffix == ".tex"),
-                           encoding="utf-8")
+                           encoding="utf-8", newline=chr(10))
     gen = root / "paper" / "generated"
     gen.mkdir(parents=True, exist_ok=True)
-    (gen / "numbers.tex").write_text(numbers.latex_macros(nums) + "\n", encoding="utf-8")
+    (gen / "numbers.tex").write_text(numbers.latex_macros(nums) + "\n", encoding="utf-8", newline=chr(10))
 
 
 def run() -> None:

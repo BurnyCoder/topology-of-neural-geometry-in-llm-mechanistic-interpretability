@@ -1,0 +1,7 @@
+{
+ "files": 80,
+ "identical": 80,
+ "rtol": 1e-06,
+ "atol": 1e-09,
+ "date": "2026-11-15"
+}

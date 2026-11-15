@@ -79,7 +79,7 @@ def run() -> None:
     docs = config.ROOT / "docs"
     out = docs / "data"
     out.mkdir(parents=True, exist_ok=True)
-    (docs / ".nojekyll").write_text("", encoding="utf-8")
+    (docs / ".nojekyll").write_text("", encoding="utf-8", newline=chr(10))
     res = config.path("results")
     topo = pd.read_csv(res / "exp0" / "real_topology.csv").set_index("id")
     inv = pd.read_csv(res / "exp2" / "invariants.csv").set_index("id") if (res / "exp2" / "invariants.csv").exists() else None
@@ -118,7 +118,7 @@ def run() -> None:
              "cyclic": cyclic, "theta": theta, "loop": loop, "shape": np.round(viz["shape"] / scale, 4).tolist(),
              "h1": np.round(dg[1], 5).tolist(), "h2": np.round(dg[2], 5).tolist(),
              "q95_pi1": float(inv.loc[did, "null_q95_pi1"]) if inv is not None else None, "rows": rows, "notes": notes}
-        (out / f"{did}.json").write_text(json.dumps(_clean(d)), encoding="utf-8")
+        (out / f"{did}.json").write_text(json.dumps(_clean(d)), encoding="utf-8", newline=chr(10))
         manifest[names[group_of(did)]].append({"id": did, "label": f"{short(did)} ({t['family']})"})
-    (out / "manifest.json").write_text(json.dumps({k: v for k, v in manifest.items() if v}), encoding="utf-8")
-    (docs / "index.html").write_text(PAGE, encoding="utf-8")
+    (out / "manifest.json").write_text(json.dumps({k: v for k, v in manifest.items() if v}), encoding="utf-8", newline=chr(10))
+    (docs / "index.html").write_text(PAGE, encoding="utf-8", newline=chr(10))
