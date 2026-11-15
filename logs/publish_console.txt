@@ -1,0 +1,68 @@
+2026-11-15 20:15:32 INFO root: phase publish, log file C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\logs\publish_20261115T201532.log
+2026-11-15 20:15:34 INFO httpx2: HTTP Request: POST https://huggingface.co/api/validate-yaml "HTTP/1.1 200 OK"
+2026-11-15 20:15:34 INFO httpx2: HTTP Request: POST https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry/preupload/main "HTTP/1.1 200 OK"
+2026-11-15 20:15:34 INFO httpx2: HTTP Request: POST https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry/commit/main "HTTP/1.1 200 OK"
+2026-11-15 20:15:35 INFO httpx2: HTTP Request: POST https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry/preupload/main "HTTP/1.1 200 OK"
+2026-11-15 20:15:38 INFO httpx2: HTTP Request: POST https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry/commit/main "HTTP/1.1 200 OK"
+2026-11-15 20:15:39 INFO httpx2: HTTP Request: POST https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry/preupload/main "HTTP/1.1 200 OK"
+2026-11-15 20:15:40 INFO httpx2: HTTP Request: POST https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry/commit/main "HTTP/1.1 200 OK"
+2026-11-15 20:15:40 INFO httpx2: HTTP Request: POST https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry/preupload/main "HTTP/1.1 200 OK"
+Processing Files (0 / 0)      : |          |  0.00B /  0.00B            
+New Data Upload               : |          |  0.00B /  0.00B            [A
+
+  ...retability\paper\main.pdf:  64%|######3   |  555kB /  870kB            [A[A
+
+  ...retability\paper\main.pdf:  64%|######3   |  555kB /  870kB            [A[AProcessing Files (0 / 1)      :  64%|######3   |  555kB /  870kB, 53.7kB/s  
+New Data Upload               :  64%|######3   |  555kB /  870kB, 53.7kB/s  [A
+
+  ...retability\paper\main.pdf:  64%|######3   |  555kB /  870kB            [A[A
+
+  ...retability\paper\main.pdf:  64%|######3   |  555kB /  870kB            [A[A
+
+  ...retability\paper\main.pdf: 100%|#########9|  870kB /  870kB            [A[AProcessing Files (0 / 1)      : 100%|#########9|  870kB /  870kB, 82.3kB/s  
+New Data Upload               : 100%|#########9|  870kB /  870kB, 82.3kB/s  [A
+
+  ...retability\paper\main.pdf: 100%|#########9|  870kB /  870kB            [A[A
+
+  ...retability\paper\main.pdf: 100%|#########9|  870kB /  870kB            [A[A
+
+  ...retability\paper\main.pdf: 100%|#########9|  870kB /  870kB            [A[A
+
+  ...retability\paper\main.pdf: 100%|#########9|  870kB /  870kB            [A[A
+
+  ...retability\paper\main.pdf: 100%|#########9|  870kB /  870kB            [A[A
+
+  ...retability\paper\main.pdf: 100%|#########9|  870kB /  870kB            [A[A
+
+  ...retability\paper\main.pdf: 100%|##########|  870kB /  870kB            [A[AProcessing Files (1 / 1)      : 100%|##########|  870kB /  870kB, 76.6kB/s  
+New Data Upload               : 100%|##########|  870kB /  870kB, 76.6kB/s  [A
+
+
+Validating                    :           |   0%            [A[A[A
+
+
+Validating                    :           |   0%            [A[A[A
+
+  ...retability\paper\main.pdf: 100%|##########|  870kB /  870kB            [A[A
+
+
+Validating                    :           |   0%            [A[A[A
+
+  ...retability\paper\main.pdf: 100%|##########|  870kB /  870kB            [A[A
+
+
+Validating                    : ##########| 100%            [A[A[A
+
+  ...retability\paper\main.pdf: 100%|##########|  870kB /  870kB            [A[A
+
+
+Validating                    : ##########| 100%            [A[A[AProcessing Files (1 / 1)      : 100%|##########|  870kB /  870kB, 74.8kB/s  
+New Data Upload               : 100%|##########|  870kB /  870kB, 74.8kB/s  
+Validating                    : ##########| 100%            
+  ...retability\paper\main.pdf: 100%|##########|  870kB /  870kB            
+2026-11-15 20:15:43 INFO httpx2: HTTP Request: POST https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry/commit/main "HTTP/1.1 200 OK"
+2026-11-15 20:15:43 INFO httpx2: HTTP Request: POST https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry/preupload/main "HTTP/1.1 200 OK"
+2026-11-15 20:15:44 INFO httpx2: HTTP Request: POST https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry/commit/main "HTTP/1.1 200 OK"
+2026-11-15 20:15:44 INFO httpx2: HTTP Request: POST https://huggingface.co/api/collections/BurnyCoder/fitting-geometric-shapes-to-neural-geometry-6ae635f979b04232274230ee/items "HTTP/1.1 409 Conflict"
+2026-11-15 20:15:44 INFO httpx2: HTTP Request: GET https://huggingface.co/api/collections/BurnyCoder/fitting-geometric-shapes-to-neural-geometry-6ae635f979b04232274230ee "HTTP/1.1 200 OK"
+2026-11-15 20:15:44 INFO neurotopo.report.publish: published results to BurnyCoder/topology-of-neural-geometry (commit b20ae7264981abf8483b417f70fe489ff62d14ea)

@@ -1,0 +1,15 @@
+2026-11-15 20:15:32 INFO root: phase publish, log file C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\logs\publish_20261115T201532.log
+2026-11-15 20:15:34 INFO httpx2: HTTP Request: POST https://huggingface.co/api/validate-yaml "HTTP/1.1 200 OK"
+2026-11-15 20:15:34 INFO httpx2: HTTP Request: POST https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry/preupload/main "HTTP/1.1 200 OK"
+2026-11-15 20:15:34 INFO httpx2: HTTP Request: POST https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry/commit/main "HTTP/1.1 200 OK"
+2026-11-15 20:15:35 INFO httpx2: HTTP Request: POST https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry/preupload/main "HTTP/1.1 200 OK"
+2026-11-15 20:15:38 INFO httpx2: HTTP Request: POST https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry/commit/main "HTTP/1.1 200 OK"
+2026-11-15 20:15:39 INFO httpx2: HTTP Request: POST https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry/preupload/main "HTTP/1.1 200 OK"
+2026-11-15 20:15:40 INFO httpx2: HTTP Request: POST https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry/commit/main "HTTP/1.1 200 OK"
+2026-11-15 20:15:40 INFO httpx2: HTTP Request: POST https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry/preupload/main "HTTP/1.1 200 OK"
+2026-11-15 20:15:43 INFO httpx2: HTTP Request: POST https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry/commit/main "HTTP/1.1 200 OK"
+2026-11-15 20:15:43 INFO httpx2: HTTP Request: POST https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry/preupload/main "HTTP/1.1 200 OK"
+2026-11-15 20:15:44 INFO httpx2: HTTP Request: POST https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry/commit/main "HTTP/1.1 200 OK"
+2026-11-15 20:15:44 INFO httpx2: HTTP Request: POST https://huggingface.co/api/collections/BurnyCoder/fitting-geometric-shapes-to-neural-geometry-6ae635f979b04232274230ee/items "HTTP/1.1 409 Conflict"
+2026-11-15 20:15:44 INFO httpx2: HTTP Request: GET https://huggingface.co/api/collections/BurnyCoder/fitting-geometric-shapes-to-neural-geometry-6ae635f979b04232274230ee "HTTP/1.1 200 OK"
+2026-11-15 20:15:44 INFO neurotopo.report.publish: published results to BurnyCoder/topology-of-neural-geometry (commit b20ae7264981abf8483b417f70fe489ff62d14ea)
