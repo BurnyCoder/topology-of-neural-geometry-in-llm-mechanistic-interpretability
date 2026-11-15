@@ -74,34 +74,10 @@ def role_table() -> str:
     random processes). Per group, how many sets have: a top-3 loop under the design-matched MC null (Exp2); a
     resolvable fitted hole that the concept goes around (Method A); a loop that the concept goes around in the
     preregistered theta_B (Method B, 3D); the same plus the preregistered top-10-PC check (full H1-B conjunction);
-    a single traversal in 3D post hoc (DREiMac standard_range=False, D5). "Goes around" = alignment p < 0.05
-    (unadjusted) and |winding| = 1 for the concept variable (ordinal sets: 7 or 12 value bins; days_time: day)."""
-    from neurotopo.experiments.alignment import passes
+    a single traversal in 3D post hoc (DREiMac standard_range=False, D5). Definitions: report/verdicts.py."""
+    from neurotopo.report import verdicts as v
     cfg = config.load()
-    inv = pd.read_csv(res("exp2", "invariants.csv")).set_index("id")
-    topo = pd.read_csv(res("exp0", "real_topology.csv")).set_index("id")
-    a0 = read_json(res("exp0", "real_alignment.json"))
-    mb = read_json(res("exp3", "method_b.json"))
-    ph = read_json(res("exp3", "posthoc_relaxed_range.json"))
-    c1 = sorted(d for d in inv.index if d.startswith("C1_"))
-
-    def around(d, recs):
-        keep = [r for r in recs if "mod" not in r["variable"] and (d != "R5c_llama_days_time" or r["variable"] == "day")]
-        return any(passes(r) for r in keep)
-
-    def method_a(d):
-        return bool(topo.loc[d, "hole"] and topo.loc[d, "resolvable"]
-                    and around(d, [r for r in a0 if r["id"] == d and r["kind"] == "hole"]))
-
-    def method_b(d):
-        return bool(mb[d]["loop"] and around(d, mb[d]["records3"]))
-
-    def method_b10(d):
-        return method_b(d) and around(d, mb[d].get("records10", []))
-
-    def posthoc(d):
-        return around(d, ph.get(d, {}).get("3d", {}).get("records", []))
-
+    c1 = sorted(d for d in pd.read_csv(res("exp2", "invariants.csv"))["id"] if d.startswith("C1_"))
     groups = [("test: cyclic, primary (H1)", cfg["groups"]["cyclic_primary"]),
               ("test: cyclic, secondary (H3)", cfg["groups"]["cyclic_secondary"]),
               ("test: cyclic, exploratory", ["R7_llama_colors"]),
@@ -112,11 +88,11 @@ def role_table() -> str:
     for role, ids in groups:
         cnt = lambda f: f"{sum(bool(f(d)) for d in ids)}/{len(ids)}"
         rows.append({"role": role, "sets": ", ".join(figures.short(d) for d in ids) if len(ids) < 7 else f"{len(ids)} sets",
-                     "loop in top-3 PCs (MC null, p < 0.05)": cnt(lambda d: inv.loc[d, "p_top_loop"] < 0.05),
-                     "A: resolvable fitted hole, goes around": cnt(method_a),
-                     "B: loop, goes around (θ_B, 3D)": cnt(method_b),
-                     "B + top-10 check (full H1-B rule)": cnt(method_b10),
-                     "goes around once, post hoc (3D)": cnt(posthoc)})
+                     "loop in top-3 PCs (MC null, p < 0.05)": cnt(v.loop),
+                     "A: resolvable fitted hole, goes around": cnt(v.method_a),
+                     "B: loop, goes around (θ_B, 3D)": cnt(v.method_b),
+                     "B + top-10 check (full H1-B rule)": cnt(v.method_b10),
+                     "goes around once, post hoc (3D)": cnt(v.posthoc)})
     return tables.md_table(pd.DataFrame(rows), 0)
 
 
@@ -263,5 +239,7 @@ def run() -> None:
                                   "R6_llama_years", "R1_gpt2_wpos", "C3_llama_weekdays_init", "C1_walk_0"], "fig_real_gallery")
         figures.fig_null_tests()
         figures.anim_clouds()
+        if have("exp3", "method_b.json") and have("exp3", "posthoc_relaxed_range.json"):
+            figures.fig_examples()
     if have("exp6_sim", "simulated_steering.json"):
         figures.fig_exp6sim()

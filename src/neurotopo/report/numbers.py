@@ -165,6 +165,7 @@ def collect() -> dict:
                     n[f"exp2.{s}.{c}"] = float(d.loc[i, c])
                 n[f"exp2.{s}.homotopy"] = d.loc[i, "homotopy_rc"]
                 n[f"exp2.{s}.b0"], n[f"exp2.{s}.b0_rc"] = int(d.loc[i, "b0"]), int(d.loc[i, "b0_rc"])
+                n[f"exp2.{s}.ratio"] = float(d.loc[i, "top_pi1"] / d.loc[i, "null_q95_pi1"])   # ring strength / chance
         sm = read_json(_res("exp2", "summary.json"))
         n["exp2.agree"] = sm["agree_b1b2_A_vs_B"]
         n["exp2.n_loop"], n["exp2.n_void"] = sm["n_with_loop_mc"], sm["n_with_void_mc"]
@@ -267,6 +268,11 @@ def collect() -> dict:
             if sh:
                 for c in ("alpha3_pi1", "rips3_pi1", "rips5_pi1", "rips10_pi1", "ripsD_cos_pi1"):
                     n[f"exp5.{sh}.{c}"] = float(pr.loc[d, c])
+    # Percent versions of fractions quoted in the README's plain-language section.
+    for k in [k for k in list(n) if k.endswith(".loop_freq")] + ["power2.weekdays.loop", "exp1.P.acc", "exp1.Bb.acc",
+                                                                 "exp1.well.Ba.acc", "exp1.well.Bb.acc"]:
+        if isinstance(n.get(k), float):
+            n[k + "_pct"] = int(round(100 * n[k]))
     return n
 
 
