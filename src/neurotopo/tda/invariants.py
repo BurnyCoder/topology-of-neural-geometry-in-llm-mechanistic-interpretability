@@ -37,12 +37,9 @@ def mst_edges(points: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     return g.data, np.c_[g.row, g.col]
 
 
-def b0_single_linkage(points: np.ndarray, tau: float, min_frac: float) -> tuple[int, float]:
-    """Number of components after cutting MST edges longer than tau * median MST edge, counting only
-    components with at least max(1, ceil(min_frac * N)) points; returns (b0, threshold length)."""
-    p = np.asarray(points)
-    n = len(p)
-    w, ij = mst_edges(p)
+def b0_from_mst(w: np.ndarray, ij: np.ndarray, n: int, tau: float, min_frac: float) -> tuple[int, float]:
+    """Components after cutting MST edges longer than tau * median MST edge, counting only components with
+    at least max(1, ceil(min_frac * N)) points (outliers must not count); returns (b0, threshold length)."""
     if w.size == 0:
         return int(n), 0.0
     thr = tau * float(np.median(w))
@@ -50,8 +47,19 @@ def b0_single_linkage(points: np.ndarray, tau: float, min_frac: float) -> tuple[
     g = coo_matrix((np.ones(int(keep.sum())), (ij[keep, 0], ij[keep, 1])), shape=(n, n))
     _, lab = connected_components(g, directed=False)
     sizes = np.bincount(lab)
-    min_size = max(1, math.ceil(min_frac * n))
-    return int((sizes >= min_size).sum()), thr
+    return int((sizes >= max(1, math.ceil(min_frac * n))).sum()), thr
+
+
+def b0_single_linkage(points: np.ndarray, tau: float, min_frac: float) -> tuple[int, float]:
+    """b0 of a cloud by single linkage (see b0_from_mst)."""
+    w, ij = mst_edges(points)
+    return b0_from_mst(w, ij, len(points), tau, min_frac)
+
+
+def b0_grid(points: np.ndarray, taus, fracs) -> dict:
+    """b0 for every (tau, min_frac) pair, building the minimum spanning tree only once."""
+    w, ij = mst_edges(points)
+    return {f"{t}|{f}": b0_from_mst(w, ij, len(points), t, f)[0] for t in taus for f in fracs}
 
 
 def characteristic_scale(dgms: list[np.ndarray], sig: list[np.ndarray], pvals: list[np.ndarray],

@@ -21,10 +21,16 @@ def circular_coordinates(points: np.ndarray, prime: int = 47, max_landmarks: int
     pts = np.asarray(points, dtype=np.float64)
     n_land = int(min(len(pts), max_landmarks))
     cc = CircularCoords(pts, n_landmarks=n_land, prime=prime, maxdim=1)
-    theta = cc.get_coordinates(perc=perc, cocycle_idx=cocycle_idx, standard_range=True)
     dgm1 = np.asarray(cc.dgms_[1]) if hasattr(cc, "dgms_") else np.zeros((0, 2))
+    try:
+        theta = cc.get_coordinates(perc=perc, cocycle_idx=cocycle_idx, standard_range=True)
+    except Exception as exc:  # DREiMac: "The cohomology class selected is too short" (or no H1 class at all)
+        # With standard_range=True DREiMac only builds coordinates for a class that persists past twice the
+        # landmark cover radius, i.e. that is non-trivial in the Cech complex used; otherwise there is no
+        # usable loop and the traversal test counts as failed (reports/deviations.md D3).
+        return {"theta": None, "bar": None, "n_landmarks": n_land, "error": str(exc)[:120]}
     bar = None
     if dgm1.size:
         order = np.argsort(dgm1[:, 0] - dgm1[:, 1])                  # most persistent first (DREiMac ordering)
         bar = (dgm1[order[cocycle_idx]] / 2.0).tolist()
-    return {"theta": np.asarray(theta, dtype=np.float64), "bar": bar, "n_landmarks": n_land}
+    return {"theta": np.asarray(theta, dtype=np.float64), "bar": bar, "n_landmarks": n_land, "error": None}
