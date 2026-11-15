@@ -6,6 +6,48 @@ Do concepts that are cyclic in meaning (days, months, colours, residues mod n) o
 
 **Links:** [paper (PDF)](paper/main.pdf) · [interactive explorer](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/) · [inputs and results on Hugging Face](https://huggingface.co/datasets/BurnyCoder/topology-of-neural-geometry) · [preregistration](reports/preregistration.md) · [summary of all experiments](reports/summary.md)
 
+## What we found, in plain words
+
+For each concept we ask two questions:
+1. Do its activations form a **ring with a real hole**, rather than a blob that merely looks round?
+2. Does walking through the concept in order (Monday → Tuesday → … → Sunday → Monday) **go around that ring exactly once**?
+
+![Positive and negative examples](docs/figures/fig_examples.png)
+
+*How to read.*
+- **Top:** each concept's activations, flattened to two dimensions and coloured by position in its cycle (years: by value). Green titles are results that came out as hoped, orange titles are partial, black titles are failures.
+- **Bottom:** how strong each cloud's ring is, compared with the strongest ring that random clouds of the same design produce 95% of the time. Above the dashed line means a real ring.
+- **A flat picture can mislead.** The weekdays look round here, but their ring is no stronger than the rings that 7 randomly placed clusters with the same spread form, and the third dimension is hidden.
+
+**What worked**
+- **Colours behave like a colour wheel.**
+  - The model's colour representations form a clear ring, 2.1× the chance level, found in 100% of 200 random subsamples.
+  - Walking through the hues in order (red, yellow, green, blue, purple, back to red) goes around it exactly once.
+  - In a check added after the first results, this still holds with 10 dimensions instead of 3.
+- **Residues mod 113 behave like a clock with 113 hours.**
+  - In a small network trained to add numbers modulo 113, the number embeddings form a ring (1.3× chance).
+  - The numbers go around it once, ordered not as 0, 1, 2, … but by 20 × number (mod 113). This is the kind of Fourier-frequency order such networks are known to learn ([Nanda et al. 2023](https://arxiv.org/abs/2301.05217)).
+  - Caveat: the ring is fragile. It shows up in only 26% of subsamples and is gone with 10 dimensions.
+- **Months: a real ring, with a caveat.**
+  - The 12 months form a ring (1.2× chance, in 90% of subsamples).
+  - They go around it in calendar order, but only with an analysis setting we relaxed after seeing the first results, and only in 3 dimensions.
+- **The controls behaved.** Concepts with no cycle (years, temperatures, ages, character counts, GPT-2's position embeddings) showed no ring in 3D (0 of 6), and neither did 20 random walks and random smooth curves (0 of 20).
+
+**What did not work**
+- **Weekdays: no ring found.**
+  - We expected a 7-hour clock, but the weekday ring is no stronger than chance (0.98×).
+  - The test is weak here: in simulations, even a true ring of 7 tight clusters is detected only 15% of the time.
+  - The days do sit in order around the axis of their fitted helix, but random-curve controls do that too, so it proves nothing.
+- **Days with times of day: a ring, but not the days' ring.** There is a ring (1.07× chance), but going Monday → Sunday does not go around it, and the ring appears in only 3% of subsamples.
+- **Our strictest, pre-committed test passed for nothing.** For weekdays, months and residues we committed in advance to three conditions: a ring, going around once, and surviving with 10 dimensions. None passed (0 of 3), and neither did the fitted-shape version (0 of 3).
+- **With 10 dimensions, a ring alone means little.** Years, ages, temperatures and counts also form rings there, but their values do not go around them. Going around once is what separates the cyclic concepts.
+- **"Helix or closed ring?" cannot be decided.** The shape fitter called weekdays, months and residues helices (open curves). At this noise level, a helix and a closed ring look the same.
+- **Our hole detector was less accurate than the shape label.**
+  - The test bed was 39,000 synthetic shapes with known holes. The pre-committed detector counted the pieces, holes and voids exactly right 62% of the time (averaged over shape families). Reading the count off the fitter's shape label scored 81%.
+  - On shapes whose holes stand well above the noise (ρ_A ≥ 4), a tuned version of the detector does best: 92% vs 82% for the label.
+
+All statistics behind these sentences are in [Results](#results). The words are chosen to match them: "ring" means p < 0.05 against the design-matched null, and "goes around once" means winding number ±1 with significant alignment.
+
 ## At a glance
 
 - **What it is.** A topological analysis of the point clouds that the sibling project [shape-fitting](https://github.com/BurnyCoder/shape-fitting-in-neural-geometry-in-llm-mechanistic-interpretability) classified into 13 geometric shape families. Each cloud is the **top-3 PCA coordinates** of activations or weights for one concept, for example the residual stream of Llama-3.1-8B at the token of each weekday.
@@ -22,18 +64,7 @@ Do concepts that are cyclic in meaning (days, months, colours, residues mod n) o
   - **Controls:** six ordinal concepts, random-init networks and 20 random processes.
   - **Multiple testing:** Holm correction over the primary tests, Benjamini–Hochberg for exploratory ones.
   - **Instrument check:** the estimator is validated on 39,000 synthetic clouds with exact ground-truth topology.
-- **Positive results.**
-  - **Colours:** a robust hole that hue goes around once. It survives in the top-10 PCs against a matched null.
-  - **Residues mod 113:** a hole that the residues go around once at Fourier frequency 20, but fragile under subsampling.
-  - **Months:** a robust hole, but the months go around it only in a post hoc analysis, and only in the top-3 PCs.
-  - **Controls:** no top-3 loop in any ordinal concept (0/6) or random process (0/20).
-- **Negative results.**
-  - **Primary verdicts:** the preregistered hypotheses fail for all three primary cyclic sets: H1-A 0/3, H1-B 0/3.
-  - **Weekdays:** no detectable hole. A post hoc power simulation shows the test rarely detects 7-cluster rings.
-  - **Days with times:** there is a loop, but the day does not go around it.
-  - **Top-10 PCs:** ordinal concepts have loops there too, so a loop alone is not specific.
-  - **Synthetic data:** the preregistered persistent-homology estimator is less accurate than reading topology off the fitter's family label.
-  - **Fitted helices:** whether the fitter's helices for cyclic concepts are open or closed cannot be resolved at the data's noise scale.
+- **Results.** Positive and negative examples are in plain words above; every statistic, table and figure is in [Results](#results).
 - **Novelty**, as far as our [state-of-the-art review](reports/state-of-the-art-review.md) found:
   - **Exact topology of uniquely parametrised fitted shapes,** compared with persistent homology of the same clouds.
   - **A preregistered, null-controlled test** that a hole exists *and* that the semantic cycle winds around it once, with design-matched negative controls. Prior work counts Betti numbers without a null ([Moisescu-Pareja et al.](https://arxiv.org/abs/2512.25060); [Tang et al.](https://arxiv.org/abs/2605.06352)), judges loops by eye ([Modell et al.](https://arxiv.org/abs/2505.18235)), or tests centroids of imposed cycles ([David & Fomin](https://arxiv.org/abs/2607.24425)).
@@ -162,13 +193,6 @@ The per-dataset findings, with every statistic, are in [reports/findings_per_dat
   - H3 (days_time): fail.
   - H4: balanced accuracy 0.50 for every criterion. No criterion identified any cyclic set, so the "found more easily" comparison is uninformative.
   - H2 (specificity) is not falsified. That is weak evidence: sensitivity is zero, and the controls never come near the null threshold.
-
-**In plain words.**
-- Topology finds a hole that the concept goes around for **colours** (robustly) and **residues mod 113**. For **months** there is a hole, and the months go around it, but only post hoc and only in the top-3 PCs.
-- It does **not** find one for weekdays, and the test rarely detects 7-cluster rings anyway. Days-with-times has a loop that the day does not go around.
-- Ordinal concepts and random controls have no loops in the top-3 PCs. In 10 dimensions ordinal concepts do get loops, but their values do not travel around them. Going around the hole, not merely having one, is what distinguishes the cyclic concepts.
-- The shape fitter's "helices" for cyclic concepts cannot be told apart from closed loops at this noise level.
-- Whether steering around these loops changes the model's answers in semantic order is the next experiment: designed, preregistered, and postponed by the author.
 
 ### Method B on key clouds (Exp2, Exp3)
 
