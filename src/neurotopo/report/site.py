@@ -462,7 +462,7 @@ def examples_page(docs) -> None:
     for d, _ in EXAMPLES:
         e = example(d)
         e["cycles"] = [c.tolist() for c in e["cycles"]]                 # list of index arrays -> list of lists
-        del e["shells"], e["void_colour"]                               # this page shows loops only: keep its JSON small
+        del e["shells"], e["void_colour"], e["void_centres"]                        # this page shows loops only: keep its JSON small
         rows.append({k: (np.round(v, 5).tolist() if isinstance(v, np.ndarray) else v) for k, v in e.items()})
     (docs / "data" / "examples.json").write_text(json.dumps(_clean(rows)), encoding="utf-8", newline=chr(10))
     (docs / "examples.html").write_text(EXAMPLES_PAGE, encoding="utf-8", newline=chr(10))

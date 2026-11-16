@@ -74,7 +74,7 @@ def test_void_shell_octahedron():
     # (circumradius sqrt(2/3) of a face of side sqrt(2)), filled at radius ~1. Its shell is the 8 faces (chi = 2).
     # The perturbation also leaves a near-zero bar (pi - 1 ~ 1e-6) among the tetrahedra filling the inside; skip it.
     pts = np.r_[np.eye(3), -np.eye(3)] + 1e-3 * np.random.default_rng(0).normal(size=(6, 3))
-    bars, shells = diagrams.alpha_h2_voids(pts)
+    bars, shells, _ = diagrams.alpha_h2_voids(pts)
     real = np.flatnonzero(diagrams.ratios(bars) > 1.01)
     assert len(bars) == len(shells) and len(real) == 1
     b, s = bars[real[0]], shells[real[0]]
@@ -86,7 +86,7 @@ def test_void_shell_octahedron():
 def test_void_shells_are_born_with_the_void(pts):
     # Same voids as the diagram; each shell is a closed surface whose triangles are all in the complex at the birth
     # radius, and the last of them enters exactly at the birth radius (the triangle that closes the void).
-    bars, shells = diagrams.alpha_h2_voids(pts)
+    bars, shells, _ = diagrams.alpha_h2_voids(pts)
     assert len(bars) > 0
     assert np.allclose(np.sort(bars, axis=0), np.sort(diagrams.alpha_diagrams(pts)[2], axis=0))
     entry = {tuple(sorted(sx)): r for sx, r in diagrams.alpha_filtration(pts) if len(sx) == 3}
@@ -100,11 +100,44 @@ def test_sphere_void_shell_is_the_sphere():
     # The big void of a noisy sphere sample is enclosed by a triangulated sphere (Euler characteristic V - E + F = 2)
     # through most of the points; points pushed outward by the noise can sit behind it (268 of 300 here are on it).
     pts = sphere(300, 0.01)
-    bars, shells = diagrams.alpha_h2_voids(pts)
+    bars, shells, _ = diagrams.alpha_h2_voids(pts)
     top = shells[int(np.argmax(diagrams.ratios(bars)))]
     edges = {tuple(sorted(e)) for t in top.tolist() for e in combinations(t, 2)}
     assert len(np.unique(top)) - len(edges) + len(top) == 2
     assert len(np.unique(top)) >= 0.8 * len(pts)
+
+
+def inside_mod2(c, pts, tris, direction=(0.5377, 0.8339, -0.1258)) -> bool:
+    # Point in a closed Z/2 surface: a ray from c crosses it an odd number of times (Moller-Trumbore ray-triangle
+    # test, https://doi.org/10.1080/10867651.1997.10487468); a generic direction avoids grazing edges.
+    a, b, d = (pts[np.asarray(tris)[:, k]] for k in range(3))
+    e1, e2, r = b - a, d - a, np.asarray(direction, dtype=float)
+    h = np.cross(r, e2)
+    with np.errstate(divide="ignore", invalid="ignore"):
+        f = 1.0 / np.einsum("ij,ij->i", e1, h)
+        s = c - a
+        u = f * np.einsum("ij,ij->i", s, h)
+        q = np.cross(s, e1)
+        v, t = f * (q @ r), f * np.einsum("ij,ij->i", e2, q)
+    return int(np.sum(np.isfinite(f) & (u >= 0) & (v >= 0) & (u + v <= 1) & (t > 0))) % 2 == 1
+
+
+@pytest.mark.parametrize("pts", [sphere(300, 0.01), np.random.default_rng(1).normal(size=(300, 3))], ids=["sphere", "blob"])
+def test_void_centres_are_empty_and_inside_their_shell(pts):
+    # Each void's centre (circumcentre of the tetrahedron that fills it) has no point closer than the death radius
+    # (empty Delaunay circumsphere), so a ball of radius death - birth around it is still empty when the void is born,
+    # and the centre lies inside the void's shell.
+    bars, shells, centres = diagrams.alpha_h2_voids(pts)
+    assert len(centres) == len(bars) > 0
+    for (_, d), s, c in zip(bars, shells, centres):
+        assert np.isclose(np.linalg.norm(pts - c, axis=1).min(), d, rtol=1e-6)
+        assert inside_mod2(c, pts, s)
+
+
+def test_octahedron_void_centre_is_the_centre():
+    pts = np.r_[np.eye(3), -np.eye(3)] + 1e-3 * np.random.default_rng(0).normal(size=(6, 3))
+    bars, _, centres = diagrams.alpha_h2_voids(pts)
+    assert np.allclose(centres[int(np.argmax(diagrams.ratios(bars)))], 0.0, atol=1e-2)
 
 
 def test_known_shapes_universal_significance():

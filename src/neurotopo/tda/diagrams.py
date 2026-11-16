@@ -81,7 +81,7 @@ def alpha_h1_cycles(points: np.ndarray) -> tuple[np.ndarray, list[np.ndarray]]:
     return np.array(bars, dtype=np.float64).reshape(-1, 2), cycles
 
 
-def alpha_h2_voids(points: np.ndarray) -> tuple[np.ndarray, list[np.ndarray]]:
+def alpha_h2_voids(points: np.ndarray) -> tuple[np.ndarray, list[np.ndarray], np.ndarray]:
     """Voids (H2 bars in radius units, zero-length bars dropped) of the alpha complex, each with one representative
     shell for display: the closed surface of triangles around the empty region the void encloses when it is born.
 
@@ -92,7 +92,10 @@ def alpha_h2_voids(points: np.ndarray) -> tuple[np.ndarray, list[np.ndarray]]:
     yet; the triangles where the fill stops are the shell. The shell holds the birth triangle and only triangles that
     entered before it, so it exists at the birth radius but not just before; it is the boundary of tetrahedra that all
     enter by the death tetrahedron, so it is filled in exactly at the death radius. Representatives are not unique.
-    Shells are (F, 3) arrays of vertex indices, one row per triangle."""
+    Shells are (F, 3) arrays of vertex indices, one row per triangle. Centres (V, 3) are the death tetrahedra's
+    circumcentres: a tetrahedron's alpha value is its circumradius and its circumsphere holds no point (Delaunay), so
+    no point is closer to the centre than the death radius d, and at the birth radius b a ball of radius d - b around
+    it is still uncovered: the void's empty middle, the last place the growing balls reach."""
     from itertools import combinations
     pts = np.asarray(points, dtype=np.float64)
     st = gudhi.AlphaComplex(points=pts).create_simplex_tree()
@@ -104,7 +107,7 @@ def alpha_h2_voids(points: np.ndarray) -> tuple[np.ndarray, list[np.ndarray]]:
         if len(key) == 4:                                   # combinations of a sorted tuple are sorted: same keys as rank
             for f in combinations(key, 3):
                 cofaces.setdefault(f, []).append(key)
-    bars, shells = [], []
+    bars, shells, centres = [], [], []
     for birth, death in st.persistence_pairs():
         if len(birth) != 3 or len(death) != 4:              # H2 pairs: a triangle closes the void, a tetrahedron fills it
             continue
@@ -126,7 +129,10 @@ def alpha_h2_voids(points: np.ndarray) -> tuple[np.ndarray, list[np.ndarray]]:
                             stack.append(t)
         bars.append((b, d))
         shells.append(np.array(sorted(odd), dtype=int).reshape(-1, 3))
-    return np.array(bars, dtype=np.float64).reshape(-1, 2), shells
+        v = pts[list(death)]                                # circumcentre c of the death tetrahedron: equal distance to its
+        lhs, rhs = 2 * (v[1:] - v[0]), (v[1:] ** 2).sum(1) - (v[0] ** 2).sum()   # 4 corners <=> 2 (v_i - v_0) . c = |v_i|^2 - |v_0|^2
+        centres.append(np.linalg.solve(lhs, rhs))
+    return np.array(bars, dtype=np.float64).reshape(-1, 2), shells, np.array(centres, dtype=np.float64).reshape(-1, 3)
 
 
 def _drop_zero_length(iv: np.ndarray) -> np.ndarray:
