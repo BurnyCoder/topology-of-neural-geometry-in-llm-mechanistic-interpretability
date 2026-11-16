@@ -886,6 +886,50 @@ def fig_void_gallery() -> None:
     save(fig, "fig_void_gallery")
 
 
+HIGHLIGHT_NAMES = {"R7_llama_colors": "colours (Llama)", "R2_grokking_WE": "residues mod 113 (grokked network)",
+                   "R5b_llama_months": "months (Llama)", "R5b_llama_months_means": "the 12 month centres (Llama)",
+                   "R3_tms_n20": "toy model, 20 features", "R3_tms_n8": "toy model, 8 features",
+                   "R3_tms_n6": "toy model, 6 features"}
+CONCEPT_NOUN = {"R7_llama_colors": "hues", "R2_grokking_WE": "residues", "R5b_llama_months": "months",
+                "R5b_llama_months_means": "months"}
+
+
+def fig_highlights() -> None:
+    """The README's first figure: only the results that pass every check (examples.highlights). Top row: the rings, a
+    cloud's most persistent loop surviving Benjamini-Hochberg over Exp2's 44 loop tests whose concepts go around it
+    once, drawn as in fig_detected_loops (red cycle face-on, points coloured by concept, colours in their RGB). Bottom
+    row: the voids surviving the same correction over the 44 void tests, drawn as in fig_detected_voids (red shell
+    around a blue empty middle). Titles give pi, the BH q and the concepts or features on the cycle or shell."""
+    from neurotopo.experiments import realdata
+    from neurotopo.report.examples import highlights, replay
+    loops, voids = highlights()
+    inv = pd.read_csv(config.path("results") / "exp2" / "invariants.csv").set_index("id")
+    fig = plt.figure(figsize=(15, 8.2))
+    gs = fig.add_gridspec(2, 2 * max(len(loops), len(voids)), hspace=0.42, wspace=0.1, top=0.82, bottom=0.02)
+    for row, rows in ((0, loops), (1, voids)):
+        off = max(len(loops), len(voids)) - len(rows)                    # centre a shorter row
+        for j, r in enumerate(rows):
+            d, c = r["id"], realdata.cloud(r["id"])
+            a3 = fig.add_subplot(gs[row, off + 2 * j: off + 2 * j + 2], projection="3d")
+            if row == 0:
+                _loop_3d(a3, c["y"], np.array(r["cycle"]), _point_rgb(d, c["labels"]))
+                what = f"{r['loop_concepts']} of {r['n_concepts']} {CONCEPT_NOUN.get(d, 'concepts')} on it, once around"
+                q = inv.loc[d, "q_top_loop"]
+            else:
+                _void_3d(a3, d, c["y"], c["labels"], replay(c["y"]), 0)
+                what = f"{r['corners']} of {r['N']} features on its shell"
+                q = inv.loc[d, "q_top_void"]
+            a3.set_title(f"{HIGHLIGHT_NAMES.get(d, short(d))}\nπ = {r['pi']:.2f}, q = {q:.3f}\n{what}",
+                         fontsize=9, color="#1b7837")
+    for row, head in ((0, "Rings: the concepts go around the loop once"),
+                      (1, "Voids: an empty middle walled in by a closed surface")):
+        top = gs[row, :].get_position(fig).y1                           # row headers sit above the panel titles
+        fig.text(0.5, top + 0.085, head, ha="center", fontsize=10.5, weight="bold")
+    fig.suptitle("The strongest results: each survives the correction over 44 tests (Benjamini-Hochberg q < 0.05)",
+                 fontsize=12, y=0.99)
+    save(fig, "fig_highlights")
+
+
 def fig_loop_gallery() -> None:
     """Every interesting loop (results/loops/summary.json from `run.py loops`: significant, large, or goes around once;
     post hoc rules, deviation D11), drawn as in fig_detected_loops (red cycle, face-on), points coloured by concept

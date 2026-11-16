@@ -14,6 +14,16 @@ For each concept we ask two questions:
 
 A loop alone does not prove a hole. The loop test also flags many hole-free shapes, such as curved sheets and caps ([third audit, D9](reports/exp8_audit3.md)). So we call a loop a **ring** only when the concept also goes around it once.
 
+![The strongest results: four rings that their concepts go around once and three toy-model voids, each surviving the correction over 44 tests](docs/figures/fig_highlights.png)
+
+*The strongest results,* picked by rule from all 10729 loops and 4759 voids. Each is a cloud's most persistent loop or void that survives Benjamini–Hochberg over the 44 clouds (q < 0.05); a loop must also have its concepts go around it once along the drawn cycle.
+- **Rings (top):** colours, the grokked residues (in the order of their Fourier frequency), months, and the 12 month centres. Each keeps a caveat from the detailed results below:
+  - colours: the prompts' own RGB values already form this loop (D8), so the model keeps the stimuli's hue circle rather than building one;
+  - months: the loop test cannot tell a closed ring from a nearly closed arc, and the preregistered traversal needed a setting relaxed after the first results, so the ring is "suggestive" (D9);
+  - residues: the top-3 view mixes several of the network's Fourier frequencies and is unstable across subsamples.
+- **Voids (bottom):** the three toy models of superposition. Their features sit on the corners of a polytope and leave its middle empty. These sets have only 6–20 points and are exploratory.
+- Everything else, including the loops and voids that are not real: [loop gallery](#every-interesting-loop-post-hoc-d11), [void gallery](#every-interesting-void-post-hoc-d10).
+
 ![The detected circular loops: each example cloud's most persistent loop drawn as a red ring, and its dot in the persistence diagram](docs/figures/fig_detected_loops.png)
 
 *The detected circular loops.* For each example cloud, the red ring is the cloud's most persistent loop: one closed path of edges that carries it ([representative loop](docs/glossary.md#representative-loop)), seen face-on.

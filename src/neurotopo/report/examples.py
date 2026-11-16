@@ -203,6 +203,21 @@ def void_life(d: str) -> dict:
             "edge_r": float(h1[h1[:, 0] < b, 0].max()), "faces_r": float(h1[h1[:, 0] < b, 1].min())}
 
 
+def highlights() -> tuple[list[dict], list[dict]]:
+    """The README's first figure (figures.fig_highlights): the loops and voids that pass every check, by rule.
+    Rings: a cloud's most persistent loop that survives Benjamini-Hochberg over Exp2's 44 loop tests and whose
+    concepts wind once along its representative cycle (results/loops, run.py loops). Voids: a cloud's most persistent
+    void that survives Benjamini-Hochberg over the 44 void tests (results/voids, run.py voids). Each list is ordered
+    by persistence ratio, largest first; rows are the search phases' records (with the cycle for loops)."""
+    inv = _inv()
+    loops = [r for r in _json("loops", "summary.json")["interesting"]
+             if r["k"] == 1 and inv.loc[r["id"], "q_top_loop"] < 0.05 and r["cyclic"] and abs(r["winding"]) == 1]
+    voids = [r for r in _json("voids", "summary.json")["interesting"]
+             if r["k"] == 1 and inv.loc[r["id"], "q_top_void"] < 0.05]
+    by_pi = lambda rows: sorted(rows, key=lambda r: -r["pi"])
+    return by_pi(loops), by_pi(voids)
+
+
 def stimulus_rgb(d: str, labels: list[str]) -> np.ndarray | None:
     """(N, 3) RGB in [0, 1] of each colour prompt (labels "hue|sat|lum", as exp7_audit.colour_stimuli builds them
     from the source's prompt builder), so the colours cloud can be painted in its own colours; None for other sets."""
