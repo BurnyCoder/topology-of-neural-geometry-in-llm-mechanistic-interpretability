@@ -334,6 +334,8 @@ def run() -> None:
         figures.fig_null_tests()
         figures.anim_clouds()
         figures.fig_detected_voids()
+        if have("loops", "summary.json") and have("voids", "summary.json"):
+            figures.fig_highlights()
         if have("loops", "summary.json"):
             figures.fig_loop_gallery()
         if have("voids", "summary.json"):

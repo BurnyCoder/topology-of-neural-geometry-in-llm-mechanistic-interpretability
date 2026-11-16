@@ -73,6 +73,14 @@ def test_colours_largest_void_and_stimulus_colours():
     assert examples.stimulus_rgb("R6_llama_years", []) is None
 
 
+def test_highlights_are_the_bh_significant_rings_and_voids():
+    # The README's first figure: top loops surviving BH whose concepts go around once, and top voids surviving BH.
+    loops, voids = examples.highlights()
+    assert [r["id"] for r in loops] == ["R7_llama_colors", "R2_grokking_WE", "R5b_llama_months", "R5b_llama_months_means"]
+    assert all(r["k"] == 1 and abs(r["winding"]) == 1 for r in loops)
+    assert [r["id"] for r in voids] == ["R3_tms_n20", "R3_tms_n6", "R3_tms_n8"] and all(r["k"] == 1 for r in voids)
+
+
 def test_days_time_traversal_uses_the_day_variable():
     # The concept variable of days + times of day is the day ("day of week"), not the time of day.
     t = examples.traversal("R5c_llama_days_time")
