@@ -186,6 +186,11 @@ def collect() -> dict:
             n["exp2.n_void_q05"] = int((d["q_top_void"] < 0.05).sum())       # voids surviving BH over the 44 tests
         trained = d[d.index.str.startswith("R") & ~d.index.str.startswith("R3_")]   # trained models, not the toy models
         n["exp2.trained_n"], n["exp2.trained_voids"] = len(trained), int((trained["p_top_void"] < 0.05).sum())
+        # The colours cloud's largest void (README void figure; post hoc, chosen after browsing the explorer).
+        from neurotopo.report.examples import largest_void                   # lazy: examples imports report modules
+        lv = largest_void("R7_llama_colors")
+        for key in ("rank", "n", "birth", "death", "pi", "p", "loop_death", "winding", "shell_concepts", "n_concepts"):
+            n[f"voids.colors.{key}"] = lv[key]
         c1 = d[d.index.str.startswith("C1_")]
         n["exp2.c1_loops"] = int((c1["p_top_loop"] < 0.05).sum())
         n["exp2.c1_pi_max"] = float(c1["top_pi1"].max())

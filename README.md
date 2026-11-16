@@ -22,17 +22,21 @@ A loop alone does not prove a hole. The loop test also flags many hole-free shap
 - **Weekdays and days with times:** the most persistent loop is a small loop inside one cluster (circled). It dies below the dotted line, before two days' clusters touch.
 - **Years:** a small loop that does not beat the null (below the dashed line).
 
-![The detected voids: each cloud's most persistent void drawn as a red shell around its empty middle (a blue ball), and its triangle in the void persistence diagram](docs/figures/fig_detected_voids.png)
+![The detected voids: three toy-model voids, the colours cloud's largest void inside its hue ring, and two GPT-2 controls, each drawn as a red shell around its empty middle, with its triangle in the void persistence diagram](docs/figures/fig_detected_voids.png)
 
 *The detected voids*, drawn the same way. A void is an empty region walled in by a closed surface, like the inside of a hollow ball. It is the next kind of hole after a loop (an H2 bar instead of an H1 bar).
-- **Top:** the red edges are the shell of each cloud's most persistent void: one closed surface of triangles that carries it ([representative void](docs/glossary.md#representative-void)).
+- **Top:** the red edges are the shell of a void: one closed surface of triangles that carries it ([representative void](docs/glossary.md#representative-void)). Each cloud shows its most persistent void, except colours, which shows its largest.
   - The blue ball is the void's empty middle. No point is closer to its centre than the void's death radius, so when the void closes (at its birth radius) a ball of radius death − birth there is still not covered.
 - **Bottom:** the same void as a red triangle in the void persistence diagram (axes zoomed per cloud).
 - **Toy models of superposition** ([Elhage et al. 2022](https://transformer-circuits.pub/2022/toy_model/index.html)), green: each point is one feature's direction in a 3-dimensional hidden layer.
-  - They are the only 3 of the 44 clouds whose most persistent void survives Benjamini–Hochberg (q = 0.015). The features sit on or near the corners of a polytope, which walls in a void.
-  - With 6 features the shell is the 8 faces of an octahedron. Its persistence ratio π = 1.224 is close to that of a regular octahedron, √(3/2) ≈ 1.225.
-  - The voids of 8 and 20 features come back in 69% and 77% of random 80% subsamples. With 6 features a subsample keeps only 5 of the 6 corners, and the void came back in 0% of them.
+  - They are the only 3 of the 44 clouds whose most persistent void survives Benjamini–Hochberg (q = 0.015). Here the void matches both the cloud's shape and its meaning: the features sit on or near the corners of a polytope, so the shell spans the whole cloud and the empty middle is the space the features keep clear.
+  - The void of 20 features is the strongest of all 44 clouds: π = 1.47 against the null's 95th percentile of 1.06, and it comes back in 77% of random 80% subsamples (69% with 8 features).
+  - With 6 features the shell is the 8 faces of an octahedron. Its persistence ratio π = 1.224 is close to that of a regular octahedron, √(3/2) ≈ 1.225. A subsample keeps only 5 of the 6 corners, and the void came back in 0% of them.
   - These clouds have only 6–20 points and were [preregistered](reports/preregistration.md) as exploratory, descriptive sets.
+- **Colours** (chosen after browsing the [explorer](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/), so post hoc), black: each point is painted in its prompt's own colour, and the dark line is the hue ring (the cloud's most persistent loop), seen face-on.
+  - The panel shows the void with the largest empty middle (#3 of 785 by π). Its shell's corners cover 21 of the 36 hues, and the hue ring winds around its centre once.
+  - It closes at radius 0.451, right after the hue ring is filled in (0.438), and fills at 0.535. This suggests the ring's middle is not a flat disc: filling it in walls off a pocket.
+  - It is not significant: π = 1.19, below the null's 95th percentile (1.35; p = 0.865). Random Gaussian clouds of the same design usually have a more persistent void. The farthest 2% of the points are left out of the panel so the ring fills it.
 - **GPT-2 positions at random init**, orange: a small void (circled) with p = 0.020, but q = 0.18 after the correction, and it comes back in only 1% of subsamples. We read it as a chance hit among 44 tests.
 - **Trained GPT-2 positions**, black: the shape fitter calls this cloud a closed sphere, which has a void, but the data has none. Its most persistent void is a thin one (π = 1.02, below the null's 95th percentile of 1.39). The positions trace a spiral curve, not a surface.
 - **None of the other 14 trained-model clouds** (the language-model concepts and the grokking network) has a significant void, even before correction (0 at p < 0.05).

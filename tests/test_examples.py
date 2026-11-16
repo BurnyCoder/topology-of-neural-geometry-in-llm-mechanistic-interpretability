@@ -60,6 +60,19 @@ def test_example_weekdays_is_consistent():
     assert t["source"].startswith("post hoc") and t["names"][0] == "Monday" and len(t["theta"]) == 7
 
 
+def test_colours_largest_void_and_stimulus_colours():
+    # The README's colours void is the one with the largest empty middle; the hue ring winds around it once; the
+    # points are painted in their prompts' RGB (36 hues x 5 saturations x 5 lightnesses = 900 prompts).
+    from neurotopo.experiments import realdata
+    lv = examples.largest_void("R7_llama_colors")
+    h2 = lv["rp"]["h2"]
+    assert lv["k"] == int(np.argmax(h2[:, 1] - h2[:, 0])) and abs(lv["winding"]) == 1
+    assert 0 < lv["p"] <= 1 and 0 < lv["shell_concepts"] <= lv["n_concepts"] == 36
+    rgb = examples.stimulus_rgb("R7_llama_colors", realdata.cloud("R7_llama_colors")["labels"])
+    assert rgb.shape == (900, 3) and rgb.min() >= 0 and rgb.max() <= 1
+    assert examples.stimulus_rgb("R6_llama_years", []) is None
+
+
 def test_days_time_traversal_uses_the_day_variable():
     # The concept variable of days + times of day is the day ("day of week"), not the time of day.
     t = examples.traversal("R5c_llama_days_time")
