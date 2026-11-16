@@ -1,0 +1,177 @@
+# Method and terms
+
+This page explains the method and every technical term used in the [README](../README.md), the [interactive explorer](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/) and the [examples page](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/examples.html).
+- For every step carried out with numbers on a toy cloud, see the [worked example](worked_example.md).
+- The primary reference for the idea of counting holes with persistent homology is the video [What is...persistent homology?](https://www.youtube.com/watch?v=w6Jx1vFp_Gk) (VisualMath).
+- The exact rules are in the [preregistration](../reports/preregistration.md); the reasons for each choice are in [methodology.md](methodology.md).
+
+## The method in one minute
+
+1. **Take a point cloud.** It holds a model's activations for one concept set, for example the residual stream of Llama-3.1-8B at the token of each weekday, flattened to its top-3 principal components.
+2. **Method A: read the topology off a fitted shape.** A sibling project fitted one of 13 shape families to each cloud. Each family's holes are known exactly. A margin ratio says whether the data's noise is small enough to tell.
+3. **Method B: measure the holes of the cloud itself.** Grow a ball around every point and record when loops appear and when they are filled in (persistent homology).
+   - A loop counts as significant only if it persists longer than the most persistent loop of most random clouds built to match the data's design (a Monte Carlo null).
+4. **Check where the loop lives.** If it dies before two concepts' clusters ever touch, it is a small loop inside one cluster, not a ring of concepts.
+5. **Travel around the hole.** Give every point an angle around the loop, then ask whether the concepts sit around it in their natural order (Monday, Tuesday, …) and go around exactly once.
+6. **Say what was found.** The words loop, ring, goes around once and suggestive have the strict meanings defined at the end of this page.
+
+## Data
+
+### Point cloud
+One point per prompt or per item. Each point is the model's internal vector (activation or weight row) for that input, as stored by the source project ([shape-fitting](https://github.com/BurnyCoder/shape-fitting-in-neural-geometry-in-llm-mechanistic-interpretability)). There are 44 clouds: language-model concepts, toy networks, random-init controls and random processes.
+
+### Top-3 PCA coordinates
+How each cloud is flattened to 3D (`fit_frame`):
+- centre it;
+- project it on the 3 directions of largest variance (principal components, PC1–PC3);
+- flip each axis so its skewness is positive;
+- divide by the RMS radius, so every cloud has root-mean-square distance 1 from its centre.
+
+Holes are measured in these 3D coordinates; checks repeat the loop test in the top-5 and top-10 PCs. Radii (r, birth, death) are in these normalised units, so they are comparable across clouds.
+
+### Concept and semantic cycle
+The **concept** of a point is what it stands for: a weekday, a month, a hue, a residue mod 113, or, for ordinal sets such as years, an equal-width value bin.
+- A concept's **semantic phase** φ_c = 2πc/n is its place in its natural cycle (Monday = 0, Tuesday = 1/7 of a turn, …).
+- For residues the phase is 2π·k·r/113, where k is the Fourier frequency that fits best.
+
+### Prompt-template design
+Several prompts per concept (for example several sentences ending in the same weekday), so the points form one cluster per concept. These clouds get the cluster-centre null (see below).
+
+## Method A: exact topology of the fitted shape
+
+### Fitted shape (13 families)
+The source project fitted each cloud with one of 13 parametrised families: blob, clusters, polytope, line, arc, ellipse, helix, ringing curve, disc, paraboloid, sphere or cap, cone, torus. In the explorer the fitted shape is drawn as grey dots. The family table is in [analytic_topology.md](analytic_topology.md).
+
+### Betti numbers
+(b0, b1, b2) count the pieces, the independent loops (1-dimensional holes) and the enclosed voids (2-dimensional cavities) of a space.
+- Examples: a circle has (1, 1, 0), a sphere (1, 0, 1), a torus (1, 2, 1), and a disc or ball (1, 0, 0).
+- **Method A** reads them exactly off the fitted family and its parameters ([Hatcher 2002](https://pi.math.cornell.edu/~hatcher/AT/AT.pdf), chapter 2).
+- **Method B** counts the significant loops and voids alive at the characteristic scale r_c; its b0 comes from a single-linkage clustering rule tuned on validation clouds.
+
+### Euler characteristic
+χ = b0 − b1 + b2. One number that summarises the Betti numbers: 2 for a sphere, 0 for a circle or a torus, 1 for a disc.
+
+### Genus
+The number of handles of a closed surface, from χ = 2 − 2g: 0 for a sphere, 1 for a torus. "–" when the space is not a closed surface.
+
+### Homotopy class
+A coarse label of the shape up to continuous deformation, read from the Betti numbers: contractible (1,0,0), circle-like (1,1,0), sphere (1,0,1), torus (1,2,1), or k components. Homology cannot separate a circle from an annulus, or a point from a disc.
+
+### Margin ratio rho_A
+ρ_A = m / (2ν) asks whether the data can resolve the fitted shape's topology.
+- m is the smallest parameter change that would change the topology, for example the gap between a helix's two ends, or a hole's diameter.
+- ν is the cloud's noise-and-coverage scale: the median distance from the points to the shape plus the 95th-percentile distance from the shape to the points.
+
+### Resolvable
+ρ_A ≥ 1: the topological feature is larger than the noise, so the data can distinguish it. Below 1, a fitted "open helix" cannot be told apart from a closed loop.
+
+## Method B: persistent homology of the cloud
+
+The primary reference for this idea is the video [What is...persistent homology?](https://www.youtube.com/watch?v=w6Jx1vFp_Gk) (VisualMath).
+
+### Union of balls and radius r
+Put a ball of radius r around every point and let r grow from 0. Small r gives separate dots. As r grows, balls merge into pieces, pieces close into loops, and loops fill in. Persistent homology records these events.
+
+### Simplicial complex
+Vertices, edges, triangles and tetrahedra glued along shared faces. It is a combinatorial stand-in for the union of balls that a computer can count holes in.
+
+### Alpha complex
+The simplicial complex used here, computed with [GUDHI](https://gudhi.inria.fr/python/latest/alpha_complex_user.html).
+- It has exactly the holes of the union of balls at every radius (the nerve theorem), and it uses only Delaunay simplices, so it stays small.
+- An edge enters at half its length if no other point lies inside the circle (sphere, in 3D) that has the edge as diameter; otherwise it enters together with a triangle.
+- A triangle enters at the radius of its circumcircle (more generally, its smallest empty circumsphere).
+- The examples page draws its edges as r grows.
+
+### Rips complex
+Adds a simplex whenever all its points are pairwise within distance 2r. It is cheaper in high dimensions but can create holes the union of balls does not have. Here it is used for the top-10-PC checks and for the hole coordinate θ_B.
+
+### Filtration
+The nested sequence of complexes as r grows. Every simplex has an entry radius, and nothing is ever removed.
+
+### Homology H0 H1 H2
+H0 = connected pieces, H1 = loops, H2 = voids, computed with coefficients mod 2. In the explorer's persistence diagram, H1 loops are dots and H2 voids are triangles.
+
+### Birth and death
+A loop is **born** at the radius where it first closes and **dies** at the radius where it is filled in. A piece (H0) is born at 0 and dies when it merges with an older piece.
+
+### Persistence diagram
+One dot (birth, death) per loop or void. Dots on the diagonal live for no time; dots far above it persist over a wide range of scales. The examples page draws it on log axes, where the distance above the diagonal is log π.
+
+### Persistence ratio pi
+π = death / birth ([Bobrowski & Skraba 2023](https://doi.org/10.1038/s41598-023-37842-2)).
+- Because it is a ratio, it does not change if the cloud is scaled.
+- Loops made by noise have π close to 1. Any loop of 3 points has π ≤ 2/√3, and a regular k-gon of points gives 1/sin(π/k).
+
+### Top H1 pi
+The largest π among a cloud's loops: its most persistent loop. This is the statistic of the loop test. In the README's example figure, the bars show it divided by the null's 95th percentile.
+
+### Monte Carlo null
+M = 999 random clouds that match the data's design. Each goes through the same top-3 PCA and alpha complex, and its largest π is recorded. The data's loop is compared with this distribution of maxima, which controls for the many loops every cloud has (in the style of [Gardner et al. 2022](https://doi.org/10.1038/s41586-021-04268-7)).
+- **Cluster-centre null** (prompt-template designs): the concept centres are redrawn from a Gaussian with their own covariance, and every prompt keeps its offset from its concept centre.
+- **Matched Gaussian** (one point per value): a Gaussian cloud with the data's full covariance.
+- Both are Gaussian, so a significant loop means "more persistent than a covariance-matched Gaussian blob", not necessarily a hole (deviation D9).
+
+### Null 95th percentile q95
+The 95th percentile of the 999 null maxima. In the persistence diagrams it is the red line d = q95 · b: loops above it are significant at the 5% level.
+
+### Monte Carlo p-value
+p = (1 + number of null maxima ≥ the observed π) / (M + 1). With M = 999 the smallest possible value is 0.001. "loop p (MC)" in the explorer is this p for the cloud's most persistent loop.
+
+### Universal null
+A theory-based alternative: for large random samples, log log π follows a universal Gumbel-type law ([Bobrowski & Skraba 2023](https://doi.org/10.1038/s41598-023-37842-2)). It is reported only descriptively, because it is very conservative at these sample sizes.
+
+### Characteristic scale r_c
+r_c = √(birth · death) of the most significant loop or void: the scale at which that feature is most clearly alive. Method B's Betti numbers, Euler characteristic, genus and homotopy class are read at r_c.
+
+### Stability over subsamples
+The share of 200 random 80% subsamples in which the cloud's most persistent loop still beats the null's 95th percentile.
+
+### Connect radius (loop inside one cluster)
+Half the smallest distance between points of two different concepts. Below this radius, balls of different concepts never touch. So a loop that dies at or below it is made of one concept's points: a small loop inside one cluster, not a ring of concepts (audit D8).
+
+## Travel around the hole
+
+### theta_A and theta_B (hole coordinates)
+Each point gets an angle that increases by one full turn around the loop.
+- **θ_A** is the point's position along the fitted shape (Method A).
+- **θ_B** comes from persistent cohomology ([de Silva, Morozov & Vejdemo-Johansson 2011](https://doi.org/10.1007/s00454-011-9344-x), computed with [DREiMac](https://github.com/scikit-tda/DREiMac)):
+  - the most persistent loop gives a **cocycle**, a cut across the ring;
+  - least squares (harmonic smoothing) spreads that cut evenly into an angle.
+- The preregistered setting (`standard_range=True`) refuses loops whose Rips death is less than twice their birth ("too short"). The relaxed setting (`standard_range=False`) was used only post hoc.
+
+### Loop B
+A closed curve through the cloud that follows θ_B: the mean of the points in each of 24 equal bins of θ_B, joined by a periodic cubic spline. It is drawn in red in the explorer, and it is the path planned for (postponed) steering experiments.
+
+### Circular mean
+The average direction of angles, arg Σ e^{iθ}. An ordinary average would put 359° and 1° at 180°; the circular mean gives 0°. Each concept's angle is the circular mean of its points' angles.
+
+### Alignment R
+R = max over s ∈ {+1, −1} of |mean_c e^{i(θ_c − s·φ_c)}|. It measures how well the concepts' angles θ_c match their semantic phases φ_c, allowing any starting point and either direction (s). R = 1 is a perfect match; R near 0 means no relation.
+
+### Permutation p-value
+How often R would be at least as large if the concepts' phases were shuffled. It is exact over all n! shuffles for 7 or fewer concepts; otherwise it uses 99,999 random shuffles.
+
+### Winding number
+How many times the concepts' cycle (Monday → … → Sunday → Monday) goes around the circle: the sum of the shortest signed steps between consecutive concepts' angles, divided by 2π. ±1 means exactly once (the sign is only the direction).
+
+### Preregistered and post hoc
+**Preregistered** analyses were fixed before any topology was computed ([preregistration](../reports/preregistration.md)). **Post hoc** analyses were added after seeing results; they are logged as deviations ([deviations](../reports/deviations.md)) and weigh less.
+
+## Verdict words
+
+### Loop
+The cloud's most persistent loop has p < 0.05 against the design-matched Monte Carlo null. This alone is not evidence of a hole: the null also rejects many hole-free shapes such as curved sheets and caps (deviation D9).
+
+### Ring
+A loop that runs through the concept clusters (not inside one) and that the concept goes around once in the preregistered analysis.
+
+### Goes around once
+Alignment p < 0.05 and winding number ±1 for the concept variable.
+
+### Suggestive
+A loop through the clusters that the concept goes around once only in a post hoc analysis (as for months).
+
+## Statistics
+
+### Holm and Benjamini-Hochberg
+Corrections for testing many hypotheses. Holm controls the chance of any false positive among the primary tests. Benjamini–Hochberg controls the expected share of false positives among the exploratory tests (its adjusted values are called q).
