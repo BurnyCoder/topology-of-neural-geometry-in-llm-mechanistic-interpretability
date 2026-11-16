@@ -100,7 +100,7 @@ A loop is **born** at the radius where it first closes and **dies** at the radiu
 One dot (birth, death) per loop or void. Dots on the diagonal live for no time; dots far above it persist over a wide range of scales. The examples page draws it on log axes, where the distance above the diagonal is log π.
 
 ### Representative loop
-One closed path of edges that carries a given loop. The site and the README animation draw it in the loop's own colour while the loop is alive, so each dot in the persistence diagram can be matched with a ring in the cloud.
+One closed path of edges that carries a given loop. The site and the README animation draw it in the loop's own colour while the loop is alive, so each dot in the persistence diagram can be matched with a closed path in the cloud.
 - It is built from the edge whose entry creates the loop (from GUDHI's persistence pairs), closed by the shortest path between the edge's two ends through edges that entered earlier.
 - A loop has many such paths; this one is for display, and the statistics never use it.
 

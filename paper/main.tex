@@ -8,7 +8,7 @@
 \graphicspath{ {../docs/figures/} }
 \title{Holes in Neural Geometry: Exact Topology of Fitted Shapes and Persistent Homology\\of Top-3-PCA Activation Clouds, and Whether Cyclic Concepts Travel Around Them}
 \author{Libor ``Burny'' Burian}
-\date{15 November 2026}
+\date{16 November 2026}
 \begin{document}
 \maketitle
 
@@ -33,6 +33,7 @@ Whether the fitter's ``helices'' for cyclic concepts are open or closed is unres
 The strict preregistered conjunctions pass for none of the three primary cyclic sets: 0/3 by fitted-shape topology and 0/3 by persistent homology. Specificity holds, but it is weakly informative, because sensitivity is zero. A post hoc audit finds that the Gaussian Monte Carlo null behind the loop test also rejects many hole-free shapes (false loops on 0.17 of hole-free synthetic clouds, 0.73 of spheres and caps). A significant loop is therefore evidence of non-Gaussian structure, and the ring claims rest on the traversal tests.
 
 On 39{,}000 synthetic clouds with exact ground-truth topology, the preregistered estimator recovers the exact Betti vector for 0.618 of resolvable clouds (macro). A fixed threshold scores 0.714 and the fitter's family label 0.812. Persistence beats the label only where the label is topologically ambiguous (open vs closed arcs, caps vs spheres).
+A post hoc search of all 10729 loops and 4759 voids, with one drawn representative each, changes no verdict. It finds voids that survive the correction only in toy models of superposition.
 Steering experiments are preregistered and postponed.
 \end{abstract}
 
@@ -114,8 +115,7 @@ A bar is significant if its persistence ratio $\pi = \text{death}/\text{birth}$ 
   \item Prompt-template designs use a cluster-centre null: concept means are redrawn from a Gaussian matched to the covariance of the means, and within-concept residuals are kept.
   \item One-point-per-value designs use a full-dimensional matched Gaussian.
 \end{itemize}
-Both nulls are Gaussian. A significant loop therefore means ``more persistent than a covariance-matched Gaussian'', which is not the same as ``a hole'' (Section~
-ef{sec:specificity}).
+Both nulls are Gaussian. A significant loop therefore means ``more persistent than a covariance-matched Gaussian'', which is not the same as ``a hole'' (Section~\ref{sec:specificity}).
 
 \paragraph{Travel around the hole.} The hole coordinate $\theta$ is either the fitted shape's azimuth ($\theta_A$) or DREiMac's circular coordinate of the most persistent class ($\theta_B$; prime 47, at most 200 landmarks, \texttt{standard\_range}).
 \begin{itemize}
@@ -124,8 +124,12 @@ ef{sec:specificity}).
   \item The winding number of the semantic cycle in $\theta$.
   \item For residues, the maximum over Fourier frequencies $k$.
 \end{itemize}
+Fig.~\ref{fig:toy} walks through every step on a 21-point toy week.
 
-\paragraph{Preregistration.} The hypotheses, nulls and decision rules were pushed before any topology was computed. Amendment A2, which makes steering the primary hypothesis, was pushed before any persistent homology of real data. Deviations D1--D9 are logged with dates.
+\begin{figure}[!htbp]\centering\includegraphics[width=\linewidth]{fig_toy.png}
+\caption{Worked example on a synthetic toy week of 7 concepts (an illustration, not data). Top: balls of radius $r$ around every point at three radii: a tiny loop inside one concept, seven separate blobs, and the ring through all concepts. Bottom: the H1 persistence diagram with the null's 95th-percentile line $d=q_{95}\,b$, the null distribution of the largest persistence ratio, and the concepts' mean angles of $\theta_B$.}\label{fig:toy}\end{figure}
+
+\paragraph{Preregistration.} The hypotheses, nulls and decision rules were pushed before any topology was computed. Amendment A2, which makes steering the primary hypothesis, was pushed before any persistent homology of real data. Deviations D1--D11 are logged with dates (D10--D11, the void and loop searches, only add descriptive figures).
 
 \section{Results}
 
@@ -175,7 +179,7 @@ Bc: majority vector & 0.555 [0.553, 0.557] & control\\\bottomrule
 \caption{Helix fits: axial-winding alignment is high for cyclic concepts and for smooth random-process controls alike. Only the months' closure gap (0.04 radii) lies below every control's; the weekdays' gap (0.80) lies inside the controls' range (0.33--2.20).}\label{fig:helix}\end{figure}
 
 \subsection{Holes in the data and the cyclic tests}
-Table~\ref{tab:real} and Figs.~\ref{fig:gallery}--\ref{fig:power} summarise the results.
+Table~\ref{tab:real} and Figs.~\ref{fig:examples}--\ref{fig:power} summarise the results.
 \begin{itemize}
   \item Significant loops: colours, residues, months, days-with-times, and borderline the random-init grokking embedding ($p=0.046$).
   \item Localisation (post hoc audit): the colour, residue and month loops run through the concept clusters. The days-with-times loop dies at radius 0.045, before any two day clusters touch (0.160), so it lies inside one cluster and is unstable (stability 0.03).
@@ -225,6 +229,15 @@ GPT-2 positions & 1.22 & 2.16 & 1.000 & -- & 1.01\\\bottomrule
 \end{tabular}
 \caption{Method B on key clouds. The null is design-matched (999 draws); traversal uses the cohomology coordinate $\theta_B$.}\label{tab:real}\end{table}
 
+\begin{figure}[!htbp]\centering\includegraphics[width=\linewidth]{fig_examples.png}
+\caption{Positive and negative examples. Top: clouds (PC1--PC2) coloured by position in their cycle (years: by value), titled with their verdicts: ``ring'' only where the concept goes around the loop in the preregistered analysis (Section~\ref{sec:specificity}), not for a loop inside one cluster (localisation audit), and flagged where the stimuli already have the loop. Bottom: top H1 persistence ratio divided by the null's 95th percentile (above 1: $p<0.05$).}\label{fig:examples}\end{figure}
+
+\begin{figure}[!htbp]\centering\includegraphics[width=\linewidth]{fig_detected_loops.png}
+\caption{The detected loops of the same clouds: each cloud's most persistent loop as one closed path of edges that carries it (red, seen face-on; small loops circled) and its dot in the persistence diagram (log axes; dashed: the null's 95th percentile; dotted: the radius at which two concepts' clusters first touch, below which a loop lies inside one cluster).}\label{fig:detloops}\end{figure}
+
+\begin{figure}[!htbp]\centering\includegraphics[width=\linewidth]{fig_null_tests.png}
+\caption{The loop test per dataset: null distribution of the largest H1 persistence ratio (999 design-matched draws), its 95th percentile (dashed) and the observed value (solid). Beating a Gaussian null is not by itself a hole (Section~\ref{sec:specificity}).}\label{fig:nulltests}\end{figure}
+
 \begin{figure}[t]\centering\includegraphics[width=\linewidth]{fig_real_gallery.png}
 \caption{Top: clouds (PC1--PC2) coloured by concept. Bottom: alpha persistence ratios with the null 95th percentile (red).}\label{fig:gallery}\end{figure}
 
@@ -233,6 +246,28 @@ GPT-2 positions & 1.22 & 2.16 & 1.000 & -- & 1.01\\\bottomrule
 
 \begin{figure}[t]\centering\includegraphics[width=0.85\linewidth]{fig_power.png}
 \caption{Corrected power simulation (post hoc): pass rates of the loop test (solid) and of the full conjunction (dashed, rings) for 7 and 12 clusters, against top-3 explained variance; dotted lines mark the real sets. With 7 clusters, an open 300$^\circ$ arc passes as often as a ring.}\label{fig:power}\end{figure}
+
+\subsection{Voids, and the strongest loops and voids (post hoc, deviations D10--D11)}\label{sec:voids}
+Exp2 tests only each cloud's most persistent loop and void. Two descriptive phases list every bar (10729 loops and 4759 voids) with one representative each and score it against the cloud's own Exp2 null; for a cloud's top bar this reproduces Exp2's $p$ exactly. They pick the interesting bars by fixed rules written after browsing the interactive explorer, so the selection is post hoc. No verdict changes.
+\begin{itemize}
+  \item \textbf{Representatives.} A loop's cycle is the edge that creates it, closed by the shortest path through earlier edges. A void's shell uses Alexander duality~\citep{edelsbrunner2010computational}: just after the void's birth triangle enters, a flood fill from the tetrahedron that fills it, through triangles that have not entered, marks the bounded empty region. The triangles where the fill stops form a closed surface that exists at the birth radius $b$ and is filled exactly at the death radius $d$. The circumcentre of the filling tetrahedron is the void's centre: no point is closer than $d$, so a ball of radius $d-b$ around it is still uncovered when the void closes. Representatives are for display only.
+  \item \textbf{The strongest loops and voids} (Fig.~\ref{fig:highlights}): a cloud's top bar that survives Benjamini--Hochberg over the 44 clouds. A loop must also have its concepts wind once along the drawn cycle, a post hoc check that changes no verdict. Four loops pass (colours, residues, months, the 12 month centres) and keep their verdicts (Fig.~\ref{fig:examples}). Three voids pass, all in the toy models of superposition~\citep{elhage2022toy}, exploratory sets of 6--20 points.
+  \item \textbf{Voids.} 6 voids have $p<0.05$, and 3 survive the correction, all in the toy models: their features sit on or near the corners of a polytope with nothing inside it (Figs.~\ref{fig:voids} and~\ref{fig:voidlife}). The 6-feature void lives from 0.817 to 1.000 ($\pi=1.224$; a regular octahedron gives $\sqrt{3/2}\approx1.225$). Of the 14 other trained-model clouds, 0 have a void at $p<0.05$. GPT-2 positions are fitted as a sphere but have no void ($\pi=1.02$, null 95th percentile 1.39). As for loops, beating a Gaussian null is not by itself a hole (Section~\ref{sec:specificity}).
+  \item \textbf{Growing balls} (Fig.~\ref{fig:balls}): exact slices of the union of balls show each of these loops and voids being born and filled. Animated 3D and slice versions are in the repository, and the explorer draws the balls themselves.
+  \item \textbf{All interesting bars} (Appendix~\ref{app:figures}): the 9 loops and 10 voids the rules pick, including chance-level and degenerate ones and a random curve with one of the largest voids.
+\end{itemize}
+
+\begin{figure}[!htbp]\centering\includegraphics[width=\linewidth]{fig_highlights.png}
+\caption{The strongest loops and voids (post hoc): each cloud's most persistent loop or void that survives Benjamini--Hochberg over 44 tests. Top: loops as red cycles seen face-on, points coloured by concept (colours in their RGB), each titled with its original verdict (green: ring; orange: partial). Bottom: voids as red shells around the blue empty middle, in exploratory toy models.}\label{fig:highlights}\end{figure}
+
+\begin{figure}[!htbp]\centering\includegraphics[height=0.8\textheight,width=\linewidth,keepaspectratio]{fig_growing_balls.png}
+\caption{Growing balls in slices, at four radii per loop or void (before birth, just after, shortly before death, after). A ball at distance $h$ from the slice cuts it in a disc of radius $\sqrt{r^2-h^2}$, so each panel is the exact cross-section of the union of balls, on one scale. Loops are bold while alive; blue is the part of a void no ball reaches yet (radius $d-r$). The states come from the bars, since a slice can show a region as open or closed differently from 3D.}\label{fig:balls}\end{figure}
+
+\begin{figure}[!htbp]\centering\includegraphics[width=\linewidth]{fig_detected_voids.png}
+\caption{The detected voids: the three toy-model voids that survive the correction; the colours cloud's largest void, inside its hue ring (chosen after browsing the explorer; not significant, $p=0.865$); and two GPT-2 position controls. Top: shell (red) and empty middle (blue). Bottom: the void persistence diagram, zoomed per cloud, with the null's 95th percentile (dashed).}\label{fig:voids}\end{figure}
+
+\begin{figure}[!htbp]\centering\includegraphics[width=\linewidth]{fig_void_life.png}
+\caption{The life of a void (toy model with 6 features): the 12 edges make 7 loops; the 8 faces fill all of them and close one void (Euler characteristic $6-12+8=2=1-0+1$); the tetrahedra inside fill it at radius 1.000.}\label{fig:voidlife}\end{figure}
 
 \section{Discussion}
 
@@ -263,12 +298,40 @@ GPT-2 positions & 1.22 & 2.16 & 1.000 & -- & 1.01\\\bottomrule
 \end{itemize}
 
 \section{Conclusion}
-Persistent homology finds loops that the concept travels around for colour hue (robustly, but inherited from the stimuli), residues mod 113 and, post hoc, months. The loop test alone does not establish a hole; the traversal does. It finds none for ordinal concepts or random controls, and no ring of days for weekdays or days-with-times. Fitted ``helices'' for cyclic concepts are not resolvable as open curves. Steering around the detected loops is the next, preregistered experiment.
+Persistent homology finds loops that the concept travels around for colour hue (robustly, but inherited from the stimuli), residues mod 113 and, post hoc, months. The loop test alone does not establish a hole; the traversal does. It finds none for ordinal concepts or random controls, and no ring of days for weekdays or days-with-times. Fitted ``helices'' for cyclic concepts are not resolvable as open curves. Voids that survive the correction appear only in the exploratory toy models of superposition; no trained language-model cloud has a void even at $p<0.05$. Steering around the detected loops is the next, preregistered experiment.
 
-\paragraph{Reproducibility.} Code: \url{https://github.com/BurnyCoder/topology-of-neural-geometry-in-llm-mechanistic-interpretability}. Inputs and results (pinned, SHA-256-verified): \url{https://huggingface.co/datasets/BurnyCoder/topology-of-neural-geometry}. Running \texttt{uv run python run.py all} recomputes every number on a CPU.
+\paragraph{Reproducibility.} Code: \url{https://github.com/BurnyCoder/topology-of-neural-geometry-in-llm-mechanistic-interpretability}. Inputs and results (pinned, SHA-256-verified): \url{https://huggingface.co/datasets/BurnyCoder/topology-of-neural-geometry}. Running \texttt{uv run python run.py all} recomputes every number and figure on a CPU.
 
-\paragraph{AI statement.} Claude Code (Anthropic) wrote this codebase and this paper, executing an exact specification provided by a human author. Human cleanup and rewriting are in progress.
+\paragraph{Interactive figures.} An explorer of all 44 clouds (\url{https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/}) replays persistent homology with a radius slider: the alpha complex, every loop's cycle and every void's shell alive at $r$, and optionally the balls of radius $r$ themselves. Its examples page replays the six examples of Fig.~\ref{fig:examples} with their nulls and traversals. The repository's README has animated versions of Figs.~\ref{fig:examples} and~\ref{fig:balls} (balls growing in 3D and in slices).
 
 \bibliographystyle{plainnat}
 \bibliography{references}
+
+\clearpage
+\appendix
+\section{Additional figures}\label{app:figures}
+
+\begin{figure}[!htbp]\centering\includegraphics[width=\linewidth]{fig_loop_gallery.png}
+\caption{Every interesting loop of the 44 clouds, picked by post hoc rules (significant; among the 5 largest; or the concepts wind once along a cycle spanning half the cloud). Green: a top loop surviving Benjamini--Hochberg; orange: $p<0.05$ only. Rule names describe the selection, not the verdict: the verdicts are those of Fig.~\ref{fig:examples}.}\label{fig:loopgallery}\end{figure}
+
+\begin{figure}[!htbp]\centering\includegraphics[width=\linewidth]{fig_void_gallery.png}
+\caption{Every interesting void, picked by post hoc rules (significant; among the 5 largest empty middles; or, in a trained concept cloud, a shell spanning half the cloud with half its concepts on its corners). Green: a top void surviving Benjamini--Hochberg; orange: $p<0.05$ only; black: not significant. Shape and meaning without significance occur in random curves too (C1\_gp\_3).}\label{fig:voidgallery}\end{figure}
+
+\begin{figure}[!htbp]\centering\includegraphics[width=0.6\linewidth]{fig_exp0_margin.png}
+\caption{Exact topology of every fitted shape (Method A): margin ratio $\rho_A$ on a log scale, marker by Betti vector. Right of $\rho_A=1$ the fitted topology is resolvable at the data's noise scale.}\label{fig:margin}\end{figure}
+
+\begin{figure}[!htbp]\centering\includegraphics[width=0.75\linewidth]{fig_exp1_estimators.png}
+\caption{Instrument validation (Exp1): macro exact Betti-vector accuracy of every estimator on resolvable synthetic clouds, with 95\% cluster-bootstrap confidence intervals.}\label{fig:estimators}\end{figure}
+
+\begin{figure}[!htbp]\centering\includegraphics[width=0.75\linewidth]{fig_exp1_outliers.png}
+\caption{Exp1 (deviation D7): false-positive rate on resolvable contractible clouds with and without detected outliers, per estimator, with 95\% confidence intervals and the preregistered 10\% threshold for the outlier-robust variant.}\label{fig:outliers}\end{figure}
+
+\begin{figure}[!htbp]\centering\includegraphics[width=0.65\linewidth]{fig_top10.png}
+\caption{Top-10-PC loop test (post hoc): the observed largest Rips H1 ratio against a matched null's 95th percentile. In 10 dimensions ordinal sets also have loops, so a loop there is not specific to cyclic concepts.}\label{fig:top10}\end{figure}
+
+\begin{figure}[!htbp]\centering\includegraphics[width=0.85\linewidth]{fig_exp4.png}
+\caption{Exp4 (exploratory): MDS map of bottleneck distances between significant-bar diagrams of clouds and ideal templates, and the average-linkage dendrogram. Uninformative: dominated by absolute scale.}\label{fig:exp4}\end{figure}
+
+\clearpage   % flush the appendix figures so the AI statement is the last thing in the paper
+\paragraph{AI statement.} Claude Code (Anthropic) wrote this codebase and this paper, executing an exact specification provided by a human author. Human cleanup and rewriting are in progress.
 \end{document}
