@@ -310,6 +310,7 @@ def run() -> None:
         figures.anim_clouds()
         if have("exp3", "method_b.json") and have("exp3", "posthoc_relaxed_range.json"):
             figures.fig_examples()
+            figures.anim_examples()
     if have("exp6_sim", "simulated_steering.json"):
         figures.fig_exp6sim()
     if have("toy", "summary.json"):
