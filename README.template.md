@@ -14,13 +14,28 @@ For each concept we ask two questions:
 
 A loop alone does not prove a hole. The loop test also flags many hole-free shapes, such as curved sheets and caps ([third audit, D9](reports/exp8_audit3.md)). So we call a loop a **ring** only when the concept also goes around it once.
 
-![The detected circles: each example cloud's most persistent loop drawn as a red ring, and its dot in the persistence diagram](docs/figures/fig_detected_loops.png)
+![The detected circular loops: each example cloud's most persistent loop drawn as a red ring, and its dot in the persistence diagram](docs/figures/fig_detected_loops.png)
 
-*The detected circles.* For each example cloud, the red ring is the cloud's most persistent loop: one closed path of edges that carries it ([representative loop](docs/glossary.md#representative-loop)), seen face-on.
+*The detected circular loops.* For each example cloud, the red ring is the cloud's most persistent loop: one closed path of edges that carries it ([representative loop](docs/glossary.md#representative-loop)), seen face-on.
 - **Bottom:** the same loop as a red dot (birth radius, death radius) in the persistence diagram.
 - **Colours, residues and months:** a large ring that runs through the concepts.
 - **Weekdays and days with times:** the most persistent loop is a small loop inside one cluster (circled). It dies below the dotted line, before two days' clusters touch.
 - **Years:** a small loop that does not beat the null (below the dashed line).
+
+![The detected voids: each cloud's most persistent void drawn as a red shell around its empty middle (a blue ball), and its triangle in the void persistence diagram](docs/figures/fig_detected_voids.png)
+
+*The detected voids*, drawn the same way. A void is an empty region walled in by a closed surface, like the inside of a hollow ball. It is the next kind of hole after a loop (an H2 bar instead of an H1 bar).
+- **Top:** the red edges are the shell of each cloud's most persistent void: one closed surface of triangles that carries it ([representative void](docs/glossary.md#representative-void)).
+  - The blue ball is the void's empty middle. No point is closer to its centre than the void's death radius, so when the void closes (at its birth radius) a ball of radius death − birth there is still not covered.
+- **Bottom:** the same void as a red triangle in the void persistence diagram (axes zoomed per cloud).
+- **Toy models of superposition** ([Elhage et al. 2022](https://transformer-circuits.pub/2022/toy_model/index.html)), green: each point is one feature's direction in a 3-dimensional hidden layer.
+  - They are the only {{exp2.n_void_q05}} of the 44 clouds whose most persistent void survives Benjamini–Hochberg (q = {{exp2.tmsn6.q_void:3}}). The features sit on or near the corners of a polytope, which walls in a void.
+  - With 6 features the shell is the 8 faces of an octahedron. Its persistence ratio π = {{exp2.tmsn6.top_pi2:3}} is close to that of a regular octahedron, √(3/2) ≈ 1.225.
+  - The voids of 8 and 20 features come back in {{exp2.tmsn8.void_freq_pct}}% and {{exp2.tmsn20.void_freq_pct}}% of random 80% subsamples. With 6 features a subsample keeps only 5 of the 6 corners, and the void came back in {{exp2.tmsn6.void_freq_pct}}% of them.
+  - These clouds have only 6–20 points and were [preregistered](reports/preregistration.md) as exploratory, descriptive sets.
+- **GPT-2 positions at random init**, orange: a small void (circled) with p = {{exp2.wposinit.p_top_void}}, but q = {{exp2.wposinit.q_void:2}} after the correction, and it comes back in only {{exp2.wposinit.void_freq_pct}}% of subsamples. We read it as a chance hit among 44 tests.
+- **Trained GPT-2 positions**, black: the shape fitter calls this cloud a closed sphere, which has a void, but the data has none. Its most persistent void is a thin one (π = {{exp2.wpos.top_pi2:2}}, below the null's 95th percentile of {{exp2.wpos.null_q95_pi2:2}}). The positions trace a spiral curve, not a surface.
+- **None of the other {{exp2.trained_n}} trained-model clouds** (the language-model concepts and the grokking network) has a significant void, even before correction ({{exp2.trained_voids}} at p < 0.05).
 - Explore any loop or void of any of the 44 clouds in the [explorer](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/): set the radius, then pick a loop or void, or click its marker. Voids are drawn as see-through shells.
 
 ![Positive and negative examples](docs/figures/fig_examples.png)
@@ -42,19 +57,6 @@ A loop alone does not prove a hole. The loop test also flags many hole-free shap
   - Dots above the dashed red line beat the null's 95th percentile.
   - Dots below the dotted line die before two concepts' clusters touch, so they lie inside one cluster.
 - **Try it yourself** with the radius slider in the [explorer](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/) (all 44 clouds, with their loops and voids; you can also show one at a time), or, together with the null distribution and the travel around the hole, on the [examples page](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/examples.html). Every term is defined in [docs/glossary.md](docs/glossary.md), which the explorer also shows.
-
-![The detected voids: each cloud's most persistent void drawn as a purple shell, and its triangle in the void persistence diagram](docs/figures/fig_detected_voids.png)
-
-*The detected voids.* A void is an empty region walled in by a closed surface, like the inside of a hollow ball. It is the next kind of hole after a loop (an H2 bar instead of an H1 bar). The purple surface is the shell of each cloud's most persistent void ([representative void](docs/glossary.md#representative-void)).
-- **Toy models of superposition** ([Elhage et al. 2022](https://transformer-circuits.pub/2022/toy_model/index.html)), green: each point is one feature's direction in a 3-dimensional hidden layer.
-  - They are the only {{exp2.n_void_q05}} of the 44 clouds whose most persistent void survives Benjamini–Hochberg (q = {{exp2.tmsn6.q_void:3}}). The features sit on or near the corners of a polytope, which walls in a void.
-  - With 6 features the shell is the 8 faces of an octahedron. Its persistence ratio π = {{exp2.tmsn6.top_pi2:3}} is close to that of a regular octahedron, √(3/2) ≈ 1.225.
-  - The voids of 8 and 20 features come back in {{exp2.tmsn8.void_freq_pct}}% and {{exp2.tmsn20.void_freq_pct}}% of random 80% subsamples. With 6 features a subsample keeps only 5 of the 6 corners, and the void came back in {{exp2.tmsn6.void_freq_pct}}% of them.
-  - These clouds have only 6–20 points and were [preregistered](reports/preregistration.md) as exploratory, descriptive sets.
-- **GPT-2 positions at random init**, orange: a small void with p = {{exp2.wposinit.p_top_void}}, but q = {{exp2.wposinit.q_void:2}} after the correction, and it comes back in only {{exp2.wposinit.void_freq_pct}}% of subsamples. We read it as a chance hit among 44 tests.
-- **Trained GPT-2 positions**, black: the shape fitter calls this cloud a closed sphere, which has a void, but the data has none. Its most persistent void has π = {{exp2.wpos.top_pi2:2}}, below the null's 95th percentile ({{exp2.wpos.null_q95_pi2:2}}). The positions trace a spiral curve, not a surface.
-- **None of the other {{exp2.trained_n}} trained-model clouds** (the language-model concepts and the grokking network) has a significant void, even before correction ({{exp2.trained_voids}} at p < 0.05).
-- Every void of every cloud can be explored in the [explorer](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/).
 
 **What worked**
 - **Colours form a ring that hue goes around once, but the stimuli already have that ring.**

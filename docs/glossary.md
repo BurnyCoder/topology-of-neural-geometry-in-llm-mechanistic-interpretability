@@ -106,6 +106,7 @@ One closed path of edges that carries a given loop. The site and the README anim
 One closed surface of triangles that encloses a given void (an H2 bar). The explorer draws it as a see-through shell in the void's own colour while the void is alive, so each triangle in the persistence diagram can be matched with a shell in the cloud.
 - In ℝ³ a void is an empty region of space walled in by the complex (Alexander duality; Edelsbrunner & Harer 2010, *Computational Topology*, ch. V). The region is found just after the triangle that closes the void enters: start in the tetrahedron whose entry fills the void (both come from GUDHI's persistence pairs) and move to neighbouring tetrahedra through triangles that have not entered yet. The triangles where this stops are the shell.
 - Every shell triangle is in the complex when the void is born, and the shell is filled in exactly when that tetrahedron enters, so it carries the void for its whole bar.
+- **The void's empty middle** (the blue ball in the README's void figure): the centre of the sphere through that tetrahedron's 4 corners. No point lies inside that sphere (a Delaunay property), so no point is closer to the centre than the death radius d. At the birth radius b, a ball of radius d − b around the centre is therefore still uncovered, and the centre is the last place the growing balls reach.
 - A void has many such shells; this one is for display, and the statistics never use it.
 
 ### Persistence ratio pi

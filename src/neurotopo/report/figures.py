@@ -646,7 +646,7 @@ def anim_examples() -> None:
 
 
 def fig_detected_loops() -> None:
-    """The detected circles (README, near the top). For each example cloud, top: the cloud in its top-3 PCA
+    """The detected circular loops (README, near the top). For each example cloud, top: the cloud in its top-3 PCA
     coordinates with one closed path of edges carrying its most persistent loop (diagrams.alpha_h1_cycles) drawn
     in red, viewed face-on (camera along the normal of the path's best-fit plane, from an SVD of its vertices);
     a loop smaller than a tenth of the cloud is also circled so it can be found. Bottom: the persistence diagram
@@ -693,7 +693,7 @@ def fig_detected_loops() -> None:
         if j == 0:
             ap.set_ylabel("death radius", fontsize=7.5)
         ap.set_title(f"born {h1[0, 0]:.3f}, dies {h1[0, 1]:.3f}", fontsize=8)
-    fig.suptitle("The detected circles: each cloud's most persistent loop, drawn in red as a closed path of edges "
+    fig.suptitle("The detected circular loops: each cloud's most persistent loop, drawn in red as a closed path of edges "
                  "(viewed face-on) and as its red dot in the persistence diagram", fontsize=11)
     fig.text(0.5, 0.015, "Above the dashed line: beats the null's 95th percentile. Below the dotted line: dies before two "
              "concepts' clusters touch (a small loop inside one cluster). Small loops are circled.", ha="center", fontsize=8)
@@ -708,34 +708,48 @@ VOID_EXAMPLES = [("R3_tms_n6", "toy model, 6 features"), ("R3_tms_n8", "toy mode
 
 
 def fig_detected_voids() -> None:
-    """The detected voids (README, after the detected circles). For each cloud of VOID_EXAMPLES, top: the cloud in its
-    top-3 PCA coordinates with the shell of its most persistent void (diagrams.alpha_h2_voids, via examples.replay),
-    a closed surface of triangles drawn see-through in purple (points faded in dense clouds so it shows). Bottom: the
-    void (H2) persistence diagram on linear axes zoomed to the cloud's voids (void ratios are small, 1-1.5, so a fixed
-    range would squeeze every void onto the diagonal), with that void's triangle and the null's 95th-percentile line.
-    Title colour: green if the void survives Benjamini-Hochberg over the 44 void tests, orange if only p < 0.05,
-    black otherwise. Numbers: results/exp2/invariants.csv."""
-    from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+    """The detected voids (README, right after the detected circular loops, in the same style). For each cloud of
+    VOID_EXAMPLES, top: the cloud in its top-3 PCA coordinates with its most persistent void drawn explicitly: the shell
+    (diagrams.alpha_h2_voids, via examples.replay), a closed surface of triangles, as red edges with a white halo over
+    faint red faces, and inside it the void's empty middle as a blue ball: centred on the circumcentre of the
+    tetrahedron that fills the void, radius death - birth, the part of the void the balls of the birth radius do not
+    cover (no point is closer to the centre than the death radius). A void smaller than a quarter of the cloud is
+    circled, and points are faded in dense clouds. Bottom: the void (H2) persistence diagram on linear axes zoomed to
+    the cloud's voids (void ratios are small, 1-1.5, so a fixed range would squeeze every void onto the diagonal),
+    with that void's red triangle and the null's 95th-percentile line. Title colour: green if the void survives
+    Benjamini-Hochberg over the 44 void tests, orange if only p < 0.05, black otherwise. Numbers:
+    results/exp2/invariants.csv. mplot3d: Poly3DCollection, Line3DCollection, plot_surface
+    (https://matplotlib.org/stable/api/toolkits/mplot3d.html)."""
+    from itertools import combinations
+    from mpl_toolkits.mplot3d.art3d import Line3DCollection, Poly3DCollection
     from neurotopo.experiments import realdata
     from neurotopo.report.examples import replay
     inv = pd.read_csv(config.path("results") / "exp2" / "invariants.csv").set_index("id")
-    purple = "#7b3294"
-    fig = plt.figure(figsize=(14, 6.4))
-    gs = fig.add_gridspec(2, len(VOID_EXAMPLES), height_ratios=[1.3, 1], hspace=0.2, wspace=0.22, top=0.86, bottom=0.12)
+    red, blue = "#d62728", "#4393c3"                                     # red as the detected loops; blue = empty space
+    u, v = np.meshgrid(np.linspace(0, 2 * np.pi, 28), np.linspace(0, np.pi, 14))
+    ball = np.stack([np.cos(u) * np.sin(v), np.sin(u) * np.sin(v), np.cos(v)])   # unit sphere, (3, 14, 28)
+    fig = plt.figure(figsize=(14, 6.6))
+    gs = fig.add_gridspec(2, len(VOID_EXAMPLES), height_ratios=[1.35, 1], hspace=0.2, wspace=0.22, top=0.86, bottom=0.13)
     for j, (d, label) in enumerate(VOID_EXAMPLES):
         y, row = realdata.cloud(d)["y"], inv.loc[d]
         rp = replay(y)                                                   # voids sorted by pi: index 0 is the top void
-        h2, shell = rp["h2"], rp["shells"][0]
+        h2, shell, centre = rp["h2"], rp["shells"][0], rp["void_centres"][0]
         p, q = float(row["p_top_void"]), float(row["q_top_void"])
         verdict, colour = ((f"void: yes (q = {q:.3f})", "#1b7837") if q < 0.05 else
                            (f"p = {p:.3f}, but q = {q:.2f} after BH", "#e08214") if p < 0.05 else
                            (f"void: no (p = {p:.2f})", "#222222"))
-        dense = len(y) > 300
+        dense, corners = len(y) > 300, y[np.unique(shell)]
+        edges = np.array(sorted({tuple(sorted(e)) for t in shell.tolist() for e in combinations(t, 2)}))
         a3 = fig.add_subplot(gs[0, j], projection="3d")
-        a3.computed_zorder = False                                       # draw the shell over the points
-        a3.scatter(*y.T, color="#333333", s=2 if dense else 14, alpha=0.15 if dense else 0.8, depthshade=False, zorder=1)
-        a3.add_collection3d(Poly3DCollection(y[shell], facecolors=purple, edgecolors="#40004b", linewidths=0.4,
-                                             alpha=0.35, zorder=2))     # (F, 3, 3): each row's 3 corners
+        a3.computed_zorder = False                                       # draw in call order: points, ball, shell
+        a3.scatter(*y.T, color="#333333", s=2 if dense else 14, alpha=0.15 if dense else 0.6, depthshade=False, zorder=1)
+        a3.plot_surface(*(centre[:, None, None] + (h2[0, 1] - h2[0, 0]) * ball), color=blue, alpha=0.9, shade=False,
+                        linewidth=0, zorder=2)                           # the empty middle, radius death - birth
+        a3.add_collection3d(Poly3DCollection(y[shell], facecolors=red, edgecolors="none", alpha=0.1, zorder=3))
+        a3.add_collection3d(Line3DCollection(y[edges], colors="white", linewidths=3.0, zorder=4))   # halo
+        a3.add_collection3d(Line3DCollection(y[edges], colors=red, linewidths=1.3, zorder=5))
+        if np.ptp(corners, axis=0).max() < 0.25 * np.ptp(y, axis=0).max():   # small void: circle it
+            a3.scatter(*corners.mean(0), s=900, facecolors="none", edgecolors=red, linewidths=1.4, zorder=6)
         lim = float(np.linalg.norm(y, axis=1).max())                    # largest radius: no corner is clipped
         a3.set_xlim(-lim, lim)
         a3.set_ylim(-lim, lim)
@@ -749,7 +763,7 @@ def fig_detected_voids() -> None:
         ap.plot([lo, hi], [lo, hi], color="#999", lw=0.8)
         ap.plot([lo, hi / q95], [lo * q95, hi], color="#555", ls="--", lw=0.9)
         ap.scatter(h2[:, 0], h2[:, 1], s=5, marker="^", color="#aaaaaa", alpha=0.5, edgecolors="none")
-        ap.scatter([h2[0, 0]], [h2[0, 1]], s=80, marker="^", color=purple, edgecolors="k", linewidths=0.8, zorder=4)
+        ap.scatter([h2[0, 0]], [h2[0, 1]], s=80, marker="^", color=red, edgecolors="k", linewidths=0.8, zorder=4)
         kept = int(np.floor(100 * row["void_freq"] + 0.5))             # half-up, as numbers.py rounds the README's %
         ap.text(0.96, 0.04, f"π / q95 = {row['top_pi2'] / q95:.2f}\nkept in {kept}% of subsamples",
                 transform=ap.transAxes, fontsize=7.5, va="bottom", ha="right")   # below the diagonal: always empty
@@ -761,9 +775,11 @@ def fig_detected_voids() -> None:
         if j == 0:
             ap.set_ylabel("death radius", fontsize=7.5)
         ap.set_title(f"{len(shell)} faces; born {h2[0, 0]:.3f}, dies {h2[0, 1]:.3f}", fontsize=8)
-    fig.suptitle("The detected voids: each cloud's most persistent void, drawn as its shell (a closed surface of "
-                 "triangles) and as its purple triangle in the void persistence diagram", fontsize=11)
-    fig.text(0.5, 0.015, "Above the dashed line: beats the null's 95th percentile (p < 0.05). q: Benjamini-Hochberg over "
-             "the 44 void tests. Subsamples: 200 random 80% subsamples. Diagram axes are zoomed per cloud.",
-             ha="center", fontsize=8)
+    fig.suptitle("The detected voids: each cloud's most persistent void, drawn as its shell (red, a closed surface of "
+                 "triangles) around its empty middle (blue)\nand as its red triangle in the void persistence diagram",
+                 fontsize=11)
+    fig.text(0.5, 0.015, "Blue ball: radius death - birth around the void's centre, still empty when the void closes. "
+             "Above the dashed line: beats the null's 95th percentile (p < 0.05).\nq: Benjamini-Hochberg over the 44 "
+             "void tests. Subsamples: 200 random 80% subsamples. Diagram axes are zoomed per cloud. Small voids are "
+             "circled.", ha="center", fontsize=8)
     save(fig, "fig_detected_voids")
