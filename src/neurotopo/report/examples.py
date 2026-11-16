@@ -150,3 +150,39 @@ def example(d: str) -> dict:
             "connect_r": float(loc["connect_radius"]) if loc else None,
             "within": bool(loc["within_concept_loop"]) if loc else None, "traversal": traversal(d)}
 
+
+@lru_cache(maxsize=None)
+def largest_void(d: str) -> dict:
+    """Cloud d's void with the largest empty middle (largest death - birth, the blue ball of figures.fig_detected_voids),
+    chosen for the README after browsing the explorer (post hoc). Also its rank by pi, the radius at which the most
+    persistent loop is filled in, that loop's winding number around the void's centre, measured in the loop's best-fit
+    plane (SVD of its representative cycle), and the void's Monte Carlo p-value against the cloud's design-matched
+    null of the largest void pi (realdata.null, as Exp2 tests the top void), and how many of the cloud's concepts
+    (source.concepts; 36 hues for colours) have a point among the shell's corners. The dict holds the replay data
+    `rp`; treat it as read-only."""
+    c = realdata.cloud(d)
+    y, con = c["y"], source.concepts(d, c["labels"])
+    rp = replay(y)
+    h2, k = rp["h2"], int(np.argmax(rp["h2"][:, 1] - rp["h2"][:, 0]))
+    null = realdata.null(d, config.load()["seed"])[:, 1]               # max void pi in each null cloud
+    ring = y[np.r_[rp["cycles"][0], rp["cycles"][0][:1]]]              # most persistent loop, closed
+    m = ring.mean(0)
+    plane = np.linalg.svd(ring - m)[2][:2]                              # its best-fit plane's two axes
+    p, c = (ring - m) @ plane.T, (rp["void_centres"][k] - m) @ plane.T
+    turn = np.unwrap(np.arctan2(p[:, 1] - c[1], p[:, 0] - c[0]))        # angle of the loop seen from the void's centre
+    return {"rp": rp, "k": k, "rank": k + 1, "n": len(h2), "birth": float(h2[k, 0]), "death": float(h2[k, 1]),
+            "pi": float(h2[k, 1] / h2[k, 0]), "loop_death": float(rp["h1"][0, 1]),
+            "p": float((1 + np.sum(null >= h2[k, 1] / h2[k, 0])) / (len(null) + 1)),   # (1 + #null >= obs) / (M + 1)
+            "shell_concepts": len(np.unique(con.index[np.unique(rp["shells"][k])])), "n_concepts": len(con.names),
+            "winding": int(round((turn[-1] - turn[0]) / (2 * np.pi)))}
+
+
+def stimulus_rgb(d: str, labels: list[str]) -> np.ndarray | None:
+    """(N, 3) RGB in [0, 1] of each colour prompt (labels "hue|sat|lum", as exp7_audit.colour_stimuli builds them
+    from the source's prompt builder), so the colours cloud can be painted in its own colours; None for other sets."""
+    if d != "R7_llama_colors":
+        return None
+    from neurotopo.experiments.exp7_audit import colour_stimuli
+    rgb, lab = colour_stimuli()
+    return rgb[[lab.index(s) for s in labels]] / 255.0
+
