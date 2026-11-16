@@ -24,10 +24,19 @@ A loop alone does not prove a hole. The loop test also flags many hole-free shap
 - **Voids (bottom):** the three toy models of superposition. Their features sit on the corners of a polytope and leave its middle empty. These sets have only 6–20 points and are exploratory.
 - Everything else, including the loops and voids that are not real: [loop gallery](#every-interesting-loop-post-hoc-d11), [void gallery](#every-interesting-void-post-hoc-d10).
 
-![The strongest results, animated: balls of radius r grow around every point, shown in a slice through each loop's plane or each void's centre, until each loop and void is born and filled](docs/figures/anim_highlights.gif)
+![The strongest results, animated in 3D: balls of radius r grow around every point while the camera turns, until each loop and void is born and filled](docs/figures/anim_highlights_3d.gif)
 
-*How these holes are found (animation).* A ball of radius r grows around every point, with the same r for all clouds (each has RMS radius 1). The holes of the union of balls are exactly the holes measured (the alpha complex has the persistence of the union of balls).
+*How these holes are found (animation, 3D).* A ball of radius r grows around every point, with the same r and the same scale for all clouds (each has RMS radius 1). The holes of the union of balls are exactly the holes measured (the alpha complex has the persistence of the union of balls).
+- **What you see:** the balls themselves, coloured as their points, while the camera slowly turns.
+  - Rings: the red loop is bold while it is alive.
+  - Voids: the red shell, and in blue the part of the void that no ball reaches yet, drawn through the balls that hide it.
+- **From outside, balls in front can hide a hole that is still open** (the colours ring looks covered long before it fills). The slices below show the inside.
+
+![The strongest results, animated in slices: balls of radius r grow around every point, shown in a slice through each loop's plane or each void's centre, until each loop and void is born and filled](docs/figures/anim_highlights.gif)
+
+*The same, in slices.* Every panel uses the same scale.
 - **Each panel is a slice:** through the loop's plane (rings, top) or through the void's centre (voids, bottom). A ball at distance h from the slice cuts it in a disc of radius √(r² − h²), so the picture is the exact cross-section of the union of balls.
+- **Why some discs grow faster than others:** every ball grows at the same rate, but a ball centred off the slice shows up only once r reaches h, as a small disc that then widens faster than r (at rate r/√(r² − h²)) until it catches up. Balls centred in the slice grow exactly with r.
 - **Rings:** the red loop is bold while it is alive (between its birth and death radius) and fills in when the balls close its middle.
 - **Voids:** the blue disc is the part of the void no ball reaches yet, of radius death − r. It shrinks to nothing at the death radius.
 - **Read the status line, not the picture,** for when a hole is born and filled. A slice can show a region as open or closed differently from 3D, because a hole can be closed or filled outside the slice.
