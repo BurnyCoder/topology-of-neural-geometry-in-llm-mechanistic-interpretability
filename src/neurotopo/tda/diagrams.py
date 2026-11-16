@@ -81,6 +81,54 @@ def alpha_h1_cycles(points: np.ndarray) -> tuple[np.ndarray, list[np.ndarray]]:
     return np.array(bars, dtype=np.float64).reshape(-1, 2), cycles
 
 
+def alpha_h2_voids(points: np.ndarray) -> tuple[np.ndarray, list[np.ndarray]]:
+    """Voids (H2 bars in radius units, zero-length bars dropped) of the alpha complex, each with one representative
+    shell for display: the closed surface of triangles around the empty region the void encloses when it is born.
+
+    In R^3 a void of the complex is a bounded region of its complement (Alexander duality; Edelsbrunner & Harer 2010,
+    Computational Topology, ch. V; GUDHI's alpha complex holds every Delaunay tetrahedron and triangle). Right after
+    the void's birth triangle enters (GUDHI's filtration order, ties as GUDHI orders them), the region is found by a
+    flood fill from the void's death tetrahedron (both from persistence_pairs) through triangles that have not entered
+    yet; the triangles where the fill stops are the shell. The shell holds the birth triangle and only triangles that
+    entered before it, so it exists at the birth radius but not just before; it is the boundary of tetrahedra that all
+    enter by the death tetrahedron, so it is filled in exactly at the death radius. Representatives are not unique.
+    Shells are (F, 3) arrays of vertex indices, one row per triangle."""
+    from itertools import combinations
+    pts = np.asarray(points, dtype=np.float64)
+    st = gudhi.AlphaComplex(points=pts).create_simplex_tree()
+    st.compute_persistence(homology_coeff_field=2, min_persistence=0.0)
+    rank, cofaces = {}, {}                                  # simplex -> filtration position; triangle -> its 1-2 tetrahedra
+    for i, (sx, _) in enumerate(st.get_filtration()):
+        key = tuple(sorted(sx))
+        rank[key] = i
+        if len(key) == 4:                                   # combinations of a sorted tuple are sorted: same keys as rank
+            for f in combinations(key, 3):
+                cofaces.setdefault(f, []).append(key)
+    bars, shells = [], []
+    for birth, death in st.persistence_pairs():
+        if len(birth) != 3 or len(death) != 4:              # H2 pairs: a triangle closes the void, a tetrahedron fills it
+            continue
+        b, d = np.sqrt(max(st.filtration(birth), 0.0)), np.sqrt(max(st.filtration(death), 0.0))
+        if d - b <= 1e-12 * max(1.0, b):
+            continue
+        cut, start = rank[tuple(sorted(birth))], tuple(sorted(death))
+        seen, stack, odd = {start}, [start], set()          # odd: triangles met from an odd number of region tetrahedra
+        while stack:
+            for f in combinations(stack.pop(), 3):
+                if rank[f] <= cut:                          # already in the complex: a wall of the region
+                    odd ^= {f}                              # a wall with region on both sides cancels (Z/2 boundary)
+                elif len(cofaces[f]) == 1:                  # an open hull triangle: the region would reach infinity
+                    raise ValueError("void region is unbounded; filtration order differs from GUDHI's pairing")
+                else:
+                    for t in cofaces[f]:                    # cross the open triangle into the neighbouring tetrahedron
+                        if t not in seen:
+                            seen.add(t)
+                            stack.append(t)
+        bars.append((b, d))
+        shells.append(np.array(sorted(odd), dtype=int).reshape(-1, 3))
+    return np.array(bars, dtype=np.float64).reshape(-1, 2), shells
+
+
 def _drop_zero_length(iv: np.ndarray) -> np.ndarray:
     """Remove bars with death == birth (up to float tolerance); they carry no topology."""
     keep = (iv[:, 1] - iv[:, 0]) > 1e-12 * np.maximum(1.0, np.abs(iv[:, 0]))

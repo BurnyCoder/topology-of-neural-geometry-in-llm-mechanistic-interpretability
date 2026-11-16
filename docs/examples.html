@@ -87,10 +87,12 @@ const q = (id, name) => '<a class="q" href="#" title="' + (name || "What is this
 </script><script>
 // Shared by the explorer and the examples page: replay persistent homology on a cloud. The radius slider is
 // logarithmic (all clouds have RMS radius 1). At radius r the 3D view shows the alpha complex's edges and one
-// representative cycle of every loop alive at r, in that loop's own colour (data from report/examples.replay).
+// representative cycle of every loop alive at r, in that loop's own colour (data from report/examples.replay); the
+// explorer also draws the shell of every void alive at r as a translucent surface in that void's own colour.
 const RMIN = 0.002, RMAX = 1.5, LN = Math.log(RMAX / RMIN);
 const toR = t => RMIN * Math.exp(LN * t / 1000), toT = r => Math.round(1000 * Math.log(Math.max(r, RMIN) / RMIN) / LN);
 const aliveAt = (d, r) => d.h1.map(b => b[0] <= r && r < b[1]);                             // alive on [birth, death)
+const voidsAliveAt = (d, r) => d.h2.map(b => b[0] <= r && r < b[1]);                        // same rule for voids
 const piecesAt = (d, r) => 1 + d.h0_deaths.filter(x => x > r).length;                       // one piece never dies
 const crossXY = r => ({x: [r, r, null, RMIN, r], y: [r, RMAX, null, r, r]});
 function edgeTrace(d, r) {                                                                   // edges are sorted by entry radius
@@ -105,8 +107,15 @@ function loopTraces(d, alive, only = null) {             // one closed cycle per
     out.push({type: "scatter3d", mode: "lines", x: c.map(i => P[i][0]), y: c.map(i => P[i][1]), z: c.map(i => P[i][2]), showlegend: false,
       line: {color: d.loop_colour[k], width: only === null ? 7 : 12}, hoverinfo: "text", text: "loop born " + b[0].toFixed(4) + ", dies " + b[1].toFixed(4)}); });
   return out; }
-const loopMarker = (d, alive, sel = null) => ({color: d.loop_colour, opacity: alive.map((a, k) => (a || k === sel ? 1 : 0.2)),
-  size: alive.map((a, k) => (k === sel ? 16 : a ? 10 : 5)), line: {color: "#000", width: alive.map((a, k) => (k === sel ? 2.5 : 0))}});
+function voidTraces(d, alive, only = null) {             // one translucent surface: the shells of the alive voids (or of `only`)
+  const P = d.points, I = [], J = [], K = [], C = [];      // mesh3d triangles index into the cloud's points, coloured per face
+  alive.forEach((a, k) => { if (!a || (only !== null && k !== only)) return;
+    for (const [i, j, l] of d.shells[k]) { I.push(i); J.push(j); K.push(l); C.push(d.void_colour[k]); } });
+  return I.length ? [{type: "mesh3d", x: P.map(p => p[0]), y: P.map(p => p[1]), z: P.map(p => p[2]), i: I, j: J, k: K, facecolor: C,
+    opacity: only === null ? 0.3 : 0.45, flatshading: true, hoverinfo: "skip", showlegend: false, name: "void shells"}] : []; }
+const holeMarker = (colour, alive, sel = null) => ({color: colour, opacity: alive.map((a, k) => (a || k === sel ? 1 : 0.2)),   // solid while alive,
+  size: alive.map((a, k) => (k === sel ? 16 : a ? 10 : 5)), line: {color: "#000", width: alive.map((a, k) => (k === sel ? 2.5 : 0))}});   // ringed if picked
+const loopMarker = (d, alive, sel = null) => holeMarker(d.loop_colour, alive, sel);
 </script>
 <script>
 // Data: docs/data/examples.json, written by run.py site from report/examples.py (results/ and the stored clouds).

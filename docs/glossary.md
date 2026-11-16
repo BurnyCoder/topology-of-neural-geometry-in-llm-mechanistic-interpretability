@@ -102,6 +102,12 @@ One closed path of edges that carries a given loop. The site and the README anim
 - It is built from the edge whose entry creates the loop (from GUDHI's persistence pairs), closed by the shortest path between the edge's two ends through edges that entered earlier.
 - A loop has many such paths; this one is for display, and the statistics never use it.
 
+### Representative void
+One closed surface of triangles that encloses a given void (an H2 bar). The explorer draws it as a see-through shell in the void's own colour while the void is alive, so each triangle in the persistence diagram can be matched with a shell in the cloud.
+- In ℝ³ a void is an empty region of space walled in by the complex (Alexander duality; Edelsbrunner & Harer 2010, *Computational Topology*, ch. V). The region is found just after the triangle that closes the void enters: start in the tetrahedron whose entry fills the void (both come from GUDHI's persistence pairs) and move to neighbouring tetrahedra through triangles that have not entered yet. The triangles where this stops are the shell.
+- Every shell triangle is in the complex when the void is born, and the shell is filled in exactly when that tetrahedron enters, so it carries the void for its whole bar.
+- A void has many such shells; this one is for display, and the statistics never use it.
+
 ### Persistence ratio pi
 π = death / birth ([Bobrowski & Skraba 2023](https://doi.org/10.1038/s41598-023-37842-2)).
 - Because it is a ratio, it does not change if the cloud is scaled.
