@@ -308,6 +308,7 @@ def run() -> None:
                                   "R6_llama_years", "R1_gpt2_wpos", "C3_llama_weekdays_init", "C1_walk_0"], "fig_real_gallery")
         figures.fig_null_tests()
         figures.anim_clouds()
+        figures.fig_detected_voids()
         if have("exp3", "method_b.json") and have("exp3", "posthoc_relaxed_range.json"):
             figures.fig_examples()
             figures.anim_examples()

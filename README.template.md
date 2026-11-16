@@ -43,6 +43,19 @@ A loop alone does not prove a hole. The loop test also flags many hole-free shap
   - Dots below the dotted line die before two concepts' clusters touch, so they lie inside one cluster.
 - **Try it yourself** with the radius slider in the [explorer](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/) (all 44 clouds, with their loops and voids; you can also show one at a time), or, together with the null distribution and the travel around the hole, on the [examples page](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/examples.html). Every term is defined in [docs/glossary.md](docs/glossary.md), which the explorer also shows.
 
+![The detected voids: each cloud's most persistent void drawn as a purple shell, and its triangle in the void persistence diagram](docs/figures/fig_detected_voids.png)
+
+*The detected voids.* A void is an empty region walled in by a closed surface, like the inside of a hollow ball. It is the next kind of hole after a loop (an H2 bar instead of an H1 bar). The purple surface is the shell of each cloud's most persistent void ([representative void](docs/glossary.md#representative-void)).
+- **Toy models of superposition** ([Elhage et al. 2022](https://transformer-circuits.pub/2022/toy_model/index.html)), green: each point is one feature's direction in a 3-dimensional hidden layer.
+  - They are the only {{exp2.n_void_q05}} of the 44 clouds whose most persistent void survives Benjamini–Hochberg (q = {{exp2.tmsn6.q_void:3}}). The features sit on or near the corners of a polytope, which walls in a void.
+  - With 6 features the shell is the 8 faces of an octahedron. Its persistence ratio π = {{exp2.tmsn6.top_pi2:3}} is close to that of a regular octahedron, √(3/2) ≈ 1.225.
+  - The voids of 8 and 20 features come back in {{exp2.tmsn8.void_freq_pct}}% and {{exp2.tmsn20.void_freq_pct}}% of random 80% subsamples. With 6 features a subsample keeps only 5 of the 6 corners, and the void came back in {{exp2.tmsn6.void_freq_pct}}% of them.
+  - These clouds have only 6–20 points and were [preregistered](reports/preregistration.md) as exploratory, descriptive sets.
+- **GPT-2 positions at random init**, orange: a small void with p = {{exp2.wposinit.p_top_void}}, but q = {{exp2.wposinit.q_void:2}} after the correction, and it comes back in only {{exp2.wposinit.void_freq_pct}}% of subsamples. We read it as a chance hit among 44 tests.
+- **Trained GPT-2 positions**, black: the shape fitter calls this cloud a closed sphere, which has a void, but the data has none. Its most persistent void has π = {{exp2.wpos.top_pi2:2}}, below the null's 95th percentile ({{exp2.wpos.null_q95_pi2:2}}). The positions trace a spiral curve, not a surface.
+- **None of the other {{exp2.trained_n}} trained-model clouds** (the language-model concepts and the grokking network) has a significant void, even before correction ({{exp2.trained_voids}} at p < 0.05).
+- Every void of every cloud can be explored in the [explorer](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/).
+
 **What worked**
 - **Colours form a ring that hue goes around once, but the stimuli already have that ring.**
   - The model's colour representations form a clear loop: its persistence is {{exp2.colors.ratio:1}}× the null's 95th percentile, and it is found in {{exp2.colors.loop_freq_pct}}% of 200 random subsamples.
