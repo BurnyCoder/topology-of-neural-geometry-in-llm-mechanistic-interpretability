@@ -244,6 +244,18 @@ def coords_table() -> str:
     return tables.md_table(q[cols], 3)
 
 
+def voids_table() -> str:
+    """The interesting voids (results/voids/summary.json, run.py voids; post hoc, D10), in the gallery's order."""
+    rows = pd.DataFrame(read_json(res("voids", "summary.json"))["interesting"])
+    rows["shell corners"] = [f"{c} of {n} points" for c, n in zip(rows["corners"], rows["N"])]
+    rows["concepts on shell"] = [f"{s} of {n}" for s, n in zip(rows["shell_concepts"], rows["n_concepts"])]
+    out = rows.rename(columns={"k": "void # (by pi)", "pi": "pi", "empty": "empty middle (death - birth)",
+                               "extent": "span of cloud"})
+    return tables.md_table(out[["id", "void # (by pi)", "reasons", "birth", "death", "pi", "p",
+                                "empty middle (death - birth)", "faces", "shell corners", "span of cloud",
+                                "concepts on shell"]], 3)
+
+
 # ----------------------------------------------------------------------------- orchestration
 SECTIONS = [("exp0_topology", exp0_table, ("exp0", "real_topology.csv")),
             ("exp0_alignment", exp0_alignment_table, ("exp0", "real_alignment.json")),
@@ -255,6 +267,7 @@ SECTIONS = [("exp0_topology", exp0_table, ("exp0", "real_topology.csv")),
             ("coords", coords_table, ("coords", "point_coordinates.csv")),
             ("audit", audit_tables, ("exp7_audit", "summary.json")),
             ("audit3", audit3_tables, ("exp8_audit3", "summary.json")),
+            ("voids", voids_table, ("voids", "summary.json")),
             ("exp6sim", exp6sim_table, ("exp6_sim", "summary.json"))]
 
 
@@ -309,6 +322,9 @@ def run() -> None:
         figures.fig_null_tests()
         figures.anim_clouds()
         figures.fig_detected_voids()
+        if have("voids", "summary.json"):
+            figures.fig_void_gallery()
+        figures.fig_void_life()
         if have("exp3", "method_b.json") and have("exp3", "posthoc_relaxed_range.json"):
             figures.fig_examples()
             figures.anim_examples()

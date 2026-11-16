@@ -191,6 +191,15 @@ def collect() -> dict:
         lv = largest_void("R7_llama_colors")
         for key in ("rank", "n", "birth", "death", "pi", "p", "loop_death", "winding", "shell_concepts", "n_concepts"):
             n[f"voids.colors.{key}"] = lv[key]
+        # The life of the toy model's octahedral void (README figure fig_void_life).
+        from neurotopo.report.examples import void_life
+        life = void_life("R3_tms_n6")
+        for key in ("birth", "death", "edge_r", "faces_r", "loops_born", "loops_dead_by_birth"):
+            n[f"life.tmsn6.{key}"] = life[key]
+        for j, s in enumerate(life["stages"], start=1):
+            for key in ("edges", "triangles", "tetrahedra"):
+                n[f"life.tmsn6.s{j}.{key}"] = s[key]
+        n["life.tmsn6.points"] = len(life["y"])
         c1 = d[d.index.str.startswith("C1_")]
         n["exp2.c1_loops"] = int((c1["p_top_loop"] < 0.05).sum())
         n["exp2.c1_pi_max"] = float(c1["top_pi1"].max())
@@ -202,6 +211,12 @@ def collect() -> dict:
         n["exp2.open.pi_min"], n["exp2.open.pi_max"] = float(op["top_pi1"].min()), float(op["top_pi1"].max())
         n["exp2.open.q95_min"], n["exp2.open.q95_max"] = float(op["null_q95_pi1"].min()), float(op["null_q95_pi1"].max())
         n["exp2.open.p_min"] = float(op["p_top_loop"].min())
+    # Every void scored, the interesting ones by rule (run.py voids; post hoc, D10).
+    if _res("voids", "summary.json").exists():
+        vs = read_json(_res("voids", "summary.json"))
+        for key in ("n_voids", "n_clouds", "n_clouds_total", "n_significant", "max_abs_p_gap_vs_exp2"):
+            n[f"voids.{key}"] = vs[key]
+        n["voids.n_interesting"] = len(vs["interesting"])
     # Exp3.
     if _res("exp3", "summary.json").exists():
         s = read_json(_res("exp3", "summary.json"))
