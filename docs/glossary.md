@@ -71,6 +71,8 @@ The primary reference for this idea is the video [What is...persistent homology?
 
 ### Union of balls and radius r
 Put a ball of radius r around every point and let r grow from 0. Small r gives separate dots. As r grows, balls merge into pieces, pieces close into loops, and loops fill in. Persistent homology records these events.
+- The explorer and the examples page draw the balls with the "balls of radius r" switch (each drawn as an icosahedron with its corners on the sphere).
+- The README's animation of the strongest results shows them in slices: a ball at distance h from the slice cuts it in a disc of radius √(r² − h²).
 
 ### Simplicial complex
 Vertices, edges, triangles and tetrahedra glued along shared faces. It is a combinatorial stand-in for the union of balls that a computer can count holes in.

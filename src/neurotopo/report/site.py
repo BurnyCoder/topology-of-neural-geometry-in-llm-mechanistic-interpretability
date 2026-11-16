@@ -92,7 +92,22 @@ function voidTraces(d, alive, only = null) {             // one translucent surf
     for (const [i, j, l] of d.shells[k]) { I.push(i); J.push(j); K.push(l); C.push(d.void_colour[k]); } });
   return I.length ? [{type: "mesh3d", x: P.map(p => p[0]), y: P.map(p => p[1]), z: P.map(p => p[2]), i: I, j: J, k: K, facecolor: C,
     opacity: only === null ? 0.3 : 0.45, flatshading: true, hoverinfo: "skip", showlegend: false, name: "void shells"}] : []; }
-const holeMarker = (colour, alive, sel = null) => ({color: colour, opacity: alive.map((a, k) => (a || k === sel ? 1 : 0.2)),   // solid while alive,
+// Unit icosahedron (12 corners on the unit sphere, 20 faces), the usual construction from three golden rectangles
+// (as in A. Kahler, "Creating an icosphere mesh in code", 2009). Each ball of radius r is drawn as one, scaled by r.
+const ICO = (() => { const t = (1 + Math.sqrt(5)) / 2;
+  const v = [[-1, t, 0], [1, t, 0], [-1, -t, 0], [1, -t, 0], [0, -1, t], [0, 1, t], [0, -1, -t], [0, 1, -t], [t, 0, -1],
+    [t, 0, 1], [-t, 0, -1], [-t, 0, 1]].map(p => { const n = Math.hypot(...p); return p.map(x => x / n); });
+  const f = [[0, 11, 5], [0, 5, 1], [0, 1, 7], [0, 7, 10], [0, 10, 11], [1, 5, 9], [5, 11, 4], [11, 10, 2], [10, 7, 6],
+    [7, 1, 8], [3, 9, 4], [3, 4, 2], [3, 2, 6], [3, 6, 8], [3, 8, 9], [4, 9, 5], [2, 4, 11], [6, 2, 10], [8, 6, 7], [9, 8, 1]];
+  return {v, f}; })();
+function ballTrace(d, r) {                               // a ball of radius r around every point: the union whose holes we measure
+  const X = [], Y = [], Z = [], I = [], J = [], K = [];
+  d.points.forEach((p, n) => { const o = 12 * n;
+    for (const q of ICO.v) { X.push(p[0] + r * q[0]); Y.push(p[1] + r * q[1]); Z.push(p[2] + r * q[2]); }
+    for (const t of ICO.f) { I.push(o + t[0]); J.push(o + t[1]); K.push(o + t[2]); } });
+  return {type: "mesh3d", x: X, y: Y, z: Z, i: I, j: J, k: K, color: "#4393c3", opacity: 0.12, flatshading: true,
+    hoverinfo: "skip", showlegend: false, name: "balls of radius r"}; }
+const holeMarker = (colour, alive, sel = null) =>({color: colour, opacity: alive.map((a, k) => (a || k === sel ? 1 : 0.2)),   // solid while alive,
   size: alive.map((a, k) => (k === sel ? 16 : a ? 10 : 5)), line: {color: "#000", width: alive.map((a, k) => (k === sel ? 2.5 : 0))}});   // ringed if picked
 const loopMarker = (d, alive, sel = null) => holeMarker(d.loop_colour, alive, sel);
 </script>"""
@@ -131,7 +146,9 @@ homology (Method B) and travel around the hole.
 red dotted line: null 95th percentile<a class="q" href="#" title="Null 95th percentile" onclick="term('null-95th-percentile-q95'); return false">?</a>
 &nbsp;<button class="gl-btn" onclick="openGloss()">Method and terms</button></div>
 <div class="ctl">radius r <input type="range" id="rr" min="0" max="1000" step="1" value="500" style="width:240px;vertical-align:middle">
-<span id="rv"></span> <label><input type="checkbox" id="showcx" checked> alpha complex, loops and voids at r</label><a class="q" href="#"
+<span id="rv"></span> <label><input type="checkbox" id="showballs"> balls of radius r</label><a class="q" href="#"
+title="Balls of radius r" onclick="term('union-of-balls-and-radius-r'); return false">?</a>
+<label><input type="checkbox" id="showcx" checked> alpha complex, loops and voids at r</label><a class="q" href="#"
 title="Alpha complex" onclick="term('alpha-complex'); return false">?</a><a class="q" href="#" title="Representative loop"
 onclick="term('representative-loop'); return false">?</a><a class="q" href="#" title="Representative void"
 onclick="term('representative-void'); return false">?</a> <span id="rstat" style="color:#555"></span></div>
@@ -161,7 +178,7 @@ function load(id, el) { document.querySelectorAll("#side a").forEach(a => a.clas
   fetch("data/" + id + ".json").then(r => r.json()).then(d => { cur = d; sel = null; rExact = null;   // start where the top hole is alive:
     const b = [d.h1[0], d.h2[0]].filter(Boolean).sort((u, v) => v[1] / v[0] - u[1] / u[0])[0];        // the loop or void with the larger pi
     if (b) document.getElementById("rr").value = toT(Math.sqrt(b[0] * b[1])); draw(); }); }
-["colour", "showshape", "showloop", "showcx"].forEach(i => document.getElementById(i).onchange = () => draw());
+["colour", "showshape", "showloop", "showcx", "showballs"].forEach(i => document.getElementById(i).onchange = () => draw());
 document.getElementById("rr").oninput = () => { rExact = null; draw(); };
 const radius = () => (rExact !== null ? rExact : toR(+document.getElementById("rr").value));
 document.getElementById("onesel").onchange = e => { sel = unkey(e.target.value); draw(); };
@@ -187,6 +204,7 @@ function draw() { const d = cur, P = d.points, byTheta = document.getElementById
   if (document.getElementById("showcx").checked) { const ed = edgeTrace(d, r); ne = ed.n; tr.push(ed.trace);   // a picked hole is drawn alone
     if (vs === null) tr.push(...loopTraces(d, alive, ls));
     if (ls === null) tr.push(...voidTraces(d, valive, vs)); }
+  if (document.getElementById("showballs").checked) tr.push(ballTrace(d, r));     // the growing balls themselves
   Plotly.react("cloud", tr, {margin: {l: 0, r: 0, t: 30, b: 0}, title: {text: d.id, font: {size: 13}}, showlegend: true, uirevision: d.id});
   const ax = t => ({title: t, type: "log", range: [Math.log10(RMIN), Math.log10(RMAX)]}), pd = [];
   pd.push({x: [RMIN, RMAX], y: [RMIN, RMAX], mode: "lines", line: {color: "#999"}, name: "diagonal", hoverinfo: "skip"});
@@ -356,7 +374,8 @@ significant, and the test of whether the concept goes around the hole. Every num
 files. New to the method? Open <a href="#" onclick="term('the-method-in-one-minute'); return false">Method and terms</a>
 or the <a href="worked_example.html">worked example</a>.</p>
 <div id="pick"></div><div id="verdict"></div>
-<div class="ctl"><label for="r">radius r</label><input type="range" id="r" min="0" max="1000" step="1" value="500" style="flex:1"><span id="rv" style="min-width:6em"></span></div>
+<div class="ctl"><label for="r">radius r</label><input type="range" id="r" min="0" max="1000" step="1" value="500" style="flex:1"><span id="rv" style="min-width:6em"></span>
+<label><input type="checkbox" id="balls"> balls of radius r</label><a class="q" href="#" title="Balls of radius r" onclick="term('union-of-balls-and-radius-r'); return false">?</a></div>
 <div class="ctl" id="jump"></div><div id="status"></div>
 <div class="row"><div id="cloud"></div><div id="pd"></div></div>
 <p class="cap">Left: the cloud in its top-3 PCA coordinates<a class="q" href="#" title="Top-3 PCA" onclick="term('top-3-pca-coordinates'); return false">?</a>,
@@ -388,6 +407,7 @@ const fmtp = p => (p < 0.001 ? p.toExponential(1) : p.toFixed(3));
 let EX = [], cur = null;
 const s = document.getElementById("r");
 s.oninput = () => draw(toR(+s.value));
+document.getElementById("balls").onchange = () => draw(toR(+s.value));
 fetch("data/examples.json").then(r => r.json()).then(list => { EX = list; const P = document.getElementById("pick");
   list.forEach((e, i) => { const b = document.createElement("button"); b.textContent = e.name; b.style.color = e.colour;
     b.style.borderColor = e.colour; b.onclick = () => show(i); P.appendChild(b); }); show(0); });
@@ -430,7 +450,8 @@ function show(i) {
 function draw(r) {
   const e = cur, alive = aliveAt(e, r), ed = edgeTrace(e, r), n = ed.n, m = loopMarker(e, alive);
   document.getElementById("rv").textContent = "r = " + r.toFixed(4);
-  Plotly.react("cloud", e.base.concat([ed.trace], loopTraces(e, alive)), e.layout, cfg);
+  Plotly.react("cloud", e.base.concat([ed.trace], loopTraces(e, alive),
+    document.getElementById("balls").checked ? [ballTrace(e, r)] : []), e.layout, cfg);
   Plotly.restyle("pd", {"marker.color": [m.color], "marker.opacity": [m.opacity], "marker.size": [m.size]}, [e.loopTrace]);
   Plotly.restyle("pd", {x: [crossXY(r).x], y: [crossXY(r).y]}, [e.loopTrace + 2]);
   const pieces = piecesAt(e, r), loops = alive.filter(Boolean).length, top = e.h1[e.top];
