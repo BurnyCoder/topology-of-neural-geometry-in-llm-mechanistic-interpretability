@@ -10,9 +10,10 @@ experiments/void_search.py does for voids. Written after the void search, so the
 - **large:** among the LARGE_N largest loops over all clouds by death - birth (how much the balls must grow, in
   radius, to fill the loop once it has closed).
 - **goes around once:** in a cloud whose concept variable is cyclic (source.concepts; residues ordered by their
-  Fourier frequency k), the concepts' phases wind exactly once around the loop's representative cycle (the
-  project's ring criterion, here read off the cycle itself rather than a circular coordinate) and the cycle spans at
-  least SHAPE of the cloud; the most significant such loop per cloud, kept if p < AROUND_P.
+  Fourier frequency k), the concepts' phases wind exactly once around the loop's representative cycle and the cycle
+  spans at least SHAPE of the cloud; the most significant such loop per cloud, kept if p < AROUND_P. This mirrors the
+  ring criterion on one drawn cycle, for display only: every "ring" verdict comes from the preregistered traversal
+  along theta_B (Exp3), which this does not replace or change.
 
 Outputs: results/loops/all_loops.csv (one row per loop), results/loops/summary.json (rules, counts, the interesting
 loops with their reasons and cycles) and env.json. No model inference: stored clouds and stored nulls only.

@@ -43,7 +43,11 @@ For every void: its bar (birth, death), persistence ratio π = death / birth, re
 | C1_gp_3 | 1 | large | 0.853 | 0.932 | 1.093 | 0.955 | 0.079 | 174 | 89 of 200 points | 0.974 | 7 of 7 |
 <!-- END:voids -->
 
-- **The toy models of superposition are the only clouds whose voids are real by every criterion.** Their voids are significant (they survive Benjamini–Hochberg over Exp2's 44 tests, q = 0.015), they are the 3 largest, the shell spans the whole cloud, and every feature (or nearly every one) is a corner. The features sit on the corners of a polytope, and the void is the space they keep clear.
+- **The toy models of superposition are the only clouds whose voids pass every check** (they are exploratory sets of 6–20 points).
+  - Their voids are significant (they survive Benjamini–Hochberg over Exp2's 44 tests, q = 0.015).
+  - They are the 3 largest, the shell spans the whole cloud, and every feature (or nearly every one) is a corner.
+  - The features sit on or near the corners of a polytope, and nothing lies inside it.
+  - Significant means more void persistence than in Gaussian clouds of the same spread (D9). With so few points, such clouds rarely have any void at all.
 - **The other significant voids are what chance and degenerate inputs give:**
   - GPT-2 positions at random init: p = 0.020, q = 0.18, back in 1% of subsamples;
   - the dense toy model: with only 5 points, null clouds almost never have a void at all (the null's 95th percentile of the largest void π is 1.000), so a sliver of a void with π = 1.0008 gets p = 0.019;

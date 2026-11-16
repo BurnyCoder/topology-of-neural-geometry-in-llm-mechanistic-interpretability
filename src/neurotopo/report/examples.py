@@ -204,9 +204,10 @@ def void_life(d: str) -> dict:
 
 
 def highlights() -> tuple[list[dict], list[dict]]:
-    """The README's first figure (figures.fig_highlights): the loops and voids that pass every check, by rule.
-    Rings: a cloud's most persistent loop that survives Benjamini-Hochberg over Exp2's 44 loop tests and whose
-    concepts wind once along its representative cycle (results/loops, run.py loops). Voids: a cloud's most persistent
+    """The README's first figure (figures.fig_highlights): the strongest loops and voids, by rule (post hoc).
+    Loops: a cloud's most persistent loop that survives Benjamini-Hochberg over Exp2's 44 loop tests and whose
+    concepts wind once along its representative cycle (results/loops, run.py loops). This does not make it a "ring":
+    the figure titles each loop with its original verdict (headline). Voids: a cloud's most persistent
     void that survives Benjamini-Hochberg over the 44 void tests (results/voids, run.py voids). Each list is ordered
     by persistence ratio, largest first; rows are the search phases' records (with the cycle for loops)."""
     inv = _inv()
