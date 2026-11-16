@@ -14,7 +14,6 @@ from __future__ import annotations
 import logging
 import math
 
-import gudhi
 import numpy as np
 
 from neurotopo import config
@@ -60,10 +59,8 @@ def embed(p: np.ndarray, dim: int = DIM, spread: float = SPREAD, seed: int = 0) 
 
 def filtration_events(y2: np.ndarray, tol: float = 1e-7) -> list[dict]:
     """The radii at which simplices enter the alpha filtration of a planar cloud, with the number of edges and
-    triangles entering at each. GUDHI's filtration values are squared radii
-    (https://gudhi.inria.fr/python/latest/alpha_complex_user.html); ties within tol are merged."""
-    st = gudhi.AlphaComplex(points=np.asarray(y2, dtype=np.float64)).create_simplex_tree()
-    vals = sorted((math.sqrt(max(f, 0.0)), len(sx) - 1) for sx, f in st.get_filtration() if len(sx) > 1)
+    triangles entering at each (diagrams.alpha_filtration, GUDHI); ties within tol are merged."""
+    vals = sorted((r, len(sx) - 1) for sx, r in diagrams.alpha_filtration(y2) if len(sx) > 1)
     ev: list[dict] = []
     for r, dim in vals:
         if not ev or r - ev[-1]["r"] > tol * max(1.0, r):

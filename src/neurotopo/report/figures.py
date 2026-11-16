@@ -414,18 +414,14 @@ def anim_clouds() -> None:
     matplotlib.animation.FuncAnimation + PillowWriter (https://matplotlib.org/stable/api/animation_api.html)."""
     from matplotlib.animation import FuncAnimation, PillowWriter
     from neurotopo.experiments import realdata
-    k = read_json(config.path("results") / "exp3" / "method_b.json")["R2_grokking_WE"]["records3"][0]["k"]
-    sets = [("R7_llama_colors", "colours (hue)"), ("R2_grokking_WE", f"residues mod 113 (k = {k})"),
+    from neurotopo.report.examples import concept_positions, grok_k
+    sets = [("R7_llama_colors", "colours (hue)"), ("R2_grokking_WE", f"residues mod 113 (k = {grok_k()})"),
             ("R5b_llama_months", "months"), ("R5a_llama_weekdays", "weekdays")]
     fig = plt.figure(figsize=(12, 3.6))
     axes = []
     for j, (d, title) in enumerate(sets):
         c = realdata.cloud(d)
-        if d == "R2_grokking_WE":
-            pos = (k * np.array([int(s) for s in c["labels"]])) % 113 / 113
-        else:
-            con = source.concepts(d, c["labels"])
-            pos = con.index / len(con.phase)
+        pos = concept_positions(d, c["labels"])
         ax = fig.add_subplot(1, len(sets), j + 1, projection="3d")
         ax.scatter(*c["y"].T, c=pos, cmap="twilight", s=6 if len(pos) > 200 else 14, depthshade=False)
         ax.set_title(title, fontsize=9)
@@ -443,58 +439,29 @@ def anim_clouds() -> None:
     plt.close(fig)
 
 
-EXAMPLES = [("R7_llama_colors", "Colours"), ("R2_grokking_WE", "Residues mod 113\n(toy network)"),
-            ("R5b_llama_months", "Months"), ("R5a_llama_weekdays", "Weekdays"),
-            ("R5c_llama_days_time", "Days + times of day"), ("R6_llama_years", "Years (control)")]
-
-
 def fig_examples() -> None:
     """Plain-language positive and negative examples. Top: each cloud (PC1-PC2), coloured by position in its cycle
-    (years: by value), titled with two verdicts read from results (report/verdicts.py): is there a ring, and does
-    the concept go around it once (preregistered theta_B or theta_A; otherwise post hoc only; otherwise no). A top-3
-    loop beyond the Gaussian Monte Carlo null is not enough for "ring": that null also rejects many hole-free shapes
-    (audit D9), and a significant loop inside one cluster is not a ring of concepts (audit D8). So "ring: yes" needs a
-    loop through the clusters that the concept goes around once in the preregistered analysis; with only post hoc
-    traversal it is "suggestive". Bottom: observed top H1 persistence ratio / the null's 95th percentile, so a bar
-    above 1 is a significant loop (p < 0.05)."""
+    (years: by value), titled with the two verdicts of report/examples.headline (is there a ring; does the concept
+    go around it once). Bottom: observed top H1 persistence ratio / the null's 95th percentile, so a bar above 1 is
+    a significant loop (p < 0.05)."""
     from neurotopo.experiments import realdata
-    from neurotopo.report import verdicts as v
+    from neurotopo.report.examples import EXAMPLES, concept_positions, headline
     inv = pd.read_csv(config.path("results") / "exp2" / "invariants.csv").set_index("id")
-    k = read_json(config.path("results") / "exp3" / "method_b.json")["R2_grokking_WE"]["records3"][0]["k"]
-    audit = config.path("results") / "exp7_audit" / "summary.json"
-    a = read_json(audit) if audit.exists() else {}
-    inside = {d: r["within_concept_loop"] for d, r in a.get("localisation", {}).items()}
-    rgb_loop = bool(a and a["colour_baseline"]["rgb"]["p_loop"] < 0.05)   # the colour stimuli have the loop too
     fig = plt.figure(figsize=(15, 5.8))
     gs = fig.add_gridspec(2, len(EXAMPLES), height_ratios=[1.25, 1], hspace=0.38)
     ratios, cols = [], []
     for j, (d, name) in enumerate(EXAMPLES):
         c = realdata.cloud(d)
-        if d == "R2_grokking_WE":
-            pos = (k * np.array([int(s) for s in c["labels"]])) % 113 / 113
-        else:
-            con = source.concepts(d, c["labels"], n_bins=12)
-            pos = con.index / len(con.phase)
+        pos = concept_positions(d, c["labels"])
         ax = fig.add_subplot(gs[0, j])
         ax.scatter(c["y"][:, 0], c["y"][:, 1], c=pos, cmap="viridis" if d == "R6_llama_years" else "twilight",
                    s=5 if len(pos) > 200 else 12)
         ax.set_xticks([])
         ax.set_yticks([])
-        small = v.loop(d) and inside.get(d, False)          # significant, but inside one concept's cluster
-        ring = v.loop(d) and not small
-        goes = "yes" if (v.method_b(d) or v.method_a(d)) else ("only post hoc" if v.posthoc(d) else "no")
-        control = d == "R6_llama_years"                     # an ordinal concept: no ring is the expected outcome
-        inherited = d == "R7_llama_colors" and ring and rgb_loop   # confounder found by the audit (D8)
-        ok = (ring and goes == "yes" and not inherited) or (control and not ring)
-        verdict = "ring: no (a small loop inside\none cluster)" if small else \
-            "ring: yes, but the RGB\nstimuli have it too" if inherited else \
-            "ring: yes" if ring and goes == "yes" else \
-            f"loop: yes; ring: {'suggestive' if goes == 'only post hoc' else 'not shown'}" if ring else \
-            "ring: no" + (" (as expected)" if control else "")
-        ax.set_title(f"{name}\n{verdict}\ngoes around once: {goes}", fontsize=8.5,
-                     color="#1b7837" if ok else ("#b35806" if ring else "#333333"))
+        h = headline(d)
+        ax.set_title(f"{name}\n{h['verdict']}\ngoes around once: {h['goes']}", fontsize=8.5, color=h["colour"])
         ratios.append(float(inv.loc[d, "top_pi1"] / inv.loc[d, "null_q95_pi1"]))
-        cols.append("#1b7837" if ring else "#bbbbbb")
+        cols.append("#1b7837" if h["ring"] else "#bbbbbb")
     ax = fig.add_subplot(gs[1, :])
     ax.bar(range(len(EXAMPLES)), ratios, color=cols, width=0.5)
     ax.axhline(1, color="k", ls="--", lw=0.9, label="null 95th percentile")
@@ -585,3 +552,75 @@ def fig_toy() -> None:
                 fontsize=9.5)
     fig.tight_layout()
     save(fig, "fig_toy")
+
+
+def anim_examples() -> None:
+    """How the six example results were made (animated GIF near the top of the README). For each example cloud:
+    top, the edges of its alpha complex present at radius r, in 3D; bottom, its loop persistence diagram (log axes)
+    with the loops alive at r in red, the most persistent loop ringed, the null's 95th-percentile line d = q95 * b
+    (dashed) and the connect radius (dotted). r sweeps one logarithmic range for all clouds (each has RMS radius 1).
+    Data from report/examples.py; matplotlib FuncAnimation + PillowWriter, Line3DCollection for the edges
+    (https://matplotlib.org/stable/api/animation_api.html)."""
+    from matplotlib.animation import FuncAnimation, PillowWriter
+    from mpl_toolkits.mplot3d.art3d import Line3DCollection
+    from neurotopo.report.examples import EXAMPLES, example
+    ex = [example(d) for d, _ in EXAMPLES]
+    rmin, rmax = 0.004, 1.2
+    radii = np.r_[rmin * (rmax / rmin) ** np.linspace(0, 1, 64), np.full(12, rmax)]     # sweep, then hold
+    fig = plt.figure(figsize=(15, 6.6))
+    gs = fig.add_gridspec(2, len(ex), height_ratios=[1.25, 1], hspace=0.22, wspace=0.18, top=0.88, bottom=0.12)
+    panels = []
+    for j, e in enumerate(ex):
+        y, h1 = e["points"], e["h1"]
+        a3 = fig.add_subplot(gs[0, j], projection="3d")
+        a3.scatter(*y.T, c=e["pos"], cmap="twilight" if e["cyclic"] else "viridis", vmin=0, vmax=1,
+                   s=2 if len(y) > 300 else 7, depthshade=False)
+        lc = Line3DCollection(np.zeros((1, 2, 3)), colors="#333", linewidths=0.35, alpha=0.6)
+        a3.add_collection3d(lc)
+        lim = float(np.abs(y).max())
+        a3.set_xlim(-lim, lim)
+        a3.set_ylim(-lim, lim)
+        a3.set_zlim(-lim, lim)
+        a3.set_box_aspect((1, 1, 1), zoom=1.6)                     # fill the panel (matplotlib >= 3.6)
+        a3.set_axis_off()
+        a3.set_title(f"{e['name']}\n{e['verdict']}", fontsize=8, color=e["colour"])
+        ap = fig.add_subplot(gs[1, j])
+        ap.loglog([rmin, rmax], [rmin, rmax], color="#999", lw=0.8)
+        ap.loglog([rmin, rmax / e["q95"]], [rmin * e["q95"], rmax], color="#d1495b", ls="--", lw=0.9)
+        if e["connect_r"]:
+            ap.axhline(e["connect_r"], color="#555", ls=":", lw=0.9)
+        dots = ap.scatter(h1[:, 0], h1[:, 1], s=7, color="#aaaaaa", zorder=3)
+        top = h1[e["top"]]
+        ap.scatter([top[0]], [top[1]], s=70, facecolors="none", edgecolors="k", linewidths=1.1, zorder=4)
+        cross, = ap.plot([], [], color="#d1495b", lw=0.7, alpha=0.7)       # current r (solid; dotted = connect radius)
+        ap.text(0.04, 0.96, f"top loop: \u03c0 / q95 = {e['ratio']:.2f}", transform=ap.transAxes, fontsize=7.5, va="top")
+        ap.set_xlim(rmin, rmax)
+        ap.set_ylim(rmin, rmax)
+        ap.set_aspect("equal")
+        ap.tick_params(labelsize=7)
+        ap.set_xlabel("birth radius", fontsize=7.5)
+        if j == 0:
+            ap.set_ylabel("death radius", fontsize=7.5)
+        panels.append((a3, lc, y[e["edges"]], e, dots, cross, ap.set_title("", fontsize=8)))
+    sup = fig.suptitle("", fontsize=11)
+    fig.text(0.5, 0.012, "Top: edges of the alpha complex at radius r (3D). Bottom: each loop as (birth, death); red dots = alive at r, "
+             "ringed = most persistent, red lines = current r.\nAbove the dashed line: beats the null's 95th percentile. "
+             "Below the dotted line: dies before two concepts' clusters touch (a loop inside one cluster).", ha="center", fontsize=8)
+
+    def frame(i):
+        r = radii[i]
+        for a3, lc, seg, e, dots, cross, title in panels:
+            n = int(np.searchsorted(e["edge_r"], r, side="right"))          # edges are sorted by entry radius
+            lc.set_segments(seg[:n] if n else np.zeros((1, 2, 3)))
+            a3.view_init(elev=18, azim=35 + 1.5 * i)
+            alive = (e["h1"][:, 0] <= r) & (r < e["h1"][:, 1])
+            dots.set_color(np.where(alive, "#d1495b", "#aaaaaa"))
+            cross.set_data([r, r, np.nan, rmin, r], [r, rmax, np.nan, r, r])
+            title.set_text(f"loops alive at r: {int(alive.sum())}")
+        sup.set_text(f"How the example results were made: balls of radius r = {r:.3f} around every point "
+                     "(all clouds have RMS radius 1)")
+        return []
+
+    FuncAnimation(fig, frame, frames=len(radii)).save(config.path("figures") / "anim_examples.gif",
+                                                      writer=PillowWriter(fps=8), dpi=68)
+    plt.close(fig)

@@ -5,7 +5,9 @@ concept or by the cohomology coordinate theta_B), the fitted shape, the loop B u
 persistence diagram with the design-matched null threshold, and the Method A / Method B invariants and
 travel-around-the-hole statistics. A second page, docs/worked_example.html, renders docs/worked_example.md (the
 step-by-step worked example on the toy cloud of experiments/toy_example.py) with live plots of that toy: balls
-growing with r next to the persistence diagram, the null distribution, and the concepts around the hole.
+growing with r next to the persistence diagram, the null distribution, and the concepts around the hole. A third,
+docs/examples.html, replays the same steps on the six real clouds of the README's example figure (report/examples.py).
+Every page has a "Method and terms" drawer that renders docs/glossary.md; "?" links open it at the term.
 plotly.js and marked are loaded from their CDNs; everything else is static.
 """
 
@@ -23,10 +25,47 @@ from neurotopo.experiments.common import _clean, read_json
 from neurotopo.report.figures import group_of, short
 from neurotopo.steering import loops
 
+# Shared by all pages: the "Method and terms" drawer, which renders docs/glossary.md (each heading gets the id
+# "g-<GitHub-style slug>", so a "?" link can open the drawer at that term), and the handling of markdown links.
+SHARED_CSS = r"""<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+<style>
+#gloss{position:fixed;top:0;right:0;bottom:0;width:min(460px,92vw);overflow:auto;background:#fff;border-left:1px solid #ccc;
+ box-shadow:-4px 0 12px rgba(0,0,0,.08);padding:0 16px 40px;font-size:14px;line-height:1.5;z-index:10;color:#222}
+#gloss .gl-head{position:sticky;top:0;background:#fff;padding:10px 0;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center}
+#gloss h1{font-size:18px}#gloss h2{font-size:16px;margin-top:22px}#gloss h3{font-size:14px;margin:16px 0 4px}
+#gloss h3.flash{background:#fff3b0}#gloss a{color:#30638e}
+#gloss h1,#gloss h2,#gloss h3{scroll-margin-top:52px}
+a.q{display:inline-block;font-size:11px;line-height:14px;width:14px;height:14px;text-align:center;border-radius:7px;background:#e0ecf4;
+ color:#30638e !important;text-decoration:none;margin-left:3px;cursor:pointer;padding:0 !important}
+button.gl-btn{font-size:13px;padding:2px 10px;cursor:pointer}
+</style>"""
+DRAWER = r"""<aside id="gloss" hidden><div class="gl-head"><b>Method and terms</b><button class="gl-btn" onclick="closeGloss()">close</button></div>
+<div id="gloss-body">Loading...</div></aside>"""
+SHARED_JS = r"""<script>
+const REPO = "https://github.com/BurnyCoder/topology-of-neural-geometry-in-llm-mechanistic-interpretability/blob/main/";
+const slug = s => s.toLowerCase().trim().replace(/[^\w\- ]+/g, "").replace(/\s/g, "-");      // GitHub heading anchors
+function fixLinks(root) {                                         // markdown links -> this site, the drawer or GitHub
+  root.querySelectorAll("a[href]").forEach(a => { const h = a.getAttribute("href"), g = h.match(/^glossary\.md(?:#(.*))?$/);
+    if (g) { a.href = "#"; a.onclick = e => { e.preventDefault(); term(g[1] || "method-and-terms"); }; }
+    else if (h.startsWith("../")) a.href = REPO + h.slice(3);
+    else if (/^worked_example\.md(#.*)?$/.test(h)) a.href = h.replace(".md", ".html");
+    else if (/^[\w-]+\.md(#.*)?$/.test(h)) a.href = REPO + "docs/" + h; }); }
+let glossReady = null;
+function openGloss() { document.getElementById("gloss").hidden = false;
+  glossReady = glossReady || fetch("glossary.md").then(r => r.text()).then(md => { const b = document.getElementById("gloss-body");
+    b.innerHTML = marked.parse(md); b.querySelectorAll("h1, h2, h3").forEach(h => { h.id = "g-" + slug(h.textContent); }); fixLinks(b); });
+  return glossReady; }
+function closeGloss() { document.getElementById("gloss").hidden = true; }
+function term(id) { openGloss().then(() => { const el = document.getElementById("g-" + id); if (!el) return;
+  el.scrollIntoView({block: "start"}); el.classList.add("flash"); setTimeout(() => el.classList.remove("flash"), 1500); }); }
+const q = (id, name) => '<a class="q" href="#" title="' + (name || "What is this?") + '" onclick="term(\'' + id + '\'); return false">?</a>';
+</script>"""
+
 PAGE = r"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><title>Topology of neural geometry - explorer</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+""" + SHARED_CSS + r"""
 <style>
 body{font-family:system-ui,sans-serif;margin:0;display:flex;height:100vh;color:#222;background:#fff}
 #side{width:250px;overflow:auto;border-right:1px solid #ddd;padding:8px;font-size:13px}
@@ -41,15 +80,28 @@ table{border-collapse:collapse}td,th{border:1px solid #ddd;padding:2px 6px}
 .ctl{padding:6px 12px;font-size:13px}
 </style></head><body>
 <div id="side"><b>Topology of neural geometry</b><br><small>Exact topology of fitted shapes (Method A), persistent
-homology (Method B) and travel around the hole. <a href="https://github.com/BurnyCoder/topology-of-neural-geometry-in-llm-mechanistic-interpretability">GitHub</a>
-<a href="worked_example.html">Worked example: how the loop and ring test works, step by step</a></small>
+homology (Method B) and travel around the hole.
+<a href="#" onclick="term('the-method-in-one-minute'); return false">What am I looking at? The method and all terms</a>
+<a href="examples.html">How the six example results were made (animated)</a>
+<a href="worked_example.html">Worked example: how the loop and ring test works, step by step</a>
+<a href="https://github.com/BurnyCoder/topology-of-neural-geometry-in-llm-mechanistic-interpretability">GitHub</a></small>
 <div id="list"></div></div>
 <div id="main"><div class="ctl">colour by: <select id="colour"><option value="concept">concept</option>
 <option value="theta">theta_B (cohomology coordinate)</option></select>
-<label><input type="checkbox" id="showshape" checked> fitted shape</label>
-<label><input type="checkbox" id="showloop" checked> loop B</label></div>
+<a class="q" href="#" title="Concept / theta_B" onclick="term('theta_a-and-theta_b-hole-coordinates'); return false">?</a>
+<label><input type="checkbox" id="showshape" checked> fitted shape</label><a class="q" href="#" title="Fitted shape" onclick="term('fitted-shape-13-families'); return false">?</a>
+<label><input type="checkbox" id="showloop" checked> loop B</label><a class="q" href="#" title="Loop B" onclick="term('loop-b'); return false">?</a>
+&nbsp;| right: persistence diagram<a class="q" href="#" title="Persistence diagram" onclick="term('persistence-diagram'); return false">?</a>,
+red dotted line: null 95th percentile<a class="q" href="#" title="Null 95th percentile" onclick="term('null-95th-percentile-q95'); return false">?</a>
+&nbsp;<button class="gl-btn" onclick="openGloss()">Method and terms</button></div>
 <div id="plots"><div id="cloud"></div><div id="pd"></div></div><div id="info"></div></div>
+""" + DRAWER + SHARED_JS + r"""
 <script>
+const TERMS = {"Betti (b0,b1,b2)": [["betti-numbers", "Betti numbers"], ["characteristic-scale-r_c", "Characteristic scale r_c"]],
+  "Euler characteristic": [["euler-characteristic", "Euler characteristic"]], "genus": [["genus", "Genus"]],
+  "homotopy class": [["homotopy-class", "Homotopy class"]],
+  "margin ratio rho_A / top H1 pi": [["margin-ratio-rho_a", "Margin ratio rho_A"], ["top-h1-pi", "Top H1 pi"]],
+  "resolvable / loop p (MC)": [["resolvable", "Resolvable"], ["monte-carlo-p-value", "Monte Carlo p-value"]]};
 let manifest, cur;
 const fmt = v => (v === null || v === undefined) ? "-" : (typeof v === "number" ? (Number.isInteger(v) ? String(v) : (Math.abs(v) < 1e-3 && v !== 0 ? v.toExponential(1) : v.toFixed(3))) : v);
 fetch("data/manifest.json").then(r => r.json()).then(m => { manifest = m; const L = document.getElementById("list");
@@ -72,9 +124,11 @@ function draw() { const d = cur, P = d.points, byTheta = document.getElementById
   if (d.q95_pi1) pd.push({x: [0, mx / d.q95_pi1], y: [0, mx], mode: "lines", line: {color: "red", dash: "dot"}, name: "H1 null q95 (pi)"});
   Plotly.react("pd", pd, {margin: {l: 45, r: 10, t: 30, b: 40}, title: {text: "alpha persistence (radius units)", font: {size: 12}},
     xaxis: {title: "birth"}, yaxis: {title: "death"}});
-  let h = "<table><tr><th></th><th>Method A (fitted " + d.family + ")</th><th>Method B (persistent homology)</th></tr>";
-  for (const [k, a, b] of d.rows) h += "<tr><td>" + k + "</td><td>" + fmt(a) + "</td><td>" + fmt(b) + "</td></tr>";
-  h += "</table><p>" + (d.notes || "") + "</p>"; document.getElementById("info").innerHTML = h; }
+  let h = "<table><tr><th></th><th>Method A (fitted " + d.family + ")" + q("method-a-exact-topology-of-the-fitted-shape", "Method A") +
+    "</th><th>Method B (persistent homology)" + q("method-b-persistent-homology-of-the-cloud", "Method B") + "</th></tr>";
+  for (const [k, a, b] of d.rows) h += "<tr><td>" + k + (TERMS[k] || []).map(t => q(t[0], t[1])).join("") + "</td><td>" + fmt(a) + "</td><td>" + fmt(b) + "</td></tr>";
+  h += "</table><p>" + (d.notes ? d.notes + q("alignment-r", "Alignment R") + q("permutation-p-value", "Permutation p-value") +
+    q("winding-number", "Winding number") : "") + "</p>"; document.getElementById("info").innerHTML = h; }
 </script></body></html>
 """
 
@@ -82,7 +136,7 @@ WORKED = r"""<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><title>Worked example - topology of neural geometry</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+""" + SHARED_CSS + r"""
 <style>
 body{font-family:system-ui,sans-serif;margin:0;color:#222;background:#fff;line-height:1.55}
 header{padding:8px 16px;border-bottom:1px solid #ddd;font-size:14px}
@@ -98,18 +152,17 @@ code{background:#f3f3f3;padding:0 3px;border-radius:3px}
 #w-status{font-size:14px;margin:4px 0 8px;min-height:3em}
 </style></head><body>
 <header><a href="index.html">&larr; Explorer of the 44 clouds</a>
+<a href="examples.html">How the six example results were made</a>
+<button class="gl-btn" onclick="openGloss()">Method and terms</button>
 <a href="https://github.com/BurnyCoder/topology-of-neural-geometry-in-llm-mechanistic-interpretability">GitHub</a></header>
 <main id="doc">Loading...</main>
+""" + DRAWER + SHARED_JS + r"""
 <script>
 // The text is docs/worked_example.md (generated by run.py report); numbers and arrays are results/toy/summary.json.
-const REPO = "https://github.com/BurnyCoder/topology-of-neural-geometry-in-llm-mechanistic-interpretability/blob/main/";
 const PAL = ["#1f77b4", "#ff7f0e", "#2ca02c", "#d62728", "#9467bd", "#8c564b", "#e377c2"];   // matplotlib tab10, as in fig_toy
 const fin = v => (v === "inf" ? Infinity : v);                                                  // JSON stores infinite deaths as "inf"
 Promise.all([fetch("worked_example.md").then(r => r.text()), fetch("data/worked_example.json").then(r => r.json())])
-  .then(([md, toy]) => { const main = document.getElementById("doc"); main.innerHTML = marked.parse(md);
-    main.querySelectorAll("a[href]").forEach(a => { const h = a.getAttribute("href");        // repo-relative links -> GitHub
-      if (h.startsWith("../")) a.href = REPO + h.slice(3);
-      else if (/^[\w-]+\.md(#.*)?$/.test(h)) a.href = REPO + "docs/" + h; });
+  .then(([md, toy]) => { const main = document.getElementById("doc"); main.innerHTML = marked.parse(md); fixLinks(main);
     widget(document.getElementById("toy-widget"), toy); });
 function widget(el, toy) {
   const N = toy.numbers, D = toy.data, P = D.points, C = D.concept, H1 = D.h1, top = 1.1, cfg = {displayModeBar: false};
@@ -175,6 +228,150 @@ function widget(el, toy) {
 """
 
 
+EXAMPLES_PAGE = r"""<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><title>How the example results were made - topology of neural geometry</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
+""" + SHARED_CSS + r"""
+<style>
+body{font-family:system-ui,sans-serif;margin:0;color:#222;background:#fff;line-height:1.5}
+header{padding:8px 16px;border-bottom:1px solid #ddd;font-size:14px;display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+header a{color:#30638e;text-decoration:none}
+main{max-width:1100px;margin:0 auto;padding:8px 20px 60px}
+#pick button{font-size:13px;padding:4px 10px;margin:0 6px 6px 0;cursor:pointer;background:#fff;border:1px solid #bbb;border-radius:6px}
+#pick button.sel{border-width:3px;font-weight:600}
+.row{display:flex;flex-wrap:wrap;gap:8px}.row>div{flex:1 1 460px;height:440px}
+.ctl{display:flex;flex-wrap:wrap;align-items:center;gap:10px;font-size:14px;margin:6px 0}
+.ctl button{font-size:13px;padding:3px 10px}
+.cap{font-size:13px;color:#444;margin:2px 0 14px}
+#verdict{font-size:15px;margin:8px 0}#status{font-size:14px;min-height:3em;margin:4px 0}
+h2{font-size:17px;margin:22px 0 4px}
+</style></head><body>
+<header><a href="index.html">&larr; Explorer of the 44 clouds</a><a href="worked_example.html">Worked example on a toy cloud</a>
+<button class="gl-btn" onclick="openGloss()">Method and terms</button>
+<a href="https://github.com/BurnyCoder/topology-of-neural-geometry-in-llm-mechanistic-interpretability">GitHub</a></header>
+<main>
+<h1 style="font-size:22px">How the example results were made</h1>
+<p>These are the six clouds of the README's example figure: positive, partial and negative results. Pick one and grow the
+radius r. The 3D view shows the alpha complex<a class="q" href="#" title="Alpha complex" onclick="term('alpha-complex'); return false">?</a>
+at that radius, and the persistence diagram<a class="q" href="#" title="Persistence diagram" onclick="term('persistence-diagram'); return false">?</a>
+records when each loop is born and filled in. Below are the Monte Carlo null that decides whether the most persistent loop is
+significant, and the test of whether the concept goes around the hole. Every number is read from the repository's results
+files. New to the method? Open <a href="#" onclick="term('the-method-in-one-minute'); return false">Method and terms</a>
+or the <a href="worked_example.html">worked example</a>.</p>
+<div id="pick"></div><div id="verdict"></div>
+<div class="ctl"><label for="r">radius r</label><input type="range" id="r" min="0" max="1000" step="1" value="500" style="flex:1"><span id="rv" style="min-width:6em"></span></div>
+<div class="ctl" id="jump"></div><div id="status"></div>
+<div class="row"><div id="cloud"></div><div id="pd"></div></div>
+<p class="cap">Left: the cloud in its top-3 PCA coordinates<a class="q" href="#" title="Top-3 PCA" onclick="term('top-3-pca-coordinates'); return false">?</a>,
+coloured by position in its cycle, with the edges of the alpha complex present at radius r (drag to rotate). Right: the loop
+persistence diagram on log axes. Grey dots are loops, red dots are loops alive at r, and the ringed dot is the most
+persistent loop<a class="q" href="#" title="Top H1 pi" onclick="term('top-h1-pi'); return false">?</a>. Loops above the red dashed
+line beat the null's 95th percentile<a class="q" href="#" title="Null 95th percentile" onclick="term('null-95th-percentile-q95'); return false">?</a>;
+loops below the dotted line die before two concepts' clusters touch<a class="q" href="#" title="Connect radius" onclick="term('connect-radius-loop-inside-one-cluster'); return false">?</a>.</p>
+<h2>Is the most persistent loop significant?</h2>
+<div id="null" style="height:300px"></div>
+<p class="cap">The largest persistence ratio π<a class="q" href="#" title="Persistence ratio" onclick="term('persistence-ratio-pi'); return false">?</a>
+in each of the null clouds built to match this cloud's design<a class="q" href="#" title="Monte Carlo null" onclick="term('monte-carlo-null'); return false">?</a>,
+against this cloud's own; p is the Monte Carlo p-value<a class="q" href="#" title="Monte Carlo p-value" onclick="term('monte-carlo-p-value'); return false">?</a>.</p>
+<h2>Does the concept go around the hole once?</h2>
+<div class="ctl" id="travtxt"></div>
+<div id="circle" style="height:380px"></div>
+<p class="cap">Each concept sits at the circular mean<a class="q" href="#" title="Circular mean" onclick="term('circular-mean'); return false">?</a>
+of its points' hole angle θ_B<a class="q" href="#" title="theta_B" onclick="term('theta_a-and-theta_b-hole-coordinates'); return false">?</a>,
+joined in semantic order. Going around once means alignment p &lt; 0.05<a class="q" href="#" title="Alignment R" onclick="term('alignment-r'); return false">?</a>
+and winding number ±1<a class="q" href="#" title="Winding number" onclick="term('winding-number'); return false">?</a>.</p>
+</main>
+""" + DRAWER + SHARED_JS + r"""
+<script>
+// Data: docs/data/examples.json, written by run.py site from report/examples.py (results/ and the stored clouds).
+const RMIN = 0.002, RMAX = 1.5, LN = Math.log(RMAX / RMIN), cfg = {displayModeBar: false};       // all clouds have RMS radius 1
+const toR = t => RMIN * Math.exp(LN * t / 1000), toT = r => Math.round(1000 * Math.log(Math.max(r, RMIN) / RMIN) / LN);
+const fmtp = p => (p < 0.001 ? p.toExponential(1) : p.toFixed(3));
+let EX = [], cur = null;
+const s = document.getElementById("r");
+s.oninput = () => draw(toR(+s.value));
+fetch("data/examples.json").then(r => r.json()).then(list => { EX = list; const P = document.getElementById("pick");
+  list.forEach((e, i) => { const b = document.createElement("button"); b.textContent = e.name; b.style.color = e.colour;
+    b.style.borderColor = e.colour; b.onclick = () => show(i); P.appendChild(b); }); show(0); });
+function show(i) {
+  const e = cur = EX[i], P = e.points, top = e.h1[e.top];
+  document.querySelectorAll("#pick button").forEach((b, j) => b.classList.toggle("sel", i === j));
+  document.getElementById("verdict").innerHTML = '<b style="color:' + e.colour + '">' + e.name + ": " + e.verdict.replace(/\n/g, " ") +
+    "; goes around once: " + e.goes + "</b>. Most persistent loop: π = " + e.top_pi.toFixed(2) + ", " + e.ratio.toFixed(2) +
+    "× the null's 95th percentile (p = " + fmtp(e.p_loop) + ")" +
+    (e.within === null ? "." : e.within ? "; it dies inside one concept's cluster." : "; it runs through the concept clusters.");
+  Plotly.newPlot("cloud", [{type: "scatter3d", mode: "markers", x: P.map(p => p[0]), y: P.map(p => p[1]), z: P.map(p => p[2]), hoverinfo: "skip",
+      marker: {size: P.length > 300 ? 2 : 3.5, color: e.pos, colorscale: e.cyclic ? "Twilight" : "Viridis", cmin: 0, cmax: 1}},
+    {type: "scatter3d", mode: "lines", x: [], y: [], z: [], hoverinfo: "skip", line: {color: "rgba(60,60,60,0.35)", width: 1.5}}],
+    {margin: {l: 0, r: 0, t: 30, b: 0}, title: {text: "alpha complex at radius r", font: {size: 13}}, showlegend: false,
+     scene: {xaxis: {visible: false}, yaxis: {visible: false}, zaxis: {visible: false}, aspectmode: "data"}}, cfg);
+  const ax = t => ({title: t, type: "log", range: [Math.log10(RMIN), Math.log10(RMAX)]}), B = [RMIN, RMAX / e.q95];
+  const tr = [{x: [RMIN, RMAX], y: [RMIN, RMAX], mode: "lines", line: {color: "#999"}, name: "diagonal (π = 1)", hoverinfo: "skip"},
+    {x: B, y: B.map(b => b * e.q95), mode: "lines", line: {color: "#d1495b", dash: "dash"}, name: "null 95th pct. (π = " + e.q95.toFixed(2) + ")", hoverinfo: "skip"}];
+  if (e.connect_r) tr.push({x: [RMIN, RMAX], y: [e.connect_r, e.connect_r], mode: "lines", line: {color: "#555", dash: "dot", width: 1}, name: "connect radius", hoverinfo: "skip"});
+  e.loopTrace = tr.length;
+  tr.push({x: e.h1.map(b => b[0]), y: e.h1.map(b => b[1]), mode: "markers", marker: {size: 6, color: "#999"}, name: "loops", hoverinfo: "text",
+    text: e.h1.map(b => "born " + b[0].toFixed(4) + ", dies " + b[1].toFixed(4) + ", π = " + (b[1] / b[0]).toFixed(2))});
+  tr.push({x: [top[0]], y: [top[1]], mode: "markers", marker: {size: 16, color: "rgba(0,0,0,0)", line: {color: "#000", width: 2}}, name: "most persistent loop", hoverinfo: "skip"});
+  tr.push({x: [], y: [], mode: "lines", line: {color: "#d1495b", dash: "dot", width: 1}, name: "radius r", hoverinfo: "skip"});
+  Plotly.newPlot("pd", tr, {margin: {l: 55, r: 10, t: 30, b: 45}, title: {text: "loop persistence diagram (log axes)", font: {size: 13}},
+    xaxis: ax("birth radius b"), yaxis: ax("death radius d"), legend: {x: 0.02, y: 0.98, font: {size: 11}}}, cfg);
+  const J = document.getElementById("jump"); J.textContent = "jump to:";
+  [["most persistent loop born", top[0] * 1.0005], ["it is alive", Math.sqrt(top[0] * top[1])], ["it is filled in", top[1] * 1.02]]
+    .concat(e.connect_r ? [["clusters touch", e.connect_r * 1.0005]] : []).forEach(([lab, r]) => { const b = document.createElement("button");
+      b.textContent = lab + " (r = " + r.toFixed(3) + ")"; b.onclick = () => { s.value = toT(r); draw(r); }; J.appendChild(b); });
+  const nm = e.null_max, vline = (x, c, d) => ({type: "line", x0: x, x1: x, yref: "paper", y0: 0, y1: 1, line: {color: c, dash: d, width: 1.5}});
+  Plotly.newPlot("null", [{x: nm, type: "histogram", nbinsx: 60, marker: {color: "#bbb"}, hoverinfo: "skip"}],
+    {margin: {l: 55, r: 10, t: 10, b: 45}, xaxis: {title: "largest loop π in a null cloud", range: [1, Math.max(...nm, e.top_pi) * 1.06]},
+     yaxis: {title: "null clouds (of " + nm.length + ")"}, shapes: [vline(e.q95, "#d1495b", "dash"), vline(e.top_pi, "#222", "solid")],
+     annotations: [{x: e.q95, yref: "paper", y: 1, text: " 95th pct. " + e.q95.toFixed(2), showarrow: false, xanchor: "left", yanchor: "top"},
+       {x: e.top_pi, yref: "paper", y: 0.82, text: " this cloud " + e.top_pi.toFixed(2) + ", p = " + fmtp(e.p_loop) + " ", showarrow: false,
+        xanchor: e.top_pi > e.q95 ? "right" : "left", yanchor: "top"}]}, cfg);
+  circle(e);
+  const r0 = Math.sqrt(top[0] * top[1]); s.value = toT(r0); draw(r0); }
+function draw(r) {
+  const e = cur, P = e.points, X = [], Y = [], Z = [];
+  document.getElementById("rv").textContent = "r = " + r.toFixed(4);
+  let n = 0; while (n < e.edge_r.length && e.edge_r[n] <= r) n++;                            // edges are sorted by entry radius
+  for (let k = 0; k < n; k++) { const [i, j] = e.edges[k]; X.push(P[i][0], P[j][0], null); Y.push(P[i][1], P[j][1], null); Z.push(P[i][2], P[j][2], null); }
+  Plotly.restyle("cloud", {x: [X], y: [Y], z: [Z]}, [1]);
+  const alive = e.h1.map(b => b[0] <= r && r < b[1]);                                         // a loop is alive on [birth, death)
+  Plotly.restyle("pd", {"marker.color": [alive.map(a => (a ? "#d1495b" : "#999"))]}, [e.loopTrace]);
+  Plotly.restyle("pd", {x: [[r, r, null, RMIN, r]], y: [[r, RMAX, null, r, r]]}, [e.loopTrace + 2]);
+  const pieces = 1 + e.h0_deaths.filter(x => x > r).length, loops = alive.filter(Boolean).length, top = e.h1[e.top];
+  document.getElementById("status").textContent = pieces + (pieces === 1 ? " piece, " : " pieces, ") + loops + (loops === 1 ? " loop" : " loops") +
+    " alive, " + n + " edges in the complex. Most persistent loop (born " + top[0].toFixed(4) + ", dies " + top[1].toFixed(4) + "): " +
+    (r < top[0] ? "not born yet." : r < top[1] ? "alive." : "filled in."); }
+function circle(e) {
+  const t = e.traversal, T = document.getElementById("travtxt");
+  if (!t) { T.textContent = "No hole coordinate θ_B could be computed for this cloud."; Plotly.purge("circle"); return; }
+  const xs = t.theta.map(Math.cos), ys = t.theta.map(Math.sin), n = xs.length, k = [...Array(101).keys()];
+  const tr = [{x: k.map(i => Math.cos(i * Math.PI / 50)), y: k.map(i => Math.sin(i * Math.PI / 50)), mode: "lines", line: {color: "#ccc"}, hoverinfo: "skip"},
+    {x: [...xs, xs[0]], y: [...ys, ys[0]], mode: "lines", line: {color: "#555", width: 1}, hoverinfo: "skip"},
+    {x: xs, y: ys, mode: "markers", text: t.names, hoverinfo: "text",
+     marker: {size: n > 40 ? 6 : 11, color: t.names.map((_, i) => i / n), colorscale: e.cyclic ? "Twilight" : "Viridis", cmin: 0, cmax: 1, line: {width: 0.5, color: "#333"}}}];
+  if (n <= 12) tr.push({x: xs.map(v => 1.22 * v), y: ys.map(v => 1.22 * v), mode: "text", text: t.names, hoverinfo: "skip"});
+  Plotly.newPlot("circle", tr, {margin: {l: 5, r: 5, t: 5, b: 5}, showlegend: false, xaxis: {range: [-1.6, 1.6], visible: false},
+    yaxis: {range: [-1.5, 1.5], scaleanchor: "x", visible: false}}, cfg);
+  T.innerHTML = "θ_B: " + t.source + q("preregistered-and-post-hoc", "Preregistered and post hoc") + "; concept variable: " + t.variable +
+    ". R = " + t.R.toFixed(3) + ", p = " + fmtp(t.p) + ", winding " + t.w + ": " + (t.passes ? "goes around once." : "does not go around once."); }
+</script></body></html>
+"""
+
+
+def examples_page(docs) -> None:
+    """docs/examples.html and docs/data/examples.json: the six example clouds (report/examples.py), so the page can
+    replay how each result was made (alpha complex growing with r, loops, null, localisation, traversal)."""
+    from neurotopo.report.examples import EXAMPLES, example
+    rows = []
+    for d, _ in EXAMPLES:
+        e = example(d)
+        rows.append({k: (np.round(v, 5).tolist() if isinstance(v, np.ndarray) else v) for k, v in e.items()})
+    (docs / "data" / "examples.json").write_text(json.dumps(_clean(rows)), encoding="utf-8", newline=chr(10))
+    (docs / "examples.html").write_text(EXAMPLES_PAGE, encoding="utf-8", newline=chr(10))
+
+
 def worked_example(docs) -> None:
     """docs/worked_example.html and docs/data/worked_example.json from results/toy/summary.json (run.py toy).
     The page renders docs/worked_example.md client-side, so its text is not duplicated here."""
@@ -191,6 +388,7 @@ def run() -> None:
     out.mkdir(parents=True, exist_ok=True)
     (docs / ".nojekyll").write_text("", encoding="utf-8", newline=chr(10))
     worked_example(docs)
+    examples_page(docs)
     res = config.path("results")
     topo = pd.read_csv(res / "exp0" / "real_topology.csv").set_index("id")
     inv = pd.read_csv(res / "exp2" / "invariants.csv").set_index("id") if (res / "exp2" / "invariants.csv").exists() else None

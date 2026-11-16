@@ -4,7 +4,7 @@ Do concepts that are cyclic in meaning (days, months, colours, residues mod n) o
 
 **Status (2026-11-15):** all preregistered topology analyses are done. They use only stored activations; no model inference was run. A second and a third independent audit added post hoc checks and corrected several plain-language claims; no preregistered verdict changed ([reports/exp7_audit.md](reports/exp7_audit.md), [reports/exp8_audit3.md](reports/exp8_audit3.md)). Model steering and simulated steering are preregistered and **postponed by the author**.
 
-**Links:** [paper (PDF)](paper/main.pdf) · [interactive explorer](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/) · [worked example of the method](docs/worked_example.md) ([interactive](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/worked_example.html)) · [inputs and results on Hugging Face](https://huggingface.co/datasets/BurnyCoder/topology-of-neural-geometry) · [preregistration](reports/preregistration.md) · [summary of all experiments](reports/summary.md)
+**Links:** [paper (PDF)](paper/main.pdf) · [interactive explorer](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/) · [how the example results were made (interactive)](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/examples.html) · [worked example of the method](docs/worked_example.md) ([interactive](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/worked_example.html)) · [method and terms](docs/glossary.md) · [inputs and results on Hugging Face](https://huggingface.co/datasets/BurnyCoder/topology-of-neural-geometry) · [preregistration](reports/preregistration.md) · [summary of all experiments](reports/summary.md)
 
 ## What we found, in plain words
 
@@ -23,6 +23,15 @@ A loop alone does not prove a hole. The loop test also flags many hole-free shap
   - A significant loop is not by itself a hole either (D9).
 - **A flat picture can mislead.** The weekdays look round here, but the 7 day centres form only a weak loop even in this plane (persistence ratio {{audit3.cen.weekdays.pc12:2}}, with a large Sunday → Monday gap) and none in 3D ({{audit.loc.weekdays.means_pi:2}}). A regular 7-gon gives 1/sin(π/7) ≈ 2.3.
 - **Every step behind this figure**, with numbers, is worked through on a 21-point toy week in [docs/worked_example.md](docs/worked_example.md) ([interactive version](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/worked_example.html)).
+
+![How the example results were made: the alpha complex of each example cloud grows with the radius r while its persistence diagram records each loop's birth and death](docs/figures/anim_examples.gif)
+
+*How the results were made (animation).* Balls of radius r grow around every point of each example cloud. r is the same for all clouds, which all have RMS radius 1.
+- **Top:** the edges of the alpha complex present at radius r, in 3D. Its holes are exactly the holes of the union of the balls.
+- **Bottom:** each loop as a dot (birth radius, death radius) on log axes. Red dots are alive at the current r, and the ringed dot is the most persistent loop.
+  - Dots above the dashed red line beat the null's 95th percentile.
+  - Dots below the dotted line die before two concepts' clusters touch, so they lie inside one cluster.
+- **Try it yourself**, together with the null distribution and the travel around the hole, on the [interactive page](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/examples.html). Every term is defined in [docs/glossary.md](docs/glossary.md), which the explorer also shows.
 
 **What worked**
 - **Colours form a ring that hue goes around once, but the stimuli already have that ring.**
@@ -288,7 +297,7 @@ Full report: [reports/exp1_synthetic.md](reports/exp1_synthetic.md).
 
 ## Methodology
 
-Full design decisions: [docs/methodology.md](docs/methodology.md). Every step of the loop and ring test carried out with numbers on a toy cloud: [docs/worked_example.md](docs/worked_example.md). Exact topology of each family: [docs/analytic_topology.md](docs/analytic_topology.md).
+Full design decisions: [docs/methodology.md](docs/methodology.md). Every technical term: [docs/glossary.md](docs/glossary.md). Every step of the loop and ring test carried out with numbers on a toy cloud: [docs/worked_example.md](docs/worked_example.md). Exact topology of each family: [docs/analytic_topology.md](docs/analytic_topology.md).
 
 - **Data** (no new data were collected):
   - **44 real clouds** from the source project: activations of Llama-3.1-8B (weekdays, months, days with times, colours, years, temperature, age, counting, truth cities), Pythia-410m (counting), and the weights of GPT-2 (W_pos) and of a grokked one-layer modular-addition transformer (W_E).
@@ -363,7 +372,7 @@ run.py <phase>
   audit3       post hoc checks of the third audit (D9): is the loop test specific to holes? (synthetic rates, cluster null, tori)
   toy          worked example: every step of the loop and ring test on a 21-point toy week (docs/worked_example.md)
   report       regenerate every table, figure and number in README / reports / paper from results/
-  site         GitHub Pages explorer (docs/index.html) and interactive worked example (docs/worked_example.html)
+  site         GitHub Pages explorer (docs/index.html), interactive worked example (docs/worked_example.html) and examples (docs/examples.html)
   all          everything above, CPU only (about 1.5 h on 16 cores)
   exp6sim, exp6  simulated / LLM steering around the loops (postponed; exp6 needs a GPU and Llama-3.1-8B)
 ```
@@ -434,7 +443,7 @@ uv, Python 3.11, NumPy, SciPy, scikit-learn, pandas, [GUDHI](https://gudhi.inria
   - `report/`: tables, figures, site, numbers.
 - `external/shape-fitting/`: the source project (git submodule, commit 4c5f3b6).
 - `reports/`: literature and state-of-the-art reviews, preregistration (with addendum and amendment), deviations, plan, one report per experiment, summary. `reports/templates/` holds the report sources; `reports/generated/` holds generated tables.
-- `docs/`: [methodology](docs/methodology.md), [worked example](docs/worked_example.md) (source: `docs/templates/`), [exact topology of the families](docs/analytic_topology.md), [reproducing the inputs](docs/reproduce_inputs.md), figures, explorer.
+- `docs/`: [methodology](docs/methodology.md), [method and terms](docs/glossary.md), [worked example](docs/worked_example.md) (source: `docs/templates/`), [exact topology of the families](docs/analytic_topology.md), [reproducing the inputs](docs/reproduce_inputs.md), figures, explorer.
 - `paper/`: LaTeX source and PDF.
 - `results/`: machine-readable results of every phase.
 - `logs/`: timestamped run logs.

@@ -1,6 +1,6 @@
 # Methodology and design decisions
 
-This page explains *why* each choice was made. The exact rules are in [reports/preregistration.md](../reports/preregistration.md), and changes to them are in [reports/deviations.md](../reports/deviations.md). This page does not repeat either. For every step of the loop and ring test carried out with numbers on a toy cloud, see [worked_example.md](worked_example.md).
+This page explains *why* each choice was made. The exact rules are in [reports/preregistration.md](../reports/preregistration.md), and changes to them are in [reports/deviations.md](../reports/deviations.md). This page does not repeat either. For every step of the loop and ring test carried out with numbers on a toy cloud, see [worked_example.md](worked_example.md). Every technical term is defined in [glossary.md](glossary.md).
 
 ## Objects of study
 
