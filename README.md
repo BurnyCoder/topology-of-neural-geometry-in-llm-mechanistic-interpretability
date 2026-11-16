@@ -4,7 +4,7 @@ Do concepts that are cyclic in meaning (days, months, colours, residues mod n) o
 
 **Status (2026-11-15):** all preregistered topology analyses are done. They use only stored activations; no model inference was run. A second and a third independent audit added post hoc checks and corrected several plain-language claims; no preregistered verdict changed ([reports/exp7_audit.md](reports/exp7_audit.md), [reports/exp8_audit3.md](reports/exp8_audit3.md)). Model steering and simulated steering are preregistered and **postponed by the author**.
 
-**Links:** [paper (PDF)](paper/main.pdf) · [interactive explorer](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/) · [inputs and results on Hugging Face](https://huggingface.co/datasets/BurnyCoder/topology-of-neural-geometry) · [preregistration](reports/preregistration.md) · [summary of all experiments](reports/summary.md)
+**Links:** [paper (PDF)](paper/main.pdf) · [interactive explorer](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/) · [worked example of the method](docs/worked_example.md) ([interactive](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/worked_example.html)) · [inputs and results on Hugging Face](https://huggingface.co/datasets/BurnyCoder/topology-of-neural-geometry) · [preregistration](reports/preregistration.md) · [summary of all experiments](reports/summary.md)
 
 ## What we found, in plain words
 
@@ -22,6 +22,7 @@ A loop alone does not prove a hole. The loop test also flags many hole-free shap
   - A significant loop is not always a ring of the concepts: for days with times it is a small loop inside one day's cluster (grey bar).
   - A significant loop is not by itself a hole either (D9).
 - **A flat picture can mislead.** The weekdays look round here, but the 7 day centres form only a weak loop even in this plane (persistence ratio 1.19, with a large Sunday → Monday gap) and none in 3D (1.05). A regular 7-gon gives 1/sin(π/7) ≈ 2.3.
+- **Every step behind this figure**, with numbers, is worked through on a 21-point toy week in [docs/worked_example.md](docs/worked_example.md) ([interactive version](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/worked_example.html)).
 
 **What worked**
 - **Colours form a ring that hue goes around once, but the stimuli already have that ring.**
@@ -121,14 +122,6 @@ Each method gives a circle-valued coordinate for the hole (θ_A, θ_B), and both
 **Real data: test sets vs controls.** Each column counts the sets that pass one step. "Goes around" means alignment p < 0.05 and winding ±1 for the concept variable. Ordinal sets use 7 or 12 equal-width value bins.
 
 <!-- BEGIN:readme_roles -->
-| role | sets | loop in top-3 PCs (MC null, p < 0.05) | A: resolvable fitted hole, goes around | B: loop, goes around (θ_B, 3D) | B + top-10 check (full H1-B rule) | goes around once, post hoc (3D) |
-|---|---|---|---|---|---|---|
-| test: cyclic, primary (H1) | weekdays, months, grokking_WE | 2/3 | 0/3 | 1/3 | 0/3 | 2/3 |
-| test: cyclic, secondary (H3) | days_time | 1/1 | 0/1 | 0/1 | 0/1 | 0/1 |
-| test: cyclic, exploratory | colors | 1/1 | 1/1 | 1/1 | 0/1 | 1/1 |
-| negative control: ordinal concepts (H2) | gpt2_wpos, counting, pythia_counting, years, temperature, age | 0/6 | 0/6 | 0/6 | 0/6 | 0/6 |
-| control: random-init networks (H2) | C3_weekdays_init, C3_months_init, C3_grokking_WE_init | 1/3 | 0/3 | 0/3 | 0/3 | 0/3 |
-| control: random walks / Gaussian processes (H2) | 20 sets | 0/20 | 0/20 | 0/20 | 0/20 | 0/20 |
 <!-- END:readme_roles -->
 
 **Synthetic validation (Exp1): does persistent homology recover the exact topology?** These are 39,000 clouds of 13 families with exact ground-truth Betti numbers. Scores are exact (b0, b1, b2) accuracy, macro-averaged over families, with 95% cluster-bootstrap CIs over generator chunks.
@@ -295,7 +288,7 @@ Full report: [reports/exp1_synthetic.md](reports/exp1_synthetic.md).
 
 ## Methodology
 
-Full design decisions: [docs/methodology.md](docs/methodology.md). Exact topology of each family: [docs/analytic_topology.md](docs/analytic_topology.md).
+Full design decisions: [docs/methodology.md](docs/methodology.md). Every step of the loop and ring test carried out with numbers on a toy cloud: [docs/worked_example.md](docs/worked_example.md). Exact topology of each family: [docs/analytic_topology.md](docs/analytic_topology.md).
 
 - **Data** (no new data were collected):
   - **44 real clouds** from the source project: activations of Llama-3.1-8B (weekdays, months, days with times, colours, years, temperature, age, counting, truth cities), Pythia-410m (counting), and the weights of GPT-2 (W_pos) and of a grokked one-layer modular-addition transformer (W_E).
@@ -368,8 +361,9 @@ run.py <phase>
   exp5         robustness: Rips vs alpha, top-k PCs (with matched null), full-D cosine, offset removal, seeds, noise scale
   audit        post hoc checks of the second audit (D8): colour RGB baseline, loop localisation, closure ratio, PCA gaps, stability
   audit3       post hoc checks of the third audit (D9): is the loop test specific to holes? (synthetic rates, cluster null, tori)
+  toy          worked example: every step of the loop and ring test on a 21-point toy week (docs/worked_example.md)
   report       regenerate every table, figure and number in README / reports / paper from results/
-  site         GitHub Pages explorer (docs/index.html)
+  site         GitHub Pages explorer (docs/index.html) and interactive worked example (docs/worked_example.html)
   all          everything above, CPU only (about 1.5 h on 16 cores)
   exp6sim, exp6  simulated / LLM steering around the loops (postponed; exp6 needs a GPU and Llama-3.1-8B)
 ```
@@ -440,7 +434,7 @@ uv, Python 3.11, NumPy, SciPy, scikit-learn, pandas, [GUDHI](https://gudhi.inria
   - `report/`: tables, figures, site, numbers.
 - `external/shape-fitting/`: the source project (git submodule, commit 4c5f3b6).
 - `reports/`: literature and state-of-the-art reviews, preregistration (with addendum and amendment), deviations, plan, one report per experiment, summary. `reports/templates/` holds the report sources; `reports/generated/` holds generated tables.
-- `docs/`: [methodology](docs/methodology.md), [exact topology of the families](docs/analytic_topology.md), [reproducing the inputs](docs/reproduce_inputs.md), figures, explorer.
+- `docs/`: [methodology](docs/methodology.md), [worked example](docs/worked_example.md) (source: `docs/templates/`), [exact topology of the families](docs/analytic_topology.md), [reproducing the inputs](docs/reproduce_inputs.md), figures, explorer.
 - `paper/`: LaTeX source and PDF.
 - `results/`: machine-readable results of every phase.
 - `logs/`: timestamped run logs.

@@ -259,11 +259,12 @@ SECTIONS = [("exp0_topology", exp0_table, ("exp0", "real_topology.csv")),
 
 
 def render_templates(nums: dict) -> None:
-    """README.template.md -> README.md and reports/templates/*.md -> reports/*.md with {{key}} placeholders filled;
-    paper/generated/numbers.tex gets one LaTeX macro per number."""
+    """README.template.md -> README.md, reports/templates/*.md -> reports/*.md and docs/templates/*.md -> docs/*.md
+    with {{key}} placeholders filled; paper/generated/numbers.tex gets one LaTeX macro per number."""
     root = config.ROOT
     pairs = [(root / "README.template.md", root / "README.md")]
-    pairs += [(t, root / "reports" / t.name) for t in sorted((root / "reports" / "templates").glob("*.md"))]
+    for folder in ("reports", "docs"):
+        pairs += [(t, root / folder / t.name) for t in sorted((root / folder / "templates").glob("*.md"))]
     pairs += [(root / "paper" / "main.template.tex", root / "paper" / "main.tex")]
     for src, dst in pairs:
         if src.exists():
@@ -311,3 +312,5 @@ def run() -> None:
             figures.fig_examples()
     if have("exp6_sim", "simulated_steering.json"):
         figures.fig_exp6sim()
+    if have("toy", "summary.json"):
+        figures.fig_toy()
