@@ -119,15 +119,19 @@ def loop_colours(n: int) -> list[str]:
 
 def replay(y: np.ndarray) -> dict:
     """What it takes to replay persistent homology on a cloud y: the alpha complex's edges with their entry radii,
-    the H0 deaths (pieces merging), the voids, and the loops sorted from the most persistent down, each with a
-    representative cycle (diagrams.alpha_h1_cycles) and its own colour. Index 0 is the most persistent loop."""
+    the H0 deaths (pieces merging), and the loops and the voids, each sorted from the most persistent down, with a
+    representative cycle (diagrams.alpha_h1_cycles) or shell (diagrams.alpha_h2_voids) and its own colour; voids
+    continue the loops' colour sequence, so no void shares a colour with a loop. Index 0 is the most persistent."""
     ij, er = diagrams.alpha_edges(y)
-    dg = diagrams.alpha_diagrams(y)
+    h0 = diagrams.alpha_diagrams(y, maxdim=0)[0][:, 1]
     bars, cycles = diagrams.alpha_h1_cycles(y)
-    order = np.argsort(-(bars[:, 1] / bars[:, 0]), kind="stable") if len(bars) else np.zeros(0, dtype=int)
-    h0 = dg[0][:, 1]
+    vbars, shells = diagrams.alpha_h2_voids(y)
+    by_pi = lambda b: np.argsort(-(b[:, 1] / b[:, 0]), kind="stable")   # most persistent first; empty -> empty
+    order, vorder = by_pi(bars), by_pi(vbars)
+    colours = loop_colours(len(order) + len(vorder))
     return {"edges": ij, "edge_r": er, "h0_deaths": np.sort(h0[np.isfinite(h0)]), "h1": bars[order],
-            "cycles": [cycles[i] for i in order], "loop_colour": loop_colours(len(order)), "h2": dg[2], "top": 0}
+            "cycles": [cycles[i] for i in order], "loop_colour": colours[:len(order)], "h2": vbars[vorder],
+            "shells": [shells[i] for i in vorder], "void_colour": colours[len(order):], "top": 0}
 
 
 def example(d: str) -> dict:

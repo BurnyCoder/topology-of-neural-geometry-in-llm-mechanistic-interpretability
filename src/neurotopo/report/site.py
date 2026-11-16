@@ -1,8 +1,9 @@
 """`run.py site`: the GitHub Pages explorer (docs/index.html + docs/data/*.json), built from results/.
 
 Global context: an interactive page to inspect, for each of the 44 clouds, the top-3 PCA points (coloured by
-concept or by the cohomology coordinate theta_B), the fitted shape, the loop B used for steering, the alpha
-persistence diagram with the design-matched null threshold, and the Method A / Method B invariants and
+concept or by the cohomology coordinate theta_B), the fitted shape, the loop B used for steering, the alpha complex
+at a radius r with a representative cycle of each loop and a shell of each void alive at r, the alpha persistence
+diagram with the design-matched null thresholds (H1 and H2), and the Method A / Method B invariants and
 travel-around-the-hole statistics. A second page, docs/worked_example.html, renders docs/worked_example.md (the
 step-by-step worked example on the toy cloud of experiments/toy_example.py) with live plots of that toy: balls
 growing with r next to the persistence diagram, the null distribution, and the concepts around the hole. A third,
@@ -65,10 +66,12 @@ const q = (id, name) => '<a class="q" href="#" title="' + (name || "What is this
 REPLAY_JS = r"""<script>
 // Shared by the explorer and the examples page: replay persistent homology on a cloud. The radius slider is
 // logarithmic (all clouds have RMS radius 1). At radius r the 3D view shows the alpha complex's edges and one
-// representative cycle of every loop alive at r, in that loop's own colour (data from report/examples.replay).
+// representative cycle of every loop alive at r, in that loop's own colour (data from report/examples.replay); the
+// explorer also draws the shell of every void alive at r as a translucent surface in that void's own colour.
 const RMIN = 0.002, RMAX = 1.5, LN = Math.log(RMAX / RMIN);
 const toR = t => RMIN * Math.exp(LN * t / 1000), toT = r => Math.round(1000 * Math.log(Math.max(r, RMIN) / RMIN) / LN);
 const aliveAt = (d, r) => d.h1.map(b => b[0] <= r && r < b[1]);                             // alive on [birth, death)
+const voidsAliveAt = (d, r) => d.h2.map(b => b[0] <= r && r < b[1]);                        // same rule for voids
 const piecesAt = (d, r) => 1 + d.h0_deaths.filter(x => x > r).length;                       // one piece never dies
 const crossXY = r => ({x: [r, r, null, RMIN, r], y: [r, RMAX, null, r, r]});
 function edgeTrace(d, r) {                                                                   // edges are sorted by entry radius
@@ -83,8 +86,15 @@ function loopTraces(d, alive, only = null) {             // one closed cycle per
     out.push({type: "scatter3d", mode: "lines", x: c.map(i => P[i][0]), y: c.map(i => P[i][1]), z: c.map(i => P[i][2]), showlegend: false,
       line: {color: d.loop_colour[k], width: only === null ? 7 : 12}, hoverinfo: "text", text: "loop born " + b[0].toFixed(4) + ", dies " + b[1].toFixed(4)}); });
   return out; }
-const loopMarker = (d, alive, sel = null) => ({color: d.loop_colour, opacity: alive.map((a, k) => (a || k === sel ? 1 : 0.2)),
-  size: alive.map((a, k) => (k === sel ? 16 : a ? 10 : 5)), line: {color: "#000", width: alive.map((a, k) => (k === sel ? 2.5 : 0))}});
+function voidTraces(d, alive, only = null) {             // one translucent surface: the shells of the alive voids (or of `only`)
+  const P = d.points, I = [], J = [], K = [], C = [];      // mesh3d triangles index into the cloud's points, coloured per face
+  alive.forEach((a, k) => { if (!a || (only !== null && k !== only)) return;
+    for (const [i, j, l] of d.shells[k]) { I.push(i); J.push(j); K.push(l); C.push(d.void_colour[k]); } });
+  return I.length ? [{type: "mesh3d", x: P.map(p => p[0]), y: P.map(p => p[1]), z: P.map(p => p[2]), i: I, j: J, k: K, facecolor: C,
+    opacity: only === null ? 0.3 : 0.45, flatshading: true, hoverinfo: "skip", showlegend: false, name: "void shells"}] : []; }
+const holeMarker = (colour, alive, sel = null) => ({color: colour, opacity: alive.map((a, k) => (a || k === sel ? 1 : 0.2)),   // solid while alive,
+  size: alive.map((a, k) => (k === sel ? 16 : a ? 10 : 5)), line: {color: "#000", width: alive.map((a, k) => (k === sel ? 2.5 : 0))}});   // ringed if picked
+const loopMarker = (d, alive, sel = null) => holeMarker(d.loop_colour, alive, sel);
 </script>"""
 
 PAGE = r"""<!DOCTYPE html>
@@ -121,11 +131,12 @@ homology (Method B) and travel around the hole.
 red dotted line: null 95th percentile<a class="q" href="#" title="Null 95th percentile" onclick="term('null-95th-percentile-q95'); return false">?</a>
 &nbsp;<button class="gl-btn" onclick="openGloss()">Method and terms</button></div>
 <div class="ctl">radius r <input type="range" id="rr" min="0" max="1000" step="1" value="500" style="width:240px;vertical-align:middle">
-<span id="rv"></span> <label><input type="checkbox" id="showcx" checked> alpha complex and loops at r</label><a class="q" href="#"
+<span id="rv"></span> <label><input type="checkbox" id="showcx" checked> alpha complex, loops and voids at r</label><a class="q" href="#"
 title="Alpha complex" onclick="term('alpha-complex'); return false">?</a><a class="q" href="#" title="Representative loop"
-onclick="term('representative-loop'); return false">?</a> <span id="rstat" style="color:#555"></span></div>
-<div class="ctl">show <select id="onesel" style="max-width:430px"></select> <button class="gl-btn" id="prevl">previous loop</button>
-<button class="gl-btn" id="nextl">next loop</button> <span style="color:#555">or click a loop's dot in the persistence diagram.</span>
+onclick="term('representative-loop'); return false">?</a><a class="q" href="#" title="Representative void"
+onclick="term('representative-void'); return false">?</a> <span id="rstat" style="color:#555"></span></div>
+<div class="ctl">show <select id="onesel" style="max-width:430px"></select> <button class="gl-btn" id="prevl">previous</button>
+<button class="gl-btn" id="nextl">next</button> <span style="color:#555">or click a loop's dot or a void's triangle in the persistence diagram.</span>
 <span id="selinfo"></span></div>
 <div id="plots"><div id="cloud"></div><div id="pd"></div></div><div id="info"></div></div>
 """ + DRAWER + SHARED_JS + REPLAY_JS + r"""
@@ -135,63 +146,79 @@ const TERMS = {"Betti (b0,b1,b2)": [["betti-numbers", "Betti numbers"], ["charac
   "homotopy class": [["homotopy-class", "Homotopy class"]],
   "margin ratio rho_A / top H1 pi": [["margin-ratio-rho_a", "Margin ratio rho_A"], ["top-h1-pi", "Top H1 pi"]],
   "resolvable / loop p (MC)": [["resolvable", "Resolvable"], ["monte-carlo-p-value", "Monte Carlo p-value"]]};
-let manifest, cur, sel = null, rExact = null, pdBound = false;   // sel: the one loop shown (index into d.h1), or null = all
+let manifest, cur, sel = null, rExact = null, pdBound = false;   // sel: the one hole shown, {kind, k}, or null = all
+const bars = (d, kind) => (kind === "loop" ? d.h1 : d.h2), colours = (d, kind) => (kind === "loop" ? d.loop_colour : d.void_colour);
+const key = h => (h === null ? "" : h.kind[0] + h.k);               // dropdown value: "l0" = loop #1, "v2" = void #3
+const unkey = v => (v === "" ? null : {kind: v[0] === "l" ? "loop" : "void", k: +v.slice(1)});
+const holesAlive = (d, r) => [["loop", aliveAt(d, r)], ["void", voidsAliveAt(d, r)]]    // loops, then voids, most persistent first
+  .flatMap(([kind, a]) => a.flatMap((x, k) => (x ? [{kind, k}] : [])));
 const fmt = v => (v === null || v === undefined) ? "-" : (typeof v === "number" ? (Number.isInteger(v) ? String(v) : (Math.abs(v) < 1e-3 && v !== 0 ? v.toExponential(1) : v.toFixed(3))) : v);
 fetch("data/manifest.json").then(r => r.json()).then(m => { manifest = m; const L = document.getElementById("list");
   for (const [g, ids] of Object.entries(m)) { const h = document.createElement("h3"); h.textContent = g; L.appendChild(h);
     for (const it of ids) { const a = document.createElement("a"); a.textContent = it.label; a.onclick = () => load(it.id, a); L.appendChild(a); } }
   load(Object.values(m)[0][0].id, L.querySelector("a")); });
 function load(id, el) { document.querySelectorAll("#side a").forEach(a => a.classList.remove("sel")); if (el) el.classList.add("sel");
-  fetch("data/" + id + ".json").then(r => r.json()).then(d => { cur = d; sel = null; rExact = null;   // start where the top loop is alive
-    if (d.h1.length) document.getElementById("rr").value = toT(Math.sqrt(d.h1[0][0] * d.h1[0][1])); draw(); }); }
+  fetch("data/" + id + ".json").then(r => r.json()).then(d => { cur = d; sel = null; rExact = null;   // start where the top hole is alive:
+    const b = [d.h1[0], d.h2[0]].filter(Boolean).sort((u, v) => v[1] / v[0] - u[1] / u[0])[0];        // the loop or void with the larger pi
+    if (b) document.getElementById("rr").value = toT(Math.sqrt(b[0] * b[1])); draw(); }); }
 ["colour", "showshape", "showloop", "showcx"].forEach(i => document.getElementById(i).onchange = () => draw());
 document.getElementById("rr").oninput = () => { rExact = null; draw(); };
 const radius = () => (rExact !== null ? rExact : toR(+document.getElementById("rr").value));
-document.getElementById("onesel").onchange = e => { sel = e.target.value === "" ? null : +e.target.value; draw(); };
-function stepLoop(dir) {                                   // previous / next among the loops alive at r (most persistent first)
-  const on = aliveAt(cur, radius()).flatMap((a, k) => (a ? [k] : [])); if (!on.length) return;
-  const i = on.indexOf(sel); sel = i < 0 ? on[dir > 0 ? 0 : on.length - 1] : on[(i + dir + on.length) % on.length]; draw(); }
-document.getElementById("prevl").onclick = () => stepLoop(-1);
-document.getElementById("nextl").onclick = () => stepLoop(1);
-function pickFromDiagram(ev) {                             // click a loop's dot: show that loop alone, at a radius where it is alive
-  const pt = ev.points[0]; if (!pt || pt.curveNumber !== cur.loopCurve) return;
-  sel = pt.pointIndex; const b = cur.h1[sel], r = radius();
+document.getElementById("onesel").onchange = e => { sel = unkey(e.target.value); draw(); };
+function stepHole(dir) {                                   // previous / next among the loops and voids alive at r
+  const on = holesAlive(cur, radius()); if (!on.length) return;
+  const i = on.findIndex(h => key(h) === key(sel)); sel = i < 0 ? on[dir > 0 ? 0 : on.length - 1] : on[(i + dir + on.length) % on.length]; draw(); }
+document.getElementById("prevl").onclick = () => stepHole(-1);
+document.getElementById("nextl").onclick = () => stepHole(1);
+function pickFromDiagram(ev) {                             // click a loop's dot or a void's triangle: show it alone, at a radius where it is alive
+  const pt = ev.points[0], kind = pt && {[cur.loopCurve]: "loop", [cur.voidCurve]: "void"}[pt.curveNumber]; if (!kind) return;
+  sel = {kind, k: pt.pointIndex}; const b = bars(cur, kind)[sel.k], r = radius();
   if (!(b[0] <= r && r < b[1])) { rExact = Math.sqrt(b[0] * b[1]); document.getElementById("rr").value = toT(rExact); }
   draw(); }
 function draw() { const d = cur, P = d.points, byTheta = document.getElementById("colour").value === "theta" && d.theta;
-  const r = radius(), alive = aliveAt(d, r);
+  const r = radius(), alive = aliveAt(d, r), valive = voidsAliveAt(d, r);
+  const ls = sel && sel.kind === "loop" ? sel.k : null, vs = sel && sel.kind === "void" ? sel.k : null;   // the picked loop / void
   const col = byTheta ? d.theta : d.colour, tr = [{type: "scatter3d", mode: "markers", x: P.map(p => p[0]), y: P.map(p => p[1]), z: P.map(p => p[2]),
-    text: d.labels, marker: {size: 3, color: col, colorscale: d.cyclic || byTheta ? "Twilight" : "Viridis"}, name: "points"}];
+    text: d.labels, marker: {size: 3, color: col, colorscale: d.cyclic || byTheta ? "Twilight" : "Viridis",
+    opacity: sel === null ? 1 : 0.15}, name: "points"}];                    // a picked hole stays visible inside a dense cloud
   if (document.getElementById("showshape").checked && d.shape) tr.push({type: "scatter3d", mode: "markers", x: d.shape.map(p => p[0]), y: d.shape.map(p => p[1]), z: d.shape.map(p => p[2]), marker: {size: 1.5, color: "#999"}, name: "fitted " + d.family});
   if (document.getElementById("showloop").checked && d.loop) tr.push({type: "scatter3d", mode: "lines", x: d.loop.map(p => p[0]), y: d.loop.map(p => p[1]), z: d.loop.map(p => p[2]), line: {width: 6, color: "#d1495b"}, name: "loop B"});
   let ne = 0;
-  if (document.getElementById("showcx").checked) { const ed = edgeTrace(d, r); ne = ed.n; tr.push(ed.trace, ...loopTraces(d, alive, sel)); }
+  if (document.getElementById("showcx").checked) { const ed = edgeTrace(d, r); ne = ed.n; tr.push(ed.trace);   // a picked hole is drawn alone
+    if (vs === null) tr.push(...loopTraces(d, alive, ls));
+    if (ls === null) tr.push(...voidTraces(d, valive, vs)); }
   Plotly.react("cloud", tr, {margin: {l: 0, r: 0, t: 30, b: 0}, title: {text: d.id, font: {size: 13}}, showlegend: true, uirevision: d.id});
   const ax = t => ({title: t, type: "log", range: [Math.log10(RMIN), Math.log10(RMAX)]}), pd = [];
   pd.push({x: [RMIN, RMAX], y: [RMIN, RMAX], mode: "lines", line: {color: "#999"}, name: "diagonal", hoverinfo: "skip"});
   if (d.q95_pi1) pd.push({x: [RMIN, RMAX / d.q95_pi1], y: [RMIN * d.q95_pi1, RMAX], mode: "lines", line: {color: "red", dash: "dot"}, name: "H1 null q95 (pi)", hoverinfo: "skip"});
+  if (d.q95_pi2) pd.push({x: [RMIN, RMAX / d.q95_pi2], y: [RMIN * d.q95_pi2, RMAX], mode: "lines", line: {color: "#7b3294", dash: "dashdot", width: 1}, name: "H2 null q95 (pi)", hoverinfo: "skip"});
   if (d.connect_r) pd.push({x: [RMIN, RMAX], y: [d.connect_r, d.connect_r], mode: "lines", line: {color: "#555", dash: "dot", width: 1}, name: "connect radius", hoverinfo: "skip"});
   cur.loopCurve = pd.length;                                                  // which trace a click must hit to pick a loop
-  pd.push({x: d.h1.map(b => b[0]), y: d.h1.map(b => b[1]), mode: "markers", name: "H1 (loops, own colours)", marker: loopMarker(d, alive, sel), hoverinfo: "text",
-    text: d.h1.map(b => "born " + b[0].toFixed(4) + ", dies " + b[1].toFixed(4) + ", pi = " + (b[1] / b[0]).toFixed(2))});
+  const tip = b => "born " + b[0].toFixed(4) + ", dies " + b[1].toFixed(4) + ", pi = " + (b[1] / b[0]).toFixed(2);
+  pd.push({x: d.h1.map(b => b[0]), y: d.h1.map(b => b[1]), mode: "markers", name: "H1 (loops, own colours)", marker: loopMarker(d, alive, ls), hoverinfo: "text",
+    text: d.h1.map(b => "loop " + tip(b))});
   if (d.h1.length) pd.push({x: [d.h1[0][0]], y: [d.h1[0][1]], mode: "markers", marker: {size: 15, color: "rgba(0,0,0,0)", line: {color: "#000", width: 2}}, name: "most persistent loop", hoverinfo: "skip"});
-  pd.push({x: d.h2.map(b => b[0]), y: d.h2.map(b => b[1]), mode: "markers", name: "H2 (voids)", marker: {symbol: "triangle-up", size: 7, color: "#555"}});
+  cur.voidCurve = pd.length;                                                  // which trace a click must hit to pick a void
+  pd.push({x: d.h2.map(b => b[0]), y: d.h2.map(b => b[1]), mode: "markers", name: "H2 (voids, own colours)", hoverinfo: "text",
+    marker: Object.assign(holeMarker(d.void_colour, valive, vs), {symbol: "triangle-up"}), text: d.h2.map(b => "void " + tip(b))});
   pd.push(Object.assign({mode: "lines", line: {color: "#333", dash: "dot", width: 1}, name: "radius r", hoverinfo: "skip"}, crossXY(r)));
   Plotly.react("pd", pd, {margin: {l: 50, r: 10, t: 30, b: 40}, title: {text: "persistence diagram (log axes)", font: {size: 12}},
     xaxis: ax("birth"), yaxis: ax("death"), legend: {x: 0.98, y: 0.02, xanchor: "right", yanchor: "bottom", font: {size: 10}}, uirevision: d.id})   // below the diagonal: always empty
     .then(gd => { if (!pdBound) { gd.on("plotly_click", pickFromDiagram); pdBound = true; } });
-  const S = document.getElementById("onesel"), pi = b => (b[1] / b[0]).toFixed(2), label = k => "loop #" + (k + 1) + ": pi = " + pi(d.h1[k]) +
-    " (born " + d.h1[k][0].toFixed(4) + ", dies " + d.h1[k][1].toFixed(4) + ")";
-  S.innerHTML = "";                                                            // all loops alive at r, most persistent first
-  S.add(new Option("all " + alive.filter(Boolean).length + " loops alive at r", ""));
-  alive.forEach((a, k) => { if (a) { const o = new Option(label(k), k); o.style.color = d.loop_colour[k]; S.add(o); } });
-  if (sel !== null && !alive[sel]) S.add(new Option(label(sel) + ", not alive at this r", sel));
-  S.value = sel === null ? "" : String(sel);
-  document.getElementById("selinfo").textContent = sel === null ? "" : "Showing loop #" + (sel + 1) + " of " + d.h1.length +
-    " (ranked by persistence ratio pi)" + (alive[sel] ? "." : ": not alive at this radius, so not drawn.");
-  const top = d.h1[0], loops = alive.filter(Boolean).length, pieces = piecesAt(d, r);
+  const S = document.getElementById("onesel"), on = holesAlive(d, r), label = h => { const b = bars(d, h.kind)[h.k];
+    return h.kind + " #" + (h.k + 1) + ": pi = " + (b[1] / b[0]).toFixed(2) + " (born " + b[0].toFixed(4) + ", dies " + b[1].toFixed(4) + ")"; };
+  const loops = alive.filter(Boolean).length, voids = valive.filter(Boolean).length, isOn = sel !== null && on.some(h => key(h) === key(sel));
+  const count = (n, w) => n + " " + w + (n === 1 ? "" : "s");
+  S.innerHTML = "";                                                            // all loops, then voids, alive at r, most persistent first
+  S.add(new Option("all " + count(loops, "loop") + " and " + count(voids, "void") + " alive at r", ""));
+  on.forEach(h => { const o = new Option(label(h), key(h)); o.style.color = colours(d, h.kind)[h.k]; S.add(o); });
+  if (sel !== null && !isOn) S.add(new Option(label(sel) + ", not alive at this r", key(sel)));
+  S.value = key(sel);
+  document.getElementById("selinfo").textContent = sel === null ? "" : "Showing " + sel.kind + " #" + (sel.k + 1) + " of " +
+    bars(d, sel.kind).length + " (ranked by persistence ratio pi)" + (isOn ? "." : ": not alive at this radius, so not drawn.");
+  const top = d.h1[0], pieces = piecesAt(d, r);
   document.getElementById("rv").textContent = "r = " + r.toFixed(4);
-  document.getElementById("rstat").textContent = pieces + (pieces === 1 ? " piece, " : " pieces, ") + loops + (loops === 1 ? " loop" : " loops") +
+  document.getElementById("rstat").textContent = count(pieces, "piece") + ", " + count(loops, "loop") + " and " + count(voids, "void") +
     " alive, " + ne + " edges" + (top ? "; most persistent loop " + (r < top[0] ? "not born yet" : r < top[1] ? "alive" : "filled in") : "");
   let h = "<table><tr><th></th><th>Method A (fitted " + d.family + ")" + q("method-a-exact-topology-of-the-fitted-shape", "Method A") +
     "</th><th>Method B (persistent homology)" + q("method-b-persistent-homology-of-the-cloud", "Method B") + "</th></tr>";
@@ -435,6 +462,7 @@ def examples_page(docs) -> None:
     for d, _ in EXAMPLES:
         e = example(d)
         e["cycles"] = [c.tolist() for c in e["cycles"]]                 # list of index arrays -> list of lists
+        del e["shells"], e["void_colour"]                               # this page shows loops only: keep its JSON small
         rows.append({k: (np.round(v, 5).tolist() if isinstance(v, np.ndarray) else v) for k, v in e.items()})
     (docs / "data" / "examples.json").write_text(json.dumps(_clean(rows)), encoding="utf-8", newline=chr(10))
     (docs / "examples.html").write_text(EXAMPLES_PAGE, encoding="utf-8", newline=chr(10))
@@ -480,7 +508,7 @@ def run() -> None:
         if theta is not None:
             lp = loops.loop_from_coordinate(y, np.asarray(theta), n_bins=24)
             loop = lp(np.linspace(0, 2 * np.pi, 200)).tolist()
-        rp = replay(y)                                    # edges, loops with cycles and colours (slider replay)
+        rp = replay(y)                                    # edges, loops with cycles, voids with shells, colours (slider replay)
         t = topo.loc[did]
         rows = [["Betti (b0,b1,b2)", f"({t['b0']},{t['b1']},{t['b2']})",
                  f"({inv.loc[did, 'b0_rc']},{inv.loc[did, 'b1_rc']},{inv.loc[did, 'b2_rc']}) at r_c" if inv is not None else None],
@@ -495,9 +523,11 @@ def run() -> None:
         d = {"id": did, "family": t["family"], "points": np.round(y, 4).tolist(), "labels": c["labels"], "colour": colour,
              "cyclic": cyclic, "theta": theta, "loop": loop, "shape": np.round(viz["shape"] / scale, 4).tolist(),
              "h1": np.round(rp["h1"], 5).tolist(), "h2": np.round(rp["h2"], 5).tolist(), "cycles": [c.tolist() for c in rp["cycles"]],
-             "loop_colour": rp["loop_colour"], "edges": rp["edges"].tolist(), "edge_r": np.round(rp["edge_r"], 5).tolist(),
+             "loop_colour": rp["loop_colour"], "shells": [s.tolist() for s in rp["shells"]], "void_colour": rp["void_colour"],
+             "edges": rp["edges"].tolist(), "edge_r": np.round(rp["edge_r"], 5).tolist(),
              "h0_deaths": np.round(rp["h0_deaths"], 5).tolist(), "connect_r": loc.get(did, {}).get("connect_radius"),
-             "q95_pi1": float(inv.loc[did, "null_q95_pi1"]) if inv is not None else None, "rows": rows, "notes": notes}
+             "q95_pi1": float(inv.loc[did, "null_q95_pi1"]) if inv is not None else None,
+             "q95_pi2": float(inv.loc[did, "null_q95_pi2"]) if inv is not None else None, "rows": rows, "notes": notes}
         (out / f"{did}.json").write_text(json.dumps(_clean(d)), encoding="utf-8", newline=chr(10))
         manifest[names[group_of(did)]].append({"id": did, "label": f"{short(did)} ({t['family']})"})
     (out / "manifest.json").write_text(json.dumps({k: v for k, v in manifest.items() if v}), encoding="utf-8", newline=chr(10))

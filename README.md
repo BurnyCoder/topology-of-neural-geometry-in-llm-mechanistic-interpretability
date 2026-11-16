@@ -21,7 +21,7 @@ A loop alone does not prove a hole. The loop test also flags many hole-free shap
 - **Colours, residues and months:** a large ring that runs through the concepts.
 - **Weekdays and days with times:** the most persistent loop is a small loop inside one cluster (circled). It dies below the dotted line, before two days' clusters touch.
 - **Years:** a small loop that does not beat the null (below the dashed line).
-- Explore any loop of any of the 44 clouds in the [explorer](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/): set the radius, then pick a loop or click its dot.
+- Explore any loop or void of any of the 44 clouds in the [explorer](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/): set the radius, then pick a loop or void, or click its marker. Voids are drawn as see-through shells.
 
 ![Positive and negative examples](docs/figures/fig_examples.png)
 
@@ -41,7 +41,7 @@ A loop alone does not prove a hole. The loop test also flags many hole-free shap
 - **Each loop has its own colour.** While a loop is alive at the current r, its dot is solid and one closed path of edges that carries it ([representative loop](docs/glossary.md#representative-loop)) is drawn in the same colour in the 3D view. Faded dots are loops not alive at r.
   - Dots above the dashed red line beat the null's 95th percentile.
   - Dots below the dotted line die before two concepts' clusters touch, so they lie inside one cluster.
-- **Try it yourself** with the radius slider in the [explorer](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/) (all 44 clouds; you can also show one loop at a time), or, together with the null distribution and the travel around the hole, on the [examples page](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/examples.html). Every term is defined in [docs/glossary.md](docs/glossary.md), which the explorer also shows.
+- **Try it yourself** with the radius slider in the [explorer](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/) (all 44 clouds, with their loops and voids; you can also show one at a time), or, together with the null distribution and the travel around the hole, on the [examples page](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/examples.html). Every term is defined in [docs/glossary.md](docs/glossary.md), which the explorer also shows.
 
 **What worked**
 - **Colours form a ring that hue goes around once, but the stimuli already have that ring.**
