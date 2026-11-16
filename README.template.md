@@ -32,7 +32,7 @@ A loop alone does not prove a hole. The loop test also flags many hole-free shap
 - **Each loop has its own colour.** While a loop is alive at the current r, its dot is solid and one closed path of edges that carries it ([representative loop](docs/glossary.md#representative-loop)) is drawn in the same colour in the 3D view. Faded dots are loops not alive at r.
   - Dots above the dashed red line beat the null's 95th percentile.
   - Dots below the dotted line die before two concepts' clusters touch, so they lie inside one cluster.
-- **Try it yourself** with the radius slider in the [explorer](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/) (all 44 clouds), or, together with the null distribution and the travel around the hole, on the [examples page](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/examples.html). Every term is defined in [docs/glossary.md](docs/glossary.md), which the explorer also shows.
+- **Try it yourself** with the radius slider in the [explorer](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/) (all 44 clouds; you can also show one loop at a time), or, together with the null distribution and the travel around the hole, on the [examples page](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/examples.html). Every term is defined in [docs/glossary.md](docs/glossary.md), which the explorer also shows.
 
 **What worked**
 - **Colours form a ring that hue goes around once, but the stimuli already have that ring.**
