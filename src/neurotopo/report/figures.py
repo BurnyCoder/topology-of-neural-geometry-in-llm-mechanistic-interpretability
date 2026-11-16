@@ -930,96 +930,205 @@ def fig_highlights() -> None:
     save(fig, "fig_highlights")
 
 
+HL_RADII = np.r_[0.04 * (1.15 / 0.04) ** np.linspace(0, 1, 72), np.full(10, 1.15)]   # the animations' r: sweep, hold
+
+
+def _highlight_items() -> list[dict]:
+    """The panels of fig_highlights' animations (examples.highlights): for each ring or void, the cloud's points and
+    colours, its bar, the loop's closed cycle or the void's shell and centre, and the slice plane through the cycle's
+    mean or the void's centre (rows of `plane`: two in-plane axes, then the normal; from an SVD of the cycle or of the
+    shell's corners)."""
+    from neurotopo.experiments import realdata
+    from neurotopo.report.examples import highlights, replay
+    loops, voids = highlights()
+    items = []
+    for row, rows in ((0, loops), (1, voids)):
+        for r in rows:
+            c = realdata.cloud(r["id"])
+            y = c["y"]
+            it = {"id": r["id"], "row": row, "n_row": len(rows), "y": y, "colour": _point_rgb(r["id"], c["labels"]),
+                  "bar": (r["birth"], r["death"])}
+            if row == 0:
+                cyc = np.array(r["cycle"])
+                ring = y[np.r_[cyc, cyc[:1]]]
+                it.update(cycle=ring, origin=ring.mean(0), plane=np.linalg.svd(ring - ring.mean(0))[2])
+            else:
+                rp = replay(y)
+                corners = y[np.unique(rp["shells"][0])]
+                it.update(shell=rp["shells"][0], origin=rp["void_centres"][0],
+                          plane=np.linalg.svd(corners - corners.mean(0))[2])
+            items.append(it)
+    return items
+
+
+def _highlight_axes(fig, items: list[dict], top: float, **kw) -> list:
+    """One axes per item on the highlights grid: rings in the top row, voids centred in the bottom row."""
+    ncol = max(it["n_row"] for it in items)
+    gs = fig.add_gridspec(2, 2 * ncol, hspace=0.38, wspace=0.12, top=top, bottom=0.03)
+    seen = {0: 0, 1: 0}
+    out = []
+    for it in items:
+        j, off = seen[it["row"]], ncol - it["n_row"]                     # centre a shorter row
+        seen[it["row"]] += 1
+        out.append(fig.add_subplot(gs[it["row"], off + 2 * j: off + 2 * j + 2], **kw))
+    return out
+
+
+def _status(it: dict, r: float) -> tuple[str, bool]:
+    """The status line of a ring or void at radius r, from its bar, and whether it is alive."""
+    b, d = it["bar"]
+    alive = b <= r < d
+    state = "not born yet" if r < b else "alive" if alive else "filled"
+    return f"{'loop' if it['row'] == 0 else 'void'} born {b:.3f}, filled {d:.3f}: {state}", alive
+
+
 def anim_highlights() -> None:
-    """Animated variant of fig_highlights (README, under it): balls of radius r grow around every point, r the same
-    for all clouds (each has RMS radius 1), and the holes of their union are the holes measured (the alpha complex has
-    the persistence of the union of balls, nerve theorem). Each panel is a slice: the best-fit plane of the loop's red
-    cycle (rings, top) or the plane of the void shell's two main directions through the void's centre (voids,
-    bottom). A ball at distance h from the slice cuts it in a disc of radius sqrt(r^2 - h^2), so the picture is the
-    exact cross-section of the union of balls. The cycle is bold while the loop is alive; the blue disc of radius
-    death - r around the void's centre is the part of the void no ball reaches yet. A slice can show a region as open
-    or enclosed differently from 3D (the hole may be filled or opened out of the plane; a silhouette view instead hides
-    holes behind balls in front of them), so the status line (not born / alive / filled) comes from the bar.
+    """Animated variant of fig_highlights in slices (README, under the 3D animation): balls of radius r grow around
+    every point, r the same for all clouds (each has RMS radius 1), and the holes of their union are the holes measured
+    (the alpha complex has the persistence of the union of balls, nerve theorem). Each panel is a slice: the best-fit
+    plane of the loop's red cycle (rings, top) or the plane of the void shell's two main directions through the void's
+    centre (voids, bottom). A ball at distance h from the slice cuts it in a disc of radius sqrt(r^2 - h^2), so the
+    picture is the exact cross-section of the union of balls; a disc appears only once r reaches h and then grows
+    faster than r (d/dr sqrt(r^2 - h^2) = r / sqrt(r^2 - h^2)). All panels share one scale. The cycle is bold while the
+    loop is alive; the blue disc of radius death - r around the void's centre is the part of the void no ball reaches
+    yet. A slice can show a region as open or enclosed differently from 3D, so the status line comes from the bar.
     matplotlib FuncAnimation + PillowWriter, EllipseCollection with data units for the discs
     (https://matplotlib.org/stable/api/animation_api.html, https://matplotlib.org/stable/api/collections_api.html)."""
     from matplotlib.animation import FuncAnimation, PillowWriter
     from matplotlib.collections import EllipseCollection
-    from neurotopo.experiments import realdata
-    from neurotopo.report.examples import highlights, replay
-    loops, voids = highlights()
-    radii = np.r_[0.04 * (1.15 / 0.04) ** np.linspace(0, 1, 72), np.full(10, 1.15)]   # sweep, then hold
-    ncol = max(len(loops), len(voids))
+    items = _highlight_items()
+    for it in items:                                                     # slice coordinates and distances from the slice
+        rel = it["y"] - it["origin"]
+        it["p2"], it["h"] = rel @ it["plane"][:2].T, np.abs(rel @ it["plane"][2])
+        it["ring2"] = (it["cycle"] - it["origin"]) @ it["plane"][:2].T if it["row"] == 0 else None
+    lim = 1.05 * max(float(np.percentile(np.linalg.norm(it["p2"], axis=1), 98)) for it in items)   # one scale for all
     fig = plt.figure(figsize=(15, 8.4))
-    gs = fig.add_gridspec(2, 2 * ncol, hspace=0.38, wspace=0.12, top=0.83, bottom=0.03)
-    panels = []
-    for row, rows in ((0, loops), (1, voids)):
-        off = ncol - len(rows)                                           # centre a shorter row
-        for j, r in enumerate(rows):
-            d, c = r["id"], realdata.cloud(r["id"])
-            y = c["y"]
-            ax = fig.add_subplot(gs[row, off + 2 * j: off + 2 * j + 2])
-            if row == 0:                                                 # slice: the cycle's best-fit plane
-                cyc = np.array(r["cycle"])
-                ring = y[np.r_[cyc, cyc[:1]]]
-                plane = np.linalg.svd(ring - ring.mean(0))[2]
-                p2, h, mid = (y - ring.mean(0)) @ plane[:2].T, np.abs((y - ring.mean(0)) @ plane[2]), None
-                colour = _point_rgb(d, c["labels"])
-            else:                                                        # slice through the void's centre
-                rp = replay(y)
-                shell, mid = rp["shells"][0], rp["void_centres"][0]
-                plane = np.linalg.svd(y[np.unique(shell)] - y[np.unique(shell)].mean(0))[2]
-                p2, h, ring = (y - mid) @ plane[:2].T, np.abs((y - mid) @ plane[2]), None
-                colour = None
-            lim = 1.12 * float(np.percentile(np.linalg.norm(p2, axis=1), 98))
-            ax.set_xlim(-lim, lim)
-            ax.set_ylim(-lim, lim)
-            ax.set_aspect("equal")
-            ax.set_axis_off()
-            ax.scatter(*p2.T, s=3 if len(y) > 300 else 14, color=colour if colour is not None else "#333333", zorder=3)
-            name = HIGHLIGHT_NAMES.get(d, short(d))
-            ax.set_title(f"{name}\n" + ("a slice through the loop's plane" if row == 0 else
-                                        "a slice through the void's centre"), fontsize=9)
-            panels.append({"ax": ax, "p2": p2, "h": h, "row": row, "bar": (r["birth"], r["death"]), "mid2": np.zeros(2),
-                           "ring2": None if ring is None else (ring - ring.mean(0)) @ plane[:2].T, "colour": colour,
-                           "artists": [], "text": ax.text(0.5, -0.04, "", transform=ax.transAxes, ha="center",
-                                                          va="top", fontsize=8.5)})
+    axes = _highlight_axes(fig, items, top=0.83)
+    for it, ax in zip(items, axes):
+        ax.set_xlim(-lim, lim)
+        ax.set_ylim(-lim, lim)
+        ax.set_aspect("equal")
+        ax.set_axis_off()
+        ax.scatter(*it["p2"].T, s=3 if len(it["y"]) > 300 else 14,
+                   color=it["colour"] if it["colour"] is not None else "#333333", zorder=3)
+        ax.set_title(f"{HIGHLIGHT_NAMES.get(it['id'], short(it['id']))}\n" +
+                     ("a slice through the loop's plane" if it["row"] == 0 else "a slice through the void's centre"),
+                     fontsize=9)
+        it.update(ax=ax, artists=[], text=ax.text(0.5, -0.04, "", transform=ax.transAxes, ha="center", va="top",
+                                                  fontsize=8.5))
     head = fig.suptitle("", fontsize=12, y=0.985)
-    fig.text(0.5, 0.935, "Each ball cut by a slice is a disc of radius √(r² - h²), h = the point's "
-             "distance from the slice. Rings: the red loop is bold while it is alive.", ha="center", fontsize=10)
-    fig.text(0.5, 0.905, "Voids: blue is the part of the void that no ball reaches yet (radius death - r). The status "
-             "lines come from the bars.", ha="center", fontsize=10)
+    fig.text(0.5, 0.935, "Each ball cut by the slice is a disc of radius √(r² - h²), h = the point's "
+             "distance from the slice: a disc appears once r reaches h, then grows faster than r.", ha="center",
+             fontsize=10)
+    fig.text(0.5, 0.905, "Rings: the red loop is bold while it is alive. Voids: blue is the part of the void no ball "
+             "reaches yet (radius death - r). One scale for all panels.", ha="center", fontsize=10)
 
     def frame(i):
-        r = radii[i]
+        r = HL_RADII[i]
         head.set_text(f"Balls of radius r = {r:.3f} grow around every point (the same r for all clouds, RMS radius 1)")
-        for p in panels:
-            ax = p["ax"]
-            for a in p["artists"]:
+        for it in items:
+            ax = it["ax"]
+            for a in it["artists"]:
                 a.remove()
-            p["artists"] = []
-            b, d = p["bar"]
-            rad = np.full(len(p["p2"]), r) if p["h"] is None else np.sqrt(np.clip(r ** 2 - p["h"] ** 2, 0, None))
+            rad = np.sqrt(np.clip(r ** 2 - it["h"] ** 2, 0, None))       # the slice of each ball
             on = rad > 0
-            fc = (p["colour"][on] if p["colour"] is not None else "#888888")
-            discs = EllipseCollection(2 * rad[on], 2 * rad[on], np.zeros(on.sum()), units="xy", offsets=p["p2"][on],
-                                      offset_transform=ax.transData, facecolors=fc, edgecolors="none", alpha=0.22,
-                                      zorder=1)
-            ax.add_collection(discs)
-            p["artists"].append(discs)
-            alive = b <= r < d
-            if p["row"] == 0:                                            # the loop's cycle: bold while alive
-                p["artists"] += ax.plot(*p["ring2"].T, color=RED, lw=2.6 if alive else 0.8,
-                                        ls="-" if alive else "--", zorder=4)
+            discs = EllipseCollection(2 * rad[on], 2 * rad[on], np.zeros(on.sum()), units="xy", offsets=it["p2"][on],
+                                      offset_transform=ax.transData, edgecolors="none", alpha=0.22, zorder=1,
+                                      facecolors=it["colour"][on] if it["colour"] is not None else "#888888")
+            it["artists"] = [ax.add_collection(discs)]
+            text, alive = _status(it, r)
+            if it["row"] == 0:                                           # the loop's cycle: bold while alive
+                it["artists"] += ax.plot(*it["ring2"].T, color=RED, lw=2.6 if alive else 0.8,
+                                         ls="-" if alive else "--", zorder=4)
             elif alive:                                                  # the void's empty middle, radius death - r
-                p["artists"].append(ax.add_patch(plt.Circle(p["mid2"], d - r, color=BLUE, alpha=0.9, zorder=4)))
-            what = "loop" if p["row"] == 0 else "void"
-            state = ("not born yet" if r < b else "alive" if alive else "filled")
-            p["text"].set_text(f"{what} born {b:.3f}, filled {d:.3f}: {state}")
-            p["text"].set_color("#1b7837" if alive else "#222222")
+                it["artists"].append(ax.add_patch(plt.Circle((0, 0), it["bar"][1] - r, color=BLUE, alpha=0.9,
+                                                             zorder=4)))
+            it["text"].set_text(text)
+            it["text"].set_color("#1b7837" if alive else "#222222")
         return []
 
-    FuncAnimation(fig, frame, frames=len(radii)).save(config.path("figures") / "anim_highlights.gif",
-                                                      writer=PillowWriter(fps=8), dpi=62)
+    FuncAnimation(fig, frame, frames=len(HL_RADII)).save(config.path("figures") / "anim_highlights.gif",
+                                                         writer=PillowWriter(fps=8), dpi=62)
+    plt.close(fig)
+
+
+def _points_per_unit(fig, a3) -> float:
+    """Typographic points per data unit across the screen in a 3D axes with an orthographic projection, equal limits
+    and a cubic box: the projected length of a unit vector perpendicular to the viewing direction (proj3d), so a ball
+    of radius r is drawn as a scatter marker of diameter 2 r times this (marker size s = diameter^2 in points^2)."""
+    from mpl_toolkits.mplot3d import proj3d
+    fig.canvas.draw()
+    e, a = np.radians(a3.elev), np.radians(a3.azim)
+    view = np.array([np.cos(e) * np.cos(a), np.cos(e) * np.sin(a), np.sin(e)])
+    u = np.cross(view, [0.0, 0.0, 1.0])
+    u = u / np.linalg.norm(u) if np.linalg.norm(u) > 1e-6 else np.array([1.0, 0.0, 0.0])
+    px = a3.transData.transform([proj3d.proj_transform(*p, a3.get_proj())[:2] for p in (np.zeros(3), u)])
+    return float(np.linalg.norm(px[1] - px[0]) * 72 / fig.dpi)
+
+
+def anim_highlights_3d() -> None:
+    """Animated variant of fig_highlights in 3D (README, under the highlights): the balls of radius r themselves,
+    growing around every point, with one r and one scale for all clouds (RMS radius 1). Orthographic projection, in
+    which a ball's outline is exactly a disc of radius r: each ball is a translucent scatter marker of that diameter
+    (_points_per_unit), coloured as its point. The camera starts face-on to the loop's cycle or the void shell's two
+    main directions and turns slowly. Rings: the red cycle, bold while the loop is alive. Voids: the shell's red edges
+    and, while the void is alive, its empty middle (blue ball of radius death - r), drawn over the balls (x-ray) since
+    the balls hide it. From outside, balls in front can hide a hole that is still open, so the status line (not born /
+    alive / filled) comes from the bar."""
+    from itertools import combinations
+    from matplotlib.animation import FuncAnimation, PillowWriter
+    from mpl_toolkits.mplot3d.art3d import Line3DCollection
+    items = _highlight_items()
+    lim = max(float(np.percentile(np.linalg.norm(it["y"], axis=1), 98)) for it in items)   # one scale for all panels
+    fig = plt.figure(figsize=(15, 8.6))
+    axes = _highlight_axes(fig, items, top=0.84, projection="3d")
+    for it, a3 in zip(items, axes):
+        y, n = it["y"], it["plane"][2]
+        a3.set_proj_type("ortho")
+        a3.computed_zorder = False                                       # draw in call order: balls, cycle, middle
+        for set_lim in (a3.set_xlim, a3.set_ylim, a3.set_zlim):
+            set_lim(-lim, lim)
+        a3.set_box_aspect((1, 1, 1), zoom=1.3)
+        a3.set_axis_off()
+        elev, azim = float(np.degrees(np.arcsin(np.clip(n[2], -1, 1)))), float(np.degrees(np.arctan2(n[1], n[0])))
+        a3.view_init(elev=elev, azim=azim)
+        col = it["colour"] if it["colour"] is not None else np.tile([0.45, 0.45, 0.45], (len(y), 1))
+        balls = a3.scatter(*y.T, s=0, c=col, alpha=0.18 if len(y) > 100 else 0.3, edgecolors="none",
+                           depthshade=False, zorder=1)
+        a3.scatter(*y.T, s=2 if len(y) > 300 else 10, c=col, depthshade=False, zorder=2)
+        if it["row"] == 0:
+            line, = a3.plot(*it["cycle"].T, color=RED, lw=0.8, zorder=3)
+            middle = None
+        else:
+            edges = np.array(sorted({tuple(sorted(e)) for t in it["shell"].tolist() for e in combinations(t, 2)}))
+            line = a3.add_collection3d(Line3DCollection(y[edges], colors=RED, linewidths=0.6, zorder=3))
+            middle = a3.scatter(*it["origin"], s=0, color=BLUE, alpha=0.95, depthshade=False, zorder=4)
+        a3.set_title(HIGHLIGHT_NAMES.get(it["id"], short(it["id"])), fontsize=9)
+        it.update(ax=a3, balls=balls, line=line, middle=middle, elev=elev, azim=azim,
+                  k=_points_per_unit(fig, a3), text=a3.text2D(0.5, -0.02, "", transform=a3.transAxes, ha="center",
+                                                               va="top", fontsize=8.5))
+    head = fig.suptitle("", fontsize=12, y=0.985)
+    fig.text(0.5, 0.935, "The balls themselves, in 3D (one scale for all clouds; the camera turns slowly). Rings: the "
+             "red loop is bold while it is alive.", ha="center", fontsize=10)
+    fig.text(0.5, 0.905, "Voids: the red shell, and in blue the part of the void no ball reaches yet (radius death - r), "
+             "drawn through the balls that hide it.", ha="center", fontsize=10)
+
+    def frame(i):
+        r = HL_RADII[i]
+        head.set_text(f"Balls of radius r = {r:.3f} grow around every point (the same r for all clouds, RMS radius 1)")
+        for it in items:
+            it["ax"].view_init(elev=it["elev"], azim=it["azim"] + 60 * i / (len(HL_RADII) - 1))
+            it["balls"].set_sizes(np.full(len(it["y"]), (2 * r * it["k"]) ** 2))   # marker diameter 2 r in data units
+            text, alive = _status(it, r)
+            it["line"].set_linewidth((2.6 if it["row"] == 0 else 1.4) if alive else (0.8 if it["row"] == 0 else 0.4))
+            if it["middle"] is not None:
+                it["middle"].set_sizes([(2 * (it["bar"][1] - r) * it["k"]) ** 2 if alive else 0])
+            it["text"].set_text(text)
+            it["text"].set_color("#1b7837" if alive else "#222222")
+        return []
+
+    FuncAnimation(fig, frame, frames=len(HL_RADII)).save(config.path("figures") / "anim_highlights_3d.gif",
+                                                         writer=PillowWriter(fps=8), dpi=62)
     plt.close(fig)
 
 
