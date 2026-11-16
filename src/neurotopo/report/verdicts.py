@@ -26,9 +26,14 @@ def _data() -> dict:
             "ph": read_json(r / "exp3" / "posthoc_relaxed_range.json")}
 
 
+def concept_record(d: str, r: dict) -> bool:
+    """True for an alignment record of the dataset's concept variable: no mod-10/100 variable, and for days + times
+    of day the day ("day of week", the label source.concepts gives it), not the time of day."""
+    return "mod" not in r["variable"] and (d != "R5c_llama_days_time" or r["variable"] == "day of week")
+
+
 def _around(d: str, recs: list) -> bool:
-    keep = [r for r in recs if "mod" not in r["variable"] and (d != "R5c_llama_days_time" or r["variable"] == "day")]
-    return any(passes(r) for r in keep)
+    return any(passes(r) for r in recs if concept_record(d, r))
 
 
 def loop(d: str) -> bool:

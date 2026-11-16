@@ -32,6 +32,19 @@ def alpha_diagrams(points: np.ndarray, maxdim: int = 2, precision: str = "safe")
     return out
 
 
+def alpha_filtration(points: np.ndarray, maxdim: int = 2) -> list[tuple[tuple[int, ...], float]]:
+    """Every simplex of the alpha complex (up to dimension maxdim) with the radius at which it enters, in
+    filtration order. GUDHI stores squared radii, hence the square root. Used to show the complex growing."""
+    st = gudhi.AlphaComplex(points=np.asarray(points, dtype=np.float64)).create_simplex_tree()
+    return [(tuple(sx), float(np.sqrt(max(f, 0.0)))) for sx, f in st.get_filtration() if len(sx) - 1 <= maxdim]
+
+
+def alpha_edges(points: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    """Edges (E, 2) of the alpha complex and their entry radii (E,), sorted by radius."""
+    e = [(sx, r) for sx, r in alpha_filtration(points, maxdim=1) if len(sx) == 2]
+    return np.array([sx for sx, _ in e], dtype=int).reshape(-1, 2), np.array([r for _, r in e], dtype=np.float64)
+
+
 def _drop_zero_length(iv: np.ndarray) -> np.ndarray:
     """Remove bars with death == birth (up to float tolerance); they carry no topology."""
     keep = (iv[:, 1] - iv[:, 0]) > 1e-12 * np.maximum(1.0, np.abs(iv[:, 0]))
