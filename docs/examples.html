@@ -99,13 +99,14 @@ function edgeTrace(d, r) {                                                      
   for (let k = 0; k < n; k++) { const [i, j] = d.edges[k]; X.push(P[i][0], P[j][0], null); Y.push(P[i][1], P[j][1], null); Z.push(P[i][2], P[j][2], null); }
   return {n, trace: {type: "scatter3d", mode: "lines", x: X, y: Y, z: Z, hoverinfo: "skip", showlegend: false,
     line: {color: "rgba(90,90,90,0.35)", width: 1.5}, name: "alpha edges"}}; }
-function loopTraces(d, alive) {                                                              // one closed cycle per alive loop
+function loopTraces(d, alive, only = null) {             // one closed cycle per alive loop, or only loop `only` if alive
   const P = d.points, out = [];
-  alive.forEach((a, k) => { if (!a) return; const c = d.cycles[k].concat([d.cycles[k][0]]), b = d.h1[k];
+  alive.forEach((a, k) => { if (!a || (only !== null && k !== only)) return; const c = d.cycles[k].concat([d.cycles[k][0]]), b = d.h1[k];
     out.push({type: "scatter3d", mode: "lines", x: c.map(i => P[i][0]), y: c.map(i => P[i][1]), z: c.map(i => P[i][2]), showlegend: false,
-      line: {color: d.loop_colour[k], width: 7}, hoverinfo: "text", text: "loop born " + b[0].toFixed(4) + ", dies " + b[1].toFixed(4)}); });
+      line: {color: d.loop_colour[k], width: only === null ? 7 : 12}, hoverinfo: "text", text: "loop born " + b[0].toFixed(4) + ", dies " + b[1].toFixed(4)}); });
   return out; }
-const loopMarker = (d, alive) => ({color: d.loop_colour, opacity: alive.map(a => (a ? 1 : 0.2)), size: alive.map(a => (a ? 10 : 5))});
+const loopMarker = (d, alive, sel = null) => ({color: d.loop_colour, opacity: alive.map((a, k) => (a || k === sel ? 1 : 0.2)),
+  size: alive.map((a, k) => (k === sel ? 16 : a ? 10 : 5)), line: {color: "#000", width: alive.map((a, k) => (k === sel ? 2.5 : 0))}});
 </script>
 <script>
 // Data: docs/data/examples.json, written by run.py site from report/examples.py (results/ and the stored clouds).
