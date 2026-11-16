@@ -270,6 +270,16 @@ The per-dataset findings, with every statistic, are in [reports/findings_per_dat
 
 "No coordinate" means DREiMac's preregistered setting, which requires Rips death ≥ 2 × birth, built no circular coordinate. The weekday and days_time loops die before any two day clusters touch, so they are loops inside one cluster (audit, D8). The post hoc days_time coordinate is built on a different, non-significant class ({{audit.ph.daystime.3d.bar}}), which does not overlap the significant loop. All 44 clouds: [reports/exp2_invariants.md](reports/exp2_invariants.md). Hypothesis tests: [reports/exp3_cyclic.md](reports/exp3_cyclic.md).
 
+### Every interesting loop (post hoc, D11)
+
+![Every interesting loop of the 44 clouds, each drawn as a red cycle seen face-on](docs/figures/fig_loop_gallery.png)
+
+*Every interesting loop.* `run.py loops` scores all {{loops.n_loops}} loops of the 44 clouds. It picks {{loops.n_interesting}} by three rules: significant (p < 0.05 against the cloud's own null), large (the 5 largest), or goes around once (in a cyclic concept cloud, the concepts wind once along a cycle spanning at least half the cloud). The rules were written after the void search.
+- **Rings, seen directly on the cycle:** months and the 12 month centres ({{loops.months.1.loop_concepts}} and {{loops.monthsmeans.1.loop_concepts}} of 12 months on the cycle), the grokked residues (in the order of their Fourier frequency) and colours ({{loops.colors.1.loop_concepts}} of 36 hues). In each, the concepts go around the cycle once.
+- **Significant, but not rings of concepts:** the toy models' 4-cycles (with 8 features, nearly a square: π = {{exp2.tmsn8.top_pi1:3}} vs √2 ≈ 1.414), the small loop inside one day's cluster (days with times), and a chance-level loop in the random-init grokking embedding.
+- **The grokked residues have a second significant loop** (p = {{loops.grok.2.p}}). Its residues wind once in the order of the network's Fourier frequencies {{loops.grok.loop2.wind1}}, but on cycles this short several frequencies do, so the winding cannot say which frequency a loop belongs to.
+- Table, rules and limitations: [reports/loops.md](reports/loops.md).
+
 ### Every interesting void (post hoc, D10)
 
 ![Every interesting void of the 44 clouds, each drawn as a red shell around its empty middle](docs/figures/fig_void_gallery.png)
@@ -422,6 +432,7 @@ run.py <phase>
   audit3       post hoc checks of the third audit (D9): is the loop test specific to holes? (synthetic rates, cluster null, tori)
   toy          worked example: every step of the loop and ring test on a 21-point toy week (docs/worked_example.md)
   voids        every void of every cloud scored; the interesting ones picked by rule (post hoc, D10; reports/voids.md)
+  loops        every loop of every cloud scored; the interesting ones picked by rule (post hoc, D11; reports/loops.md)
   report       regenerate every table, figure and number in README / reports / paper from results/
   site         GitHub Pages explorer (docs/index.html), interactive worked example (docs/worked_example.html) and examples (docs/examples.html)
   all          everything above, CPU only (about 1.5 h on 16 cores)

@@ -217,6 +217,18 @@ def collect() -> dict:
         for key in ("n_voids", "n_clouds", "n_clouds_total", "n_significant", "max_abs_p_gap_vs_exp2"):
             n[f"voids.{key}"] = vs[key]
         n["voids.n_interesting"] = len(vs["interesting"])
+    # Every loop scored, the interesting ones by rule (run.py loops; post hoc, D11).
+    if _res("loops", "summary.json").exists():
+        ls = read_json(_res("loops", "summary.json"))
+        for key in ("n_loops", "n_clouds", "n_clouds_total", "n_significant", "max_abs_p_gap_vs_exp2"):
+            n[f"loops.{key}"] = ls[key]
+        n["loops.n_interesting"] = len(ls["interesting"])
+        n["loops.n_large_only"] = sum(r["reasons"] == "large" for r in ls["interesting"])   # picked by rule 2 alone
+        for name, w in ls["grok_winding_by_frequency"].items():          # frequencies whose order winds once
+            n[f"loops.grok.{name.replace(' ', '')}.wind1"] = ", ".join(f for f, x in w.items() if abs(x) == 1)
+        for r in ls["interesting"]:                                       # e.g. loops.months.1.loop_concepts
+            for key in ("pi", "p", "size", "length", "loop_concepts", "n_concepts", "winding", "extent"):
+                n[f"loops.{SHORT.get(r['id'], r['id'])}.{r['k']}.{key}"] = r[key]
     # Exp3.
     if _res("exp3", "summary.json").exists():
         s = read_json(_res("exp3", "summary.json"))

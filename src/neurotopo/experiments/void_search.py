@@ -35,6 +35,12 @@ log = logging.getLogger(__name__)
 LARGE_N, SHAPE, MEANING, SHAPE_P = 5, 0.5, 0.5, 0.5
 
 
+def mc_p(null: np.ndarray, pi: float) -> float:
+    """Monte Carlo p of one bar's persistence ratio pi against a null of the largest pi per null cloud:
+    (1 + #{null >= pi}) / (M + 1). Shared with experiments/loop_search.py."""
+    return float((1 + np.sum(null >= pi)) / (len(null) + 1))
+
+
 def cloud_voids(d: str, seed: int) -> pd.DataFrame:
     """One row per void of cloud d, ranked by pi (k = 1 is the most persistent; stable sort, as examples.replay)."""
     c = realdata.cloud(d)
@@ -55,7 +61,7 @@ def cloud_voids(d: str, seed: int) -> pd.DataFrame:
         v = np.unique(shells[i])                                        # the shell's corners
         rows.append({"id": d, "N": len(y), "k": rank, "birth": bars[i, 0], "death": bars[i, 1],
                      "empty": bars[i, 1] - bars[i, 0], "pi": pi[i],
-                     "p": (1 + np.sum(null >= pi[i])) / (len(null) + 1),
+                     "p": mc_p(null, pi[i]),
                      "faces": len(shells[i]), "corners": len(v), "extent": np.linalg.norm(np.ptp(y[v], axis=0)) / diag,
                      "shell_concepts": len(np.unique(idx[v])) if idx is not None else 0, "n_concepts": n_con,
                      "cx": centres[i, 0], "cy": centres[i, 1], "cz": centres[i, 2]})

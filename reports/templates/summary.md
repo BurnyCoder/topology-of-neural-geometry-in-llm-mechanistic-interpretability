@@ -23,6 +23,7 @@ We checked, without running any model, whether the activation clouds really have
 | 6 | Steering around the holes | – | designed; simulated and LLM steering | **postponed by the author** |
 | 7 | Second audit (post hoc, D8) | stored activations, colour prompts | colour RGB baseline, loop localisation, closure ratio, PCA gaps, size-matched stability, power CIs | the colour prompts' RGB values already have the hue loop (π {{audit.rgb.pi:2}}, p = {{audit.rgb.p}}); the weekday and days_time loops lie inside one cluster; grokking's top PCs are nearly degenerate (5 Fourier frequencies); no verdict changes |
 | 8 | Third audit (post hoc, D9) | stored results, synthetic test set, simulated nulls | loop sensitivity and false-loop rate per estimator; cluster-centre null on hole-free centres; centre loops in other projections | the loop test is not hole-specific: its Gaussian null flags {{audit3.mc.fpr:2}} of hole-free synthetic clouds (spheres and caps {{audit3.mc.fam.sphere_b0:2}}); the cluster-centre null is undetermined at the real variance structure. Ring claims rest on the traversal (colours, residues); months downgraded to "suggestive"; no verdict changes |
+| loops | Every loop, scored (post hoc, D11) | {{loops.n_loops}} loops of {{loops.n_clouds}} clouds | representative cycles; each loop's p against the cloud's Exp2 null; concept winding along the cycle; rules: significant, large, goes around once | {{loops.n_interesting}} interesting loops. Months, month centres, grokked residues and colours: the concepts go around the significant loop once. The toy models' loops are polytope 4-cycles, days_time's is inside one cluster, and grokking at init is chance-level. The residues' second loop shows that winding on short cycles is not specific to one Fourier frequency |
 | voids | Every void, scored (post hoc, D10) | {{voids.n_voids}} voids of {{voids.n_clouds}} clouds | representative shells and centres; each void's p against the cloud's Exp2 null; rules: significant, large, shape and meaning | {{voids.n_interesting}} interesting voids. Only the toy models' voids are real by every criterion (significant, the largest, spanning the cloud, every feature a corner). Weekday and month centres and the colours hue ring wall in voids that are not significant, and a random curve has one of the largest voids |
 
 ## Datasets (from the source project)
@@ -78,6 +79,7 @@ We checked, without running any model, whether the activation clouds really have
 - [exp6_steering.md](exp6_steering.md)
 - [exp7_audit.md](exp7_audit.md)
 - [exp8_audit3.md](exp8_audit3.md)
+- [loops.md](loops.md)
 - [voids.md](voids.md)
 - [findings_per_dataset.md](findings_per_dataset.md)
 - [preregistration.md](preregistration.md)
