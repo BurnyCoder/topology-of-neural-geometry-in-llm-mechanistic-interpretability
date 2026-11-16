@@ -256,6 +256,17 @@ def voids_table() -> str:
                                 "concepts on shell"]], 3)
 
 
+def loops_table() -> str:
+    """The interesting loops (results/loops/summary.json, run.py loops; post hoc, D11), in the gallery's order."""
+    rows = pd.DataFrame(read_json(res("loops", "summary.json"))["interesting"])
+    rows["concepts on cycle"] = [f"{s} of {n}" for s, n in zip(rows["loop_concepts"], rows["n_concepts"])]
+    rows["concept winding"] = [f"{w:+d}" if c else "-" for w, c in zip(rows["winding"], rows["cyclic"])]
+    out = rows.rename(columns={"k": "loop # (by pi)", "size": "size (death - birth)", "length": "cycle points",
+                               "extent": "span of cloud"})
+    return tables.md_table(out[["id", "loop # (by pi)", "reasons", "birth", "death", "pi", "p", "size (death - birth)",
+                                "cycle points", "span of cloud", "concepts on cycle", "concept winding"]], 3)
+
+
 # ----------------------------------------------------------------------------- orchestration
 SECTIONS = [("exp0_topology", exp0_table, ("exp0", "real_topology.csv")),
             ("exp0_alignment", exp0_alignment_table, ("exp0", "real_alignment.json")),
@@ -268,6 +279,7 @@ SECTIONS = [("exp0_topology", exp0_table, ("exp0", "real_topology.csv")),
             ("audit", audit_tables, ("exp7_audit", "summary.json")),
             ("audit3", audit3_tables, ("exp8_audit3", "summary.json")),
             ("voids", voids_table, ("voids", "summary.json")),
+            ("loops", loops_table, ("loops", "summary.json")),
             ("exp6sim", exp6sim_table, ("exp6_sim", "summary.json"))]
 
 
@@ -322,6 +334,8 @@ def run() -> None:
         figures.fig_null_tests()
         figures.anim_clouds()
         figures.fig_detected_voids()
+        if have("loops", "summary.json"):
+            figures.fig_loop_gallery()
         if have("voids", "summary.json"):
             figures.fig_void_gallery()
         figures.fig_void_life()

@@ -645,6 +645,47 @@ def anim_examples() -> None:
     plt.close(fig)
 
 
+def _loop_3d(a3, y: np.ndarray, cycle, rgb: np.ndarray | None = None) -> None:
+    """Draw one loop's representative cycle (diagrams.alpha_h1_cycles) in red with a white halo over the cloud's
+    points (rgb per point, or grey), viewed face-on: camera along the normal of the cycle's best-fit plane (SVD of its
+    vertices). A loop smaller than a tenth of the cloud is circled. Clouds of at most 20 points (concept centres, toy
+    models) get large points and a box that fits their largest radius, so no corner is clipped. Shared by
+    fig_detected_loops and fig_loop_gallery."""
+    ring = y[np.r_[cycle, cycle[:1]]]                                  # the cycle, closed
+    normal = np.linalg.svd(ring - ring.mean(0))[2][-1]                 # normal of its best-fit plane
+    few = len(y) <= 20
+    a3.computed_zorder = False                                         # draw the ring on top of the points
+    a3.scatter(*y.T, color=rgb if rgb is not None else "#555555", s=40 if few else 2 if len(y) > 300 else 6,
+               alpha=0.9 if few else 0.45, depthshade=False, zorder=1 if not few else 4)
+    a3.plot(*ring.T, color="white", lw=5.5, zorder=2)                  # halo, so the ring stands out
+    a3.plot(*ring.T, color=RED, lw=2.6, zorder=3)
+    if np.ptp(ring, axis=0).max() < 0.1 * np.ptp(y, axis=0).max():     # tiny loop: circle it
+        a3.scatter(*ring.mean(0), s=700, facecolors="none", edgecolors=RED, linewidths=1.4, zorder=4)
+    lim = float(np.linalg.norm(y, axis=1).max() if few else np.abs(y).max())
+    a3.set_xlim(-lim, lim)
+    a3.set_ylim(-lim, lim)
+    a3.set_zlim(-lim, lim)
+    a3.set_box_aspect((1, 1, 1), zoom=1.3 if few else 1.65)
+    a3.view_init(elev=float(np.degrees(np.arcsin(np.clip(normal[2], -1, 1)))),
+                 azim=float(np.degrees(np.arctan2(normal[1], normal[0]))))
+    a3.set_axis_off()
+
+
+def _point_rgb(d: str, labels: list[str]) -> np.ndarray | None:
+    """(N, 3) colours for a cloud's points: the colours cloud in its prompts' own RGB; other concept clouds by
+    position in their cycle (examples.concept_positions; twilight if the concept is cyclic, viridis otherwise); None
+    (grey) for the toy models, whose concept bins carry no meaning, and for clouds without concepts."""
+    from neurotopo.report.examples import concept_positions, stimulus_rgb
+    rgb = stimulus_rgb(d, labels)
+    if rgb is not None or "tms" in d:
+        return rgb
+    try:
+        cmap = "twilight" if source.concepts(d, labels).cyclic else "viridis"
+        return plt.get_cmap(cmap)(concept_positions(d, labels))[:, :3]
+    except ValueError:
+        return None
+
+
 def fig_detected_loops() -> None:
     """The detected circular loops (README, near the top). For each example cloud, top: the cloud in its top-3 PCA
     coordinates with one closed path of edges carrying its most persistent loop (diagrams.alpha_h1_cycles) drawn
@@ -653,29 +694,13 @@ def fig_detected_loops() -> None:
     (log axes) with that loop's dot, the null's 95th-percentile line and the connect radius. Data: report/examples.py."""
     from neurotopo.report.examples import EXAMPLES, example
     ex = [example(d) for d, _ in EXAMPLES]
-    rmin, rmax, red = 0.004, 1.2, "#d62728"
+    rmin, rmax = 0.004, 1.2
     fig = plt.figure(figsize=(15, 6.2))
     gs = fig.add_gridspec(2, len(ex), height_ratios=[1.35, 1], hspace=0.16, wspace=0.18, top=0.88, bottom=0.12)
     for j, e in enumerate(ex):
         y, h1 = e["points"], e["h1"]
-        ring = y[np.r_[e["cycles"][0], e["cycles"][0][:1]]]              # the most persistent loop, closed
-        normal = np.linalg.svd(ring - ring.mean(0))[2][-1]              # normal of the ring's best-fit plane
         a3 = fig.add_subplot(gs[0, j], projection="3d")
-        a3.computed_zorder = False                                     # draw the ring on top of the points
-        a3.scatter(*y.T, c=e["pos"], cmap="twilight" if e["cyclic"] else "viridis", vmin=0, vmax=1,
-                   s=2 if len(y) > 300 else 6, alpha=0.45, depthshade=False, zorder=1)
-        a3.plot(*ring.T, color="white", lw=5.5, zorder=2)              # halo, so the ring stands out
-        a3.plot(*ring.T, color=red, lw=2.6, zorder=3)
-        if np.ptp(ring, axis=0).max() < 0.1 * np.ptp(y, axis=0).max():  # tiny loop: circle it
-            a3.scatter(*ring.mean(0), s=700, facecolors="none", edgecolors=red, linewidths=1.4, zorder=4)
-        lim = float(np.abs(y).max())
-        a3.set_xlim(-lim, lim)
-        a3.set_ylim(-lim, lim)
-        a3.set_zlim(-lim, lim)
-        a3.set_box_aspect((1, 1, 1), zoom=1.65)
-        a3.view_init(elev=float(np.degrees(np.arcsin(np.clip(normal[2], -1, 1)))),
-                     azim=float(np.degrees(np.arctan2(normal[1], normal[0]))))
-        a3.set_axis_off()
+        _loop_3d(a3, y, e["cycles"][0], plt.get_cmap("twilight" if e["cyclic"] else "viridis")(e["pos"])[:, :3])
         a3.set_title(f"{e['name']}\n{e['verdict']}", fontsize=8, color=e["colour"])
         ap = fig.add_subplot(gs[1, j])
         ap.loglog([rmin, rmax], [rmin, rmax], color="#999", lw=0.8)
@@ -683,7 +708,7 @@ def fig_detected_loops() -> None:
         if e["connect_r"]:
             ap.axhline(e["connect_r"], color="#555", ls=":", lw=0.9)
         ap.scatter(h1[:, 0], h1[:, 1], s=5, color="#aaaaaa", alpha=0.5, edgecolors="none")
-        ap.scatter([h1[0, 0]], [h1[0, 1]], s=70, color=red, edgecolors="k", linewidths=0.8, zorder=4)
+        ap.scatter([h1[0, 0]], [h1[0, 1]], s=70, color=RED, edgecolors="k", linewidths=0.8, zorder=4)
         ap.text(0.04, 0.96, f"\u03c0 / q95 = {e['ratio']:.2f}", transform=ap.transAxes, fontsize=8, va="top")
         ap.set_xlim(rmin, rmax)
         ap.set_ylim(rmin, rmax)
@@ -725,15 +750,9 @@ def _void_3d(a3, d: str, y: np.ndarray, labels: list[str], rp: dict, k: int, rin
     A void smaller than a quarter of the cloud is circled; points are faded in dense clouds (> 300 points)."""
     from itertools import combinations
     from mpl_toolkits.mplot3d.art3d import Line3DCollection, Poly3DCollection
-    from neurotopo.report.examples import concept_positions, stimulus_rgb
+    from neurotopo.report.examples import stimulus_rgb
     h2, shell, centre = rp["h2"], rp["shells"][k], rp["void_centres"][k]
-    rgb = stimulus_rgb(d, labels)
-    if rgb is None and concept_colours and "tms" not in d:
-        try:
-            cmap = "twilight" if source.concepts(d, labels).cyclic else "viridis"
-            rgb = plt.get_cmap(cmap)(concept_positions(d, labels))[:, :3]
-        except ValueError:                                               # no concept structure: stay grey
-            pass
+    rgb = _point_rgb(d, labels) if concept_colours else stimulus_rgb(d, labels)
     dense, corners = len(y) > 300, y[np.unique(shell)]
     edges = np.array(sorted({tuple(sorted(e)) for t in shell.tolist() for e in combinations(t, 2)}))
     r = np.linalg.norm(y, axis=1)                                        # largest radius: no corner is clipped
@@ -865,6 +884,38 @@ def fig_void_gallery() -> None:
              "Orange: p < 0.05 only. Black: not significant. p: against the cloud's design-matched null of the largest "
              "void π.", ha="center", fontsize=8)
     save(fig, "fig_void_gallery")
+
+
+def fig_loop_gallery() -> None:
+    """Every interesting loop (results/loops/summary.json from `run.py loops`: significant, large, or goes around once;
+    post hoc rules, deviation D11), drawn as in fig_detected_loops (red cycle, face-on), points coloured by concept
+    (colours: RGB), five per row. Title: the cloud and the loop's rank by pi, the rules that picked it, then pi, p
+    (against the cloud's null), size (death - birth), and the concepts on the cycle with their winding number for
+    cyclic concepts. Title colour: green if it is a cloud's most persistent loop surviving BH over Exp2's 44 loop
+    tests, orange if only p < 0.05, black otherwise."""
+    from neurotopo.experiments import realdata
+    rows = read_json(config.path("results") / "loops" / "summary.json")["interesting"]
+    inv = pd.read_csv(config.path("results") / "exp2" / "invariants.csv").set_index("id")
+    ncol = 5
+    nrow = -(-len(rows) // ncol)                                         # ceiling division
+    fig = plt.figure(figsize=(3.4 * ncol, 3.9 * nrow + 0.8))
+    for j, r in enumerate(rows):
+        d, c = r["id"], realdata.cloud(r["id"])
+        a3 = fig.add_subplot(nrow, ncol, j + 1, projection="3d")
+        _loop_3d(a3, c["y"], np.array(r["cycle"]), _point_rgb(d, c["labels"]))
+        colour = ("#1b7837" if r["k"] == 1 and inv.loc[d, "q_top_loop"] < 0.05 else
+                  "#e08214" if r["p"] < 0.05 else "#222222")
+        name = short(d).replace("C3_", "").replace("C1_", "").replace("colors", "colours")   # readable cloud name
+        what = (f"{r['length']} points; concept winding {r['winding']:+d}" if r["cyclic"] else
+                f"{r['length']} points on the cycle")
+        a3.set_title(f"{name}, loop #{r['k']}\n{r['reasons']}\nπ = {r['pi']:.3f}, p = {r['p']:.3f}, size "
+                     f"{r['size']:.3f}\n{what}", fontsize=7.5, color=colour)
+    fig.suptitle("Every interesting loop of the 44 clouds (picked by rule: significant, large, or the concepts go "
+                 "around it once; post hoc), drawn as a red cycle seen face-on", fontsize=11, y=0.995)
+    fig.text(0.5, 0.005, "Green: a cloud's most persistent loop surviving Benjamini-Hochberg over the 44 loop tests. "
+             "Orange: p < 0.05 only. Points coloured by concept (colours: in their own colour). Small loops are circled.",
+             ha="center", fontsize=8)
+    save(fig, "fig_loop_gallery")
 
 
 def fig_void_life(d: str = "R3_tms_n6") -> None:
