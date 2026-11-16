@@ -988,6 +988,77 @@ def _status(it: dict, r: float) -> tuple[str, bool]:
     return f"{'loop' if it['row'] == 0 else 'void'} born {b:.3f}, filled {d:.3f}: {state}", alive
 
 
+def _slice_prepare(items: list[dict]) -> float:
+    """Slice coordinates of each item's points (p2), their distances h from the slice and the loop's cycle in the
+    slice (ring2); returns one axis limit for all panels (1.05 x the largest 98th-percentile radius in the slice)."""
+    for it in items:
+        rel = it["y"] - it["origin"]
+        it["p2"], it["h"] = rel @ it["plane"][:2].T, np.abs(rel @ it["plane"][2])
+        it["ring2"] = (it["cycle"] - it["origin"]) @ it["plane"][:2].T if it["row"] == 0 else None
+    return 1.05 * max(float(np.percentile(np.linalg.norm(it["p2"], axis=1), 98)) for it in items)
+
+
+def _slice_axes(ax, it: dict, lim: float) -> None:
+    """Set up a slice panel: equal axes of half-width lim, the points, and a status line under it."""
+    ax.set_xlim(-lim, lim)
+    ax.set_ylim(-lim, lim)
+    ax.set_aspect("equal")
+    ax.set_axis_off()
+    ax.scatter(*it["p2"].T, s=3 if len(it["y"]) > 300 else 14,
+               color=it["colour"] if it["colour"] is not None else "#333333", zorder=3)
+    it.update(ax=ax, artists=[], text=ax.text(0.5, -0.04, "", transform=ax.transAxes, ha="center", va="top",
+                                              fontsize=8.5))
+
+
+def _slice_draw(it: dict, r: float) -> None:
+    """Draw an item's slice at radius r (replacing the previous radius): each ball at distance h from the slice as a
+    disc of radius sqrt(r^2 - h^2), the loop's cycle (bold while alive) or the void's empty middle (blue, radius
+    death - r, while alive), and the status line from the bar."""
+    from matplotlib.collections import EllipseCollection
+    ax = it["ax"]
+    for a in it["artists"]:
+        a.remove()
+    rad = np.sqrt(np.clip(r ** 2 - it["h"] ** 2, 0, None))               # the slice of each ball
+    on = rad > 0
+    discs = EllipseCollection(2 * rad[on], 2 * rad[on], np.zeros(on.sum()), units="xy", offsets=it["p2"][on],
+                              offset_transform=ax.transData, edgecolors="none", alpha=0.22, zorder=1,
+                              facecolors=it["colour"][on] if it["colour"] is not None else "#888888")
+    it["artists"] = [ax.add_collection(discs)]
+    text, alive = _status(it, r)
+    if it["row"] == 0:                                                   # the loop's cycle: bold while alive
+        it["artists"] += ax.plot(*it["ring2"].T, color=RED, lw=2.6 if alive else 0.8, ls="-" if alive else "--",
+                                 zorder=4)
+    elif alive:                                                          # the void's empty middle, radius death - r
+        it["artists"].append(ax.add_patch(plt.Circle((0, 0), it["bar"][1] - r, color=BLUE, alpha=0.9, zorder=4)))
+    it["text"].set_text(text)
+    it["text"].set_color("#1b7837" if alive else "#222222")
+
+
+def fig_growing_balls() -> None:
+    """Static print version of anim_highlights for the paper: for each highlighted loop and void (examples.highlights),
+    four radii relative to its own bar (before it is born, just after, shortly before it is filled, after), drawn as
+    exact slices of the union of balls (_slice_draw) on one scale. Loop titles carry the original verdicts."""
+    from neurotopo.report.examples import headline
+    items = _highlight_items()
+    lim = _slice_prepare(items)
+    fig, axes = plt.subplots(len(items), 4, figsize=(9.6, 2.45 * len(items)))
+    for it, row in zip(items, axes):
+        b, d = it["bar"]
+        verdict = headline(it["id"])["verdict"].replace("\n", " ") if it["row"] == 0 else "void (exploratory set)"
+        for j, (ax, r) in enumerate(zip(row, [0.6 * b, b + 0.2 * (d - b), b + 0.8 * (d - b), 1.1 * d])):
+            _slice_axes(ax, it, lim)
+            _slice_draw(it, r)
+            it["text"].set_text(_status(it, r)[0].split(": ")[-1])      # the state only; the bar is in the row label
+            ax.set_title(f"r = {r:.3f}", fontsize=8)
+            if j == 0:
+                ax.text(-0.12, 0.5, f"{HIGHLIGHT_NAMES.get(it['id'], short(it['id']))}\n{verdict}\nborn {b:.3f}, "
+                        f"filled {d:.3f}", rotation=90, transform=ax.transAxes, ha="right", va="center", fontsize=7)
+    fig.suptitle("Growing balls, in slices: each ball at distance h from the slice is a disc of radius "
+                 "√(r² - h²); loops bold while alive, voids' empty middle in blue", fontsize=10)
+    fig.tight_layout(rect=(0.05, 0, 1, 0.98))
+    save(fig, "fig_growing_balls")
+
+
 def anim_highlights() -> None:
     """Animated variant of fig_highlights in slices (README, under the 3D animation): balls of radius r grow around
     every point, r the same for all clouds (each has RMS radius 1), and the holes of their union are the holes measured
@@ -1001,27 +1072,15 @@ def anim_highlights() -> None:
     matplotlib FuncAnimation + PillowWriter, EllipseCollection with data units for the discs
     (https://matplotlib.org/stable/api/animation_api.html, https://matplotlib.org/stable/api/collections_api.html)."""
     from matplotlib.animation import FuncAnimation, PillowWriter
-    from matplotlib.collections import EllipseCollection
     items = _highlight_items()
-    for it in items:                                                     # slice coordinates and distances from the slice
-        rel = it["y"] - it["origin"]
-        it["p2"], it["h"] = rel @ it["plane"][:2].T, np.abs(rel @ it["plane"][2])
-        it["ring2"] = (it["cycle"] - it["origin"]) @ it["plane"][:2].T if it["row"] == 0 else None
-    lim = 1.05 * max(float(np.percentile(np.linalg.norm(it["p2"], axis=1), 98)) for it in items)   # one scale for all
+    lim = _slice_prepare(items)
     fig = plt.figure(figsize=(15, 8.4))
     axes = _highlight_axes(fig, items, top=0.83)
     for it, ax in zip(items, axes):
-        ax.set_xlim(-lim, lim)
-        ax.set_ylim(-lim, lim)
-        ax.set_aspect("equal")
-        ax.set_axis_off()
-        ax.scatter(*it["p2"].T, s=3 if len(it["y"]) > 300 else 14,
-                   color=it["colour"] if it["colour"] is not None else "#333333", zorder=3)
+        _slice_axes(ax, it, lim)
         ax.set_title(f"{HIGHLIGHT_NAMES.get(it['id'], short(it['id']))}\n" +
                      ("a slice through the loop's plane" if it["row"] == 0 else "a slice through the void's centre"),
                      fontsize=9)
-        it.update(ax=ax, artists=[], text=ax.text(0.5, -0.04, "", transform=ax.transAxes, ha="center", va="top",
-                                                  fontsize=8.5))
     head = fig.suptitle("", fontsize=12, y=0.985)
     fig.text(0.5, 0.935, "Each ball cut by the slice is a disc of radius √(r² - h²), h = the point's "
              "distance from the slice: a disc appears once r reaches h, then grows faster than r.", ha="center",
@@ -1033,24 +1092,7 @@ def anim_highlights() -> None:
         r = HL_RADII[i]
         head.set_text(f"Balls of radius r = {r:.3f} grow around every point (the same r for all clouds, RMS radius 1)")
         for it in items:
-            ax = it["ax"]
-            for a in it["artists"]:
-                a.remove()
-            rad = np.sqrt(np.clip(r ** 2 - it["h"] ** 2, 0, None))       # the slice of each ball
-            on = rad > 0
-            discs = EllipseCollection(2 * rad[on], 2 * rad[on], np.zeros(on.sum()), units="xy", offsets=it["p2"][on],
-                                      offset_transform=ax.transData, edgecolors="none", alpha=0.22, zorder=1,
-                                      facecolors=it["colour"][on] if it["colour"] is not None else "#888888")
-            it["artists"] = [ax.add_collection(discs)]
-            text, alive = _status(it, r)
-            if it["row"] == 0:                                           # the loop's cycle: bold while alive
-                it["artists"] += ax.plot(*it["ring2"].T, color=RED, lw=2.6 if alive else 0.8,
-                                         ls="-" if alive else "--", zorder=4)
-            elif alive:                                                  # the void's empty middle, radius death - r
-                it["artists"].append(ax.add_patch(plt.Circle((0, 0), it["bar"][1] - r, color=BLUE, alpha=0.9,
-                                                             zorder=4)))
-            it["text"].set_text(text)
-            it["text"].set_color("#1b7837" if alive else "#222222")
+            _slice_draw(it, r)
         return []
 
     FuncAnimation(fig, frame, frames=len(HL_RADII)).save(config.path("figures") / "anim_highlights.gif",
