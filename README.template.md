@@ -24,6 +24,15 @@ A loop alone does not prove a hole. The loop test also flags many hole-free shap
 - **Voids (bottom):** the three toy models of superposition. Their features sit on the corners of a polytope and leave its middle empty. These sets have only 6–20 points and are exploratory.
 - Everything else, including the loops and voids that are not real: [loop gallery](#every-interesting-loop-post-hoc-d11), [void gallery](#every-interesting-void-post-hoc-d10).
 
+![The strongest results, animated: balls of radius r grow around every point, shown in a slice through each loop's plane or each void's centre, until each loop and void is born and filled](docs/figures/anim_highlights.gif)
+
+*How these holes are found (animation).* A ball of radius r grows around every point, with the same r for all clouds (each has RMS radius 1). The holes of the union of balls are exactly the holes measured (the alpha complex has the persistence of the union of balls).
+- **Each panel is a slice:** through the loop's plane (rings, top) or through the void's centre (voids, bottom). A ball at distance h from the slice cuts it in a disc of radius √(r² − h²), so the picture is the exact cross-section of the union of balls.
+- **Rings:** the red loop is bold while it is alive (between its birth and death radius) and fills in when the balls close its middle.
+- **Voids:** the blue disc is the part of the void no ball reaches yet, of radius death − r. It shrinks to nothing at the death radius.
+- **Read the status line, not the picture,** for when a hole is born and filled. A slice can show a region as open or closed differently from 3D, because a hole can be closed or filled outside the slice.
+- **The full 3D balls:** switch on "balls of radius r" in the [explorer](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/) or on the [examples page](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/examples.html) and move the radius slider.
+
 ![The detected circular loops: each example cloud's most persistent loop drawn as a red ring, and its dot in the persistence diagram](docs/figures/fig_detected_loops.png)
 
 *The detected circular loops.* For each example cloud, the red ring is the cloud's most persistent loop: one closed path of edges that carries it ([representative loop](docs/glossary.md#representative-loop)), seen face-on.
