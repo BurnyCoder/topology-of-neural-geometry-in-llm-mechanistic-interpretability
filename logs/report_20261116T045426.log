@@ -1,0 +1,13 @@
+2026-11-16 04:54:26 INFO root: phase report, log file C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\logs\report_20261116T045426.log
+2026-11-16 04:54:29 INFO neurotopo.report.build: generated exp0_topology
+2026-11-16 04:54:29 INFO neurotopo.report.build: generated exp0_alignment
+2026-11-16 04:54:30 INFO neurotopo.report.build: generated exp0_family_homotopy
+2026-11-16 04:54:30 INFO neurotopo.report.build: generated exp1
+2026-11-16 04:54:32 INFO neurotopo.report.build: generated readme_roles
+2026-11-16 04:54:32 INFO neurotopo.report.build: generated exp2
+2026-11-16 04:54:33 INFO neurotopo.report.build: generated exp3
+2026-11-16 04:54:33 INFO neurotopo.report.build: generated coords
+2026-11-16 04:54:33 INFO neurotopo.report.build: generated audit
+2026-11-16 04:54:33 INFO neurotopo.report.build: generated audit3
+2026-11-16 04:54:45 INFO matplotlib.animation: Animation.save using <class 'matplotlib.animation.PillowWriter'>
+2026-11-16 04:55:01 INFO matplotlib.animation: Animation.save using <class 'matplotlib.animation.PillowWriter'>

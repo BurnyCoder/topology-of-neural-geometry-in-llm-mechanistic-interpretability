@@ -23,7 +23,8 @@ SHORT = {"R5a_llama_weekdays": "weekdays", "R5b_llama_months": "months", "R2_gro
          "R8a_llama_temperature": "temperature", "R8b_llama_age": "age", "R5b_llama_months_means": "monthsmeans",
          "R5a_llama_weekdays_means": "weekdaysmeans", "C3_grokking_WE_init": "grokinit",
          "C3_llama_weekdays_init": "weekdaysinit", "C3_llama_months_init": "monthsinit", "C3_tms_dense": "tmsdense",
-         "R9_llama_truth_cities": "truth", "C3_gpt2_wpos_init": "wposinit"}
+         "R9_llama_truth_cities": "truth", "C3_gpt2_wpos_init": "wposinit", "R3_tms_n6": "tmsn6", "R3_tms_n8": "tmsn8",
+         "R3_tms_n20": "tmsn20"}
 
 
 ESTSHORT = {"MC": "mc"}            # exp8 per-family rows: estimator label -> number-key prefix (P, S, Ba stay)
@@ -166,7 +167,8 @@ def collect() -> dict:
         d = pd.read_csv(_res("exp2", "invariants.csv")).set_index("id")
         for i, s in SHORT.items():
             if i in d.index:
-                for c in ("top_pi1", "null_q95_pi1", "p_top_loop", "top_pi2", "null_q95_pi2", "p_top_void", "loop_freq"):
+                for c in ("top_pi1", "null_q95_pi1", "p_top_loop", "top_pi2", "null_q95_pi2", "p_top_void", "loop_freq",
+                          "void_freq"):
                     n[f"exp2.{s}.{c}"] = float(d.loc[i, c])
                 n[f"exp2.{s}.homotopy"] = d.loc[i, "homotopy_rc"]
                 n[f"exp2.{s}.b0"], n[f"exp2.{s}.b0_rc"] = int(d.loc[i, "b0"]), int(d.loc[i, "b0_rc"])
@@ -180,6 +182,10 @@ def collect() -> dict:
             for i, sh in SHORT.items():
                 if i in d.index and "q_top_loop" in d.columns:
                     n[f"exp2.{sh}.q_loop"] = float(d.loc[i, "q_top_loop"])
+                    n[f"exp2.{sh}.q_void"] = float(d.loc[i, "q_top_void"])
+            n["exp2.n_void_q05"] = int((d["q_top_void"] < 0.05).sum())       # voids surviving BH over the 44 tests
+        trained = d[d.index.str.startswith("R") & ~d.index.str.startswith("R3_")]   # trained models, not the toy models
+        n["exp2.trained_n"], n["exp2.trained_voids"] = len(trained), int((trained["p_top_void"] < 0.05).sum())
         c1 = d[d.index.str.startswith("C1_")]
         n["exp2.c1_loops"] = int((c1["p_top_loop"] < 0.05).sum())
         n["exp2.c1_pi_max"] = float(c1["top_pi1"].max())
@@ -392,7 +398,7 @@ def collect() -> dict:
     if _res("toy", "summary.json").exists():
         n.update({f"toy.{k}": v for k, v in read_json(_res("toy", "summary.json"))["numbers"].items()})
     # Percent versions of fractions quoted in the README's plain-language section.
-    for k in [k for k in list(n) if k.endswith(".loop_freq")] + ["power2.weekdays.loop", "exp1.P.acc", "exp1.Bb.acc",
+    for k in [k for k in list(n) if k.endswith((".loop_freq", ".void_freq"))] + ["power2.weekdays.loop", "exp1.P.acc", "exp1.Bb.acc",
                                                                  "exp1.well.Ba.acc", "exp1.well.Bb.acc",
                                                                  "audit.power.k7.ring.interp_loop", "audit.power.k7.ring.ci_lo",
                                                                  "audit.power.k7.ring.ci_hi", "audit.stab.grok.matched",
