@@ -5,6 +5,7 @@ This page walks through every step behind the plain-language example figure in t
 - **Same code as the real data.** The toy is analysed by [`experiments/toy_example.py`](../src/neurotopo/experiments/toy_example.py) with exactly the functions that analyse the 44 real clouds. No model or stored activation is involved.
 - **Checked against closed forms.** [`tests/test_toy_example.py`](../tests/test_toy_example.py) checks the persistence bars, the null's floor, the alignment p-value and the winding number against formulas derived by hand.
 - **No hand-typed numbers.** Every number here comes from `results/toy/summary.json`; `uv run python run.py toy report site` regenerates this page, its figure and the interactive version.
+- **Primary reference for the idea.** Counting holes with persistent homology (grow balls around the points, record when each hole is born and when it is filled, and keep the holes that persist) is explained in the video [What is...persistent homology?](https://www.youtube.com/watch?v=w6Jx1vFp_Gk) (VisualMath). Steps 2–4 apply exactly that idea; watch it first if persistent homology is new to you.
 
 ![Worked example](figures/fig_toy.png)
 
@@ -42,7 +43,7 @@ Real clouds have a non-zero third PC, and the code does everything below with ba
 
 ## 2. Alpha complex and persistence diagram
 
-Code: [`alpha_diagrams`](../src/neurotopo/tda/diagrams.py), using [GUDHI](https://gudhi.inria.fr/python/latest/alpha_complex_user.html).
+Code: [`alpha_diagrams`](../src/neurotopo/tda/diagrams.py), using [GUDHI](https://gudhi.inria.fr/python/latest/alpha_complex_user.html). Idea: [What is...persistent homology?](https://www.youtube.com/watch?v=w6Jx1vFp_Gk) (VisualMath), the primary reference for this step.
 
 **Terms**
 - **Union of balls.** Put a ball of radius r around every point and let r grow from 0. We track the holes of the union.

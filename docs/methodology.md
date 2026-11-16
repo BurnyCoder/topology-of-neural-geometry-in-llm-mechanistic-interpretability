@@ -13,7 +13,7 @@ This page explains *why* each choice was made. The exact rules are in [reports/p
 **Method A: exact topology of the fitted shape.** The fitted shape is a parametrised manifold, so its Betti numbers are exact ([docs/analytic_topology.md](analytic_topology.md)). What is uncertain is whether the *data* resolve that topology. The margin ratio ρ_A = m/(2ν) answers that: m is the smallest parameter change that would alter the topology, and ν is the cloud's noise plus coverage gaps.
 - Why: a fitted helix says "no hole". If its two ends are closer than the noise (ρ_A < 1), the data cannot distinguish it from a closed loop.
 
-**Method B: persistent homology of the data.** We use alpha complexes, not Rips, in ℝ³:
+**Method B: persistent homology of the data.** Primary reference for the idea of counting holes with persistent homology: [What is...persistent homology?](https://www.youtube.com/watch?v=w6Jx1vFp_Gk) (VisualMath). We use alpha complexes, not Rips, in ℝ³:
 - the alpha complex is exact Čech (nerve theorem);
 - H2 is cheap;
 - it has no Rips phantom classes. Our test shows a regular 12-gon gets spurious H2 under Rips and none under alpha.
