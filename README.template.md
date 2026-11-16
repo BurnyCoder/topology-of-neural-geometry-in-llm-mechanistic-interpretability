@@ -42,6 +42,16 @@ A loop alone does not prove a hole. The loop test also flags many hole-free shap
 - **None of the other {{exp2.trained_n}} trained-model clouds** (the language-model concepts and the grokking network) has a significant void, even before correction ({{exp2.trained_voids}} at p < 0.05).
 - Explore any loop or void of any of the 44 clouds in the [explorer](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/): set the radius, then pick a loop or void, or click its marker. Voids are drawn as see-through shells.
 
+![The life of a void: the toy model with 6 features at four radii, from loops to a closed void to a filled one, with its persistence diagram](docs/figures/fig_void_life.png)
+
+*The life of a void,* on the toy model with 6 features (its points sit near the corners of an octahedron).
+1. At radius {{life.tmsn6.edge_r:3}} the {{life.tmsn6.s1.edges}} edges have entered and made {{life.tmsn6.loops_born}} loops.
+2. Between {{life.tmsn6.faces_r:3}} and {{life.tmsn6.birth:3}} the {{life.tmsn6.s2.triangles}} faces enter. They fill all {{life.tmsn6.loops_dead_by_birth}} loops and close one void.
+3. The blue ball is the part of the void that the balls of radius r do not reach yet. It shrinks as r grows.
+4. At {{life.tmsn6.death:3}} the tetrahedra inside enter and fill the void.
+
+For a regular octahedron the void lives from √(2/3) ≈ 0.816 to 1, a persistence ratio of √(3/2) ≈ 1.225; this cloud gives {{exp2.tmsn6.top_pi2:3}}.
+
 ![Positive and negative examples](docs/figures/fig_examples.png)
 
 *How to read.*
@@ -260,6 +270,17 @@ The per-dataset findings, with every statistic, are in [reports/findings_per_dat
 
 "No coordinate" means DREiMac's preregistered setting, which requires Rips death ≥ 2 × birth, built no circular coordinate. The weekday and days_time loops die before any two day clusters touch, so they are loops inside one cluster (audit, D8). The post hoc days_time coordinate is built on a different, non-significant class ({{audit.ph.daystime.3d.bar}}), which does not overlap the significant loop. All 44 clouds: [reports/exp2_invariants.md](reports/exp2_invariants.md). Hypothesis tests: [reports/exp3_cyclic.md](reports/exp3_cyclic.md).
 
+### Every interesting void (post hoc, D10)
+
+![Every interesting void of the 44 clouds, each drawn as a red shell around its empty middle](docs/figures/fig_void_gallery.png)
+
+*Every interesting void.* `run.py voids` scores all {{voids.n_voids}} voids of the {{voids.n_clouds}} clouds that have any. It picks {{voids.n_interesting}} by three rules: significant (p < 0.05 against the cloud's own null), large (the 5 largest empty middles), or shape and meaning (in a trained model's concept cloud, a shell spanning at least half the cloud with at least half its concepts on its corners). The rules were written after browsing the explorer.
+- **Real by every criterion: only the three toy models.** Their voids are significant and the largest, their shells span the whole cloud, and (nearly) every feature is a corner.
+- **The other significant voids** are a chance hit (GPT-2 positions at random init), a sliver void among only 5 points (dense toy model), and a tiny void inside one cluster (random-init weekdays).
+- **The weekday and month centres** wall in voids spanning most of the cloud, with 4 of 7 days and 7 of 12 months on their shells, but neither is significant. Nor is the colours void inside the hue ring.
+- **A random Gaussian-process curve** (C1_gp_3) has the 5th-largest void, with every concept on its shell. Shape and meaning alone do not make a void real.
+- Table, rules and the life of a void: [reports/voids.md](reports/voids.md).
+
 ![Power simulation](docs/figures/fig_power.png)
 
 *How often the loop test detects simulated rings (corrected power simulation, post hoc).*
@@ -400,6 +421,7 @@ run.py <phase>
   audit        post hoc checks of the second audit (D8): colour RGB baseline, loop localisation, closure ratio, PCA gaps, stability
   audit3       post hoc checks of the third audit (D9): is the loop test specific to holes? (synthetic rates, cluster null, tori)
   toy          worked example: every step of the loop and ring test on a 21-point toy week (docs/worked_example.md)
+  voids        every void of every cloud scored; the interesting ones picked by rule (post hoc, D10; reports/voids.md)
   report       regenerate every table, figure and number in README / reports / paper from results/
   site         GitHub Pages explorer (docs/index.html), interactive worked example (docs/worked_example.html) and examples (docs/examples.html)
   all          everything above, CPU only (about 1.5 h on 16 cores)

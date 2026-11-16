@@ -177,6 +177,32 @@ def largest_void(d: str) -> dict:
             "winding": int(round((turn[-1] - turn[0]) / (2 * np.pi)))}
 
 
+@lru_cache(maxsize=None)
+def void_life(d: str) -> dict:
+    """The life of cloud d's most persistent void, in four stages of the alpha complex (figures.fig_void_life):
+    (1) after the loops are born but before the void closes (halfway between the last loop birth below the void's
+    birth b and b), (2) just after it closes (b + 0.2 (d - b)), (3) shortly before it fills (b + 0.8 (d - b)) and
+    (4) just after it fills (1.03 d). At each stage: the simplices present (alpha radius <= r), the loops and voids
+    alive (birth <= r < death) and the radius d - r of the ball around the void's centre still uncovered (no point
+    is closer to the centre than d). Read-only dict."""
+    y = realdata.cloud(d)["y"]
+    vbars, shells, centres = diagrams.alpha_h2_voids(y)
+    t = int(np.argmax(vbars[:, 1] / vbars[:, 0]))
+    b, dd = vbars[t]
+    h1 = diagrams.alpha_diagrams(y)[1]
+    cx = diagrams.alpha_filtration(y, maxdim=3)                         # every simplex with its entry radius
+    radii = [0.5 * (b + h1[h1[:, 0] < b, 0].max()), b + 0.2 * (dd - b), b + 0.8 * (dd - b), 1.03 * dd]
+    stages = [{"r": r, **{name: sum(1 for sx, x in cx if len(sx) == m and x <= r)
+                          for name, m in (("edges", 2), ("triangles", 3), ("tetrahedra", 4))},
+               "loops": int(np.sum((h1[:, 0] <= r) & (r < h1[:, 1]))),
+               "voids": int(np.sum((vbars[:, 0] <= r) & (r < vbars[:, 1]))),
+               "pocket": float(dd - r) if b <= r < dd else 0.0} for r in radii]
+    return {"y": y, "complex": cx, "birth": float(b), "death": float(dd), "pi": float(dd / b), "shell": shells[t],
+            "centre": centres[t], "h1": h1, "h2": vbars, "stages": stages,
+            "loops_born": int(np.sum(h1[:, 0] < b)), "loops_dead_by_birth": int(np.sum(h1[:, 1] <= b * (1 + 1e-9))),
+            "edge_r": float(h1[h1[:, 0] < b, 0].max()), "faces_r": float(h1[h1[:, 0] < b, 1].min())}
+
+
 def stimulus_rgb(d: str, labels: list[str]) -> np.ndarray | None:
     """(N, 3) RGB in [0, 1] of each colour prompt (labels "hue|sat|lum", as exp7_audit.colour_stimuli builds them
     from the source's prompt builder), so the colours cloud can be painted in its own colours; None for other sets."""

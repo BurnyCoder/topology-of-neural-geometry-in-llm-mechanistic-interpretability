@@ -708,6 +708,59 @@ VOID_EXAMPLES = [("R3_tms_n20", "toy model, 20 features", "top"), ("R3_tms_n8", 
                  ("R3_tms_n6", "toy model, 6 features", "top"), ("R7_llama_colors", "colours (Llama)", "largest"),
                  ("C3_gpt2_wpos_init", "GPT-2 positions, random init", "top"),
                  ("R1_gpt2_wpos", "GPT-2 positions, trained", "top")]
+RED, BLUE = "#d62728", "#4393c3"                 # void shells red, as the detected loops; blue = the void's empty middle
+RING_FACE_ON = {"R7_llama_colors"}               # clouds whose void is shown inside their hue ring, seen face-on
+_U, _V = np.meshgrid(np.linspace(0, 2 * np.pi, 28), np.linspace(0, np.pi, 14))
+BALL = np.stack([np.cos(_U) * np.sin(_V), np.sin(_U) * np.sin(_V), np.cos(_V)])   # unit sphere for plot_surface, (3, 14, 28)
+
+
+def _void_3d(a3, d: str, y: np.ndarray, labels: list[str], rp: dict, k: int, ring: bool = False,
+             concept_colours: bool = False) -> None:
+    """Draw void k of examples.replay data rp in the 3D axes a3 (shared by fig_detected_voids and fig_void_gallery):
+    the points (the colours cloud in its prompts' RGB; with concept_colours, other concept clouds by position in their
+    cycle, twilight if cyclic, viridis otherwise; grey for the toy models and otherwise), the void's empty middle as a
+    blue ball (radius death - birth around its centre: still uncovered when the void closes), its shell as red edges
+    with a white halo over faint red faces, and with ring the most persistent loop as a dark line seen face-on (view
+    along the normal of its best-fit plane; the farthest 2% of points are then left out so the ring fills the panel).
+    A void smaller than a quarter of the cloud is circled; points are faded in dense clouds (> 300 points)."""
+    from itertools import combinations
+    from mpl_toolkits.mplot3d.art3d import Line3DCollection, Poly3DCollection
+    from neurotopo.report.examples import concept_positions, stimulus_rgb
+    h2, shell, centre = rp["h2"], rp["shells"][k], rp["void_centres"][k]
+    rgb = stimulus_rgb(d, labels)
+    if rgb is None and concept_colours and "tms" not in d:
+        try:
+            cmap = "twilight" if source.concepts(d, labels).cyclic else "viridis"
+            rgb = plt.get_cmap(cmap)(concept_positions(d, labels))[:, :3]
+        except ValueError:                                               # no concept structure: stay grey
+            pass
+    dense, corners = len(y) > 300, y[np.unique(shell)]
+    edges = np.array(sorted({tuple(sorted(e)) for t in shell.tolist() for e in combinations(t, 2)}))
+    r = np.linalg.norm(y, axis=1)                                        # largest radius: no corner is clipped
+    lim = float(np.percentile(r, 98) if ring else r.max())
+    keep = r <= lim
+    a3.computed_zorder = False                                           # draw in call order: points, ball, shell
+    a3.scatter(*y[keep].T, color=rgb[keep] if rgb is not None else "#333333",
+               s=(2 if dense else 14) if rgb is None else (5 if dense else 16),
+               alpha=(0.15 if dense else 0.6) if rgb is None else (0.5 if dense else 0.85), depthshade=False, zorder=1)
+    a3.plot_surface(*(centre[:, None, None] + (h2[k, 1] - h2[k, 0]) * BALL), color=BLUE, alpha=0.9, shade=False,
+                    linewidth=0, zorder=2)                               # the empty middle, radius death - birth
+    a3.add_collection3d(Poly3DCollection(y[shell], facecolors=RED, edgecolors="none", alpha=0.1, zorder=3))
+    a3.add_collection3d(Line3DCollection(y[edges], colors="white", linewidths=3.0, zorder=4))   # halo
+    a3.add_collection3d(Line3DCollection(y[edges], colors=RED, linewidths=1.3, zorder=5))
+    if ring:                                                             # the most persistent loop around the void
+        loop = y[np.r_[rp["cycles"][0], rp["cycles"][0][:1]]]
+        a3.plot(*loop.T, color="#222222", lw=1.6, zorder=6)
+        normal = np.linalg.svd(loop - loop.mean(0))[2][-1]
+        a3.view_init(elev=float(np.degrees(np.arcsin(np.clip(normal[2], -1, 1)))),
+                     azim=float(np.degrees(np.arctan2(normal[1], normal[0]))))
+    if np.ptp(corners, axis=0).max() < 0.25 * np.ptp(y, axis=0).max():  # small void: circle it
+        a3.scatter(*corners.mean(0), s=900, facecolors="none", edgecolors=RED, linewidths=1.4, zorder=7)
+    a3.set_xlim(-lim, lim)
+    a3.set_ylim(-lim, lim)
+    a3.set_zlim(-lim, lim)
+    a3.set_box_aspect((1, 1, 1), zoom=1.4)
+    a3.set_axis_off()
 
 
 def fig_detected_voids() -> None:
@@ -725,14 +778,9 @@ def fig_detected_voids() -> None:
     Benjamini-Hochberg over the 44 void tests, orange if only p < 0.05, black otherwise. Numbers:
     results/exp2/invariants.csv. mplot3d: Poly3DCollection, Line3DCollection, plot_surface
     (https://matplotlib.org/stable/api/toolkits/mplot3d.html)."""
-    from itertools import combinations
-    from mpl_toolkits.mplot3d.art3d import Line3DCollection, Poly3DCollection
     from neurotopo.experiments import realdata
-    from neurotopo.report.examples import largest_void, replay, stimulus_rgb
+    from neurotopo.report.examples import largest_void, replay
     inv = pd.read_csv(config.path("results") / "exp2" / "invariants.csv").set_index("id")
-    red, blue = "#d62728", "#4393c3"                                    # red as the detected loops; blue = empty space
-    u, v = np.meshgrid(np.linspace(0, 2 * np.pi, 28), np.linspace(0, np.pi, 14))
-    ball = np.stack([np.cos(u) * np.sin(v), np.sin(u) * np.sin(v), np.cos(v)])   # unit sphere, (3, 14, 28)
     fig = plt.figure(figsize=(16.5, 6.8))
     gs = fig.add_gridspec(2, len(VOID_EXAMPLES), height_ratios=[1.35, 1], hspace=0.2, wspace=0.22, top=0.86, bottom=0.13)
     for j, (d, label, pick) in enumerate(VOID_EXAMPLES):
@@ -749,34 +797,9 @@ def fig_detected_voids() -> None:
             verdict, colour = ((f"void: yes (q = {q:.3f})", "#1b7837") if q < 0.05 else
                                (f"p = {p:.3f}, but q = {q:.2f} after BH", "#e08214") if p < 0.05 else
                                (f"void: no (p = {p:.2f})", "#222222"))
-        h2, shell, centre = rp["h2"], rp["shells"][k], rp["void_centres"][k]
-        rgb, dense, corners = stimulus_rgb(d, c["labels"]), len(y) > 300, y[np.unique(shell)]
-        edges = np.array(sorted({tuple(sorted(e)) for t in shell.tolist() for e in combinations(t, 2)}))
-        r = np.linalg.norm(y, axis=1)                                    # largest radius: no corner is clipped; for the
-        lim = float(np.percentile(r, 98) if pick == "largest" else r.max())   # colours ring, the farthest 2% are left out
-        keep = r <= lim
+        h2, shell = rp["h2"], rp["shells"][k]
         a3 = fig.add_subplot(gs[0, j], projection="3d")
-        a3.computed_zorder = False                                       # draw in call order: points, ball, shell
-        a3.scatter(*y[keep].T, color=rgb[keep] if rgb is not None else "#333333", s=6 if rgb is not None else 2 if dense
-                   else 14, alpha=0.6 if rgb is not None else 0.15 if dense else 0.6, depthshade=False, zorder=1)
-        a3.plot_surface(*(centre[:, None, None] + (h2[k, 1] - h2[k, 0]) * ball), color=blue, alpha=0.9, shade=False,
-                        linewidth=0, zorder=2)                           # the empty middle, radius death - birth
-        a3.add_collection3d(Poly3DCollection(y[shell], facecolors=red, edgecolors="none", alpha=0.1, zorder=3))
-        a3.add_collection3d(Line3DCollection(y[edges], colors="white", linewidths=3.0, zorder=4))   # halo
-        a3.add_collection3d(Line3DCollection(y[edges], colors=red, linewidths=1.3, zorder=5))
-        if pick == "largest":                                            # the most persistent loop (hue ring) around it,
-            ring = y[np.r_[rp["cycles"][0], rp["cycles"][0][:1]]]        # seen face-on as in fig_detected_loops
-            a3.plot(*ring.T, color="#222222", lw=1.6, zorder=6)
-            normal = np.linalg.svd(ring - ring.mean(0))[2][-1]
-            a3.view_init(elev=float(np.degrees(np.arcsin(np.clip(normal[2], -1, 1)))),
-                         azim=float(np.degrees(np.arctan2(normal[1], normal[0]))))
-        if np.ptp(corners, axis=0).max() < 0.25 * np.ptp(y, axis=0).max():   # small void: circle it
-            a3.scatter(*corners.mean(0), s=900, facecolors="none", edgecolors=red, linewidths=1.4, zorder=7)
-        a3.set_xlim(-lim, lim)
-        a3.set_ylim(-lim, lim)
-        a3.set_zlim(-lim, lim)
-        a3.set_box_aspect((1, 1, 1), zoom=1.4)
-        a3.set_axis_off()
+        _void_3d(a3, d, y, c["labels"], rp, k, ring=d in RING_FACE_ON)
         a3.set_title(f"{label}\n{verdict}", fontsize=8.5, color=colour)
         ap = fig.add_subplot(gs[1, j])
         lo, hi = 0.8 * h2[:, 0].min(), 1.1 * h2[:, 1].max()               # zoom to this cloud's voids (narrow: linear axes)
@@ -784,7 +807,7 @@ def fig_detected_voids() -> None:
         ap.plot([lo, hi], [lo, hi], color="#999", lw=0.8)
         ap.plot([lo, hi / q95], [lo * q95, hi], color="#555", ls="--", lw=0.9)
         ap.scatter(h2[:, 0], h2[:, 1], s=5, marker="^", color="#aaaaaa", alpha=0.5, edgecolors="none")
-        ap.scatter([h2[k, 0]], [h2[k, 1]], s=80, marker="^", color=red, edgecolors="k", linewidths=0.8, zorder=4)
+        ap.scatter([h2[k, 0]], [h2[k, 1]], s=80, marker="^", color=RED, edgecolors="k", linewidths=0.8, zorder=4)
         kept = int(np.floor(100 * row["void_freq"] + 0.5))             # half-up, as numbers.py rounds the README's %
         note = f"void #{k + 1} of {len(h2)} by π" if pick == "largest" else f"kept in {kept}% of subsamples"
         ap.text(0.96, 0.04, f"π / q95 = {h2[k, 1] / h2[k, 0] / q95:.2f}\n{note}",
@@ -806,3 +829,104 @@ def fig_detected_voids() -> None:
              "void tests. Subsamples: 200 random 80% subsamples. Diagram axes are zoomed per cloud. Small voids are "
              "circled.", ha="center", fontsize=8)
     save(fig, "fig_detected_voids")
+
+
+def fig_void_gallery() -> None:
+    """Every interesting void (results/voids/summary.json from `run.py voids`: significant, large, or shape and
+    meaning; post hoc rules, deviation D10), drawn as in fig_detected_voids with points coloured by concept (colours:
+    RGB), five per row. Title: the cloud and the void's rank by pi, the rules that picked it, then pi, p (against the
+    cloud's null), the empty middle (death - birth), and the shell's corners (features for the toy models, concepts
+    otherwise). Title colour: green if it is a cloud's most persistent void surviving BH over Exp2's 44 void tests,
+    orange if only p < 0.05, black otherwise."""
+    from neurotopo.experiments import realdata
+    from neurotopo.report.examples import replay
+    rows = read_json(config.path("results") / "voids" / "summary.json")["interesting"]
+    inv = pd.read_csv(config.path("results") / "exp2" / "invariants.csv").set_index("id")
+    ncol = 5
+    nrow = -(-len(rows) // ncol)                                         # ceiling division
+    fig = plt.figure(figsize=(3.4 * ncol, 3.9 * nrow + 0.8))
+    for j, r in enumerate(rows):
+        d, k = r["id"], int(r["k"]) - 1                                  # k: rank by pi, 1 = most persistent
+        c = realdata.cloud(d)
+        rp = replay(c["y"])                                              # same order as void_search (stable sort by pi)
+        assert np.isclose(rp["h2"][k, 1] / rp["h2"][k, 0], r["pi"]), (d, r["k"])
+        a3 = fig.add_subplot(nrow, ncol, j + 1, projection="3d")
+        _void_3d(a3, d, c["y"], c["labels"], rp, k, ring=d in RING_FACE_ON, concept_colours=True)
+        colour = ("#1b7837" if r["k"] == 1 and inv.loc[d, "q_top_void"] < 0.05 else
+                  "#e08214" if r["p"] < 0.05 else "#222222")
+        what = (f"{r['corners']} of {r['N']} features on the shell" if "tms" in d else
+                f"{r['shell_concepts']} of {r['n_concepts']} concepts on the shell")
+        name = short(d).replace("C3_", "").replace("C1_", "").replace("colors", "colours")   # readable cloud name
+        a3.set_title(f"{name}, void #{r['k']} ({r['reasons']})\nπ = {r['pi']:.3f}, p = {r['p']:.3f}, empty "
+                     f"middle {r['empty']:.3f}\n{what}", fontsize=8, color=colour)
+    fig.suptitle("Every interesting void of the 44 clouds (picked by rule: significant, large, or shape and meaning; post "
+                 "hoc), drawn as a red shell around its empty middle (blue)", fontsize=11, y=0.995)
+    fig.text(0.5, 0.005, "Green: a cloud's most persistent void surviving Benjamini-Hochberg over the 44 void tests. "
+             "Orange: p < 0.05 only. Black: not significant. p: against the cloud's design-matched null of the largest "
+             "void π.", ha="center", fontsize=8)
+    save(fig, "fig_void_gallery")
+
+
+def fig_void_life(d: str = "R3_tms_n6") -> None:
+    """How a void is born and filled, step by step, on the toy model with 6 features (examples.void_life). Four 3D
+    panels show the alpha complex at four radii: edges (dark grey), triangles (faint red), tetrahedra (grey), and,
+    while the void is alive, the ball of radius death - r around its centre that no ball of radius r reaches yet
+    (blue). Right: the loop (H1, dots) and void (H2, triangle) persistence diagram with the four radii marked and the
+    void null's 95th-percentile line."""
+    from itertools import combinations
+    from mpl_toolkits.mplot3d.art3d import Line3DCollection, Poly3DCollection
+    from neurotopo.report.examples import void_life
+    life = void_life(d)
+    y, cx = life["y"], life["complex"]
+    q95 = float(pd.read_csv(config.path("results") / "exp2" / "invariants.csv").set_index("id").loc[d, "null_q95_pi2"])
+    names = ["loops, no void yet", "the void has just closed", "the void is shrinking", "the void is filled"]
+    fig = plt.figure(figsize=(16, 4.6))
+    gs = fig.add_gridspec(1, 5, width_ratios=[1, 1, 1, 1, 1.05], wspace=0.12, top=0.78, bottom=0.12)
+    lim = float(np.linalg.norm(y, axis=1).max())
+    for j, s in enumerate(life["stages"]):
+        here = [np.array(sx) for sx, x in cx if x <= s["r"]]
+        edges, tris, tets = ([sx for sx in here if len(sx) == m] for m in (2, 3, 4))
+        a3 = fig.add_subplot(gs[0, j], projection="3d")
+        a3.computed_zorder = False                                       # draw in call order
+        a3.scatter(*y.T, color="#222222", s=30, depthshade=False, zorder=1)
+        if s["pocket"] > 0:                                              # the part of the void no ball reaches yet
+            a3.plot_surface(*(life["centre"][:, None, None] + s["pocket"] * BALL), color=BLUE, alpha=0.9, shade=False,
+                            linewidth=0, zorder=2)
+        if tets:                                                         # filled: the tetrahedra's faces in grey
+            a3.add_collection3d(Poly3DCollection([y[list(f)] for t in tets for f in combinations(t, 3)],
+                                                 facecolors="#888888", edgecolors="none", alpha=0.3, zorder=3))
+        if tris:
+            a3.add_collection3d(Poly3DCollection(y[np.array(tris)], facecolors=RED, edgecolors="none", alpha=0.15,
+                                                 zorder=4))
+        if edges:
+            a3.add_collection3d(Line3DCollection(y[np.array(edges)], colors="#444444", linewidths=1.4, zorder=5))
+        a3.set_xlim(-lim, lim)
+        a3.set_ylim(-lim, lim)
+        a3.set_zlim(-lim, lim)
+        a3.set_box_aspect((1, 1, 1), zoom=1.25)
+        a3.set_axis_off()
+        a3.set_title(f"({j + 1}) r = {s['r']:.3f}: {names[j]}\n{s['edges']} edges, {s['triangles']} triangles, "
+                     f"{s['tetrahedra']} tetrahedra\n{s['loops']} loops, {s['voids']} void{'' if s['voids'] == 1 else 's'}" +
+                     (f"; empty ball radius {s['pocket']:.3f}" if s["pocket"] > 0 else ""), fontsize=8.5)
+    ap = fig.add_subplot(gs[0, 4])
+    lo, hi = 0.65, 1.1
+    ap.plot([lo, hi], [lo, hi], color="#999", lw=0.8)
+    ap.plot([lo, hi / q95], [lo * q95, hi], color="#555", ls="--", lw=0.9)
+    ap.scatter(*life["h1"].T, s=22, color="#444444", label="loops (H1)", zorder=3)
+    ap.text(*(life["h1"].mean(0) + [0.012, 0]), f"{len(life['h1'])} loops, on top\nof each other", fontsize=7.5,
+            va="center")                                                 # they are born and die at nearly the same radii
+    ap.scatter(*life["h2"].T, s=80, marker="^", color=RED, edgecolors="k", linewidths=0.8, label="voids (H2)", zorder=4)
+    for j, s in enumerate(life["stages"]):
+        ap.axvline(s["r"], color="#888", ls=":", lw=0.9)
+        ap.text(s["r"], hi, f" {j + 1}", fontsize=8, va="top")
+    ap.set_xlim(lo, hi)
+    ap.set_ylim(lo, hi)
+    ap.set_aspect("equal")
+    ap.tick_params(labelsize=7)
+    ap.set_xlabel("birth radius", fontsize=8)
+    ap.set_ylabel("death radius", fontsize=8)
+    ap.legend(fontsize=7.5, loc="lower right")
+    ap.set_title("persistence diagram (dotted: the four radii)", fontsize=8.5)
+    fig.suptitle("The life of a void: the toy model with 6 features. Its edges make loops, its 8 faces close the loops "
+                 "into one void, and the tetrahedra inside fill it", fontsize=11)
+    save(fig, "fig_void_life")

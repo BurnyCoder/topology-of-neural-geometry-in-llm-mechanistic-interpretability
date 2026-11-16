@@ -186,6 +186,15 @@ Results: [exp8_audit3.md](exp8_audit3.md). Claims are rewritten in the README, t
 
 **No preregistered verdict changes,** and no earlier result file is modified.
 
+## D10 (2026-11-16, after the results): every void scored, interesting voids shown by rule
+
+Exp2 tests only each cloud's most persistent void. While building void visualizations (representative shells, `diagrams.alpha_h2_voids`), voids spotted by browsing the explorer raised the question of which voids are worth showing. A new phase, `run.py voids` (`experiments/void_search.py`, `results/voids/`), lists all voids of the 44 clouds and picks the interesting ones by three rules. The rules were written after that first look, so they are post hoc:
+- **significant:** p < 0.05 against the cloud's own Exp2 null. For a cloud's most persistent void this equals Exp2's p (checked; the phase records the largest gap). For other voids it is conservative. By chance about 5% of clouds have such a void.
+- **large:** the 5 largest empty middles (death − birth) over all clouds.
+- **shape and meaning:** in a trained model's concept cloud, a shell spanning at least half the cloud with at least half its concepts on its corners (the most significant such void per cloud, kept if p < 0.5).
+
+The voids are shown descriptively ([voids.md](voids.md), README void figures). **No preregistered verdict changes,** and no earlier result file is modified.
+
 ## P2 (plan-level): two planned unit tests superseded by the preregistration's definitions
 
 - **"The margin is 0 exactly at the source's thresholds (arc extent_frac 0.98, sphere cap threshold, r_bot = 0, r = R)."**
