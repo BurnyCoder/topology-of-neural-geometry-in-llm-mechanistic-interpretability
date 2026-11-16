@@ -1,0 +1,2 @@
+2026-11-16 06:01:56 INFO root: phase loops, log file C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\logs\loops_20261116T060156.log
+2026-11-16 06:02:15 INFO neurotopo.experiments.loop_search: 10729 loops in 44 clouds; 9 interesting (R5b_llama_months_means#1, R7_llama_colors#1, R2_grokking_WE#1, C3_tms_dense#1, R5b_llama_months#1, R3_tms_n8#1, R5c_llama_days_time#1, R2_grokking_WE#2, C3_grokking_WE_init#1); top-loop p vs Exp2: max gap 0

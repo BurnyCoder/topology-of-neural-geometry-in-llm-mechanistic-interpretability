@@ -195,6 +195,15 @@ Exp2 tests only each cloud's most persistent void. While building void visualiza
 
 The voids are shown descriptively ([voids.md](voids.md), README void figures). **No preregistered verdict changes,** and no earlier result file is modified.
 
+## D11 (2026-11-16, after the results): every loop scored, interesting loops shown by rule
+
+The same treatment for loops: a new phase, `run.py loops` (`experiments/loop_search.py`, `results/loops/`), lists all loops of the 44 clouds with one representative cycle each (`diagrams.alpha_h1_cycles`) and picks the interesting ones by three rules, written after the void search (post hoc):
+- **significant:** p < 0.05 against the cloud's own Exp2 null of the largest loop π (equal to Exp2's p for the top loop; checked).
+- **large:** the 5 largest loops by death − birth.
+- **goes around once:** in a cloud with a cyclic concept variable, the concepts wind ±1 along a cycle spanning at least half the cloud; the most significant such loop per cloud, kept if p < 0.5. This reads the ring criterion off the representative cycle. It does not replace the preregistered θ_B traversal test (Exp3).
+
+The loops are shown descriptively ([loops.md](loops.md), README loop gallery). **No preregistered verdict changes,** and no earlier result file is modified.
+
 ## P2 (plan-level): two planned unit tests superseded by the preregistration's definitions
 
 - **"The margin is 0 exactly at the source's thresholds (arc extent_frac 0.98, sphere cap threshold, r_bot = 0, r = R)."**
