@@ -14,39 +14,44 @@ For each concept we ask two questions:
 
 A loop alone does not prove a hole. The loop test also flags many hole-free shapes, such as curved sheets and caps ([third audit, D9](reports/exp8_audit3.md)). So we call a loop a **ring** only when the concept also goes around it once.
 
-![The strongest results: four rings that their concepts go around once and three toy-model voids, each surviving the correction over 44 tests](docs/figures/fig_highlights.png)
+![The strongest loops and voids: four loops through the concepts, each titled with its original verdict, and three toy-model voids, each surviving the correction over 44 tests](docs/figures/fig_highlights.png)
 
-*The strongest results,* picked by rule from all {{loops.n_loops}} loops and {{voids.n_voids}} voids. Each is a cloud's most persistent loop or void that survives Benjamini–Hochberg over the 44 clouds (q < 0.05); a loop must also have its concepts go around it once along the drawn cycle.
-- **Rings (top):** colours, the grokked residues (in the order of their Fourier frequency), months, and the 12 month centres. Each keeps a caveat from the detailed results below:
-  - colours: the prompts' own RGB values already form this loop (D8), so the model keeps the stimuli's hue circle rather than building one;
-  - months: the loop test cannot tell a closed ring from a nearly closed arc, and the preregistered traversal needed a setting relaxed after the first results, so the ring is "suggestive" (D9);
-  - residues: the top-3 view mixes several of the network's Fourier frequencies and is unstable across subsamples.
-- **Voids (bottom):** the three toy models of superposition. Their features sit on the corners of a polytope and leave its middle empty. These sets have only 6–20 points and are exploratory.
-- Everything else, including the loops and voids that are not real: [loop gallery](#every-interesting-loop-post-hoc-d11), [void gallery](#every-interesting-void-post-hoc-d10).
+*The strongest loops and voids,* picked by rule from all {{loops.n_loops}} loops and {{voids.n_voids}} voids (post hoc, D10–D11).
+- **The rule:** each is a cloud's most persistent loop or void that survives Benjamini–Hochberg over the 44 clouds (q < 0.05). The correction was itself added after the results (D6).
+- **A loop must also have its concepts wind once along the drawn cycle.** That check is post hoc and does not make a loop a ring: each loop keeps the verdict it has in the rest of this README.
+- **Loops (top):**
+  - **Grokked residues: ring: yes.** The residues go around the loop once in the preregistered analysis (in the order of their Fourier frequency). But the top-3 view is unstable across subsamples, and the loop is not significant in 10 dimensions.
+  - **Colours: ring: yes, but the RGB stimuli have it too.** The prompts' own RGB values already form this loop (D8), so the model keeps the stimuli's hue circle rather than building one.
+  - **Months and the 12 month centres: loop: yes; ring: suggestive.** The loop test cannot tell a closed ring from a nearly closed arc, and the months go around once only with a setting relaxed after the first results (D9).
+  - The strictest pre-committed test (ring, going around once, surviving 10 dimensions) passed for none of weekdays, months and residues ({{exp3.H1B}} of 3).
+- **Voids (bottom):** the three toy models of superposition, exploratory sets of 6–20 points.
+  - Their features sit on or near the corners of a polytope, and nothing lies inside it.
+  - Significant here means more persistent than in Gaussian clouds of the same spread (D9).
+- Everything else, including the loops and voids that do not hold up: [loop gallery](#every-interesting-loop-post-hoc-d11), [void gallery](#every-interesting-void-post-hoc-d10).
 
 ![The strongest results, animated in 3D: balls of radius r grow around every point while the camera turns, until each loop and void is born and filled](docs/figures/anim_highlights_3d.gif)
 
 *How these holes are found (animation, 3D).* A ball of radius r grows around every point, with the same r and the same scale for all clouds (each has RMS radius 1). The holes of the union of balls are exactly the holes measured (the alpha complex has the persistence of the union of balls).
 - **What you see:** the balls themselves, coloured as their points, while the camera slowly turns.
-  - Rings: the red loop is bold while it is alive.
+  - Loops: the red loop is bold while it is alive.
   - Voids: the red shell, and in blue the part of the void that no ball reaches yet, drawn through the balls that hide it.
-- **From outside, balls in front can hide a hole that is still open** (the colours ring looks covered long before it fills). The slices below show the inside.
+- **From outside, balls in front can hide a hole that is still open** (the colours loop looks covered long before it fills). The slices below show the inside.
 
 ![The strongest results, animated in slices: balls of radius r grow around every point, shown in a slice through each loop's plane or each void's centre, until each loop and void is born and filled](docs/figures/anim_highlights.gif)
 
 *The same, in slices.* Every panel uses the same scale.
-- **Each panel is a slice:** through the loop's plane (rings, top) or through the void's centre (voids, bottom). A ball at distance h from the slice cuts it in a disc of radius √(r² − h²), so the picture is the exact cross-section of the union of balls.
+- **Each panel is a slice:** through the loop's plane (loops, top) or through the void's centre (voids, bottom). A ball at distance h from the slice cuts it in a disc of radius √(r² − h²), so the picture is the exact cross-section of the union of balls.
 - **Why some discs grow faster than others:** every ball grows at the same rate, but a ball centred off the slice shows up only once r reaches h, as a small disc that then widens faster than r (at rate r/√(r² − h²)) until it catches up. Balls centred in the slice grow exactly with r.
-- **Rings:** the red loop is bold while it is alive (between its birth and death radius) and fills in when the balls close its middle.
+- **Loops:** the red loop is bold while it is alive (between its birth and death radius) and fills in when the balls close its middle.
 - **Voids:** the blue disc is the part of the void no ball reaches yet, of radius death − r. It shrinks to nothing at the death radius.
 - **Read the status line, not the picture,** for when a hole is born and filled. A slice can show a region as open or closed differently from 3D, because a hole can be closed or filled outside the slice.
 - **The full 3D balls:** switch on "balls of radius r" in the [explorer](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/) or on the [examples page](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/examples.html) and move the radius slider.
 
-![The detected circular loops: each example cloud's most persistent loop drawn as a red ring, and its dot in the persistence diagram](docs/figures/fig_detected_loops.png)
+![The detected circular loops: each example cloud's most persistent loop drawn as a red closed path, and its dot in the persistence diagram](docs/figures/fig_detected_loops.png)
 
-*The detected circular loops.* For each example cloud, the red ring is the cloud's most persistent loop: one closed path of edges that carries it ([representative loop](docs/glossary.md#representative-loop)), seen face-on.
+*The detected circular loops.* For each example cloud, the red closed path is the cloud's most persistent loop: one closed path of edges that carries it ([representative loop](docs/glossary.md#representative-loop)), seen face-on.
 - **Bottom:** the same loop as a red dot (birth radius, death radius) in the persistence diagram.
-- **Colours, residues and months:** a large ring that runs through the concepts.
+- **Colours, residues and months:** a large loop that runs through the concepts. Their verdicts differ (as in the titles above): colours "ring: yes, but the RGB stimuli have it too", residues "ring: yes", months "loop: yes; ring: suggestive".
 - **Weekdays and days with times:** the most persistent loop is a small loop inside one cluster (circled). It dies below the dotted line, before two days' clusters touch.
 - **Years:** a small loop that does not beat the null (below the dashed line).
 
@@ -57,7 +62,7 @@ A loop alone does not prove a hole. The loop test also flags many hole-free shap
   - The blue ball is the void's empty middle. No point is closer to its centre than the void's death radius, so when the void closes (at its birth radius) a ball of radius death − birth there is still not covered.
 - **Bottom:** the same void as a red triangle in the void persistence diagram (axes zoomed per cloud).
 - **Toy models of superposition** ([Elhage et al. 2022](https://transformer-circuits.pub/2022/toy_model/index.html)), green: each point is one feature's direction in a 3-dimensional hidden layer.
-  - They are the only {{exp2.n_void_q05}} of the 44 clouds whose most persistent void survives Benjamini–Hochberg (q = {{exp2.tmsn6.q_void:3}}). Here the void matches both the cloud's shape and its meaning: the features sit on or near the corners of a polytope, so the shell spans the whole cloud and the empty middle is the space the features keep clear.
+  - They are the only {{exp2.n_void_q05}} of the 44 clouds whose most persistent void survives Benjamini–Hochberg (q = {{exp2.tmsn6.q_void:3}}). Here the void matches the cloud's shape: the features sit on or near the corners of a polytope, so the shell spans the whole cloud and nothing lies inside it. Significant here means more persistent than in Gaussian clouds of the same spread (D9).
   - The void of 20 features is the strongest of all 44 clouds: π = {{exp2.tmsn20.top_pi2:2}} against the null's 95th percentile of {{exp2.tmsn20.null_q95_pi2:2}}, and it comes back in {{exp2.tmsn20.void_freq_pct}}% of random 80% subsamples ({{exp2.tmsn8.void_freq_pct}}% with 8 features).
   - With 6 features the shell is the 8 faces of an octahedron. Its persistence ratio π = {{exp2.tmsn6.top_pi2:3}} is close to that of a regular octahedron, √(3/2) ≈ 1.225. A subsample keeps only 5 of the 6 corners, and the void came back in {{exp2.tmsn6.void_freq_pct}}% of them.
   - These clouds have only 6–20 points and were [preregistered](reports/preregistration.md) as exploratory, descriptive sets.
@@ -303,7 +308,7 @@ The per-dataset findings, with every statistic, are in [reports/findings_per_dat
 ![Every interesting loop of the 44 clouds, each drawn as a red cycle seen face-on](docs/figures/fig_loop_gallery.png)
 
 *Every interesting loop.* `run.py loops` scores all {{loops.n_loops}} loops of the 44 clouds. It picks {{loops.n_interesting}} by three rules: significant (p < 0.05 against the cloud's own null), large (the 5 largest), or goes around once (in a cyclic concept cloud, the concepts wind once along a cycle spanning at least half the cloud). The rules were written after the void search.
-- **Rings, seen directly on the cycle:** months and the 12 month centres ({{loops.months.1.loop_concepts}} and {{loops.monthsmeans.1.loop_concepts}} of 12 months on the cycle), the grokked residues (in the order of their Fourier frequency) and colours ({{loops.colors.1.loop_concepts}} of 36 hues). In each, the concepts go around the cycle once.
+- **The concepts wind once along the drawn cycle (post hoc):** months and the 12 month centres ({{loops.months.1.loop_concepts}} and {{loops.monthsmeans.1.loop_concepts}} of 12 months on the cycle), the grokked residues (in the order of their Fourier frequency) and colours ({{loops.colors.1.loop_concepts}} of 36 hues). This check does not change their verdicts: residues "ring: yes", colours "ring: yes, but the RGB stimuli have it too", months "loop: yes; ring: suggestive" (D9).
 - **Significant, but not rings of concepts:** the toy models' 4-cycles (with 8 features, nearly a square: π = {{exp2.tmsn8.top_pi1:3}} vs √2 ≈ 1.414), the small loop inside one day's cluster (days with times), and a chance-level loop in the random-init grokking embedding.
 - **The grokked residues have a second significant loop** (p = {{loops.grok.2.p}}). Its residues wind once in the order of the network's Fourier frequencies {{loops.grok.loop2.wind1}}, but on cycles this short several frequencies do, so the winding cannot say which frequency a loop belongs to.
 - Table, rules and limitations: [reports/loops.md](reports/loops.md).
@@ -313,7 +318,7 @@ The per-dataset findings, with every statistic, are in [reports/findings_per_dat
 ![Every interesting void of the 44 clouds, each drawn as a red shell around its empty middle](docs/figures/fig_void_gallery.png)
 
 *Every interesting void.* `run.py voids` scores all {{voids.n_voids}} voids of the {{voids.n_clouds}} clouds that have any. It picks {{voids.n_interesting}} by three rules: significant (p < 0.05 against the cloud's own null), large (the 5 largest empty middles), or shape and meaning (in a trained model's concept cloud, a shell spanning at least half the cloud with at least half its concepts on its corners). The rules were written after browsing the explorer.
-- **Real by every criterion: only the three toy models.** Their voids are significant and the largest, their shells span the whole cloud, and (nearly) every feature is a corner.
+- **Passing every check: only the three toy models** (exploratory sets). Their voids are significant and the largest, their shells span the whole cloud, and (nearly) every feature is a corner.
 - **The other significant voids** are a chance hit (GPT-2 positions at random init), a sliver void among only 5 points (dense toy model), and a tiny void inside one cluster (random-init weekdays).
 - **The weekday and month centres** wall in voids spanning most of the cloud, with 4 of 7 days and 7 of 12 months on their shells, but neither is significant. Nor is the colours void inside the hue ring.
 - **A random Gaussian-process curve** (C1_gp_3) has the 5th-largest void, with every concept on its shell. Shape and meaning alone do not make a void real.

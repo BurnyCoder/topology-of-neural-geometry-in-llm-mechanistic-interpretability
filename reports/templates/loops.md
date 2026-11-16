@@ -15,7 +15,7 @@ For every loop: its bar (birth, death), persistence ratio π = death / birth, an
 - **p:** against the cloud's design-matched Exp2 null of the largest loop π. For a cloud's most persistent loop this is exactly Exp2's p (largest difference over the 44 clouds: {{loops.max_abs_p_gap_vs_exp2}}). For other loops it is conservative.
 - **Size:** death − birth, how much the balls must still grow (in radius) to fill the loop once it has closed.
 - **Span of the cloud:** the bounding-box diagonal of the cycle's points divided by the cloud's.
-- **Concept winding:** for a cyclic concept variable, how many times the concepts' phases go around as one walks along the cycle. The residues are ordered by their Fourier frequency k, as θ_B orders them. Winding ±1 is the project's ring criterion, here read off the cycle itself instead of a circular coordinate.
+- **Concept winding:** for a cyclic concept variable, how many times the concepts' phases go around as one walks along the cycle. The residues are ordered by their Fourier frequency k, as θ_B orders them. Winding ±1 mirrors the project's ring criterion, but read off one drawn cycle. The criterion behind every verdict is the preregistered traversal along the circular coordinate θ_B (Exp3), so this winding is a post hoc check for display.
 
 **Rules:**
 1. **significant:** p < 0.05. By chance about 5% of clouds have such a loop, so about 2 of 44.
@@ -31,11 +31,15 @@ For every loop: its bar (birth, death), persistence ratio π = death / birth, an
 <!-- BEGIN:loops -->
 <!-- END:loops -->
 
-- **Rings: the concepts go around a significant loop once.**
-  - Months and the 12 month centres: {{loops.months.1.loop_concepts}} and {{loops.monthsmeans.1.loop_concepts}} of the 12 months lie on the cycle, and they go around it once (winding {{loops.months.1.winding}} and {{loops.monthsmeans.1.winding}}).
-  - Grokked residues: the {{loops.grok.1.loop_concepts}} residues on the cycle go around once (winding {{loops.grok.1.winding}}) in the order of the Fourier frequency θ_B found.
-  - These are the same loops Exp2 found and Exp3 tested, here seen directly on the cycle.
-- **Colours:** the hue ring is the most persistent loop of all (π = {{exp2.colors.top_pi1:2}}), {{loops.colors.1.loop_concepts}} of the {{loops.colors.1.n_concepts}} hues lie on its cycle, and they wind once ({{loops.colors.1.winding}}). It misses rule 3 only on span: its cycle spans {{loops.colors.1.extent:2}} of the cloud's bounding-box diagonal, which a few far-out points of the cloud stretch.
+- **The concepts wind once along a significant loop's drawn cycle.**
+  - Months and the 12 month centres: {{loops.months.1.loop_concepts}} and {{loops.monthsmeans.1.loop_concepts}} of the 12 months lie on the cycle, and they wind once around it (winding {{loops.months.1.winding}} and {{loops.monthsmeans.1.winding}}).
+  - Grokked residues: the {{loops.grok.1.loop_concepts}} residues on the cycle wind once (winding {{loops.grok.1.winding}}) in the order of the Fourier frequency θ_B found.
+  - **This check does not change any verdict.** These are the loops Exp2 found, and their verdicts come from the preregistered traversal (Exp3, θ_B):
+    - residues: "ring: yes", but not significant in 10 dimensions;
+    - colours: "ring: yes, but the RGB stimuli have it too" (D8);
+    - months: "loop: yes; ring: suggestive", because they go around once only with a setting relaxed after the first results (D9).
+  - The strict preregistered test passed for none of weekdays, months and residues ({{exp3.H1B}} of 3).
+- **Colours:** the hue loop is the most persistent loop of all (π = {{exp2.colors.top_pi1:2}}), {{loops.colors.1.loop_concepts}} of the {{loops.colors.1.n_concepts}} hues lie on its cycle, and they wind once ({{loops.colors.1.winding}}). It misses rule 3 only on span: its cycle spans {{loops.colors.1.extent:2}} of the cloud's bounding-box diagonal, which a few far-out points of the cloud stretch.
 - **Significant, but not a ring of concepts:**
   - The toy models' loops are 4-cycles of their polytopes. With 8 features the cycle is close to a square: π = {{exp2.tmsn8.top_pi1:3}}, against 1/sin(π/4) = √2 ≈ 1.414 for a regular square.
   - Days with times: a small loop inside one day's cluster ({{loops.daystime.1.loop_concepts}} of {{loops.daystime.1.n_concepts}} days on the cycle; audit D8).

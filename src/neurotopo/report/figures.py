@@ -895,38 +895,44 @@ CONCEPT_NOUN = {"R7_llama_colors": "hues", "R2_grokking_WE": "residues", "R5b_ll
 
 
 def fig_highlights() -> None:
-    """The README's first figure: only the results that pass every check (examples.highlights). Top row: the rings, a
-    cloud's most persistent loop surviving Benjamini-Hochberg over Exp2's 44 loop tests whose concepts go around it
-    once, drawn as in fig_detected_loops (red cycle face-on, points coloured by concept, colours in their RGB). Bottom
-    row: the voids surviving the same correction over the 44 void tests, drawn as in fig_detected_voids (red shell
-    around a blue empty middle). Titles give pi, the BH q and the concepts or features on the cycle or shell."""
+    """The README's first figure: the strongest loops and voids by rule (examples.highlights). Top row: a cloud's most
+    persistent loop surviving Benjamini-Hochberg over Exp2's 44 loop tests (post hoc, D6) whose concepts wind once
+    along its drawn cycle (a post hoc check, D11), drawn as in fig_detected_loops (red cycle face-on, points coloured
+    by concept, colours in their RGB). Each title carries the cloud's original verdict (examples.headline: "ring"
+    only where the concept goes around the loop in the preregistered analysis, D9; colours' ring inherited from the
+    stimuli, D8) in its colour, so the figure says no more than the results. Bottom row: the voids surviving the same
+    correction over the 44 void tests (exploratory toy models), drawn as in fig_detected_voids (red shell around a
+    blue empty middle). Titles give pi, the BH q and the concepts or features on the cycle or shell."""
     from neurotopo.experiments import realdata
-    from neurotopo.report.examples import highlights, replay
+    from neurotopo.report.examples import headline, highlights, replay
     loops, voids = highlights()
     inv = pd.read_csv(config.path("results") / "exp2" / "invariants.csv").set_index("id")
-    fig = plt.figure(figsize=(15, 8.2))
+    fig = plt.figure(figsize=(15, 8.8))
     gs = fig.add_gridspec(2, 2 * max(len(loops), len(voids)), hspace=0.42, wspace=0.1, top=0.82, bottom=0.02)
     for row, rows in ((0, loops), (1, voids)):
         off = max(len(loops), len(voids)) - len(rows)                    # centre a shorter row
         for j, r in enumerate(rows):
             d, c = r["id"], realdata.cloud(r["id"])
             a3 = fig.add_subplot(gs[row, off + 2 * j: off + 2 * j + 2], projection="3d")
-            if row == 0:
+            if row == 0:                                                 # the original verdict, word for word
                 _loop_3d(a3, c["y"], np.array(r["cycle"]), _point_rgb(d, c["labels"]))
-                what = f"{r['loop_concepts']} of {r['n_concepts']} {CONCEPT_NOUN.get(d, 'concepts')} on it, once around"
-                q = inv.loc[d, "q_top_loop"]
+                h = headline(d)
+                what = (f"{r['loop_concepts']} of {r['n_concepts']} {CONCEPT_NOUN.get(d, 'concepts')} on it\n"
+                        f"{h['verdict'].replace(chr(10), ' ')}")
+                q, colour = inv.loc[d, "q_top_loop"], h["colour"]
             else:
                 _void_3d(a3, d, c["y"], c["labels"], replay(c["y"]), 0)
-                what = f"{r['corners']} of {r['N']} features on its shell"
-                q = inv.loc[d, "q_top_void"]
+                what = f"{r['corners']} of {r['N']} features on its shell\nexploratory set"
+                q, colour = inv.loc[d, "q_top_void"], "#222222"                  # neutral: green means "ring" above
             a3.set_title(f"{HIGHLIGHT_NAMES.get(d, short(d))}\nπ = {r['pi']:.2f}, q = {q:.3f}\n{what}",
-                         fontsize=9, color="#1b7837")
-    for row, head in ((0, "Rings: the concepts go around the loop once"),
+                         fontsize=9, color=colour)
+    for row, head in ((0, "Loops through the concepts (the concepts wind once along the drawn cycle, a post hoc check)"),
                       (1, "Voids: an empty middle walled in by a closed surface")):
         top = gs[row, :].get_position(fig).y1                           # row headers sit above the panel titles
-        fig.text(0.5, top + 0.085, head, ha="center", fontsize=10.5, weight="bold")
-    fig.suptitle("The strongest results: each survives the correction over 44 tests (Benjamini-Hochberg q < 0.05)",
-                 fontsize=12, y=0.99)
+        fig.text(0.5, top + 0.1, head, ha="center", fontsize=10.5, weight="bold")
+    fig.suptitle("The strongest loops and voids: each survives Benjamini-Hochberg over 44 tests (q < 0.05, post hoc)\n"
+                 "Loop titles give each cloud's original verdict (green: ring; orange: partial), as in the example figure",
+                 fontsize=11.5, y=0.995)
     save(fig, "fig_highlights")
 
 
@@ -934,7 +940,7 @@ HL_RADII = np.r_[0.04 * (1.15 / 0.04) ** np.linspace(0, 1, 72), np.full(10, 1.15
 
 
 def _highlight_items() -> list[dict]:
-    """The panels of fig_highlights' animations (examples.highlights): for each ring or void, the cloud's points and
+    """The panels of fig_highlights' animations (examples.highlights): for each loop or void, the cloud's points and
     colours, its bar, the loop's closed cycle or the void's shell and centre, and the slice plane through the cycle's
     mean or the void's centre (rows of `plane`: two in-plane axes, then the normal; from an SVD of the cycle or of the
     shell's corners)."""
@@ -962,7 +968,7 @@ def _highlight_items() -> list[dict]:
 
 
 def _highlight_axes(fig, items: list[dict], top: float, **kw) -> list:
-    """One axes per item on the highlights grid: rings in the top row, voids centred in the bottom row."""
+    """One axes per item on the highlights grid: loops in the top row, voids centred in the bottom row."""
     ncol = max(it["n_row"] for it in items)
     gs = fig.add_gridspec(2, 2 * ncol, hspace=0.38, wspace=0.12, top=top, bottom=0.03)
     seen = {0: 0, 1: 0}
@@ -975,7 +981,7 @@ def _highlight_axes(fig, items: list[dict], top: float, **kw) -> list:
 
 
 def _status(it: dict, r: float) -> tuple[str, bool]:
-    """The status line of a ring or void at radius r, from its bar, and whether it is alive."""
+    """The status line of a loop or void at radius r, from its bar, and whether it is alive."""
     b, d = it["bar"]
     alive = b <= r < d
     state = "not born yet" if r < b else "alive" if alive else "filled"
@@ -986,7 +992,7 @@ def anim_highlights() -> None:
     """Animated variant of fig_highlights in slices (README, under the 3D animation): balls of radius r grow around
     every point, r the same for all clouds (each has RMS radius 1), and the holes of their union are the holes measured
     (the alpha complex has the persistence of the union of balls, nerve theorem). Each panel is a slice: the best-fit
-    plane of the loop's red cycle (rings, top) or the plane of the void shell's two main directions through the void's
+    plane of the loop's red cycle (loops, top) or the plane of the void shell's two main directions through the void's
     centre (voids, bottom). A ball at distance h from the slice cuts it in a disc of radius sqrt(r^2 - h^2), so the
     picture is the exact cross-section of the union of balls; a disc appears only once r reaches h and then grows
     faster than r (d/dr sqrt(r^2 - h^2) = r / sqrt(r^2 - h^2)). All panels share one scale. The cycle is bold while the
@@ -1020,7 +1026,7 @@ def anim_highlights() -> None:
     fig.text(0.5, 0.935, "Each ball cut by the slice is a disc of radius √(r² - h²), h = the point's "
              "distance from the slice: a disc appears once r reaches h, then grows faster than r.", ha="center",
              fontsize=10)
-    fig.text(0.5, 0.905, "Rings: the red loop is bold while it is alive. Voids: blue is the part of the void no ball "
+    fig.text(0.5, 0.905, "Loops: the red loop is bold while it is alive. Voids: blue is the part of the void no ball "
              "reaches yet (radius death - r). One scale for all panels.", ha="center", fontsize=10)
 
     def frame(i):
@@ -1071,7 +1077,7 @@ def anim_highlights_3d() -> None:
     growing around every point, with one r and one scale for all clouds (RMS radius 1). Orthographic projection, in
     which a ball's outline is exactly a disc of radius r: each ball is a translucent scatter marker of that diameter
     (_points_per_unit), coloured as its point. The camera starts face-on to the loop's cycle or the void shell's two
-    main directions and turns slowly. Rings: the red cycle, bold while the loop is alive. Voids: the shell's red edges
+    main directions and turns slowly. Loops: the red cycle, bold while the loop is alive. Voids: the shell's red edges
     and, while the void is alive, its empty middle (blue ball of radius death - r), drawn over the balls (x-ray) since
     the balls hide it. From outside, balls in front can hide a hole that is still open, so the status line (not born /
     alive / filled) comes from the bar."""
@@ -1108,7 +1114,7 @@ def anim_highlights_3d() -> None:
                   k=_points_per_unit(fig, a3), text=a3.text2D(0.5, -0.02, "", transform=a3.transAxes, ha="center",
                                                                va="top", fontsize=8.5))
     head = fig.suptitle("", fontsize=12, y=0.985)
-    fig.text(0.5, 0.935, "The balls themselves, in 3D (one scale for all clouds; the camera turns slowly). Rings: the "
+    fig.text(0.5, 0.935, "The balls themselves, in 3D (one scale for all clouds; the camera turns slowly). Loops: the "
              "red loop is bold while it is alive.", ha="center", fontsize=10)
     fig.text(0.5, 0.905, "Voids: the red shell, and in blue the part of the void no ball reaches yet (radius death - r), "
              "drawn through the balls that hide it.", ha="center", fontsize=10)
