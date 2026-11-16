@@ -111,22 +111,37 @@ def traversal(d: str) -> dict | None:
             "R": float(r["R"]), "p": float(r["p"]), "w": int(r["winding"]), "passes": bool(passes(r))}
 
 
+def loop_colours(n: int) -> list[str]:
+    """n distinct colours, one per loop: hues spaced by the golden angle (consecutive loops never look alike)."""
+    from matplotlib.colors import hsv_to_rgb, to_hex
+    return [to_hex(hsv_to_rgb(((0.6180339887 * i) % 1.0, 0.8, 0.85))) for i in range(n)]
+
+
+def replay(y: np.ndarray) -> dict:
+    """What it takes to replay persistent homology on a cloud y: the alpha complex's edges with their entry radii,
+    the H0 deaths (pieces merging), the voids, and the loops sorted from the most persistent down, each with a
+    representative cycle (diagrams.alpha_h1_cycles) and its own colour. Index 0 is the most persistent loop."""
+    ij, er = diagrams.alpha_edges(y)
+    dg = diagrams.alpha_diagrams(y)
+    bars, cycles = diagrams.alpha_h1_cycles(y)
+    order = np.argsort(-(bars[:, 1] / bars[:, 0]), kind="stable") if len(bars) else np.zeros(0, dtype=int)
+    h0 = dg[0][:, 1]
+    return {"edges": ij, "edge_r": er, "h0_deaths": np.sort(h0[np.isfinite(h0)]), "h1": bars[order],
+            "cycles": [cycles[i] for i in order], "loop_colour": loop_colours(len(order)), "h2": dg[2], "top": 0}
+
+
 def example(d: str) -> dict:
     """Everything needed to replay how dataset d's result was made (arrays as numpy, see site.py for JSON)."""
     seed = config.load()["seed"]
     c = realdata.cloud(d)
-    dg = realdata.alpha(d)
-    pi = diagrams.ratios(dg[1])
-    top = int(np.nanargmax(pi))
-    ij, er = diagrams.alpha_edges(c["y"])
+    rp = replay(c["y"])
+    top_pi = float(rp["h1"][0, 1] / rp["h1"][0, 0])
     inv = _inv().loc[d]
     loc = _audit().get("localisation", {}).get(d)
-    h0 = dg[0][:, 1]
     return {"id": d, "name": dict(EXAMPLES).get(d, d).replace("\n", " "), **headline(d), "points": c["y"],
-            "pos": concept_positions(d, c["labels"]), "cyclic": d != CONTROL, "edges": ij, "edge_r": er,
-            "h0_deaths": np.sort(h0[np.isfinite(h0)]), "h1": dg[1], "top": top, "top_pi": float(pi[top]),
+            "pos": concept_positions(d, c["labels"]), "cyclic": d != CONTROL, **rp, "top_pi": top_pi,
             "q95": float(inv["null_q95_pi1"]), "p_loop": float(inv["p_top_loop"]),
-            "ratio": float(pi[top] / inv["null_q95_pi1"]), "null_max": realdata.null(d, seed)[:, 0],
+            "ratio": top_pi / float(inv["null_q95_pi1"]), "null_max": realdata.null(d, seed)[:, 0],
             "connect_r": float(loc["connect_radius"]) if loc else None,
             "within": bool(loc["within_concept_loop"]) if loc else None, "traversal": traversal(d)}
 
