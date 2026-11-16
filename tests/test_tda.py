@@ -5,6 +5,9 @@ persistence diagrams. These tests pin down units (radii, not squared radii), kno
 (regular n-gon), the behaviour on shapes with known Betti numbers, and the calibration of the nulls.
 """
 
+from collections import Counter
+from itertools import combinations
+
 import numpy as np
 import pytest
 from scipy import stats
@@ -58,6 +61,50 @@ def test_rips_12gon_has_phantom_h2_alpha_does_not():
     pts = np.c_[np.cos(t), np.sin(t), np.zeros(12)]
     assert len(diagrams.rips_diagrams(pts, maxdim=2)[2]) > 0
     assert len(diagrams.alpha_diagrams(pts)[2]) == 0
+
+
+def closed_mod2(tris) -> bool:
+    # A closed surface over Z/2: every edge of its triangles is shared by an even number of them (zero boundary).
+    count = Counter(tuple(sorted(e)) for t in np.asarray(tris).tolist() for e in combinations(t, 2))
+    return all(c % 2 == 0 for c in count.values())
+
+
+def test_void_shell_octahedron():
+    # The 6 corners of a (slightly perturbed) octahedron enclose one void: born when the last of the 8 faces enters
+    # (circumradius sqrt(2/3) of a face of side sqrt(2)), filled at radius ~1. Its shell is the 8 faces (chi = 2).
+    # The perturbation also leaves a near-zero bar (pi - 1 ~ 1e-6) among the tetrahedra filling the inside; skip it.
+    pts = np.r_[np.eye(3), -np.eye(3)] + 1e-3 * np.random.default_rng(0).normal(size=(6, 3))
+    bars, shells = diagrams.alpha_h2_voids(pts)
+    real = np.flatnonzero(diagrams.ratios(bars) > 1.01)
+    assert len(bars) == len(shells) and len(real) == 1
+    b, s = bars[real[0]], shells[real[0]]
+    assert np.isclose(b[0], np.sqrt(2 / 3), atol=5e-3) and np.isclose(b[1], 1.0, atol=5e-3)
+    assert s.shape == (8, 3) and set(np.unique(s)) == set(range(6)) and closed_mod2(s)
+
+
+@pytest.mark.parametrize("pts", [sphere(300, 0.01), np.random.default_rng(1).normal(size=(300, 3))], ids=["sphere", "blob"])
+def test_void_shells_are_born_with_the_void(pts):
+    # Same voids as the diagram; each shell is a closed surface whose triangles are all in the complex at the birth
+    # radius, and the last of them enters exactly at the birth radius (the triangle that closes the void).
+    bars, shells = diagrams.alpha_h2_voids(pts)
+    assert len(bars) > 0
+    assert np.allclose(np.sort(bars, axis=0), np.sort(diagrams.alpha_diagrams(pts)[2], axis=0))
+    entry = {tuple(sorted(sx)): r for sx, r in diagrams.alpha_filtration(pts) if len(sx) == 3}
+    for (b, _), s in zip(bars, shells):
+        r = np.array([entry[tuple(t)] for t in np.sort(s, axis=1).tolist()])
+        assert len(s) >= 4 and closed_mod2(s)
+        assert r.max() <= b * (1 + 1e-9) and np.isclose(r.max(), b, rtol=1e-9)
+
+
+def test_sphere_void_shell_is_the_sphere():
+    # The big void of a noisy sphere sample is enclosed by a triangulated sphere (Euler characteristic V - E + F = 2)
+    # through most of the points; points pushed outward by the noise can sit behind it (268 of 300 here are on it).
+    pts = sphere(300, 0.01)
+    bars, shells = diagrams.alpha_h2_voids(pts)
+    top = shells[int(np.argmax(diagrams.ratios(bars)))]
+    edges = {tuple(sorted(e)) for t in top.tolist() for e in combinations(t, 2)}
+    assert len(np.unique(top)) - len(edges) + len(top) == 2
+    assert len(np.unique(top)) >= 0.8 * len(pts)
 
 
 def test_known_shapes_universal_significance():
