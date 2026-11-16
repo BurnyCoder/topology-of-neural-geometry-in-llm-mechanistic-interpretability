@@ -14,6 +14,15 @@ For each concept we ask two questions:
 
 A loop alone does not prove a hole. The loop test also flags many hole-free shapes, such as curved sheets and caps ([third audit, D9](reports/exp8_audit3.md)). So we call a loop a **ring** only when the concept also goes around it once.
 
+![The detected circles: each example cloud's most persistent loop drawn as a red ring, and its dot in the persistence diagram](docs/figures/fig_detected_loops.png)
+
+*The detected circles.* For each example cloud, the red ring is the cloud's most persistent loop: one closed path of edges that carries it ([representative loop](docs/glossary.md#representative-loop)), seen face-on.
+- **Bottom:** the same loop as a red dot (birth radius, death radius) in the persistence diagram.
+- **Colours, residues and months:** a large ring that runs through the concepts.
+- **Weekdays and days with times:** the most persistent loop is a small loop inside one cluster (circled). It dies below the dotted line, before two days' clusters touch.
+- **Years:** a small loop that does not beat the null (below the dashed line).
+- Explore any loop of any of the 44 clouds in the [explorer](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/): set the radius, then pick a loop or click its dot.
+
 ![Positive and negative examples](docs/figures/fig_examples.png)
 
 *How to read.*

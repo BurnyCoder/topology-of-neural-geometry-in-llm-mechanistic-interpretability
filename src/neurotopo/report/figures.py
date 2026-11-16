@@ -643,3 +643,58 @@ def anim_examples() -> None:
     FuncAnimation(fig, frame, frames=len(radii)).save(config.path("figures") / "anim_examples.gif",
                                                       writer=PillowWriter(fps=8), dpi=68)
     plt.close(fig)
+
+
+def fig_detected_loops() -> None:
+    """The detected circles (README, near the top). For each example cloud, top: the cloud in its top-3 PCA
+    coordinates with one closed path of edges carrying its most persistent loop (diagrams.alpha_h1_cycles) drawn
+    in red, viewed face-on (camera along the normal of the path's best-fit plane, from an SVD of its vertices);
+    a loop smaller than a tenth of the cloud is also circled so it can be found. Bottom: the persistence diagram
+    (log axes) with that loop's dot, the null's 95th-percentile line and the connect radius. Data: report/examples.py."""
+    from neurotopo.report.examples import EXAMPLES, example
+    ex = [example(d) for d, _ in EXAMPLES]
+    rmin, rmax, red = 0.004, 1.2, "#d62728"
+    fig = plt.figure(figsize=(15, 6.2))
+    gs = fig.add_gridspec(2, len(ex), height_ratios=[1.35, 1], hspace=0.16, wspace=0.18, top=0.88, bottom=0.12)
+    for j, e in enumerate(ex):
+        y, h1 = e["points"], e["h1"]
+        ring = y[np.r_[e["cycles"][0], e["cycles"][0][:1]]]              # the most persistent loop, closed
+        normal = np.linalg.svd(ring - ring.mean(0))[2][-1]              # normal of the ring's best-fit plane
+        a3 = fig.add_subplot(gs[0, j], projection="3d")
+        a3.computed_zorder = False                                     # draw the ring on top of the points
+        a3.scatter(*y.T, c=e["pos"], cmap="twilight" if e["cyclic"] else "viridis", vmin=0, vmax=1,
+                   s=2 if len(y) > 300 else 6, alpha=0.45, depthshade=False, zorder=1)
+        a3.plot(*ring.T, color="white", lw=5.5, zorder=2)              # halo, so the ring stands out
+        a3.plot(*ring.T, color=red, lw=2.6, zorder=3)
+        if np.ptp(ring, axis=0).max() < 0.1 * np.ptp(y, axis=0).max():  # tiny loop: circle it
+            a3.scatter(*ring.mean(0), s=700, facecolors="none", edgecolors=red, linewidths=1.4, zorder=4)
+        lim = float(np.abs(y).max())
+        a3.set_xlim(-lim, lim)
+        a3.set_ylim(-lim, lim)
+        a3.set_zlim(-lim, lim)
+        a3.set_box_aspect((1, 1, 1), zoom=1.65)
+        a3.view_init(elev=float(np.degrees(np.arcsin(np.clip(normal[2], -1, 1)))),
+                     azim=float(np.degrees(np.arctan2(normal[1], normal[0]))))
+        a3.set_axis_off()
+        a3.set_title(f"{e['name']}\n{e['verdict']}", fontsize=8, color=e["colour"])
+        ap = fig.add_subplot(gs[1, j])
+        ap.loglog([rmin, rmax], [rmin, rmax], color="#999", lw=0.8)
+        ap.loglog([rmin, rmax / e["q95"]], [rmin * e["q95"], rmax], color="#555", ls="--", lw=0.9)
+        if e["connect_r"]:
+            ap.axhline(e["connect_r"], color="#555", ls=":", lw=0.9)
+        ap.scatter(h1[:, 0], h1[:, 1], s=5, color="#aaaaaa", alpha=0.5, edgecolors="none")
+        ap.scatter([h1[0, 0]], [h1[0, 1]], s=70, color=red, edgecolors="k", linewidths=0.8, zorder=4)
+        ap.text(0.04, 0.96, f"\u03c0 / q95 = {e['ratio']:.2f}", transform=ap.transAxes, fontsize=8, va="top")
+        ap.set_xlim(rmin, rmax)
+        ap.set_ylim(rmin, rmax)
+        ap.set_aspect("equal")
+        ap.tick_params(labelsize=7)
+        ap.set_xlabel("birth radius", fontsize=7.5)
+        if j == 0:
+            ap.set_ylabel("death radius", fontsize=7.5)
+        ap.set_title(f"born {h1[0, 0]:.3f}, dies {h1[0, 1]:.3f}", fontsize=8)
+    fig.suptitle("The detected circles: each cloud's most persistent loop, drawn in red as a closed path of edges "
+                 "(viewed face-on) and as its red dot in the persistence diagram", fontsize=11)
+    fig.text(0.5, 0.015, "Above the dashed line: beats the null's 95th percentile. Below the dotted line: dies before two "
+             "concepts' clusters touch (a small loop inside one cluster). Small loops are circled.", ha="center", fontsize=8)
+    save(fig, "fig_detected_loops")
