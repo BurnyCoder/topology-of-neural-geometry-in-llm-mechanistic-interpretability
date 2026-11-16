@@ -28,10 +28,11 @@ A loop alone does not prove a hole. The loop test also flags many hole-free shap
 
 *How the results were made (animation).* Balls of radius r grow around every point of each example cloud. r is the same for all clouds, which all have RMS radius 1.
 - **Top:** the edges of the alpha complex present at radius r, in 3D. Its holes are exactly the holes of the union of the balls.
-- **Bottom:** each loop as a dot (birth radius, death radius) on log axes. Red dots are alive at the current r, and the ringed dot is the most persistent loop.
+- **Bottom:** each loop as a dot (birth radius, death radius) on log axes. The ringed dot is the most persistent loop.
+- **Each loop has its own colour.** While a loop is alive at the current r, its dot is solid and one closed path of edges that carries it ([representative loop](docs/glossary.md#representative-loop)) is drawn in the same colour in the 3D view. Faded dots are loops not alive at r.
   - Dots above the dashed red line beat the null's 95th percentile.
   - Dots below the dotted line die before two concepts' clusters touch, so they lie inside one cluster.
-- **Try it yourself**, together with the null distribution and the travel around the hole, on the [interactive page](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/examples.html). Every term is defined in [docs/glossary.md](docs/glossary.md), which the explorer also shows.
+- **Try it yourself** with the radius slider in the [explorer](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/) (all 44 clouds), or, together with the null distribution and the travel around the hole, on the [examples page](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/examples.html). Every term is defined in [docs/glossary.md](docs/glossary.md), which the explorer also shows.
 
 **What worked**
 - **Colours form a ring that hue goes around once, but the stimuli already have that ring.**

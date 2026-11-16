@@ -556,9 +556,11 @@ def fig_toy() -> None:
 
 def anim_examples() -> None:
     """How the six example results were made (animated GIF near the top of the README). For each example cloud:
-    top, the edges of its alpha complex present at radius r, in 3D; bottom, its loop persistence diagram (log axes)
-    with the loops alive at r in red, the most persistent loop ringed, the null's 95th-percentile line d = q95 * b
-    (dashed) and the connect radius (dotted). r sweeps one logarithmic range for all clouds (each has RMS radius 1).
+    top, the edges of its alpha complex present at radius r, in 3D, with one representative cycle of every loop
+    alive at r drawn in that loop's own colour; bottom, its loop persistence diagram (log axes), each loop a dot in
+    the same colour (solid while alive, faded otherwise), the most persistent loop ringed, the null's 95th-percentile
+    line d = q95 * b (dashed) and the connect radius (dotted). r sweeps one logarithmic range for all clouds (each
+    has RMS radius 1).
     Data from report/examples.py; matplotlib FuncAnimation + PillowWriter, Line3DCollection for the edges
     (https://matplotlib.org/stable/api/animation_api.html)."""
     from matplotlib.animation import FuncAnimation, PillowWriter
@@ -575,8 +577,14 @@ def anim_examples() -> None:
         a3 = fig.add_subplot(gs[0, j], projection="3d")
         a3.scatter(*y.T, c=e["pos"], cmap="twilight" if e["cyclic"] else "viridis", vmin=0, vmax=1,
                    s=2 if len(y) > 300 else 7, depthshade=False)
-        lc = Line3DCollection(np.zeros((1, 2, 3)), colors="#333", linewidths=0.35, alpha=0.6)
+        lc = Line3DCollection(np.zeros((1, 2, 3)), colors="#777", linewidths=0.3, alpha=0.45)
         a3.add_collection3d(lc)
+        ll = Line3DCollection(np.zeros((1, 2, 3)), linewidths=2.0, zorder=5)       # alive loops, own colours
+        a3.add_collection3d(ll)
+        a3.computed_zorder = False                                               # draw loops on top of points and edges
+        rings = [np.r_[c, c[:1]] for c in e["cycles"]]                           # closed cycles of vertex indices
+        loop_seg = [np.stack([y[g[:-1]], y[g[1:]]], 1) for g in rings]
+        rgba = matplotlib.colors.to_rgba_array(e["loop_colour"]) if len(h1) else np.zeros((0, 4))
         lim = float(np.abs(y).max())
         a3.set_xlim(-lim, lim)
         a3.set_ylim(-lim, lim)
@@ -589,10 +597,10 @@ def anim_examples() -> None:
         ap.loglog([rmin, rmax / e["q95"]], [rmin * e["q95"], rmax], color="#d1495b", ls="--", lw=0.9)
         if e["connect_r"]:
             ap.axhline(e["connect_r"], color="#555", ls=":", lw=0.9)
-        dots = ap.scatter(h1[:, 0], h1[:, 1], s=7, color="#aaaaaa", zorder=3)
+        dots = ap.scatter(h1[:, 0], h1[:, 1], s=6, c=rgba, edgecolors="none", zorder=3)
         top = h1[e["top"]]
         ap.scatter([top[0]], [top[1]], s=70, facecolors="none", edgecolors="k", linewidths=1.1, zorder=4)
-        cross, = ap.plot([], [], color="#d1495b", lw=0.7, alpha=0.7)       # current r (solid; dotted = connect radius)
+        cross, = ap.plot([], [], color="k", lw=0.6, alpha=0.6)             # current r (solid; dotted = connect radius)
         ap.text(0.04, 0.96, f"top loop: \u03c0 / q95 = {e['ratio']:.2f}", transform=ap.transAxes, fontsize=7.5, va="top")
         ap.set_xlim(rmin, rmax)
         ap.set_ylim(rmin, rmax)
@@ -601,20 +609,31 @@ def anim_examples() -> None:
         ap.set_xlabel("birth radius", fontsize=7.5)
         if j == 0:
             ap.set_ylabel("death radius", fontsize=7.5)
-        panels.append((a3, lc, y[e["edges"]], e, dots, cross, ap.set_title("", fontsize=8)))
+        panels.append((a3, lc, ll, y[e["edges"]], loop_seg, rgba, e, dots, cross, ap.set_title("", fontsize=8)))
     sup = fig.suptitle("", fontsize=11)
-    fig.text(0.5, 0.012, "Top: edges of the alpha complex at radius r (3D). Bottom: each loop as (birth, death); red dots = alive at r, "
-             "ringed = most persistent, red lines = current r.\nAbove the dashed line: beats the null's 95th percentile. "
+    fig.text(0.5, 0.012, "Top: edges of the alpha complex at radius r (3D). Each loop has its own colour: while alive at r, one cycle of it "
+             "is drawn in 3D and its dot below is solid (faded: not alive).\nBottom: each loop as (birth, death); ringed = most "
+             "persistent, black lines = current r. Above the dashed line: beats the null's 95th percentile. "
              "Below the dotted line: dies before two concepts' clusters touch (a loop inside one cluster).", ha="center", fontsize=8)
 
     def frame(i):
         r = radii[i]
-        for a3, lc, seg, e, dots, cross, title in panels:
+        for a3, lc, ll, seg, loop_seg, rgba, e, dots, cross, title in panels:
             n = int(np.searchsorted(e["edge_r"], r, side="right"))          # edges are sorted by entry radius
             lc.set_segments(seg[:n] if n else np.zeros((1, 2, 3)))
             a3.view_init(elev=18, azim=35 + 1.5 * i)
             alive = (e["h1"][:, 0] <= r) & (r < e["h1"][:, 1])
-            dots.set_color(np.where(alive, "#d1495b", "#aaaaaa"))
+            on = np.flatnonzero(alive)
+            if on.size:                                                    # one cycle per alive loop, in its colour
+                ll.set_segments(np.concatenate([loop_seg[k] for k in on]))
+                ll.set_color(np.concatenate([np.repeat(rgba[k:k + 1], len(loop_seg[k]), 0) for k in on]))
+            else:
+                ll.set_segments(np.zeros((1, 2, 3)))
+                ll.set_color([(0, 0, 0, 0)])
+            face = rgba.copy()
+            face[:, 3] = np.where(alive, 1.0, 0.15)                        # solid while alive, faded otherwise
+            dots.set_facecolor(face)
+            dots.set_sizes(np.where(alive, 18, 6))
             cross.set_data([r, r, np.nan, rmin, r], [r, rmax, np.nan, r, r])
             title.set_text(f"loops alive at r: {int(alive.sum())}")
         sup.set_text(f"How the example results were made: balls of radius r = {r:.3f} around every point "

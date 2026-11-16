@@ -42,6 +42,10 @@ homology (Method B) and travel around the hole.
 &nbsp;| right: persistence diagram<a class="q" href="#" title="Persistence diagram" onclick="term('persistence-diagram'); return false">?</a>,
 red dotted line: null 95th percentile<a class="q" href="#" title="Null 95th percentile" onclick="term('null-95th-percentile-q95'); return false">?</a>
 &nbsp;<button class="gl-btn" onclick="openGloss()">Method and terms</button></div>
+<div class="ctl">radius r <input type="range" id="rr" min="0" max="1000" step="1" value="500" style="width:240px;vertical-align:middle">
+<span id="rv"></span> <label><input type="checkbox" id="showcx" checked> alpha complex and loops at r</label><a class="q" href="#"
+title="Alpha complex" onclick="term('alpha-complex'); return false">?</a><a class="q" href="#" title="Representative loop"
+onclick="term('representative-loop'); return false">?</a> <span id="rstat" style="color:#555"></span></div>
 <div id="plots"><div id="cloud"></div><div id="pd"></div></div><div id="info"></div></div>
 <aside id="gloss" hidden><div class="gl-head"><b>Method and terms</b><button class="gl-btn" onclick="closeGloss()">close</button></div>
 <div id="gloss-body">Loading...</div></aside><script>
@@ -62,6 +66,28 @@ function closeGloss() { document.getElementById("gloss").hidden = true; }
 function term(id) { openGloss().then(() => { const el = document.getElementById("g-" + id); if (!el) return;
   el.scrollIntoView({block: "start"}); el.classList.add("flash"); setTimeout(() => el.classList.remove("flash"), 1500); }); }
 const q = (id, name) => '<a class="q" href="#" title="' + (name || "What is this?") + '" onclick="term(\'' + id + '\'); return false">?</a>';
+</script><script>
+// Shared by the explorer and the examples page: replay persistent homology on a cloud. The radius slider is
+// logarithmic (all clouds have RMS radius 1). At radius r the 3D view shows the alpha complex's edges and one
+// representative cycle of every loop alive at r, in that loop's own colour (data from report/examples.replay).
+const RMIN = 0.002, RMAX = 1.5, LN = Math.log(RMAX / RMIN);
+const toR = t => RMIN * Math.exp(LN * t / 1000), toT = r => Math.round(1000 * Math.log(Math.max(r, RMIN) / RMIN) / LN);
+const aliveAt = (d, r) => d.h1.map(b => b[0] <= r && r < b[1]);                             // alive on [birth, death)
+const piecesAt = (d, r) => 1 + d.h0_deaths.filter(x => x > r).length;                       // one piece never dies
+const crossXY = r => ({x: [r, r, null, RMIN, r], y: [r, RMAX, null, r, r]});
+function edgeTrace(d, r) {                                                                   // edges are sorted by entry radius
+  const P = d.points, X = [], Y = [], Z = []; let n = 0;
+  while (n < d.edge_r.length && d.edge_r[n] <= r) n++;
+  for (let k = 0; k < n; k++) { const [i, j] = d.edges[k]; X.push(P[i][0], P[j][0], null); Y.push(P[i][1], P[j][1], null); Z.push(P[i][2], P[j][2], null); }
+  return {n, trace: {type: "scatter3d", mode: "lines", x: X, y: Y, z: Z, hoverinfo: "skip", showlegend: false,
+    line: {color: "rgba(90,90,90,0.35)", width: 1.5}, name: "alpha edges"}}; }
+function loopTraces(d, alive) {                                                              // one closed cycle per alive loop
+  const P = d.points, out = [];
+  alive.forEach((a, k) => { if (!a) return; const c = d.cycles[k].concat([d.cycles[k][0]]), b = d.h1[k];
+    out.push({type: "scatter3d", mode: "lines", x: c.map(i => P[i][0]), y: c.map(i => P[i][1]), z: c.map(i => P[i][2]), showlegend: false,
+      line: {color: d.loop_colour[k], width: 7}, hoverinfo: "text", text: "loop born " + b[0].toFixed(4) + ", dies " + b[1].toFixed(4)}); });
+  return out; }
+const loopMarker = (d, alive) => ({color: d.loop_colour, opacity: alive.map(a => (a ? 1 : 0.2)), size: alive.map(a => (a ? 10 : 5))});
 </script>
 <script>
 const TERMS = {"Betti (b0,b1,b2)": [["betti-numbers", "Betti numbers"], ["characteristic-scale-r_c", "Characteristic scale r_c"]],
@@ -76,21 +102,34 @@ fetch("data/manifest.json").then(r => r.json()).then(m => { manifest = m; const 
     for (const it of ids) { const a = document.createElement("a"); a.textContent = it.label; a.onclick = () => load(it.id, a); L.appendChild(a); } }
   load(Object.values(m)[0][0].id, L.querySelector("a")); });
 function load(id, el) { document.querySelectorAll("#side a").forEach(a => a.classList.remove("sel")); if (el) el.classList.add("sel");
-  fetch("data/" + id + ".json").then(r => r.json()).then(d => { cur = d; draw(); }); }
-["colour", "showshape", "showloop"].forEach(i => document.getElementById(i).onchange = () => draw());
+  fetch("data/" + id + ".json").then(r => r.json()).then(d => { cur = d;          // start where the most persistent loop is alive
+    if (d.h1.length) document.getElementById("rr").value = toT(Math.sqrt(d.h1[0][0] * d.h1[0][1])); draw(); }); }
+["colour", "showshape", "showloop", "showcx"].forEach(i => document.getElementById(i).onchange = () => draw());
+document.getElementById("rr").oninput = () => draw();
 function draw() { const d = cur, P = d.points, byTheta = document.getElementById("colour").value === "theta" && d.theta;
+  const r = toR(+document.getElementById("rr").value), alive = aliveAt(d, r);
   const col = byTheta ? d.theta : d.colour, tr = [{type: "scatter3d", mode: "markers", x: P.map(p => p[0]), y: P.map(p => p[1]), z: P.map(p => p[2]),
     text: d.labels, marker: {size: 3, color: col, colorscale: d.cyclic || byTheta ? "Twilight" : "Viridis"}, name: "points"}];
   if (document.getElementById("showshape").checked && d.shape) tr.push({type: "scatter3d", mode: "markers", x: d.shape.map(p => p[0]), y: d.shape.map(p => p[1]), z: d.shape.map(p => p[2]), marker: {size: 1.5, color: "#999"}, name: "fitted " + d.family});
   if (document.getElementById("showloop").checked && d.loop) tr.push({type: "scatter3d", mode: "lines", x: d.loop.map(p => p[0]), y: d.loop.map(p => p[1]), z: d.loop.map(p => p[2]), line: {width: 6, color: "#d1495b"}, name: "loop B"});
-  Plotly.react("cloud", tr, {margin: {l: 0, r: 0, t: 30, b: 0}, title: {text: d.id, font: {size: 13}}, showlegend: true});
-  const pd = [], mx = Math.max(1e-3, ...d.h1.flat(), ...d.h2.flat());
-  pd.push({x: d.h1.map(b => b[0]), y: d.h1.map(b => b[1]), mode: "markers", name: "H1", marker: {size: 6}});
-  pd.push({x: d.h2.map(b => b[0]), y: d.h2.map(b => b[1]), mode: "markers", name: "H2", marker: {symbol: "triangle-up", size: 7}});
-  pd.push({x: [0, mx], y: [0, mx], mode: "lines", line: {color: "#999"}, name: "diagonal"});
-  if (d.q95_pi1) pd.push({x: [0, mx / d.q95_pi1], y: [0, mx], mode: "lines", line: {color: "red", dash: "dot"}, name: "H1 null q95 (pi)"});
-  Plotly.react("pd", pd, {margin: {l: 45, r: 10, t: 30, b: 40}, title: {text: "alpha persistence (radius units)", font: {size: 12}},
-    xaxis: {title: "birth"}, yaxis: {title: "death"}});
+  let ne = 0;
+  if (document.getElementById("showcx").checked) { const ed = edgeTrace(d, r); ne = ed.n; tr.push(ed.trace, ...loopTraces(d, alive)); }
+  Plotly.react("cloud", tr, {margin: {l: 0, r: 0, t: 30, b: 0}, title: {text: d.id, font: {size: 13}}, showlegend: true, uirevision: d.id});
+  const ax = t => ({title: t, type: "log", range: [Math.log10(RMIN), Math.log10(RMAX)]}), pd = [];
+  pd.push({x: [RMIN, RMAX], y: [RMIN, RMAX], mode: "lines", line: {color: "#999"}, name: "diagonal", hoverinfo: "skip"});
+  if (d.q95_pi1) pd.push({x: [RMIN, RMAX / d.q95_pi1], y: [RMIN * d.q95_pi1, RMAX], mode: "lines", line: {color: "red", dash: "dot"}, name: "H1 null q95 (pi)", hoverinfo: "skip"});
+  if (d.connect_r) pd.push({x: [RMIN, RMAX], y: [d.connect_r, d.connect_r], mode: "lines", line: {color: "#555", dash: "dot", width: 1}, name: "connect radius", hoverinfo: "skip"});
+  pd.push({x: d.h1.map(b => b[0]), y: d.h1.map(b => b[1]), mode: "markers", name: "H1 (loops, own colours)", marker: loopMarker(d, alive), hoverinfo: "text",
+    text: d.h1.map(b => "born " + b[0].toFixed(4) + ", dies " + b[1].toFixed(4) + ", pi = " + (b[1] / b[0]).toFixed(2))});
+  if (d.h1.length) pd.push({x: [d.h1[0][0]], y: [d.h1[0][1]], mode: "markers", marker: {size: 15, color: "rgba(0,0,0,0)", line: {color: "#000", width: 2}}, name: "most persistent loop", hoverinfo: "skip"});
+  pd.push({x: d.h2.map(b => b[0]), y: d.h2.map(b => b[1]), mode: "markers", name: "H2 (voids)", marker: {symbol: "triangle-up", size: 7, color: "#555"}});
+  pd.push(Object.assign({mode: "lines", line: {color: "#333", dash: "dot", width: 1}, name: "radius r", hoverinfo: "skip"}, crossXY(r)));
+  Plotly.react("pd", pd, {margin: {l: 50, r: 10, t: 30, b: 40}, title: {text: "persistence diagram (log axes)", font: {size: 12}},
+    xaxis: ax("birth"), yaxis: ax("death"), legend: {x: 0.98, y: 0.02, xanchor: "right", yanchor: "bottom", font: {size: 10}}, uirevision: d.id});   // below the diagonal: always empty
+  const top = d.h1[0], loops = alive.filter(Boolean).length, pieces = piecesAt(d, r);
+  document.getElementById("rv").textContent = "r = " + r.toFixed(4);
+  document.getElementById("rstat").textContent = pieces + (pieces === 1 ? " piece, " : " pieces, ") + loops + (loops === 1 ? " loop" : " loops") +
+    " alive, " + ne + " edges" + (top ? "; most persistent loop " + (r < top[0] ? "not born yet" : r < top[1] ? "alive" : "filled in") : "");
   let h = "<table><tr><th></th><th>Method A (fitted " + d.family + ")" + q("method-a-exact-topology-of-the-fitted-shape", "Method A") +
     "</th><th>Method B (persistent homology)" + q("method-b-persistent-homology-of-the-cloud", "Method B") + "</th></tr>";
   for (const [k, a, b] of d.rows) h += "<tr><td>" + k + (TERMS[k] || []).map(t => q(t[0], t[1])).join("") + "</td><td>" + fmt(a) + "</td><td>" + fmt(b) + "</td></tr>";

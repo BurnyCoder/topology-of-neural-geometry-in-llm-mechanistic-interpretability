@@ -45,6 +45,42 @@ def alpha_edges(points: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     return np.array([sx for sx, _ in e], dtype=int).reshape(-1, 2), np.array([r for _, r in e], dtype=np.float64)
 
 
+def alpha_h1_cycles(points: np.ndarray) -> tuple[np.ndarray, list[np.ndarray]]:
+    """Loops (H1 bars in radius units, zero-length bars dropped) of the alpha complex, each with one representative
+    cycle for display: the edge whose entry creates the loop (its birth simplex in GUDHI's persistence_pairs), closed
+    by the shortest path between its two ends through edges that entered earlier (Dijkstra, scipy.sparse.csgraph).
+    That cycle exists in the complex at the birth radius but not just before it, so it represents the new loop up to
+    older loops; representatives are not unique. Cycles are vertex index arrays (the closing edge is implicit)."""
+    from scipy.sparse import csr_matrix
+    from scipy.sparse.csgraph import dijkstra
+    pts = np.asarray(points, dtype=np.float64)
+    st = gudhi.AlphaComplex(points=pts).create_simplex_tree()
+    st.compute_persistence(homology_coeff_field=2, min_persistence=0.0)
+    rank, edges = {}, []
+    for sx, _ in st.get_filtration():                       # edges in filtration order (ties as GUDHI orders them)
+        if len(sx) == 2:
+            rank[tuple(sorted(sx))] = len(edges)
+            edges.append(sx)
+    e = np.array(edges, dtype=int).reshape(-1, 2)
+    w = np.linalg.norm(pts[e[:, 0]] - pts[e[:, 1]], axis=1)
+    bars, cycles = [], []
+    for birth, death in st.persistence_pairs():
+        if len(birth) != 2 or len(death) != 3:              # H1 pairs: an edge creates the loop, a triangle fills it
+            continue
+        b, d = np.sqrt(max(st.filtration(birth), 0.0)), np.sqrt(max(st.filtration(death), 0.0))
+        if d - b <= 1e-12 * max(1.0, b):
+            continue
+        k = rank[tuple(sorted(birth))]
+        g = csr_matrix((w[:k], (e[:k, 0], e[:k, 1])), shape=(len(pts), len(pts)))
+        _, pred = dijkstra(g, directed=False, indices=birth[0], return_predecessors=True)
+        path = [birth[1]]
+        while path[-1] != birth[0] and pred[path[-1]] >= 0:
+            path.append(int(pred[path[-1]]))
+        bars.append((b, d))
+        cycles.append(np.array(path, dtype=int))
+    return np.array(bars, dtype=np.float64).reshape(-1, 2), cycles
+
+
 def _drop_zero_length(iv: np.ndarray) -> np.ndarray:
     """Remove bars with death == birth (up to float tolerance); they carry no topology."""
     keep = (iv[:, 1] - iv[:, 0]) > 1e-12 * np.maximum(1.0, np.abs(iv[:, 0]))

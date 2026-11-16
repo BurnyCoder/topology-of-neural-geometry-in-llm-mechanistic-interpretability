@@ -24,6 +24,23 @@ def test_alpha_edges_toy():
     assert math.isclose(r.max(), math.hypot(1 - 0.1 / (2 * math.sqrt(3)), 0.05), rel_tol=1e-9)
 
 
+def test_loop_representatives_toy():
+    # Each loop comes with a closed cycle made of edges present when the loop is born. On the toy, the 7 tiny loops
+    # are the triangles of single concepts and the ring passes through all 7 concepts.
+    p, idx = toy.toy_points(7, 0.1)
+    bars, cycles = diagrams.alpha_h1_cycles(p)
+    ref = diagrams.alpha_diagrams(p)[1]
+    assert np.allclose(np.sort(bars, axis=0), np.sort(ref, axis=0))                 # same loops as the diagram
+    ij, r = diagrams.alpha_edges(p)
+    entry = {tuple(sorted(e)): x for e, x in zip(ij.tolist(), r)}
+    for (b, _), cyc in zip(bars, cycles):
+        ring = list(cyc) + [cyc[0]]
+        assert len(set(cyc)) == len(cyc) >= 3                                       # a simple closed cycle
+        assert all(entry[tuple(sorted(e))] <= b + 1e-12 for e in zip(ring[:-1], ring[1:]))
+    sizes = sorted(len(set(idx[c])) for c in cycles)
+    assert sizes == [1] * 7 + [7]
+
+
 def test_headlines_match_the_readme_figure():
     want = {"R7_llama_colors": "ring: yes, but the RGB\nstimuli have it too", "R2_grokking_WE": "ring: yes",
             "R5b_llama_months": "loop: yes; ring: suggestive", "R5a_llama_weekdays": "ring: no",
