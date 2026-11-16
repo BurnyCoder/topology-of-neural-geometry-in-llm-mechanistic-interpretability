@@ -388,6 +388,9 @@ def collect() -> dict:
             n["audit3.tori.pi_min"], n["audit3.tori.pi_max"] = min(t["void_pi"] for t in tori), max(t["void_pi"] for t in tori)
             n["audit3.tori.birth_over_cut_min"] = min(t["void_birth"] / t["cut"] for t in tori)
             n["audit3.tori.birth_over_cut_max"] = max(t["void_birth"] / t["cut"] for t in tori)
+    # Worked example (experiments/toy_example.py): every number of docs/worked_example.md, keys "toy.<name>".
+    if _res("toy", "summary.json").exists():
+        n.update({f"toy.{k}": v for k, v in read_json(_res("toy", "summary.json"))["numbers"].items()})
     # Percent versions of fractions quoted in the README's plain-language section.
     for k in [k for k in list(n) if k.endswith(".loop_freq")] + ["power2.weekdays.loop", "exp1.P.acc", "exp1.Bb.acc",
                                                                  "exp1.well.Ba.acc", "exp1.well.Bb.acc",

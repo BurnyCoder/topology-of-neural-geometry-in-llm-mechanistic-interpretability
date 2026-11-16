@@ -509,3 +509,79 @@ def fig_examples() -> None:
         ax.text(i, r - 0.03 if inside_bar else r + 0.03, f"{r:.2f}", ha="center", va="top" if inside_bar else "bottom",
                 fontsize=8)
     save(fig, "fig_examples")
+
+
+def fig_toy() -> None:
+    """Worked example (docs/worked_example.md): the 7-concept toy cloud from experiments/toy_example.py.
+    Top: discs of radius r around every point at three radii (a tiny loop inside one concept; 7 separate blobs;
+    the ring through all concepts). Bottom: the H1 persistence diagram with the null's 95th-percentile line
+    d = q95 * b, the null distribution of the max persistence ratio, and the concepts' mean theta_B angles."""
+    from matplotlib.patches import Circle
+    s = read_json(config.path("results") / "toy" / "summary.json")
+    num, dat = s["numbers"], s["data"]
+    y, con, n = np.array(dat["points"]), np.array(dat["concept"]), num["n"]
+    col = plt.get_cmap("tab10")(np.arange(n))                 # categorical: twilight's ends are near white
+    fig, ax = plt.subplots(2, 3, figsize=(13, 8.6))
+    radii = [(num["tiny_b"] + num["tiny_d"]) / 2, (num["tiny_d"] + num["big_b"]) / 2, (2 * num["big_b"] + num["big_d"]) / 3]
+    titles = [f"(a) r = {radii[0]:.3f}: a tiny loop inside one\nconcept (zoom on {dat['names'][0]}; \u03c0 = {num['tiny_pi']:.2f})",
+              f"(b) r = {radii[1]:.2f}: 7 separate blobs,\nno loop",
+              f"(c) r = {radii[2]:.2f}: the ring through all\nconcepts (born {num['big_b']:.3f}, dies {num['big_d']:.3f})"]
+    for j, r in enumerate(radii):
+        a = ax[0, j]
+        for (px, py), c in zip(y, con):
+            a.add_patch(Circle((px, py), r, color=col[c], alpha=0.16, lw=0))
+        a.scatter(y[:, 0], y[:, 1], c=col[con], s=10 if j else 40, zorder=3, edgecolors="k", linewidths=0.3)
+        if j == 0:                                             # zoom on concept 0's triangle
+            cx, cy = y[con == 0].mean(0)
+            a.set_xlim(cx - 0.12, cx + 0.12)
+            a.set_ylim(cy - 0.12, cy + 0.12)
+        else:
+            a.set_xlim(-1.35, 1.35)
+            a.set_ylim(-1.35, 1.35)
+        a.set_aspect("equal")
+        a.set_xticks([])
+        a.set_yticks([])
+        a.set_title(titles[j], fontsize=9.5)
+    a = ax[1, 0]                                              # persistence diagram
+    h1 = np.array(dat["h1"])
+    top = 1.08 * h1[:, 1].max()
+    a.plot([0, top], [0, top], color="#999", lw=0.8, label="diagonal (\u03c0 = 1)")
+    a.plot([0, top / num["null_q95"]], [0, top], color="#d1495b", ls="--", lw=0.9,
+           label=f"null 95th pct. (\u03c0 = {num['null_q95']:.2f})")
+    a.scatter(h1[:, 0], h1[:, 1], color="k", s=18, zorder=3)
+    a.annotate(f"{num['n_tiny']} tiny loops, \u03c0 = {num['tiny_pi']:.2f}", (num["tiny_b"], num["tiny_d"]),
+               xytext=(0.12, 0.05), fontsize=8.5, arrowprops={"arrowstyle": "-", "lw": 0.6})
+    a.annotate(f"ring, \u03c0 = {num['big_pi']:.2f}", (num["big_b"], num["big_d"]), xytext=(num["big_b"] + 0.06, num["big_d"] - 0.08),
+               fontsize=8.5)
+    a.set_xlim(0, top)
+    a.set_ylim(0, top)
+    a.set_aspect("equal")
+    a.set_xlabel("birth radius b")
+    a.set_ylabel("death radius d")
+    a.legend(fontsize=8, loc="lower right", frameon=False)
+    a.set_title("(d) H1 persistence diagram (alpha complex)", fontsize=9.5)
+    a = ax[1, 1]                                              # null distribution of the max persistence ratio
+    nm = np.array(dat["null_max"])
+    a.hist(nm, bins=np.linspace(1.0, max(nm.max(), num["big_pi"]) + 0.1, 40), color="#bbbbbb")
+    a.axvline(num["null_q95"], color="#d1495b", ls="--", lw=0.9, label=f"95th percentile {num['null_q95']:.2f}")
+    a.axvline(num["big_pi"], color="k", lw=1.2, label=f"toy cloud {num['big_pi']:.2f} (p = {num['null_p']:.3f})")
+    a.set_xlabel("largest H1 \u03c0 in a null cloud")
+    a.set_ylabel(f"null clouds (of {num['null_m']})")
+    a.legend(fontsize=8, frameon=False)
+    a.set_title("(e) cluster-centre Monte Carlo null", fontsize=9.5)
+    a = ax[1, 2]                                              # traversal: concept mean angles of theta_B
+    tc = np.array(dat["concept_theta"])
+    a.add_patch(Circle((0, 0), 1, fill=False, color="#999", lw=0.8))
+    xy = np.c_[np.cos(tc), np.sin(tc)]
+    a.plot(*np.r_[xy, xy[:1]].T, color="#555", lw=0.8)
+    a.scatter(xy[:, 0], xy[:, 1], c=col, s=60, zorder=3, edgecolors="k", linewidths=0.4)
+    for c in range(n):
+        a.text(1.2 * xy[c, 0], 1.2 * xy[c, 1], dat["names"][c], ha="center", va="center", fontsize=8.5)
+    a.set_xlim(-1.45, 1.45)
+    a.set_ylim(-1.45, 1.45)
+    a.set_aspect("equal")
+    a.axis("off")
+    a.set_title(f"(f) concept means of \u03b8_B: R = {num['R']:.3f}, p = {num['p_align']:.4f},\nwinding {num['w']}",
+                fontsize=9.5)
+    fig.tight_layout()
+    save(fig, "fig_toy")

@@ -1,0 +1,2 @@
+2026-11-16 02:07:38 INFO root: phase toy, log file C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\logs\toy_20261116T020738.log
+2026-11-16 02:07:57 INFO neurotopo.experiments.toy_example: toy: top loop [0.3757, 0.9708] pi=2.584; null q95=1.221 p=0.0010; connect r=0.3757; R=1.000 p=0.0028 w=-1
