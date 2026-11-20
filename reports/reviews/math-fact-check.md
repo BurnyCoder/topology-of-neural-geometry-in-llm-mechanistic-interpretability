@@ -136,7 +136,7 @@ Terms are used in the field's sense: "residual stream", "hidden states", "featur
 - **Code:** `tda/invariants.py` (b0 at r_c, radius fallback, Betti label, `scale_invariants`), `experiments/exp2_invariants.py` (uses it; column `betti_label_rc`), `analytic/topology.py` (spindle torus), report and site code (column and label names), docstrings with sources in `tda/diagrams.py`, `tda/nulls.py`, `experiments/exp4_similarity.py`, `experiments/exp5_robustness.py`.
 - **Tests:** 7 new tests (listed in the tables above).
 - **Text:** glossary, methodology, worked example, exact-topology page, literature and state-of-the-art reviews, plan, Exp2 report template, paper and bibliography, README.
-- **Results:** Exp2 regenerated (`uv run python run.py exp2 report site`). Only `b0_rc`, `chi_rc`, `genus_rc` and `betti_label_rc` can change ([invariants table](../exp2_invariants.md)). No preregistered verdict depends on them.
+- **Results:** Exp2 regenerated (`uv run python run.py exp2 report site`). Only the fallback `r_c`, `b0_rc`, `chi_rc`, `genus_rc` and `betti_label_rc` can change, and a diff of the old and new `results/exp2/invariants.csv` confirms that every other column is identical ([invariants table](../exp2_invariants.md)). The month clouds, whose loop runs through the month clusters (localisation audit, [exp7_audit.md](../exp7_audit.md)), now read as one piece at r_c, as they should. No preregistered verdict depends on them.
 
 ## E. Learnings
 

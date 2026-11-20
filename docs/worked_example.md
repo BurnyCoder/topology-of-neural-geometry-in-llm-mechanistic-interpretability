@@ -44,12 +44,12 @@ Real clouds have a non-zero third PC, and the code does everything below with ba
 
 ## 2. Alpha complex and persistence diagram
 
-Code: [`alpha_diagrams`](../src/neurotopo/tda/diagrams.py), using [GUDHI](https://gudhi.inria.fr/python/latest/alpha_complex_user.html). Idea: [What is...persistent homology?](https://www.youtube.com/watch?v=w6Jx1vFp_Gk) (VisualMath), the primary reference for this step.
+Code: [`alpha_diagrams`](../src/neurotopo/tda/diagrams.py), using [GUDHI](https://gudhi.inria.fr/python/latest/delaunay_complex_user.html). Idea: [What is...persistent homology?](https://www.youtube.com/watch?v=w6Jx1vFp_Gk) (VisualMath), the primary reference for this step.
 
 **Terms**
 - **Union of balls.** Put a ball of radius r around every point and let r grow from 0. We track the holes of the union.
 - **Simplicial complex.** Vertices, edges and triangles (plus tetrahedra in 3D) glued along shared faces.
-- **Alpha complex.** A simplicial complex that has the same holes as the union of balls at every r (the nerve theorem). It uses only **Delaunay** simplices: triangles whose circumcircle contains no data point. In 2D:
+- **Alpha complex.** A simplicial complex that has the same holes as the union of balls at every r (it is homotopy equivalent to it, by the nerve theorem: [Edelsbrunner 1995](https://doi.org/10.1007/BF02574053); and its persistence equals the Čech complex's: [Bauer & Edelsbrunner 2017](https://doi.org/10.1090/tran/6991)). It uses only **Delaunay** simplices: triangles whose circumcircle contains no data point. In 2D:
   - an edge enters at r = half its length if it is a **Gabriel edge** (no other point lies inside the circle that has the edge as diameter); otherwise it enters together with its triangle;
   - a triangle enters at r = its circumradius.
 - **Filtration.** The growing sequence of complexes as r increases.

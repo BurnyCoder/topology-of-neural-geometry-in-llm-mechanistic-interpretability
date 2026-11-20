@@ -68,19 +68,19 @@ These works identify shapes geometrically. A geometric label such as ``helix'' d
   \item A persistence ratio for small centroid clouds of imposed cycles~\citep{david2026context}.
 \end{itemize}
 
-\paragraph{Neuroscience.} Ring and torus detection uses shuffle nulls and circular-coordinate decoding~\citep{chaudhuri2019intrinsic,gardner2022toroidal}. Circular coordinates themselves come from persistent cohomology~\citep{desilva2011circular,perea2023dreimac}.
+\paragraph{Neuroscience.} Rings and tori are detected by persistent homology, by bar length~\citep{chaudhuri2019intrinsic} or against shuffled data~\citep{gardner2022toroidal}, and decoded with circular coordinates from persistent cohomology~\citep{rybakken2019decoding,gardner2022toroidal}, which come from~\citep{desilva2011circular,perea2023dreimac}.
 
-\paragraph{Inference.} The universal null~\citep{bobrowski2023universal} gives per-bar $p$-values. Max-over-null Monte Carlo thresholds~\citep{gardner2022toroidal} are the practical standard.
+\paragraph{Inference.} The universal null~\citep{bobrowski2023universal} gives per-bar $p$-values. Gardner et al.~\citep{gardner2022toroidal} threshold bars at the longest lifetime over all bars of 1{,}000 shuffles, a heuristic in their words; our Monte Carlo null adapts this to the ratio $\pi$, one maximum per null draw and the $p$-value $(1+b)/(M+1)$~\citep{phipson2010permutation}.
 
 \paragraph{Pitfalls.} PCA horseshoes and Lissajous loops~\citep{antognini2018pca,shinn2023phantom}, and Rips phantom classes~\citep{adamaszek2017rips}.
 
-\paragraph{Gap.} We found no work that tests, with a null model, whether a cyclic concept's representation has a 1-cycle aligned with its semantic order. We also found none that compares the exact topology of fitted parametric shapes with persistent homology of the same clouds.
+\paragraph{Gap.} We found no peer-reviewed work that tests, with a null model, whether a cyclic concept's representation has a 1-cycle aligned with its semantic order. The closest is a preprint that compares the persistence ratio of centroid clouds of imposed cycles with random points~\citep{david2026context}, without a traversal test. We also found none that compares the exact topology of fitted parametric shapes with persistent homology of the same clouds.
 
 \section{Data}
 
 The 44 clouds of~\citep{shapefitting2026} (commit 4c5f3b6):
 \begin{itemize}
-  \item Llama-3.1-8B hidden states: weekdays and months at the concept token, layer 5; days-with-times, colours, years, temperatures and ages at the last token, layer 19; city truth statements, layer 12; line-break character counts, layer 5.
+  \item Llama-3.1-8B hidden states: weekdays and months at the concept token, layer 5; days-with-times, colours, years, temperatures and ages at the last token, layer 19; city truth statements~\citep{marks2024geometry}, layer 12; line-break character counts~\citep{gurnee2025manifolds}, layer 5.
   \item Pythia-410m character counts.
   \item Weight matrices: GPT-2 positional embeddings and the embedding of a grokked modular-addition transformer.
   \item Toy models of superposition~\citep{elhage2022toy}.
@@ -108,9 +108,9 @@ The margin $m$ is the smallest parameter change that alters the topology (for ex
 
 Every point gets the parameter of its nearest point on the fit: curve parameter, azimuth, height, or nearest centroid. The rules agree with persistent homology of dense noise-free samples for 0.970 of 234 shapes.
 
-\paragraph{Method B.} Alpha complexes in $\mathbb{R}^3$, which are exact \v{C}ech and free of Rips phantom classes~\citep{desilva2007coverage,adamaszek2017rips}, computed with GUDHI~\citep{gudhi}; Rips complexes with ripser~\citep{tralie2018ripser}.
+\paragraph{Method B.} Alpha complexes in $\mathbb{R}^3$, computed with GUDHI~\citep{gudhi}. They are smaller than \v{C}ech complexes but homotopy equivalent to the union of balls at every radius~\citep{edelsbrunner1995union}, and their filtration has the same persistence diagrams as the \v{C}ech filtration~\citep{bauer2017morse}. Rips complexes (ripser~\citep{tralie2018ripser}) are only interleaved with \v{C}ech~\citep{desilva2007coverage} and can have phantom classes~\citep{adamaszek2017rips}.
 
-A bar is significant if its persistence ratio $\pi = \text{death}/\text{birth}$ exceeds the 95th percentile of the maximum $\pi$ over 999 draws of a design-matched null. Every draw passes through the same normalisation.
+A bar is significant if its persistence ratio $\pi = \text{death}/\text{birth}$ has a Monte Carlo $p = (1+\#\{\text{null maxima} \ge \pi\})/(M+1) < 0.05$ against the maximum $\pi$ of $M=999$ draws of a design-matched null, which is essentially exceeding the null's 95th percentile. Every draw passes through the same normalisation.
 \begin{itemize}
   \item Prompt-template designs use a cluster-centre null: concept means are redrawn from a Gaussian matched to the covariance of the means, and within-concept residuals are kept.
   \item One-point-per-value designs use a full-dimensional matched Gaussian.
@@ -209,7 +209,7 @@ Both Monte Carlo nulls are Gaussian. They match the covariance, not the intrinsi
 \begin{itemize}
   \item On the 3{,}120-cloud synthetic subset, Exp1 had run the design-(b) null in 3D. On rank-3 clouds this is the same distribution as the real-data sampler (median $|q_{95}$ ratio$-1|=0.012$).
   \item It detects 0.84 [0.77, 0.91] of true holes. But it flags 0.174 [0.126, 0.225] of resolvable hole-free clouds: spheres and caps 0.73, paraboloids 0.37, helices 0.20, discs 0.19, but open arcs only 0.08 and blobs, its own model, 0.06.
-  \item The rate rises with $N$ (0.11 to 0.26) and is not caused by outliers. This is consistent with the dimension-dependent growth of maximal noise persistence~\citep{bobrowski2017maximally}.
+  \item The rate rises with $N$ (0.11 to 0.26) and is not caused by outliers. Maximal noise persistence grows with $N$ at a rate set by the homology degree, with constants that depend on the dimension~\citep{bobrowski2017maximally}; the theorem covers compactly supported densities, not Gaussians, so it does not by itself predict this rate.
   \item The flagged hole-free clouds have top $\pi$ of 1.39--2.81 (10th--90th percentile), which covers the residue, days-with-times and month loops. Only colours ($\pi=5.02$) is far above.
   \item The cluster-centre null (design a) was simulated on hole-free arrangements of concept centres (a hemisphere cap, a planar lattice), next to rings, open arcs and Gaussian centres. At the real variance structure even rings rarely pass (5/40 for 12 clusters), so the pre-specified verdict is ``undetermined''. Across cells, caps and lattices pass at most 0.100, whereas rings and open arcs pass in up to 1.00.
   \item No cap or lattice replicate reached the months' $\pi$ (0 of 320).
@@ -285,7 +285,7 @@ Exp2 tests only each cloud's most persistent loop and void. Two descriptive phas
 \begin{itemize}
   \item A convenience sample of 44 clouds, with claims made per dataset.
   \item Not blind: the source's labels and figures were known.
-  \item The power for 7 clusters is bounded (a regular 7-gon has $\pi = 1/\sin(\pi/7)$).
+  \item The power for 7 clusters is limited (Fig.~\ref{fig:power}). Seven point-like centres on a regular 7-gon give only $\pi = 1/\sin(\pi/7)$; spread within the clusters can raise a ring's $\pi$, so this is not a ceiling.
   \item For clustered designs, the maximum-$\pi$ statistic does not say where a loop lives; a post hoc localisation check is needed to tell a ring of concepts from a loop inside one cluster.
   \item The colour stimuli sample saturation $\ge 0.4$ only, so their RGB values already have the hue loop; separating the model's hue code from the input needs controls with model inference (postponed).
   \item DREiMac's \texttt{standard\_range} criterion decided the months verdict.
