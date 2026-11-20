@@ -477,7 +477,7 @@ run.py <phase>
   report       regenerate every table, figure and number in README / reports / paper from results/
   site         GitHub Pages explorer (docs/index.html), interactive worked example (docs/worked_example.html) and examples (docs/examples.html)
   all          everything above, CPU only (about 1.5 h on 16 cores)
-  exp6sim, exp6  simulated / LLM steering around the loops (postponed; exp6 needs a GPU and Llama-3.1-8B)
+  exp6sim, exp6  simulated steering (no model: decoders read along the loop) / LLM steering (postponed; exp6 needs a GPU and Llama-3.1-8B)
 ```
 
 ## Installation, setup and usage
@@ -545,7 +545,7 @@ uv, Python 3.11, NumPy, SciPy, scikit-learn, pandas, [GUDHI](https://gudhi.inria
   - `steering/`: postponed steering code.
   - `report/`: tables, figures, site, numbers.
 - `external/shape-fitting/`: the source project (git submodule, commit 4c5f3b6).
-- `reports/`: literature and state-of-the-art reviews, preregistration (with addendum and amendment), deviations, plan, one report per experiment, summary. `reports/templates/` holds the report sources; `reports/generated/` holds generated tables.
+- `reports/`: literature and state-of-the-art reviews, preregistration (with addendum and amendment), deviations, plan, [progress](reports/progress.md), one report per experiment, summary, and `reviews/` (the [math fact-check](reports/reviews/math-fact-check.md)). `reports/templates/` holds the report sources; `reports/generated/` holds generated tables.
 - `docs/`: [methodology](docs/methodology.md), [method and terms](docs/glossary.md), [worked example](docs/worked_example.md) (source: `docs/templates/`), [exact topology of the families](docs/analytic_topology.md), [reproducing the inputs](docs/reproduce_inputs.md), figures, explorer.
 - `paper/`: LaTeX source and PDF.
 - `results/`: machine-readable results of every phase.

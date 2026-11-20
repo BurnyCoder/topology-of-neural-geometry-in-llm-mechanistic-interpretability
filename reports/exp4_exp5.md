@@ -13,11 +13,13 @@ Date: 2026-11-15. Code: `src/neurotopo/experiments/exp4_similarity.py`, `exp5_ro
 
 ![MDS and dendrogram](../docs/figures/fig_exp4.png)
 
+**Caveat.** Keeping only significant bars gives up the bottleneck stability theorem ([Cohen-Steiner, Edelsbrunner & Harer 2007](https://doi.org/10.1007/s00454-006-1276-5)): a bar just above the threshold in one cloud and just below it in a nearly identical cloud changes the distance by about half its length. The distance is computed exactly with Hera in GUDHI ([Kerber, Morozov & Nigmetov 2017](https://doi.org/10.1145/3064175)).
+
 **Learning.** Bottleneck distance in absolute radius units is dominated by bar length, not by π. A scale-free variant, for example log-coordinates of bars, is listed in the to-do. This exploratory analysis is reported as uninformative.
 
 ## Exp5: robustness
 
-- **Projection** (top Rips H1 π in 3D → top-5 → top-10 → full-dimensional cosine):
+- **Projection** (top Rips H1 π in 3D → top-5 → top-10 → full-dimensional cosine dissimilarity). The last value is not comparable with the others: 1 − cos is not a metric and is about angle²/2 for small angles, so its π is roughly the square of an angular-distance π ([math fact-check](reviews/math-fact-check.md)):
   - colours: 4.97 → 3.61 → 2.67 → 4.22;
   - residues: 2.31 → 1.63 → 1.16 → 1.31;
   - months: 1.57 → 1.21 → 1.13 → 1.24;
