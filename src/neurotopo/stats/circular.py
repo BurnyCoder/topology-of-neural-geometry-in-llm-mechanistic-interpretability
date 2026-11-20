@@ -121,7 +121,9 @@ def cyclic_order_matches(theta_c: np.ndarray) -> bool:
     """True if the concept means are in the semantic cyclic order 0, 1, ..., n-1 (up to rotation and reflection)
     AND the closed semantic cycle winds exactly once: every wrapped step c -> c+1 goes the same way around and
     the steps sum to +-2 pi. A monotone arc that covers only part of the circle is NOT a match (it orders the
-    concepts but does not go around a hole); this was a bug found by the independent audit (deviations D6)."""
+    concepts but does not go around a hole); this was a bug found by the independent audit (deviations D6).
+    Because of the same-way condition, cyclic_order_p (2/(n-1)!) bounds this criterion's null probability
+    from above; it is exact only when every circular gap between concept means is below pi (D13)."""
     th = np.asarray(theta_c, dtype=np.float64)
     if th.size < 3 or not np.all(np.isfinite(th)):
         return False

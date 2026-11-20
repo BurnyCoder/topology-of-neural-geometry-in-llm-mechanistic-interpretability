@@ -116,7 +116,7 @@ So the novelty is a preregistered, null-controlled topological test that a hole 
 **Inspiration for "travelling around the hole"** (to be stated in the README, the reports and the paper):
 - **Manifold steering:** Wurgaft, Rager, Kowal et al., *Manifold Steering Reveals the Shared Geometry of Neural Network Representation and Behavior*, [arXiv:2605.05115](https://arxiv.org/abs/2605.05115) (May 2026), and the [Goodfire blog post](https://www.goodfire.com/research/manifold-steering).
   - They fit a 1-D manifold to the seven day-of-week clusters of Llama-3.1-8B. The clusters form a rough circle.
-  - Moving activations *along* that manifold shifts the output from Monday to Tuesday to Wednesday and onward. Linear steering cuts across the manifold and produces off-target tokens.
+  - Moving activations *along* that manifold shifts the output from Monday to Tuesday to Wednesday and onward. Linear steering leaves the manifold and cuts across the behaviour manifold (arXiv:2605.05115; corrected by the independent math fact-check, D13).
   - They also study months, letters, ages and in-context graph geometries.
 - **Goodfire's [Neural Geometry series](https://www.goodfire.com/research/neural-geometry)**, including:
   - *The World Inside Neural Networks* (Geiger et al.);
