@@ -2,6 +2,8 @@
 
 Libor "Burny" Burian, 2026-11-20. Logged as deviation [D12](../deviations.md).
 
+> **Superseded in part** by the independent second check, [math-fact-check-2.md](math-fact-check-2.md) (D13). It found that this review's "9,000–50,000 points" for the universal null is wrong (the simulations use 10⁴–10⁶), and that torsion-freeness in ℝ³ is Hatcher Cor. 3.46, not Cor. 3.45. This file is kept unchanged below as a record.
+
 **Question.** Is the math in this repository used with the definitions, methods and conventions accepted in persistent homology (topological data analysis, TDA) and in mechanistic interpretability (MI)?
 
 **Answer in brief.** Mostly yes. The core machinery (alpha persistence, the universal null, the Monte Carlo max-statistic null, the Gaussian samplers, circular coordinates, the traversal statistics, the multiple-testing procedures) matches its sources. Two things were wrong in code, and they affected only descriptive invariants: Method B read b0 at a different scale from b1 and b2, and called a Betti-number label a "homotopy class". One Method A rule (spindle torus) had wrong Betti numbers, in a branch the data never reach. Several sentences overstated or mis-cited results; they are corrected below with sources. **No preregistered verdict changes.**
