@@ -170,7 +170,7 @@ def collect() -> dict:
                 for c in ("top_pi1", "null_q95_pi1", "p_top_loop", "top_pi2", "null_q95_pi2", "p_top_void", "loop_freq",
                           "void_freq"):
                     n[f"exp2.{s}.{c}"] = float(d.loc[i, c])
-                n[f"exp2.{s}.homotopy"] = d.loc[i, "homotopy_rc"]
+                n[f"exp2.{s}.betti_label"] = d.loc[i, "betti_label_rc"]
                 n[f"exp2.{s}.b0"], n[f"exp2.{s}.b0_rc"] = int(d.loc[i, "b0"]), int(d.loc[i, "b0_rc"])
                 n[f"exp2.{s}.ratio"] = float(d.loc[i, "top_pi1"] / d.loc[i, "null_q95_pi1"])   # ring strength / chance
         sm = read_json(_res("exp2", "summary.json"))

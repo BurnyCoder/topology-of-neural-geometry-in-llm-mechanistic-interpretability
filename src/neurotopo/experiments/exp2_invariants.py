@@ -2,8 +2,9 @@
 
 Global context (reports/preregistration.md, sections 4 and 7): per cloud we report the significant H1/H2
 bars under the design-matched MC null (primary) and the universal null (alpha A = 1/2, Rips A = 1;
-descriptive), b0 by the validation-tuned single-linkage rule, the characteristic scale r_c, Betti numbers and
-chi at r_c, genus (closed surfaces only), homotopy class, stability over 200 subsamples of 80% (the source's
+descriptive), b0 by the validation-tuned single-linkage rule, the characteristic scale r_c, all three Betti
+numbers and chi at r_c (deviation D12: b0 is now also read at r_c), genus (closed surfaces only), a Betti-number
+label (not a homotopy class; invariants.betti_label), stability over 200 subsamples of 80% (the source's
 subsample seeds), and agreement with the exact topology of the fitted shape (Exp0).
 """
 
@@ -47,11 +48,10 @@ def invariants_row(dataset_id: str, seed: int, t: dict, stab: bool = True) -> di
     d = realdata.alpha(dataset_id)
     mc = realdata.mc_significance(dataset_id, seed)
     y = c["y"]
-    b0, thr = invariants.b0_single_linkage(y, t["b0_tau"], t["b0_minfrac"])
     sig = [None, mc["sig"][1], mc["sig"][2]]
     pv = [None, mc["p"][1], mc["p"][2]]
-    rc = invariants.characteristic_scale(d, sig, pv, fallback=thr)
-    bc = invariants.betti_at_scale(d, sig, rc, b0)
+    s = invariants.scale_invariants(y, d, sig, pv, t["b0_tau"], t["b0_minfrac"])   # b0 rule, r_c, Betti at r_c
+    b0, rc, bc = s["b0"], s["r_c"], s["betti_rc"]
     pi1, pi2 = diagrams.ratios(d[1]), diagrams.ratios(d[2])
     row = {"id": dataset_id, "N": len(y), "D": c["x"].shape[1], "design": realdata.design(dataset_id),
            "top_pi1": float(np.nanmax(pi1)) if pi1.size else 1.0,
@@ -63,8 +63,8 @@ def invariants_row(dataset_id: str, seed: int, t: dict, stab: bool = True) -> di
            "b1_alpha_univ": int(nulls.universal_significant(d[1], A=0.5).sum()),
            "b2_alpha_univ": int(nulls.universal_significant(d[2], A=0.5).sum()),
            "b1_rips_univ": int(nulls.universal_significant(diagrams.rips_diagrams(y)[1], A=1.0).sum()),
-           "r_c": rc, "b0_rc": bc[0], "b1_rc": bc[1], "b2_rc": bc[2], "chi_rc": bc[0] - bc[1] + bc[2],
-           "genus_rc": invariants.genus(*bc), "homotopy_rc": invariants.homotopy_label(*bc),
+           "r_c": rc, "b0_rc": bc[0], "b1_rc": bc[1], "b2_rc": bc[2], "chi_rc": s["chi_rc"],
+           "genus_rc": s["genus_rc"], "betti_label_rc": s["label_rc"],
            "source_deviation": c["dev"]}
     if stab:
         row.update(stability(dataset_id, mc["null_q95"], cfg["stability"]["reps"], cfg["stability"]["frac"]))
@@ -82,7 +82,7 @@ def run() -> None:
         rows.append(r)
         log.info("%-28s N=%4d pi1=%.2f (q95 %.2f, p=%.4f) pi2=%.2f b=(%d,%d,%d)@r_c %s, stab loop %.2f",
                  did, r["N"], r["top_pi1"], r["null_q95_pi1"], r["p_top_loop"], r["top_pi2"], r["b0_rc"],
-                 r["b1_rc"], r["b2_rc"], r["homotopy_rc"], r["loop_freq"])
+                 r["b1_rc"], r["b2_rc"], r["betti_label_rc"], r["loop_freq"])
     df = pd.DataFrame(rows)
     a = pd.read_csv(config.path("results") / "exp0" / "real_topology.csv")
     df = df.merge(a[["id", "family", "b0", "b1", "b2", "rho_A"]].rename(columns={"b0": "A_b0", "b1": "A_b1", "b2": "A_b2"}),

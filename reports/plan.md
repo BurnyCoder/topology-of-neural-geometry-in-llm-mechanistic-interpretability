@@ -1,6 +1,6 @@
 # Plan and status
 
-Last updated: 2026-11-15.
+Last updated: 2026-11-20.
 
 ## Status
 
@@ -25,6 +25,7 @@ Last updated: 2026-11-15.
 | 14. Second independent audit (post hoc, D8) | done: `run.py audit` (colour RGB baseline, loop localisation, preregistered closure ratio, PCA gaps, size-matched stability, power CIs); claims corrected in README, reports and paper; no verdict changed ([exp7_audit.md](exp7_audit.md)) |
 | 15. Third independent audit (post hoc, D9) | done: `run.py audit3` (loop-test sensitivity and false-loop rate on synthetic clouds of known topology, sampler equivalence, cluster-centre null on hole-free concept centres, centre loops in other projections, dense-check tori). Main finding: the Gaussian nulls are not hole-specific, so ring claims rest on the traversal; months downgraded to "suggestive"; no verdict changed ([exp8_audit3.md](exp8_audit3.md)) |
 | 16. Worked example of the method (2026-11-16) | done: `run.py toy` runs every step of the loop and ring test on a 21-point toy week with the real-data functions; [docs/worked_example.md](../docs/worked_example.md) and its interactive version on the explorer site; closed-form checks in tests/test_toy_example.py |
+| 17. Math fact-check against the TDA and interpretability literature (2026-11-20, D12) | done: [reviews/math-fact-check.md](reviews/math-fact-check.md). Method B now reads b0 at r_c like b1/b2 and uses a Betti label instead of "homotopy class"; spindle-torus Betti numbers fixed; overstated or mis-cited sentences corrected with sources; 7 new tests; Exp2 regenerated; no verdict changed |
 | A hole-specific loop test (null resampled from hole-free fitted shapes at the cloud's noise) | not done (future work, D9) |
 | Colour controls with model inference (random-init Llama on the 900 prompts; colour names instead of hex codes) | not done (needs model inference; postponed) |
 
@@ -41,7 +42,7 @@ Every plan item, and where its evidence is. "Superseded" items were replaced by 
 | θ_A and travel around the hole on fitted shapes (+ helix axial winding, closure gap) | done | `results/exp0/real_alignment.json`, `results/coords/` |
 | Method B: alpha diagrams, universal null, design-matched MC null | done | `results/exp2/invariants.csv`, `results/nulls/` |
 | b0 rule tuned on validation only | done | `results/power/val_tuning.json` |
-| Invariants at one scale r_c, χ, genus rule, homotopy class | done | `results/exp2/invariants.csv` |
+| Invariants at one scale r_c (all three Betti numbers since D12), χ, genus rule, Betti label | done | `results/exp2/invariants.csv` |
 | θ_B (DREiMac), alignment R, exact or MC permutation p, winding, cyclic order, closure | done | `results/exp3/method_b.json` |
 
 **Experiments**
@@ -97,7 +98,7 @@ So the project works in two complementary ways:
 2. **Then persistent homology of the data clouds themselves,** as an independent, fit-free check of whether the data actually have the holes the fitted shape implies.
 
 Together these:
-- computes topological invariants of exactly those clouds: Betti numbers, Euler characteristic at a stated scale, genus where it is defined, and homotopy class;
+- computes topological invariants of exactly those clouds: Betti numbers, Euler characteristic at a stated scale, genus where it is defined, and a Betti-number label (homotopy type for Method A, where the space is known);
 - compares the clouds topologically;
 - tests the user's hypothesis: semantically cyclic concepts (weekdays, months, residues mod 113) carry a 1-cycle, and travelling around that cycle follows the semantic cycle. Non-cyclic ordinal concepts (years, temperature, age, positions, character counts) carry no such cycle.
 
@@ -192,7 +193,7 @@ Anyone with only the GitHub repo and the Hugging Face Hub must be able to replic
   - a CUDA regeneration of the ground-truth parameter dicts (the exact ground-truth topology), verified against the cache with max diff 0. This is the only GPU use apart from the optional Exp0b. The rest is CPU-bound persistent homology, parallelised with joblib over 16 cores.
 - **License:** our code is MIT. GUDHI's AlphaComplex is GPL-3 through CGAL. It stays a normal PyPI dependency (we don't redistribute binaries), and README/NOTICE say so.
 - **Complexes:**
-  - Primary: alpha complex in ℝ³. It is exact Čech, H2 is cheap, and it has no Rips "phantom" classes ([de Silva & Ghrist 2007](https://doi.org/10.2140/agt.2007.7.339); [Adamaszek & Adams 2017](https://arxiv.org/abs/1503.03669)). GUDHI returns squared filtration values, so I take √ to get radii.
+  - Primary: alpha complex in ℝ³. Its filtration has the same persistence as the Čech filtration ([Edelsbrunner 1995](https://doi.org/10.1007/BF02574053); [Bauer & Edelsbrunner 2017](https://doi.org/10.1090/tran/6991)), H2 is cheap, and it has no Rips "phantom" classes (Rips is only interleaved with Čech, [de Silva & Ghrist 2007](https://doi.org/10.2140/agt.2007.7.339); phantom 2-spheres: [Adamaszek & Adams 2017](https://doi.org/10.2140/pjm.2017.290.1)). Corrected in the [math fact-check](reviews/math-fact-check.md): the earlier wording "exact Čech" cited de Silva & Ghrist, who do not treat alpha complexes. GUDHI returns squared filtration values, so I take √ to get radii.
   - Rips (ripser) is used for the top-k PC and full-D checks and for cocycles, H1 only. H2 is computed with alpha only.
 
 ## Method A (done first): exact topology of the fitted parametric shapes
@@ -264,10 +265,10 @@ How θ_A is computed:
    - Betti numbers b_k(r_c): significant features alive at r_c, and components of size ≥ 2.
    - χ(r_c) = b0 − b1 + b2.
    - **Genus g = b1/2 only if b0 = 1 and b2 = 1** (a closed surface). Otherwise it is reported as "undetermined", and curves get cycle rank b1.
-   - Homotopy class: contractible (1,0,0); circle-like (1,1,0), which homology cannot tell apart from an annulus or solid torus (stated); sphere (1,0,1); torus (1,2,1); k components; or other.
+   - Homotopy class (as planned): contractible (1,0,0); circle-like (1,1,0); sphere (1,0,1); torus (1,2,1); k components; or other. Since D12 this is a Betti label (acyclic, circle-like, sphere-like, torus-like, ...), because Betti numbers do not determine a homotopy type; and circle, annulus and solid torus are homotopy equivalent, so no homotopy invariant separates them.
    - Betti curves and Euler-characteristic curves go in the figures.
    - Not computed, with the reasons stated in the methods:
-     - Torsion and orientability: subcomplexes of ℝ³ have torsion-free homology (Alexander duality), and closed surfaces embedded in ℝ³ are orientable.
+     - Torsion and orientability: subcomplexes of ℝ³ have torsion-free homology (Alexander duality), and closed surfaces embedded in ℝ³ are orientable. Persistence (H1) can still depend on the field in rare cases ([Obayashi & Yoshiwaki 2023](https://doi.org/10.1007/s00454-023-00544-7)).
      - TwoNN dimension: unreliable at small N and on clustered clouds.
 5. **"Travel around the hole"** (inspired by manifold steering and the Goodfire Neural Geometry series; see Context):
    - Circular coordinate θ from the top H1 class, using DREiMac (prime 47, landmarks = min(N, 200), coordinate scale fixed in the preregistration). The method is [de Silva, Morozov & Vejdemo-Johansson 2011](https://doi.org/10.1007/s00454-011-9344-x).
@@ -349,7 +350,7 @@ How θ_A is computed:
   - Detection curves are plotted against margin/noise.
   - CIs: cluster bootstrap over generator chunks of 25. A family × homotopy-class table shows which geometric families are topologically equivalent.
 - **Exp2, invariants of all 44 real clouds:**
-  - Diagrams, significant features under both nulls, invariants at r_c, genus or cycle rank, homotopy class.
+  - Diagrams, significant features under both nulls, invariants at r_c, genus or cycle rank, Betti label.
   - Stability over 200 subsamples of 80%, re-run through `fit_frame` with the source's seeds.
   - Compared with the fitter's family and its implied topology.
 - **Exp3:** H1-B, H2-B, H3 and H4 (which combines Exp0's Method A verdicts with the PH verdicts), plus the exploratory alignment tests under both methods.
@@ -383,7 +384,7 @@ src/neurotopo/
   geometry/pca.py       # numpy fit_frame
   tda/diagrams.py       # alpha (sqrt radii), rips, pi, betti_at_scale
   tda/nulls.py          # universal_pvalues, mc_pvalue, gram_gaussian, cluster_centre_null
-  tda/invariants.py     # significant features, b0 rule, r_c, chi, genus, homotopy class
+  tda/invariants.py     # significant features, b0 rule, r_c, Betti numbers at r_c, chi, genus, Betti label
   tda/ground_truth.py   # resolvability (margin / noise), effective topology of gt_dense at r*
   tda/circular.py       # DREiMac wrapper -> theta_B from the top H1 cocycle
   tda/compare.py        # bottleneck on significant features, MDS, dendrogram, templates

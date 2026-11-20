@@ -4,10 +4,13 @@ Global context: a persistence diagram always contains short "noise" bars; Method
 bars are real holes (reports/preregistration.md, section 4).
 - Universal null (Bobrowski & Skraba 2023, Sci. Rep. 13:12274, doi:10.1038/s41598-023-37842-2, eqs. for
   pi, l and the left-Gumbel law): l = A log log pi + B, B = -lambda - A * mean(log log pi), p = exp(-e^l),
-  Bonferroni within the diagram. Validated on large i.i.d. samples, so descriptive on real data.
+  Bonferroni within the diagram (A = 1/2 Cech, 1 Rips: AVALS in the authors' modules/PDplot.py). Validated on
+  large samples (n = 9,000-50,000 in the paper's examples), so descriptive on real data.
 - Monte Carlo nulls (primary on real data): the maximum pi of H_k over M null clouds that pass through the
-  same preprocessing, in the style of the max-over-shuffles threshold of Gardner et al. 2022
-  (doi:10.1038/s41586-021-04268-7). Two designs: (a) a cluster-centre null that redraws the concept means
+  same preprocessing, adapted from the shuffle threshold of Gardner et al. 2022 (doi:10.1038/s41586-021-04268-7,
+  Methods): they pooled the bars of 1,000 shuffles and used the longest lifetime (death - birth) per dimension as
+  a heuristic threshold; we use the scale-free ratio pi, one maximum per null cloud, and the Monte Carlo p-value
+  (1 + b)/(M + 1) (Phipson & Smyth 2010, doi:10.2202/1544-6115.1585). Two designs: (a) a cluster-centre null that redraws the concept means
   from a Gaussian with their covariance and keeps every point's within-concept residual (prompt-template
   designs), and (b) a full-D matched-covariance Gaussian (one point per value).
 """
@@ -32,7 +35,8 @@ def universal_pvalues(dgm: np.ndarray, A: float) -> np.ndarray:
     """Per-bar p-values under the universal null; NaN for bars with pi <= 1 or undefined pi.
 
     The mean L of log log pi is taken over bars with pi > 1, as in the authors' released code
-    (github.com/primozskraba/PersistenceUniversality, modules/PDplot.py), since log log 1 = -inf.
+    (github.com/primozskraba/PersistenceUniversality, modules/PDplot.py), since log log 1 = -inf. The paper averages
+    over all of dgm_k; the two agree here because zero-length bars are dropped, so every finite bar has pi > 1.
     """
     pi = ratios(dgm)
     valid = np.isfinite(pi) & (pi > 1.0 + 1e-12)

@@ -12,7 +12,7 @@ All are textbook facts, from [Hatcher, *Algebraic Topology* (2002)](https://pi.m
 - **A finite set of k points:** (k, 0, 0).
 - **Euler–Poincaré formula:** χ = b0 − b1 + b2.
 - **Compact orientable surfaces:** with genus g and n boundary circles, χ = 2 − 2g − n. Every closed surface embedded in ℝ³ is orientable.
-- **Homotopy invariance:** a cone surface with an apex deformation-retracts to a point, so it is a disc. The lateral surface of a frustum (r_bot > 0) is an annulus, S¹ × [0, 1], which is homotopy equivalent to S¹.
+- **Cone and frustum:** a cone surface with an apex is a disc: its parametrisation (s, φ) ↦ (s·r cos φ, s·r sin φ, h s) is polar coordinates on a disc, with the apex as centre. (It also deformation-retracts to its apex, but that only shows it is contractible.) The lateral surface of a frustum (r_bot > 0) is an annulus, S¹ × [0, 1], which is homotopy equivalent to S¹ (Hatcher, ch. 0).
 
 ## Rules and margins
 
@@ -38,7 +38,7 @@ The **margin** m is the length of the smallest parameter change that changes the
 
 **Notes on the rules:**
 - The 0.98 thresholds for closed arcs and closed spheres are the source's own (`Arc.FULL`, `Sphere.FULL`). Below the threshold, the source reports an open arc or a cap.
-- The source caps the torus ratio at 0.95, so horn and spindle tori cannot occur. They are handled anyway: a horn torus is homotopy equivalent to S² ∨ S¹, with Betti numbers (1, 1, 1).
+- The source caps the torus ratio at 0.95, so horn and spindle tori cannot occur. They are handled anyway: a horn torus is homotopy equivalent to S² ∨ S¹, with Betti numbers (1, 1, 1); a spindle torus is an outer and an inner sphere glued at the two axis points, homotopy equivalent to S² ∨ S² ∨ S¹, with Betti numbers (1, 1, 2) (fixed in the math fact-check; it had (1, 1, 1)).
 - The ringing curve c + Σₖ aₖ cos(kπs) eₖ is embedded: its first coordinate a1·cos(πs) is strictly monotone on [0, 1].
 
 ## Numerical check

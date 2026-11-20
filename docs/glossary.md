@@ -46,16 +46,18 @@ The source project fitted each cloud with one of 13 parametrised families: blob,
 (b0, b1, b2) count the pieces, the independent loops (1-dimensional holes) and the enclosed voids (2-dimensional cavities) of a space.
 - Examples: a circle has (1, 1, 0), a sphere (1, 0, 1), a torus (1, 2, 1), and a disc or ball (1, 0, 0).
 - **Method A** reads them exactly off the fitted family and its parameters ([Hatcher 2002](https://pi.math.cornell.edu/~hatcher/AT/AT.pdf), chapter 2).
-- **Method B** counts the significant loops and voids alive at the characteristic scale r_c; its b0 comes from a single-linkage clustering rule tuned on validation clouds.
+- **Method B** reads all three at the characteristic scale r_c: b0 is the number of pieces of the alpha complex at r_c (pieces smaller than the b0 rule's minimum size do not count), and b1, b2 count the significant loops and voids alive at r_c. Before deviation D12, b0 came from the b0 rule's own cut, a different scale. Separately, the b0 rule (a single-linkage clustering rule tuned on validation clouds) gives the cloud's number of clusters.
 
 ### Euler characteristic
-χ = b0 − b1 + b2. One number that summarises the Betti numbers: 2 for a sphere, 0 for a circle or a torus, 1 for a disc.
+χ = b0 − b1 + b2 (the Euler–Poincaré formula, [Hatcher 2002](https://pi.math.cornell.edu/~hatcher/AT/AT.pdf), Thm 2.44). One number that summarises the Betti numbers: 2 for a sphere, 0 for a circle or a torus, 1 for a disc. For Method B it is computed from the significant loops and voids only, so it is the χ of the signal, not of the whole alpha complex at r_c (which also holds short noise loops).
 
 ### Genus
 The number of handles of a closed surface, from χ = 2 − 2g: 0 for a sphere, 1 for a torus. "–" when the space is not a closed surface.
 
-### Homotopy class
-A coarse label of the shape up to continuous deformation, read from the Betti numbers: contractible (1,0,0), circle-like (1,1,0), sphere (1,0,1), torus (1,2,1), or k components. Homology cannot separate a circle from an annulus, or a point from a disc.
+### Homotopy type and Betti label
+Two spaces have the same **homotopy type** if one can be continuously deformed into the other, for example a circle, an annulus and a solid torus, or a point and a disc ([Hatcher 2002](https://pi.math.cornell.edu/~hatcher/AT/AT.pdf), ch. 0). No homotopy invariant, homology included, can tell such spaces apart.
+- **Method A** knows the fitted space itself, so it reports its true homotopy type: point, circle, sphere, torus, k points.
+- **Method B** has only Betti numbers, which do not determine a homotopy type: a torus and a sphere with two circles attached at a point both have (1, 2, 1), and (1, 0, 0) means "acyclic", which is weaker than contractible. Its **Betti label** therefore says acyclic (1,0,0), circle-like (1,1,0), sphere-like (1,0,1), torus-like (1,2,1), k components, or other (deviation D12).
 
 ### Margin ratio rho_A
 ρ_A = m / (2ν) asks whether the data can resolve the fitted shape's topology.
@@ -78,20 +80,20 @@ Put a ball of radius r around every point and let r grow from 0. Small r gives s
 Vertices, edges, triangles and tetrahedra glued along shared faces. It is a combinatorial stand-in for the union of balls that a computer can count holes in.
 
 ### Alpha complex
-The simplicial complex used here, computed with [GUDHI](https://gudhi.inria.fr/python/latest/alpha_complex_user.html).
-- It has exactly the holes of the union of balls at every radius (the nerve theorem), and it uses only Delaunay simplices, so it stays small.
-- An edge enters at half its length if no other point lies inside the circle (sphere, in 3D) that has the edge as diameter; otherwise it enters together with a triangle.
-- A triangle enters at the radius of its circumcircle (more generally, its smallest empty circumsphere).
+The simplicial complex used here, computed with [GUDHI](https://gudhi.inria.fr/python/latest/delaunay_complex_user.html).
+- At every radius it is homotopy equivalent to the union of balls, so it has exactly the same holes ([Edelsbrunner 1995](https://doi.org/10.1007/BF02574053), via the nerve theorem). It is a smaller complex than the Čech complex, but the two filtrations have the same persistence diagrams ([Bauer & Edelsbrunner 2017](https://doi.org/10.1090/tran/6991), [arXiv](https://arxiv.org/abs/1312.1231)). It uses only Delaunay simplices, so it stays small.
+- An edge enters at half its length if no other point lies inside the circle (sphere, in 3D) that has the edge as diameter (a Gabriel edge); otherwise it enters together with the earliest triangle on it whose third corner lies inside that sphere ([GUDHI](https://gudhi.inria.fr/doc/latest/group__alpha__complex.html)).
+- A triangle enters at the radius of its circumcircle if that circle's smallest sphere is empty; otherwise, by the same rule, together with a tetrahedron. In general a simplex enters at the radius of its smallest empty circumsphere.
 - The examples page draws its edges as r grows.
 
 ### Rips complex
-Adds a simplex whenever all its points are pairwise within distance 2r. It is cheaper in high dimensions but can create holes the union of balls does not have. Here it is used for the top-10-PC checks and for the hole coordinate θ_B.
+Adds a simplex whenever all its points are pairwise within distance 2r. It is cheaper in high dimensions but can create holes the union of balls does not have: 12 evenly spaced points on a circle get three 2-spheres at some scales ([Adamaszek & Adams 2017](https://doi.org/10.2140/pjm.2017.290.1), Thm 4.3; checked in `tests/test_tda.py`). It is only interleaved with the Čech complex ([de Silva & Ghrist 2007](https://doi.org/10.2140/agt.2007.7.339), Thm 2.5). Here it is used for the top-10-PC checks and for the hole coordinate θ_B.
 
 ### Filtration
 The nested sequence of complexes as r grows. Every simplex has an entry radius, and nothing is ever removed.
 
 ### Homology H0 H1 H2
-H0 = connected pieces, H1 = loops, H2 = voids, computed with coefficients mod 2. In the explorer's persistence diagram, H1 loops are dots and H2 voids are triangles.
+H0 = connected pieces, H1 = loops, H2 = voids, computed with coefficients mod 2. For complexes in ℝ³, H0 and H2 bars do not depend on that choice; H1 bars can, in rare cases such as a Möbius band ([Obayashi & Yoshiwaki 2023](https://doi.org/10.1007/s00454-023-00544-7): 1 in 10,000 random alpha filtrations; `tests/test_tda.py`). In the explorer's persistence diagram, H1 loops are dots and H2 voids are triangles.
 
 ### Birth and death
 A loop is **born** at the radius where it first closes and **dies** at the radius where it is filled in. A piece (H0) is born at 0 and dies when it merges with an older piece.
@@ -114,28 +116,30 @@ One closed surface of triangles that encloses a given void (an H2 bar). The expl
 ### Persistence ratio pi
 π = death / birth ([Bobrowski & Skraba 2023](https://doi.org/10.1038/s41598-023-37842-2)).
 - Because it is a ratio, it does not change if the cloud is scaled.
-- Loops made by noise have π close to 1. Any loop of 3 points has π ≤ 2/√3, and a regular k-gon of points gives 1/sin(π/k).
+- Loops made by noise have π close to 1. Any loop of 3 points has π ≤ 2/√3, and a regular k-gon of points gives 1/sin(π/k) (our derivation, checked in `tests/test_tda.py` and the [worked example](worked_example.md)).
+- 1/sin(π/k) is the value for k point-like concept centres, not a ceiling for a ring of k clusters: spread within the clusters lets neighbours connect earlier, so a ring of noisy clusters can have a larger π (`tests/test_tda.py::test_cluster_ring_can_exceed_point_polygon_ratio`).
+- The largest π of pure noise grows slowly with the number of points, like (log N / log log N)^(1/k) for k-dimensional holes ([Bobrowski, Kahle & Skraba 2017](https://doi.org/10.1214/16-AAP1232), for uniform-like samples).
 
 ### Top H1 pi
 The largest π among a cloud's loops: its most persistent loop. This is the statistic of the loop test. In the README's example figure, the bars show it divided by the null's 95th percentile.
 
 ### Monte Carlo null
-M = 999 random clouds that match the data's design. Each goes through the same top-3 PCA and alpha complex, and its largest π is recorded. The data's loop is compared with this distribution of maxima, which controls for the many loops every cloud has (in the style of [Gardner et al. 2022](https://doi.org/10.1038/s41586-021-04268-7)).
+M = 999 random clouds that match the data's design. Each goes through the same top-3 PCA and alpha complex, and its largest π is recorded. The data's loop is compared with this distribution of maxima, which controls for the many loops every cloud has. This is adapted from [Gardner et al. 2022](https://doi.org/10.1038/s41586-021-04268-7), who pooled the bars of 1,000 shuffled datasets and used the longest lifetime (death − birth) as a threshold, which they call a heuristic; here the statistic is the scale-free ratio π, one maximum per null cloud, with a Monte Carlo p-value.
 - **Cluster-centre null** (prompt-template designs): the concept centres are redrawn from a Gaussian with their own covariance, and every prompt keeps its offset from its concept centre.
 - **Matched Gaussian** (one point per value): a Gaussian cloud with the data's full covariance.
 - Both are Gaussian, so a significant loop means "more persistent than a covariance-matched Gaussian blob", not necessarily a hole (deviation D9).
 
 ### Null 95th percentile q95
-The 95th percentile of the 999 null maxima. In the persistence diagrams it is the red line d = q95 · b: loops above it are significant at the 5% level.
+The 95th percentile of the 999 null maxima. In the persistence diagrams it is the red line d = q95 · b: loops above it are significant at about the 5% level. The exact rule is the Monte Carlo p-value below (p < 0.05), which can differ from "above q95" by one null draw at the boundary.
 
 ### Monte Carlo p-value
-p = (1 + number of null maxima ≥ the observed π) / (M + 1). With M = 999 the smallest possible value is 0.001. "loop p (MC)" in the explorer is this p for the cloud's most persistent loop.
+p = (1 + number of null maxima ≥ the observed π) / (M + 1) ([Phipson & Smyth 2010](https://doi.org/10.2202/1544-6115.1585)). With M = 999 the smallest possible value is 0.001. "loop p (MC)" in the explorer is this p for the cloud's most persistent loop.
 
 ### Universal null
-A theory-based alternative: for large random samples, log log π follows a universal Gumbel-type law ([Bobrowski & Skraba 2023](https://doi.org/10.1038/s41598-023-37842-2)). It is reported only descriptively, because it is very conservative at these sample sizes.
+A theory-based alternative: for large random samples, ℓ = A·log log π − λ − A·L̄ (A = ½ for alpha/Čech, 1 for Rips; L̄ the mean of log log π, λ the Euler–Mascheroni constant) follows a left-skewed Gumbel law, so p = exp(−e^ℓ), with a Bonferroni correction within the diagram ([Bobrowski & Skraba 2023](https://doi.org/10.1038/s41598-023-37842-2); [code](https://github.com/primozskraba/PersistenceUniversality)). The paper's examples use 9,000–50,000 points. It is reported only descriptively, because it is very conservative at these sample sizes.
 
 ### Characteristic scale r_c
-r_c = √(birth · death) of the most significant loop or void: the scale at which that feature is most clearly alive. Method B's Betti numbers, Euler characteristic, genus and homotopy class are read at r_c.
+r_c = √(birth · death) of the most significant loop or void: the middle of its bar on a log scale, where that feature is most clearly alive. If there is none, r_c is half the b0 rule's cut length (the cut is an edge length, a diameter). Method B's Betti numbers (all three), Euler characteristic, genus and Betti label are read at r_c.
 
 ### Stability over subsamples
 The share of 200 random 80% subsamples in which the cloud's most persistent loop still beats the null's 95th percentile.

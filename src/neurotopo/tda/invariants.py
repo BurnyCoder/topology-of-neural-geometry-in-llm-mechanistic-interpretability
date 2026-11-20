@@ -2,9 +2,15 @@
 
 Global context: from a persistence diagram and a significance mask we report (reports/preregistration.md,
 section 4.4-4.5): persistent counts b_k^pers (number of significant bars), Betti numbers at one stated scale
-r_c (so chi(r_c) = b0 - b1 + b2 is the Euler characteristic of one complex, not a mix of scales), the genus
-only for closed surfaces (b0 = 1, b2 = 1; chi = 2 - 2g), and a homotopy-class label. Homology cannot tell a
-circle from an annulus or a solid torus; that limitation is stated in every report.
+r_c, the genus only for closed surfaces (b0 = 1, b2 = 1; chi = 2 - 2g), and a Betti-number label.
+- All three Betti numbers are read off the alpha complex at the same radius r_c: b0 = its components (single
+  linkage at edge length 2 r_c, with the same minimum component size as the b0 rule), b1 / b2 = significant bars
+  alive at r_c. Before the math fact-check (deviation D12) b0 came from the b0 rule's own cut, a different scale.
+- b1(r_c) and b2(r_c) count significant bars only, so chi(r_c) = b0 - b1 + b2 is the Euler characteristic of the
+  signal Betti numbers, not of the full alpha complex at r_c (which also holds the noise bars alive there).
+- Betti numbers do not determine a homotopy type (the torus and S^2 v S^1 v S^1 are both (1, 2, 1); (1, 0, 0) is
+  acyclic, which is weaker than contractible), so the label says "acyclic", "circle-like", "sphere-like", ...
+  Homotopy-equivalent spaces (circle, annulus, solid torus) cannot be told apart by any homotopy invariant.
 """
 
 from __future__ import annotations
@@ -37,17 +43,30 @@ def mst_edges(points: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
     return g.data, np.c_[g.row, g.col]
 
 
-def b0_from_mst(w: np.ndarray, ij: np.ndarray, n: int, tau: float, min_frac: float) -> tuple[int, float]:
-    """Components after cutting MST edges longer than tau * median MST edge, counting only components with
-    at least max(1, ceil(min_frac * N)) points (outliers must not count); returns (b0, threshold length)."""
-    if w.size == 0:
-        return int(n), 0.0
-    thr = tau * float(np.median(w))
+def _components(w: np.ndarray, ij: np.ndarray, n: int, thr: float, min_frac: float) -> int:
+    """Components of the MST graph restricted to edges of length <= thr, counting only components with at least
+    max(1, ceil(min_frac * N)) points (outliers must not count). Cutting the MST gives the same components as
+    cutting the full graph (single linkage)."""
     keep = w <= thr
     g = coo_matrix((np.ones(int(keep.sum())), (ij[keep, 0], ij[keep, 1])), shape=(n, n))
     _, lab = connected_components(g, directed=False)
-    sizes = np.bincount(lab)
-    return int((sizes >= max(1, math.ceil(min_frac * n))).sum()), thr
+    return int((np.bincount(lab) >= max(1, math.ceil(min_frac * n))).sum())
+
+
+def b0_from_mst(w: np.ndarray, ij: np.ndarray, n: int, tau: float, min_frac: float) -> tuple[int, float]:
+    """The preregistered b0 rule: components after cutting MST edges longer than tau * median MST edge, with the
+    minimum component size; returns (b0, threshold edge length)."""
+    if w.size == 0:
+        return int(n), 0.0
+    thr = tau * float(np.median(w))
+    return _components(w, ij, n, thr, min_frac), thr
+
+
+def b0_at_radius(w: np.ndarray, ij: np.ndarray, n: int, r: float, min_frac: float) -> int:
+    """Components of the alpha (Cech) complex at radius r, with the minimum component size: two balls of radius r
+    meet iff their centres are at most 2r apart, so H0 at radius r is single linkage at edge length 2r (an alpha
+    H0 bar dies at half an MST edge length)."""
+    return int(n) if w.size == 0 else _components(w, ij, n, 2.0 * r, min_frac)
 
 
 def b0_single_linkage(points: np.ndarray, tau: float, min_frac: float) -> tuple[int, float]:
@@ -64,8 +83,8 @@ def b0_grid(points: np.ndarray, taus, fracs) -> dict:
 
 def characteristic_scale(dgms: list[np.ndarray], sig: list[np.ndarray], pvals: list[np.ndarray],
                          fallback: float) -> float:
-    """r_c = sqrt(birth * death) of the most significant H1/H2 bar (smallest p, ties by larger pi);
-    the b0 threshold scale if there is no significant H1/H2 bar."""
+    """r_c = sqrt(birth * death) of the most significant H1/H2 bar (smallest p, ties by larger pi), the middle of
+    the bar on a log scale; `fallback` (a radius) if there is no significant H1/H2 bar."""
     best = None
     for k in (1, 2):
         if k >= len(dgms) or sig[k] is None or not np.any(sig[k]):
@@ -80,9 +99,12 @@ def characteristic_scale(dgms: list[np.ndarray], sig: list[np.ndarray], pvals: l
     return fallback if best is None else best[1]
 
 
-def betti_at_scale(dgms: list[np.ndarray], sig: list[np.ndarray], r: float, b0: int) -> tuple[int, int, int]:
-    """Betti numbers at scale r: b0 from single linkage, b1/b2 = significant bars alive at r."""
-    out = [b0]
+def betti_at_scale(dgms: list[np.ndarray], sig: list[np.ndarray], r: float, mst: tuple, min_frac: float
+                   ) -> tuple[int, int, int]:
+    """Betti numbers of the alpha complex at one radius r: b0 = its components (mst = (edge lengths, pairs, N);
+    minimum component size min_frac), b1/b2 = significant bars alive at r (birth <= r < death)."""
+    w, ij, n = mst
+    out = [b0_at_radius(w, ij, n, r, min_frac)]
     for k in (1, 2):
         d = dgms[k]
         alive = (d[:, 0] <= r) & (r < d[:, 1])
@@ -90,10 +112,24 @@ def betti_at_scale(dgms: list[np.ndarray], sig: list[np.ndarray], r: float, b0: 
     return tuple(out)
 
 
-def homotopy_label(b0: int, b1: int, b2: int) -> str:
-    """Homotopy-class label from Betti numbers (homology cannot separate a circle from an annulus or a
-    solid torus, nor a point from a disc or a ball)."""
-    table = {(1, 0, 0): "contractible", (1, 1, 0): "circle-like", (1, 0, 1): "sphere", (1, 2, 1): "torus"}
+def scale_invariants(points: np.ndarray, dgms: list[np.ndarray], sig: list, pvals: list, tau: float,
+                     min_frac: float) -> dict:
+    """Everything Exp2 reads at one scale: the b0 rule (b0, its cut), r_c, (b0, b1, b2) at r_c, chi, genus and label.
+    The b0 cut is an MST edge length, i.e. a diameter, so the fallback radius is half of it; at that radius b0(r_c)
+    equals the rule's b0."""
+    w, ij = mst_edges(points)
+    n = len(points)
+    b0, thr = b0_from_mst(w, ij, n, tau, min_frac)
+    rc = characteristic_scale(dgms, sig, pvals, fallback=thr / 2.0)
+    bc = betti_at_scale(dgms, sig, rc, (w, ij, n), min_frac)
+    return {"b0": b0, "b0_threshold": thr, "r_c": rc, "betti_rc": bc, "chi_rc": bc[0] - bc[1] + bc[2],
+            "genus_rc": genus(*bc), "label_rc": betti_label(*bc)}
+
+
+def betti_label(b0: int, b1: int, b2: int) -> str:
+    """Label read from Betti numbers alone. It is not a homotopy class: Betti numbers do not determine one (the
+    torus and S^2 v S^1 v S^1 are both (1, 2, 1)), hence "acyclic" rather than "contractible" and "-like"."""
+    table = {(1, 0, 0): "acyclic", (1, 1, 0): "circle-like", (1, 0, 1): "sphere-like", (1, 2, 1): "torus-like"}
     if (b0, b1, b2) in table:
         return table[(b0, b1, b2)]
     if b1 == 0 and b2 == 0:

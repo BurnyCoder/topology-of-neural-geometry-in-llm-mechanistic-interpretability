@@ -1,9 +1,13 @@
 """Exp4: topological similarity between the 44 real clouds and ideal shape templates (exploratory).
 
-Global context (reports/preregistration.md, section 7): Wasserstein distances between full diagrams grow with
-the number of near-diagonal noise bars, i.e. with N (Kerber, Morozov & Nigmetov 2017, doi:10.1145/3064175),
-so clouds of N = 5..1496 are compared with the bottleneck distance on *significant* bars only (H0 components
-from the b0 rule, H1/H2 bars significant under the design-matched MC null), summed over dimensions. The
+Global context (reports/preregistration.md, section 7): a p-Wasserstein distance sums over every matched bar,
+including the near-diagonal noise bars whose number grows with N (true by its definition, e.g. Cohen-Steiner et al.
+2010, doi:10.1007/s10208-010-9060-6), so clouds of N = 5..1496 are compared with the bottleneck distance on
+*significant* bars only (H0 components from the b0 rule, H1/H2 bars significant under the design-matched MC null),
+summed over dimensions; GUDHI computes it exactly (Hera; Kerber, Morozov & Nigmetov 2017, doi:10.1145/3064175).
+Discarding bars by a threshold gives up the bottleneck stability theorem (Cohen-Steiner, Edelsbrunner & Harer
+2007, doi:10.1007/s00454-006-1276-5): a bar just above the threshold in one cloud and just below it in a nearly
+identical cloud changes the distance by about half its length, so this similarity is exploratory only. The
 distance matrix gives an MDS map, an average-linkage dendrogram, the nearest ideal template per cloud
 (compared with the fitted family), and a permutation test of whether the cyclic group is topologically cohesive.
 """
