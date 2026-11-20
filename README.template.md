@@ -4,7 +4,7 @@ Do concepts that are cyclic in meaning (days, months, colours, residues mod n) o
 
 **Status (2026-11-15):** all preregistered topology analyses are done. They use only stored activations; no model inference was run. A second and a third independent audit added post hoc checks and corrected several plain-language claims; no preregistered verdict changed ([reports/exp7_audit.md](reports/exp7_audit.md), [reports/exp8_audit3.md](reports/exp8_audit3.md)). Model steering and simulated steering are preregistered and **postponed by the author**.
 
-**Links:** [paper (PDF)](paper/main.pdf) · [interactive explorer](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/) · [how the example results were made (interactive)](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/examples.html) · [worked example of the method](docs/worked_example.md) ([interactive](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/worked_example.html)) · [method and terms](docs/glossary.md) · [inputs and results on Hugging Face](https://huggingface.co/datasets/BurnyCoder/topology-of-neural-geometry) · [preregistration](reports/preregistration.md) · [summary of all experiments](reports/summary.md)
+**Links:** [paper (PDF)](paper/main.pdf) · [interactive explorer](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/) · [how the example results were made (interactive)](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/examples.html) · [worked example of the method](docs/worked_example.md) ([interactive](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/worked_example.html)) · [method and terms](docs/glossary.md) · [inputs and results on Hugging Face](https://huggingface.co/datasets/BurnyCoder/topology-of-neural-geometry) · [preregistration](reports/preregistration.md) · [summary of all experiments](reports/summary.md) · [math fact-check](reports/reviews/math-fact-check.md)
 
 ## What we found, in plain words
 
@@ -92,7 +92,7 @@ For a regular octahedron the void lives from √(2/3) ≈ 0.816 to 1, a persiste
 - **Bottom:** the persistence of each cloud's most persistent loop, divided by the 95th percentile of the same statistic in random Gaussian clouds of the same design. Above the dashed line means a significant loop (p < 0.05).
   - A significant loop is not always a ring of the concepts: for days with times it is a small loop inside one day's cluster (grey bar).
   - A significant loop is not by itself a hole either (D9).
-- **A flat picture can mislead.** The weekdays look round here, but the 7 day centres form only a weak loop even in this plane (persistence ratio {{audit3.cen.weekdays.pc12:2}}, with a large Sunday → Monday gap) and none in 3D ({{audit.loc.weekdays.means_pi:2}}). A regular 7-gon gives 1/sin(π/7) ≈ 2.3.
+- **A flat picture can mislead.** The weekdays look round here, but the 7 day centres form only a weak loop even in this plane (persistence ratio {{audit3.cen.weekdays.pc12:2}}, with a large Sunday → Monday gap) and none in 3D ({{audit.loc.weekdays.means_pi:2}}). Seven point-like centres on a regular 7-gon give 1/sin(π/7) ≈ 2.3.
 - **Every step behind this figure**, with numbers, is worked through on a 21-point toy week in [docs/worked_example.md](docs/worked_example.md) ([interactive version](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/worked_example.html)).
 
 ![How the example results were made: the alpha complex of each example cloud grows with the radius r while its persistence diagram records each loop's birth and death](docs/figures/anim_examples.gif)
@@ -153,7 +153,7 @@ All statistics behind these sentences are in [Results](#results). The words are 
   - The topological question behind that: is there a hole you can travel around, and does the semantic cycle go around it exactly once? If so, steering around the loop should be semantically meaningful, and topology should help find where to steer.
 - **How it works.** Two independent methods, then one shared test:
   1. **Method A, exact topology of the fitted shape.** The source's shapes are uniquely parametrised, so Betti numbers, Euler characteristic and genus follow exactly from the fitted parameters ([Hatcher](https://pi.math.cornell.edu/~hatcher/AT/AT.pdf)). A margin ratio ρ_A says whether the data's noise can resolve that topology.
-  2. **Method B, persistent homology of the cloud itself.** The idea of counting holes this way (grow balls around the points and keep the holes that persist) is explained in the primary reference [What is...persistent homology?](https://www.youtube.com/watch?v=w6Jx1vFp_Gk) (VisualMath). We use alpha complexes ([GUDHI](https://gudhi.inria.fr)), the persistence ratio π = death/birth with a universal null ([Bobrowski & Skraba 2023](https://doi.org/10.1038/s41598-023-37842-2)), and a design-matched Monte Carlo max-statistic null (as in [Gardner et al. 2022](https://doi.org/10.1038/s41586-021-04268-7)).
+  2. **Method B, persistent homology of the cloud itself.** The idea of counting holes this way (grow balls around the points and keep the holes that persist) is explained in the primary reference [What is...persistent homology?](https://www.youtube.com/watch?v=w6Jx1vFp_Gk) (VisualMath). We use alpha complexes ([GUDHI](https://gudhi.inria.fr); same persistence as the Čech complex of the union of balls, [Bauer & Edelsbrunner 2017](https://doi.org/10.1090/tran/6991)), the persistence ratio π = death/birth with a universal null ([Bobrowski & Skraba 2023](https://doi.org/10.1038/s41598-023-37842-2)), and a design-matched Monte Carlo max-statistic null (adapted from the shuffle threshold of [Gardner et al. 2022](https://doi.org/10.1038/s41586-021-04268-7), with π instead of lifetime and a [Phipson & Smyth](https://doi.org/10.2202/1544-6115.1585) p-value).
   3. **Travel around the hole.** Each point gets a circle-valued coordinate: its position on the fitted shape (θ_A), or a persistent-cohomology coordinate ([de Silva et al. 2011](https://doi.org/10.1007/s00454-011-9344-x), via [DREiMac](https://github.com/scikit-tda/DREiMac)) (θ_B). We test whether the concepts are ordered around it (alignment R with exact or Monte Carlo permutation tests) and wind around it exactly once (winding number ±1).
 - **Methodology.**
   - **Preregistered:** hypotheses, metrics, nulls and decision rules were pushed before any topology was computed ([preregistration](reports/preregistration.md)). All later changes are logged as dated deviations ([deviations](reports/deviations.md)).
@@ -390,7 +390,7 @@ Full report: [reports/exp1_synthetic.md](reports/exp1_synthetic.md).
 
 ## Methodology
 
-Full design decisions: [docs/methodology.md](docs/methodology.md). Every technical term: [docs/glossary.md](docs/glossary.md). Every step of the loop and ring test carried out with numbers on a toy cloud: [docs/worked_example.md](docs/worked_example.md). Exact topology of each family: [docs/analytic_topology.md](docs/analytic_topology.md).
+Full design decisions: [docs/methodology.md](docs/methodology.md). Every technical term: [docs/glossary.md](docs/glossary.md). Every step of the loop and ring test carried out with numbers on a toy cloud: [docs/worked_example.md](docs/worked_example.md). Exact topology of each family: [docs/analytic_topology.md](docs/analytic_topology.md). Fact-check of the math against the TDA and interpretability literature, with sources: [reports/reviews/math-fact-check.md](reports/reviews/math-fact-check.md).
 
 - **Data** (no new data were collected):
   - **44 real clouds** from the source project: activations of Llama-3.1-8B (weekdays, months, days with times, colours, years, temperature, age, counting, truth cities), Pythia-410m (counting), and the weights of GPT-2 (W_pos) and of a grokked one-layer modular-addition transformer (W_E).
@@ -405,11 +405,11 @@ Full design decisions: [docs/methodology.md](docs/methodology.md). Every technic
   - The margin ratio is ρ_A = m / (2ν), with noise scale ν = median point-to-shape distance + 95th percentile of shape-to-point distance.
   - θ_A is the parameter of each point's nearest point on the fitted shape.
 - **Method B:**
-  - Alpha complexes in ℝ³, using √ of GUDHI's squared filtration values.
+  - Alpha complexes in ℝ³, using √ of GUDHI's squared filtration values ([docs](https://gudhi.inria.fr/python/latest/delaunay_complex_ref.html)); homology mod 2.
   - Significance under two nulls:
     - a Monte Carlo max-π null with 999 draws, design-matched: cluster-centre for prompt templates, full-dimensional Gaussian through the Gram matrix otherwise;
     - the universal null (A = ½ for alpha, 1 for Rips; Bonferroni within a diagram).
-  - Invariants are read at one characteristic scale. The genus is only defined for a closed surface (b0 = b2 = 1).
+  - Invariants (b0, b1, b2, χ) are all read at one characteristic scale r_c (b0 too, since deviation D12); χ = 2 − 2g gives the genus only for a closed surface (b0 = b2 = 1; [Hatcher](https://pi.math.cornell.edu/~hatcher/AT/AT.pdf)). The label read from Betti numbers is not a homotopy class: Betti numbers do not determine one.
 - **Traversal statistics:**
   - Per-concept circular means; alignment R = max over orientation of |mean exp(i(θ̄_c − φ_c))|.
   - Permutation null over concept labels (all 7! orderings for weekdays; 99,999 Monte Carlo draws otherwise; maximum over Fourier frequencies for residues).
@@ -546,7 +546,7 @@ uv, Python 3.11, NumPy, SciPy, scikit-learn, pandas, [GUDHI](https://gudhi.inria
 ## To do
 
 - **Steering around the detected loops** (preregistered as H6, postponed by the author):
-  - simulated steering with cross-validated decoders, then
+  - simulated steering with cross-validated decoders (no model is run: a correlational read-out of decoders along the loop, not an intervention), then
   - Llama-3.1-8B steering of weekdays, months, days and colours;
   - steering of the grokked modular-addition model, retrained with the source recipe.
 - A loop test for weekdays with more prompt templates per day: 7 clusters of 7 points are close to the power limit.

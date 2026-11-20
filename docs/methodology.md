@@ -6,7 +6,7 @@ This page explains *why* each choice was made. The exact rules are in [reports/p
 
 **The 44 clouds** are exactly the source project's top-3 PCA clouds (`fit_frame`: centre, top-3 eigenvectors, skewness signs, RMS radius 1).
 - The re-implementation reproduces the stored points to 1e-4 (`tests/test_pca.py`).
-- Topology is invariant to the rigid motions and uniform scaling that `fit_frame` applies. Only the projection to 3D matters. That is why condition (d) of H1-B and Exp5 repeat the loop analysis in the top-5 and top-10 PCs and in full-dimensional cosine distance.
+- Persistence diagrams are unchanged by the isometries (rotations, reflections, translations) that `fit_frame` applies, and π is unchanged by its uniform scaling. Only the projection to 3D matters. That is why condition (d) of H1-B and Exp5 repeat the loop analysis in the top-5 and top-10 PCs and in full-dimensional cosine dissimilarity (1 − cos is not a metric and is about angle²/2 for small angles, so that check is descriptive).
 
 ## Two ways to find holes
 
@@ -14,11 +14,11 @@ This page explains *why* each choice was made. The exact rules are in [reports/p
 - Why: a fitted helix says "no hole". If its two ends are closer than the noise (ρ_A < 1), the data cannot distinguish it from a closed loop.
 
 **Method B: persistent homology of the data.** Primary reference for the idea of counting holes with persistent homology: [What is...persistent homology?](https://www.youtube.com/watch?v=w6Jx1vFp_Gk) (VisualMath). We use alpha complexes, not Rips, in ℝ³:
-- the alpha complex is exact Čech (nerve theorem);
+- the alpha complex is homotopy equivalent to the union of balls at every radius ([Edelsbrunner 1995](https://doi.org/10.1007/BF02574053)), and its filtration has the same persistence diagrams as the Čech filtration ([Bauer & Edelsbrunner 2017](https://doi.org/10.1090/tran/6991));
 - H2 is cheap;
 - it has no Rips phantom classes. Our test shows a regular 12-gon gets spurious H2 under Rips and none under alpha.
 
-**Significance** uses a Monte Carlo null of the *maximum* persistence ratio π = death/birth, in the style of Gardner et al. 2022.
+**Significance** uses a Monte Carlo null of the *maximum* persistence ratio π = death/birth, adapted from the shuffle threshold of [Gardner et al. 2022](https://doi.org/10.1038/s41586-021-04268-7) (they used the longest lifetime death − birth over all bars of 1,000 shuffles, a heuristic in their words).
 - The ratio is scale-free.
 - The max-statistic controls family-wise error across bars.
 - The null is matched to the design: a cluster-centre null for prompt-template designs, whose clusters would otherwise make any arrangement look loopy against a plain Gaussian, and a full-dimensional matched Gaussian for one-point-per-value designs.
@@ -41,7 +41,7 @@ We then test, at the level of concept means, whether the concepts sit around the
 - the exact cyclic-order probability, 2/(n−1)!.
 
 This follows manifold steering ([Wurgaft et al. 2026](https://arxiv.org/abs/2605.05115)), which moves activations along a fitted manifold. Here the path is the loop that topology finds.
-- **Simulated steering** (no model) moves stored activations around that loop and decodes the concept with cross-validated decoders.
+- **Simulated steering** (postponed, deviation D4) would move stored activations around that loop and decode the concept with cross-validated decoders. No model is run, so it is a decoder read-out, correlational evidence, not steering in the sense of an intervention on a forward pass ([preregistration](../reports/preregistration.md), amendment A2).
 - **LLM steering** (postponed) applies the same displacement inside Llama-3.1-8B.
 
 ## Controls and confounds

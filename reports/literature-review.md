@@ -7,7 +7,7 @@ This file catalogues the sources, with the specific methods and numbers this pro
 ## 1. Shapes found in neural activations (context)
 
 The source project's [shape catalog](https://github.com/BurnyCoder/shape-fitting-in-neural-geometry-in-llm-mechanistic-interpretability/blob/main/docs/shape_catalog.md) lists the shapes and where they were found. The ones that matter here are:
-- **Weekday and month circles.** [Engels et al., "Not All Language Model Features Are One-Dimensionally Linear", ICLR 2025, arXiv:2405.14860](https://arxiv.org/abs/2405.14860) found circles in clusters of sparse-autoencoder features (GPT-2 layer 7, Mistral-7B layer 8) and steered along them. They identified the circles visually and through interventions; no persistent homology was used ([code, MIT](https://github.com/JoshEngels/MultiDimensionalFeatures)).
+- **Weekday and month circles.** [Engels et al., "Not All Language Model Features Are One-Dimensionally Linear", ICLR 2025, arXiv:2405.14860](https://arxiv.org/abs/2405.14860) found circles in clusters of sparse-autoencoder features (GPT-2 layer 7, Mistral-7B layer 8). They found the clusters automatically, by clustering SAE decoder vectors on cosine similarity, scored them with separability and mixture indices, and tested causality by patching with circular probes in Mistral-7B and Llama-3-8B; they did not steer along the circles, and no persistent homology was used ([code, MIT](https://github.com/JoshEngels/MultiDimensionalFeatures)).
 - **Helix of GPT-2 positions.** [Yedidia, "GPT-2's positional embedding matrix is a helix", LessWrong, 21 Jul 2023](https://www.lesswrong.com/posts/qvWP3aBDBaqXvPNhS/gpt-2-s-positional-embedding-matrix-is-a-helix). It reports that a 3-dimensional PCA subspace explains about 90% of the variance of gpt2-small's positional embeddings. Blog post, not peer reviewed.
 - **Circles in grokked modular addition.** [Nanda, Chan, Lieberum, Smith, Steinhardt, "Progress measures for grokking via mechanistic interpretability", arXiv:2301.05217](https://arxiv.org/abs/2301.05217): embeddings of residues mod 113 lie on circles, one per key Fourier frequency k, so the order around a circle is k·a mod 113. [Zhong, Liu, Tegmark, Andreas, "The Clock and the Pizza", NeurIPS 2023, arXiv:2306.17844](https://arxiv.org/abs/2306.17844) separate circle-like ("clock") from disc-like ("pizza") solutions.
 - **Number helices.** [Kantamneni & Tegmark, "Language Models Use Trigonometry to Do Addition", arXiv:2502.00873](https://arxiv.org/abs/2502.00873): numbers 0–99 lie on a generalised helix with Fourier periods T = 2, 5, 10 and 100. *Consequence for us:* non-cyclic numeric concepts (years, temperatures, ages) can still contain periodic components (value mod 10, mod 100), which could produce genuine loops.
@@ -37,7 +37,8 @@ The source project's own result ([README](https://github.com/BurnyCoder/shape-fi
   - days are "arranged in order around a loop".
 
   Reported results:
-  - Manifold steering moves the output distribution along the behaviour manifold, while linear steering cuts across it. Geodesic correlation r: weekdays 0.99 vs 0.89; months 0.89 vs 0.53; letters 0.999 vs 0.71; ages 0.999 vs 0.36.
+  - Manifold steering moves the output distribution along the behaviour manifold, while linear steering cuts across it.
+  - Before any intervention, distances in activation space follow geodesics on the output-distribution manifold: r = 0.99 vs 0.89 (weekdays), 0.89 vs 0.53 (months), 0.999 vs 0.71 (letters), 0.999 vs 0.36 (ages). These are correlations measured on unsteered activations, not steering results; the steering comparison uses a separate measure (E_BC), on which manifold steering beats linear steering in all four settings.
   - Settings beyond weekdays: months, letters, ages, in-context grid and cylinder graphs, and a Mountain Car world model.
   - The paper does not use persistent homology, as far as the parts we read show.
 - **The Neural Geometry series** ([index](https://www.goodfire.com/research/neural-geometry)):
@@ -113,28 +114,29 @@ Steering around a detected hole is the natural causal follow-up and is listed as
 
 ## 6. Comparing topology across clouds
 
-- **Bottleneck and Wasserstein distances.** [Kerber, Morozov, Nigmetov, "Geometry Helps to Compare Persistence Diagrams", ACM JEA 22 (2017)](https://doi.org/10.1145/3064175). Hera is bundled in GUDHI.
-  - Wasserstein distance sums over every near-diagonal (noise) point, so it grows with N. The bottleneck distance is driven by the largest mismatch.
-  - We therefore compare clouds of very different N with the bottleneck distance on *significant* features only.
+- **Bottleneck and Wasserstein distances.** Computed exactly by Hera ([Kerber, Morozov, Nigmetov, "Geometry Helps to Compare Persistence Diagrams", ACM JEA 22 (2017)](https://doi.org/10.1145/3064175); an algorithms paper), which is bundled in GUDHI.
+  - By definition, a p-Wasserstein distance sums over every matched point, including near-diagonal (noise) points ([Cohen-Steiner, Edelsbrunner, Harer, Mileyko, "Lipschitz functions have L_p-stable persistence", Found. Comput. Math. 10:127-139 (2010)](https://doi.org/10.1007/s10208-010-9060-6)), and the number of noise points grows with N. The bottleneck distance is driven by the largest mismatch.
+  - We therefore compare clouds of very different N with the bottleneck distance on *significant* features only. Thresholding gives up the stability theorem above: a bar just above the threshold in one cloud and just below it in a nearly identical cloud changes the distance by about half its length. So Exp4 is exploratory.
 - **Vector representations.** Persistence images, [Adams et al., JMLR 18(8):1–35 (2017)](https://jmlr.org/papers/v18/16-337.html); persistence landscapes, [Bubenik, JMLR 16:77–102 (2015)](https://jmlr.org/papers/v16/bubenik15a.html).
 - **Subsampling for large clouds.** [Chazal et al., "Subsampling Methods for Persistent Homology", ICML 2015](https://proceedings.mlr.press/v37/chazal15.html).
 
 ## 7. Practical choices for 3D point clouds
 
 - **Alpha vs Rips.**
-  - The alpha complex is a filtered subcomplex of the Delaunay triangulation. Its persistence equals that of the Čech complex (union of balls, nerve theorem), so in ℝ³ it is exact and cheap.
-  - Vietoris–Rips is only interleaved with Čech ([de Silva & Ghrist, Algebr. Geom. Topol. 7:339–358 (2007)](https://doi.org/10.2140/agt.2007.7.339)) and has phantom classes.
-  - Example of a phantom class: the Rips complex of points evenly spaced on a circle becomes a higher-dimensional sphere at larger scales ([Adamaszek & Adams, "The Vietoris–Rips complexes of a circle", Pacific J. Math. 290 (2017)](https://arxiv.org/abs/1503.03669)). Our own derivation: Rips on the regular 12-gon produces spurious H2 classes, while alpha does not. Our unit tests check this numerically.
+  - The alpha complex is a filtered subcomplex of the Delaunay triangulation. At every radius it is homotopy equivalent to the union of balls ([Edelsbrunner, "The union of balls and its dual shape", DCG 13:415-440 (1995)](https://doi.org/10.1007/BF02574053)), and its filtration has the same persistence diagrams as the Čech filtration ([Bauer & Edelsbrunner, "The Morse theory of Čech and Delaunay complexes", Trans. AMS 369:3741-3762 (2017)](https://doi.org/10.1090/tran/6991)). It is a smaller complex than Čech, so in ℝ³ it gives the Čech persistence exactly and cheaply.
+  - Vietoris–Rips is only interleaved with Čech ([de Silva & Ghrist, Algebr. Geom. Topol. 7:339–358 (2007)](https://doi.org/10.2140/agt.2007.7.339), Thm 2.5) and has phantom classes.
+  - Example of a phantom class: the Rips complex of points evenly spaced on a circle becomes a higher-dimensional sphere at larger scales ([Adamaszek & Adams, "The Vietoris–Rips complexes of a circle", Pacific J. Math. 290:1-40 (2017)](https://doi.org/10.2140/pjm.2017.290.1), [arXiv:1503.03669](https://arxiv.org/abs/1503.03669)). By their Thm 4.3, the Rips complex of the regular 12-gon is a wedge of three 2-spheres at some scales (spurious H2), while alpha has no H2. Our unit tests check this numerically.
   - Decision: alpha for H0/H1/H2 in 3D; Rips (ripser) for higher-dimensional checks, for H1 only.
 - **Reference values (derived by us; checked numerically in our tests).** For a regular n-gon, the alpha (Čech) H1 bar is born at half the side length, R·sin(π/n), and dies at the circumradius R, so π = 1/sin(π/n). That gives 2.305 for n = 7 and 3.864 for n = 12.
-  - These values are the *ceiling* for a loop made of n concept clusters. The ceiling depends on the number of distinct concepts, not on N.
+  - These are the values for n point-like concept centres. They are not a ceiling for a loop made of n noisy clusters: spread within the clusters lets neighbouring clusters connect earlier (smaller birth), so the ring's π can be larger (`tests/test_tda.py::test_cluster_ring_can_exceed_point_polygon_ratio`; corrected in the [math fact-check](reviews/math-fact-check.md)).
 - **Outliers and density.**
   - Distance to a measure (DTM): [Chazal, Cohen-Steiner, Mérigot, Found. Comput. Math. 11:733–751 (2011)](https://doi.org/10.1007/s10208-011-9098-0).
   - DTM filtrations: [Anai et al., SoCG 2019, arXiv:1811.04757](https://arxiv.org/abs/1811.04757). Implemented in GUDHI as `DTMRipsComplex`.
 - **Genus and other invariants.** Standard algebraic topology ([Hatcher, *Algebraic Topology*, 2002](https://pi.math.cornell.edu/~hatcher/AT/AT.pdf)).
   - For a closed connected orientable surface, χ = b0 − b1 + b2 = 2 − 2g, so g = b1/2. For an orientable surface with n boundary circles, χ = 2 − 2g − n, so the genus cannot be read off the Betti numbers alone.
-  - In ℝ³ every closed embedded surface is orientable. Subcomplexes of ℝ³ have torsion-free homology (Alexander duality), so a check comparing different coefficient fields would be vacuous for alpha complexes in 3D.
-  - A solid torus has Betti numbers (1,1,0), the same as a circle. Homology determines the homotopy type only up to such ambiguities.
+  - In ℝ³ every closed embedded surface is orientable. Subcomplexes of ℝ³ have torsion-free homology (Alexander duality, [Hatcher](https://pi.math.cornell.edu/~hatcher/AT/AT.pdf) Thm 3.44), so each complex has the same Betti numbers over every field.
+  - Persistence can still depend on the field, through torsion in the *relative* homology of a pair of complexes: in ℝ³, H0 and H2 bars are field-independent but H1 bars can change, as for a Möbius band ([Obayashi & Yoshiwaki, "Field choice problem in persistent homology", DCG 70:645-670 (2023)](https://doi.org/10.1007/s00454-023-00544-7), [arXiv:1911.11350](https://arxiv.org/abs/1911.11350)). In their experiment, 1 of 10,000 random alpha filtrations in [0,1]³ had such torsion, so a field-comparison check is almost always, but not always, a no-op.
+  - A solid torus has Betti numbers (1,1,0), the same as a circle, but the two are homotopy equivalent, so no homotopy invariant can separate them. The real limitation is that Betti numbers do not determine the homotopy type: the torus and S² ∨ S¹ ∨ S¹ both have (1,2,1).
 
 ## 8. Pitfalls specific to PCA projections
 
