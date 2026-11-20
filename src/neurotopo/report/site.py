@@ -160,7 +160,7 @@ onclick="term('representative-void'); return false">?</a> <span id="rstat" style
 <script>
 const TERMS = {"Betti (b0,b1,b2)": [["betti-numbers", "Betti numbers"], ["characteristic-scale-r_c", "Characteristic scale r_c"]],
   "Euler characteristic": [["euler-characteristic", "Euler characteristic"]], "genus": [["genus", "Genus"]],
-  "homotopy class": [["homotopy-class", "Homotopy class"]],
+  "homotopy type (A) / Betti label (B)": [["homotopy-type-and-betti-label", "Homotopy type and Betti label"]],
   "margin ratio rho_A / top H1 pi": [["margin-ratio-rho_a", "Margin ratio rho_A"], ["top-h1-pi", "Top H1 pi"]],
   "resolvable / loop p (MC)": [["resolvable", "Resolvable"], ["monte-carlo-p-value", "Monte Carlo p-value"]]};
 let manifest, cur, sel = null, rExact = null, pdBound = false;   // sel: the one hole shown, {kind, k}, or null = all
@@ -535,7 +535,7 @@ def run() -> None:
                  f"({inv.loc[did, 'b0_rc']},{inv.loc[did, 'b1_rc']},{inv.loc[did, 'b2_rc']}) at r_c" if inv is not None else None],
                 ["Euler characteristic", int(t["chi"]), int(inv.loc[did, "chi_rc"]) if inv is not None else None],
                 ["genus", t["genus"] if pd.notna(t["genus"]) else "-", inv.loc[did, "genus_rc"] if inv is not None and pd.notna(inv.loc[did, "genus_rc"]) else "-"],
-                ["homotopy class", t["homotopy"], inv.loc[did, "homotopy_rc"] if inv is not None else None],
+                ["homotopy type (A) / Betti label (B)", t["homotopy"], inv.loc[did, "betti_label_rc"] if inv is not None else None],
                 ["margin ratio rho_A / top H1 pi", float(t["rho_A"]), float(inv.loc[did, "top_pi1"]) if inv is not None else None],
                 ["resolvable / loop p (MC)", bool(t["resolvable"]), float(inv.loc[did, "p_top_loop"]) if inv is not None else None]]
         rec = mb.get(did, {}).get("records3", [])

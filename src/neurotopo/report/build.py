@@ -121,7 +121,7 @@ def exp1_table() -> str:
 def exp2_table() -> str:
     d = pd.read_csv(res("exp2", "invariants.csv"))
     cols = ["id", "N", "design", "top_pi1", "null_q95_pi1", "p_top_loop", "top_pi2", "null_q95_pi2", "p_top_void",
-            "b0_rc", "b1_rc", "b2_rc", "chi_rc", "genus_rc", "homotopy_rc", "b1_alpha_univ", "b1_rips_univ",
+            "b0_rc", "b1_rc", "b2_rc", "chi_rc", "genus_rc", "betti_label_rc", "b1_alpha_univ", "b1_rips_univ",
             "loop_freq", "family", "A_b1", "A_b2"]
     return tables.md_table(d[[c for c in cols if c in d.columns]], 3)
 
