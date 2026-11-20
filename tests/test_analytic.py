@@ -39,6 +39,16 @@ def test_horn_and_spindle_torus():
     assert (s["b0"], s["b1"], s["b2"], s["chi"], s["manifold"]) == (1, 1, 2, 2, False)
 
 
+def test_method_a_reports_true_homotopy_types():
+    # Method A knows the fitted space, so unlike Method B's Betti labels (tda.invariants.betti_label) it may name the
+    # homotopy type: torus, circle (closed arc, frustum = annulus ~ S^1), sphere, point (open curve, disc, apex cone).
+    assert topo("torus", R=1.0, ratio=0.4)["homotopy"] == "torus"
+    assert topo("arc", normal=[0, 0, 1], radius=1.0, extent_rad=2 * math.pi, closed=True, bisector=None)["homotopy"] == "circle"
+    assert topo("cone", r_bot=0.5, dr=1.0, half_height=1.0)["homotopy"] == "circle"
+    assert topo("sphere", radius=1.0, closed=True, pole=None, cap_half_angle_rad=math.pi)["homotopy"] == "sphere"
+    assert topo("cone", r_bot=0.0, dr=1.0, half_height=1.0)["homotopy"] == "point"
+
+
 def test_arc_closed_vs_open():
     c = topo("arc", normal=[0, 0, 1], radius=2.0, extent_rad=2 * math.pi, closed=True, bisector=None)
     o = topo("arc", normal=[0, 0, 1], radius=2.0, extent_rad=math.pi, closed=False, bisector=[1, 0, 0])
