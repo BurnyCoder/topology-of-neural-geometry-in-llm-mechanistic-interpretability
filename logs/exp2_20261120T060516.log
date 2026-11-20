@@ -1,0 +1,45 @@
+2026-11-20 06:05:16 INFO root: phase exp2, log file C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\logs\exp2_20261120T060516.log
+2026-11-20 06:05:52 INFO neurotopo.experiments.exp2_invariants: C1_gp_0                      N= 200 pi1=1.00 (q95 1.93, p=1.0000) pi2=1.00 b=(1,0,0)@r_c acyclic, stab loop 0.00
+2026-11-20 06:06:11 INFO neurotopo.experiments.exp2_invariants: C1_gp_1                      N= 200 pi1=1.16 (q95 1.95, p=1.0000) pi2=1.01 b=(1,0,0)@r_c acyclic, stab loop 0.00
+2026-11-20 06:06:29 INFO neurotopo.experiments.exp2_invariants: C1_gp_2                      N= 200 pi1=1.09 (q95 1.92, p=1.0000) pi2=1.01 b=(1,0,0)@r_c acyclic, stab loop 0.00
+2026-11-20 06:06:45 INFO neurotopo.experiments.exp2_invariants: C1_gp_3                      N= 200 pi1=1.16 (q95 1.94, p=1.0000) pi2=1.09 b=(1,0,0)@r_c acyclic, stab loop 0.00
+2026-11-20 06:07:10 INFO neurotopo.experiments.exp2_invariants: C1_gp_4                      N= 200 pi1=1.00 (q95 1.95, p=1.0000) pi2=1.00 b=(1,0,0)@r_c acyclic, stab loop 0.00
+2026-11-20 06:07:27 INFO neurotopo.experiments.exp2_invariants: C1_gp_5                      N= 200 pi1=1.37 (q95 1.93, p=1.0000) pi2=1.05 b=(1,0,0)@r_c acyclic, stab loop 0.00
+2026-11-20 06:07:43 INFO neurotopo.experiments.exp2_invariants: C1_gp_6                      N= 200 pi1=1.13 (q95 1.96, p=1.0000) pi2=1.06 b=(1,0,0)@r_c acyclic, stab loop 0.00
+2026-11-20 06:07:58 INFO neurotopo.experiments.exp2_invariants: C1_gp_7                      N= 200 pi1=1.05 (q95 1.94, p=1.0000) pi2=1.05 b=(1,0,0)@r_c acyclic, stab loop 0.00
+2026-11-20 06:08:20 INFO neurotopo.experiments.exp2_invariants: C1_gp_8                      N= 200 pi1=1.00 (q95 1.94, p=1.0000) pi2=1.01 b=(1,0,0)@r_c acyclic, stab loop 0.00
+2026-11-20 06:08:45 INFO neurotopo.experiments.exp2_invariants: C1_gp_9                      N= 200 pi1=1.02 (q95 1.92, p=1.0000) pi2=1.00 b=(1,0,0)@r_c acyclic, stab loop 0.00
+2026-11-20 06:08:58 INFO neurotopo.experiments.exp2_invariants: C1_walk_0                    N= 200 pi1=1.05 (q95 1.90, p=1.0000) pi2=1.00 b=(1,0,0)@r_c acyclic, stab loop 0.00
+2026-11-20 06:09:11 INFO neurotopo.experiments.exp2_invariants: C1_walk_1                    N= 200 pi1=1.12 (q95 1.91, p=1.0000) pi2=1.00 b=(1,0,0)@r_c acyclic, stab loop 0.00
+2026-11-20 06:09:24 INFO neurotopo.experiments.exp2_invariants: C1_walk_2                    N= 200 pi1=1.07 (q95 1.92, p=1.0000) pi2=1.00 b=(1,0,0)@r_c acyclic, stab loop 0.00
+2026-11-20 06:09:36 INFO neurotopo.experiments.exp2_invariants: C1_walk_3                    N= 200 pi1=1.10 (q95 1.91, p=1.0000) pi2=1.00 b=(1,0,0)@r_c acyclic, stab loop 0.00
+2026-11-20 06:09:44 INFO neurotopo.experiments.exp2_invariants: C1_walk_4                    N= 200 pi1=1.18 (q95 1.92, p=1.0000) pi2=1.00 b=(1,0,0)@r_c acyclic, stab loop 0.00
+2026-11-20 06:09:56 INFO neurotopo.experiments.exp2_invariants: C1_walk_5                    N= 200 pi1=1.10 (q95 1.92, p=1.0000) pi2=1.00 b=(1,0,0)@r_c acyclic, stab loop 0.00
+2026-11-20 06:10:09 INFO neurotopo.experiments.exp2_invariants: C1_walk_6                    N= 200 pi1=1.07 (q95 1.96, p=1.0000) pi2=1.01 b=(1,0,0)@r_c acyclic, stab loop 0.00
+2026-11-20 06:10:22 INFO neurotopo.experiments.exp2_invariants: C1_walk_7                    N= 200 pi1=1.07 (q95 1.93, p=1.0000) pi2=1.00 b=(1,0,0)@r_c acyclic, stab loop 0.00
+2026-11-20 06:10:35 INFO neurotopo.experiments.exp2_invariants: C1_walk_8                    N= 200 pi1=1.09 (q95 1.90, p=1.0000) pi2=1.00 b=(1,0,0)@r_c acyclic, stab loop 0.00
+2026-11-20 06:10:47 INFO neurotopo.experiments.exp2_invariants: C1_walk_9                    N= 200 pi1=1.35 (q95 1.92, p=1.0000) pi2=1.00 b=(1,0,0)@r_c acyclic, stab loop 0.00
+2026-11-20 06:12:53 INFO neurotopo.experiments.exp2_invariants: C3_gpt2_wpos_init            N=1023 pi1=2.03 (q95 2.17, p=0.2990) pi2=1.44 b=(1,0,1)@r_c sphere-like, stab loop 0.06
+2026-11-20 06:12:57 INFO neurotopo.experiments.exp2_invariants: C3_grokking_WE_init          N= 113 pi1=1.84 (q95 1.83, p=0.0460) pi2=1.15 b=(2,1,0)@r_c other (2,1,0), stab loop 0.01
+2026-11-20 06:13:00 INFO neurotopo.experiments.exp2_invariants: C3_grokking_WE_memorised     N= 113 pi1=1.50 (q95 1.83, p=0.8310) pi2=1.10 b=(1,0,0)@r_c acyclic, stab loop 0.05
+2026-11-20 06:13:28 INFO neurotopo.experiments.exp2_invariants: C3_llama_counting_init       N= 150 pi1=1.54 (q95 1.87, p=0.8810) pi2=1.03 b=(1,0,0)@r_c acyclic, stab loop 0.01
+2026-11-20 06:13:54 INFO neurotopo.experiments.exp2_invariants: C3_llama_months_init         N= 144 pi1=1.43 (q95 1.46, p=0.0740) pi2=1.01 b=(4,0,0)@r_c 4 components, stab loop 0.04
+2026-11-20 06:14:00 INFO neurotopo.experiments.exp2_invariants: C3_llama_weekdays_init       N=  49 pi1=1.11 (q95 1.28, p=0.7650) pi2=1.03 b=(17,0,1)@r_c other (17,0,1), stab loop 0.02
+2026-11-20 06:14:00 INFO neurotopo.experiments.exp2_invariants: C3_tms_dense                 N=   5 pi1=1.23 (q95 1.12, p=0.0010) pi2=1.00 b=(1,1,0)@r_c circle-like, stab loop 0.41
+2026-11-20 06:16:06 INFO neurotopo.experiments.exp2_invariants: R1_gpt2_wpos                 N=1023 pi1=1.22 (q95 2.16, p=1.0000) pi2=1.02 b=(1,0,0)@r_c acyclic, stab loop 0.00
+2026-11-20 06:16:09 INFO neurotopo.experiments.exp2_invariants: R2_grokking_WE               N= 113 pi1=2.45 (q95 1.83, p=0.0010) pi2=1.05 b=(1,2,0)@r_c other (1,2,0), stab loop 0.26
+2026-11-20 06:16:09 INFO neurotopo.experiments.exp2_invariants: R3_tms_n20                   N=  20 pi1=1.34 (q95 1.44, p=0.1910) pi2=1.47 b=(1,0,1)@r_c sphere-like, stab loop 0.35
+2026-11-20 06:16:09 INFO neurotopo.experiments.exp2_invariants: R3_tms_n6                    N=   6 pi1=1.15 (q95 1.18, p=0.0870) pi2=1.22 b=(1,0,1)@r_c sphere-like, stab loop 0.00
+2026-11-20 06:16:09 INFO neurotopo.experiments.exp2_invariants: R3_tms_n8                    N=   8 pi1=1.41 (q95 1.24, p=0.0040) pi2=1.18 b=(1,0,1)@r_c sphere-like, stab loop 0.73
+2026-11-20 06:16:31 INFO neurotopo.experiments.exp2_invariants: R4_llama_counting            N= 150 pi1=1.28 (q95 1.89, p=1.0000) pi2=1.02 b=(1,0,0)@r_c acyclic, stab loop 0.00
+2026-11-20 06:16:41 INFO neurotopo.experiments.exp2_invariants: R4b_pythia_counting          N= 150 pi1=1.32 (q95 1.87, p=1.0000) pi2=1.03 b=(1,0,0)@r_c acyclic, stab loop 0.00
+2026-11-20 06:16:45 INFO neurotopo.experiments.exp2_invariants: R5a_llama_weekdays           N=  49 pi1=1.32 (q95 1.36, p=0.0940) pi2=1.01 b=(5,0,0)@r_c 5 components, stab loop 0.01
+2026-11-20 06:16:45 INFO neurotopo.experiments.exp2_invariants: R5a_llama_weekdays_means     N=   7 pi1=1.05 (q95 1.19, p=0.7310) pi2=1.02 b=(1,0,0)@r_c acyclic, stab loop 0.12
+2026-11-20 06:17:06 INFO neurotopo.experiments.exp2_invariants: R5b_llama_months             N= 144 pi1=1.72 (q95 1.44, p=0.0020) pi2=1.02 b=(1,1,0)@r_c circle-like, stab loop 0.90
+2026-11-20 06:17:06 INFO neurotopo.experiments.exp2_invariants: R5b_llama_months_means       N=  12 pi1=1.71 (q95 1.33, p=0.0010) pi2=1.02 b=(1,1,0)@r_c circle-like, stab loop 0.34
+2026-11-20 06:17:59 INFO neurotopo.experiments.exp2_invariants: R5c_llama_days_time          N= 336 pi1=2.01 (q95 1.87, p=0.0130) pi2=1.06 b=(8,1,0)@r_c other (8,1,0), stab loop 0.03
+2026-11-20 06:18:29 INFO neurotopo.experiments.exp2_invariants: R6_llama_years               N= 199 pi1=1.63 (q95 1.94, p=0.7750) pi2=1.12 b=(1,0,0)@r_c acyclic, stab loop 0.08
+2026-11-20 06:28:06 INFO neurotopo.experiments.exp2_invariants: R7_llama_colors              N= 900 pi1=5.02 (q95 2.38, p=0.0010) pi2=1.24 b=(1,1,0)@r_c circle-like, stab loop 1.00
+2026-11-20 06:28:29 INFO neurotopo.experiments.exp2_invariants: R8a_llama_temperature        N= 150 pi1=1.33 (q95 1.89, p=1.0000) pi2=1.02 b=(1,0,0)@r_c acyclic, stab loop 0.00
+2026-11-20 06:28:41 INFO neurotopo.experiments.exp2_invariants: R8b_llama_age                N=  99 pi1=1.58 (q95 1.79, p=0.4490) pi2=1.00 b=(1,0,0)@r_c acyclic, stab loop 0.04
+2026-11-20 06:44:23 INFO neurotopo.experiments.exp2_invariants: R9_llama_truth_cities        N=1496 pi1=1.93 (q95 2.20, p=0.8610) pi2=1.29 b=(1,0,0)@r_c acyclic, stab loop 0.03
