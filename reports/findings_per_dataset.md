@@ -33,7 +33,7 @@ Here "hole" or "loop" means a significant H1 loop under the design-matched Monte
   - The days are ordered around the fitted helix's axis (exact p = 0.003, winding 1). **This is not specific:** 8 of 8 smooth random-process controls fitted as helices wind too, and their closure gaps (0.33–2.20) include the weekdays' 0.80.
 - **Ordinal concepts and controls:**
   - Ordinal values do not wind around the top-10 loops. Only R1_gpt2_wpos has a single winding record among all non-cyclic sets.
-  - In 3D no ordinal set or random process has a loop, but these open curves were never at risk: their top π (1.00–1.63) stays far below the Gaussian null's 95th percentile (1.79–2.16). The random-init networks give the informative calibration: 1 of 3 has p < 0.05 (p = 0.046).
+  - In 3D no ordinal set or random process has a loop, but these open curves were never at risk: their top π (1.00–1.63) stays far below the Gaussian null's 95th percentile (1.79–2.16). The random-init networks give the informative calibration: 1 of 3 has p < 0.05 (p = 0.046), which is weak evidence either way (probability 0.14 under the null).
   - After Benjamini–Hochberg over all 44 loop tests, 6 loops remain at q < 0.05: C3_tms_dense, R2_grokking_WE, R3_tms_n8, R5b_llama_months, R5b_llama_months_means, R7_llama_colors.
   - Ordinal concepts lie in order along open curves: counts ρ = 0.999, temperature -0.997. GPT-2 positions run from pole to pole of their fitted sphere (0.978) as a spiral curve.
   - Truth cities: the exploratory prediction of two components (true vs false statements) is not supported (b0 = 1).

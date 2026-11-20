@@ -23,8 +23,8 @@ def decode_phase(probs: np.ndarray, phases: np.ndarray, mode: str = "argmax") ->
 
 
 def traversal(psi: np.ndarray, deltas: np.ndarray) -> dict:
-    """R (linear traversal with either orientation), winding number of psi around the closed path, and the
-    fraction of steps whose decoded phase is the one expected from Delta (within half a concept step)."""
+    """R (linear traversal with either orientation), its orientation, and the winding number of psi around the
+    closed path of steps."""
     rel = wrap(psi - psi[0])
     r_pos = abs(np.mean(np.exp(1j * (rel - deltas))))
     r_neg = abs(np.mean(np.exp(1j * (rel + deltas))))

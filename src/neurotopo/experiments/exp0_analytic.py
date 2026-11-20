@@ -115,8 +115,9 @@ def dense_points(family: str, params: dict) -> np.ndarray:
     """The dense noise-free sample of a shape used by the dense check (also reused by the D9 audit's torus check)."""
     curve = family not in coords.SURFACES
     pts = coords.random_samples(family, params, DENSE_N_CURVE if curve else DENSE_N, seed=0)
-    # Noise-free samples on a space curve (helix-like) can have a Delaunay triangulation of quadratic size
-    # (10,000 helix points exhausted 10 GB), and flat / co-circular samples are degenerate inputs where CGAL's
+    # Noise-free samples on a space curve can have a Delaunay triangulation of superlinear size (Omega(n^{3/2})
+    # simplices for evenly spaced points on a helix, Erickson 2003, doi:10.1007/s00454-003-2927-4, Thm 2.3;
+    # quadratic in the worst case in R^3; here 10,000 helix points exhausted 10 GB), and flat / co-circular samples are degenerate inputs where CGAL's
     # exact predicates become very slow. A small jitter (1e-3 of the RMS radius for curves, 1e-6 for surfaces)
     # makes the input generic; it is far below every feature scale that is counted (pi > 4).
     rms = float(np.sqrt(((pts - pts.mean(0)) ** 2).sum(1).mean()))

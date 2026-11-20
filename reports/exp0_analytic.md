@@ -8,11 +8,11 @@ The source fits each cloud with a uniquely parametrised shape. What is the exact
 
 ## Method
 
-- `shape_topology(family, params)` gives (b0, b1, b2), χ, genus, boundary components and the margin m, the smallest parameter change that alters the topology. The inputs are the fitted canonical parameters (`real_results.json`) or the regenerated ground-truth parameters (synthetic clouds).
-- The **margin ratio** is ρ_A = m / (2ν), with ν = median point-to-shape distance + 95th-percentile shape-to-point distance. Both distances use the exact parametrisation (deviation D2). ρ_A ≥ 1 means the topology is resolvable.
+- `shape_topology(family, params)` gives (b0, b1, b2), χ, genus, boundary components and the margin m, the size of the smallest gap or diameter whose closing or collapse alters the topology (a feature size in data units, not a parameter change). The inputs are the fitted canonical parameters (`real_results.json`) or the regenerated ground-truth parameters (synthetic clouds).
+- The **margin ratio** is ρ_A = m / (2ν), with ν = median point-to-shape distance + 95th-percentile shape-to-point distance. Both distances use the exact parametrisation (deviation D2). ρ_A ≥ 1 means the topology is resolvable, a heuristic criterion (balls of radius ν from both sides of a gap m meet once 2ν ≥ m), not a recovery theorem ([Niyogi, Smale & Weinberger 2008](https://doi.org/10.1007/s00454-008-9053-2) give one in terms of the reach).
 - **Hole coordinate θ_A** is the parameter of each point's nearest point on the fit, read from 4,096-point curve grids or 256×256 surface grids. For fits with a hole (cone frustum) θ_A is the azimuth. For helix fits the azimuth is reported as **axial winding**, descriptive only, with the **closure gap**: the axial distance between the first and last concept means, divided by the radius.
 - **Alignment:** concept circular means, R, a permutation p (exact for 7 concepts), and the winding number.
-- **Numerical check:** alpha persistent homology of dense noise-free random samples of each fitted or ground-truth shape. Bars with π > 4 that are born below m/4 are counted. Curves use 2,000 jittered samples, because the Delaunay triangulation of points on a helix grows quadratically.
+- **Numerical check:** alpha persistent homology of dense noise-free random samples of each fitted or ground-truth shape. Bars with π > 4 that are born below m/4 are counted. Curves use 2,000 jittered samples, because the Delaunay triangulation of points on a helix grows superlinearly (Ω(n^{3/2}) for evenly spaced helix points, [Erickson 2003](https://doi.org/10.1007/s00454-003-2927-4), Thm 2.3).
 
 ## Results
 
@@ -144,6 +144,6 @@ Clouds per family and exact ground-truth Betti vector (in brackets: resolvable, 
 
 - **What went wrong, and the fix:**
   - The source's coarse dense samples (24×24 surface grids) overstate point-to-shape distances; the fix was exact parametrisations (D2).
-  - Noise-free samples on a helix produced a Delaunay triangulation of quadratic size that exhausted 10 GB; the fix was fewer samples plus jitter.
+  - Noise-free samples on a helix produced a Delaunay triangulation large enough to exhaust 10 GB (superlinear size; see the method above); the fix was fewer samples plus jitter.
   - Persistence of dense samples finds loops at the margin scale (near-closures). Counting only features born below m/4 separates the exact topology from near-closures. It also shows that every real helix fit is a near-closed loop at its own scale.
 - **Decisions:** the source's own 0.98 thresholds define closed arcs and spheres, so the topology of a fit is exactly what the source reports.

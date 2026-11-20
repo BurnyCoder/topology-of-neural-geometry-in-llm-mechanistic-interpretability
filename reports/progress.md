@@ -2,12 +2,13 @@
 
 Last updated: 2026-11-20. The step-by-step status table is in [plan.md](plan.md#status); this page says where things stand.
 
-**Done.** Every preregistered topology analysis (Exp0–Exp5), three independent audits (deviations D6, D8, D9), the post hoc void and loop searches (D10, D11), the worked example, the paper, the explorer, and the results on Hugging Face. All of it uses stored activations; no model was run.
+**Done.** Every preregistered topology analysis (Exp0–Exp5), three independent audits (deviations D6, D8, D9), two math fact-checks (D12, D13), the post hoc void and loop searches (D10, D11), the worked example, the paper, the explorer, and the results on Hugging Face. All of it uses stored activations; no model was run.
 
-**Latest step (2026-11-20).** A fact-check of the math against the persistent-homology and interpretability literature: [reviews/math-fact-check.md](reviews/math-fact-check.md), deviation [D12](deviations.md).
-- Fixed in code: Method B now reads all three Betti numbers at the same scale r_c and uses a Betti label instead of "homotopy class"; the spindle-torus Betti numbers.
-- Overstated or mis-cited sentences corrected with sources; 8 new tests.
-- Exp2, reports, README, paper and explorer regenerated. No preregistered verdict changed.
+**Latest step (2026-11-20).** An independent math fact-check, done without relying on the earlier audits: [reviews/math-fact-check-2.md](reviews/math-fact-check-2.md), deviation [D13](deviations.md).
+- Every definition, theorem, statistic and citation was checked against its primary source. The core mathematics holds.
+- Fixed: mis-citations (bottleneck implementation, Hatcher numbering, universal-null sample sizes, the assumptions of Bobrowski, Kahle & Skraba, helix Delaunay size, PCA horseshoes) and imprecise wording (the margin, the cyclic-order p, the DREiMac guarantee, general position); 1 new test.
+- Reports, README and paper regenerated. No code path, number or preregistered verdict changed.
+- Before that, the first fact-check ([reviews/math-fact-check.md](reviews/math-fact-check.md), [D12](deviations.md)) fixed the Method B invariants and the spindle-torus Betti numbers.
 
 **In progress.** Nothing is running.
 

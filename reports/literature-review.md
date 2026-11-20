@@ -1,13 +1,13 @@
 # Literature review: topology of neural representation manifolds
 
-Date: 2026-11-15. Author: Libor "Burny" Burian (compiled with Claude Code; every claim links to its source).
+Date: 2026-11-15; corrected 2026-11-20 by the independent math fact-check ([reviews/math-fact-check-2.md](reviews/math-fact-check-2.md)). Author: Libor "Burny" Burian (compiled with Claude Code; every claim links to its source).
 
 This file catalogues the sources, with the specific methods and numbers this project uses. The synthesis of the state of the art, the gap and the novelty are in [state-of-the-art-review.md](state-of-the-art-review.md). Facts were checked against the papers' own pages (arXiv abstract/HTML, PMC full text, GitHub READMEs) on 2026-11-15; *(summary)* marks facts checked only from a summary of a page.
 
 ## 1. Shapes found in neural activations (context)
 
 The source project's [shape catalog](https://github.com/BurnyCoder/shape-fitting-in-neural-geometry-in-llm-mechanistic-interpretability/blob/main/docs/shape_catalog.md) lists the shapes and where they were found. The ones that matter here are:
-- **Weekday and month circles.** [Engels et al., "Not All Language Model Features Are One-Dimensionally Linear", ICLR 2025, arXiv:2405.14860](https://arxiv.org/abs/2405.14860) found circles in clusters of sparse-autoencoder features (GPT-2 layer 7, Mistral-7B layer 8). They found the clusters automatically, by clustering SAE decoder vectors on cosine similarity, scored them with separability and mixture indices, and tested causality by patching with circular probes in Mistral-7B and Llama-3-8B; they did not steer along the circles, and no persistent homology was used ([code, MIT](https://github.com/JoshEngels/MultiDimensionalFeatures)).
+- **Weekday and month circles.** [Engels et al., "Not All Language Model Features Are One-Dimensionally Linear", ICLR 2025, arXiv:2405.14860](https://arxiv.org/abs/2405.14860) found circles in clusters of sparse-autoencoder features (GPT-2 layer 7, Mistral-7B layer 8). They found the clusters automatically, by clustering SAE decoder vectors on cosine similarity, scored them with separability and mixture indices, and tested causality by interventions in Mistral-7B and Llama-3-8B, mostly on circles fitted by PCA of the hidden states rather than on the SAE clusters; they did not steer along the circles, and no persistent homology was used ([code, MIT](https://github.com/JoshEngels/MultiDimensionalFeatures)).
 - **Helix of GPT-2 positions.** [Yedidia, "GPT-2's positional embedding matrix is a helix", LessWrong, 21 Jul 2023](https://www.lesswrong.com/posts/qvWP3aBDBaqXvPNhS/gpt-2-s-positional-embedding-matrix-is-a-helix). It reports that a 3-dimensional PCA subspace explains about 90% of the variance of gpt2-small's positional embeddings. Blog post, not peer reviewed.
 - **Circles in grokked modular addition.** [Nanda, Chan, Lieberum, Smith, Steinhardt, "Progress measures for grokking via mechanistic interpretability", arXiv:2301.05217](https://arxiv.org/abs/2301.05217): embeddings of residues mod 113 lie on circles, one per key Fourier frequency k, so the order around a circle is k·a mod 113. [Zhong, Liu, Tegmark, Andreas, "The Clock and the Pizza", NeurIPS 2023, arXiv:2306.17844](https://arxiv.org/abs/2306.17844) separate circle-like ("clock") from disc-like ("pizza") solutions.
 - **Number helices.** [Kantamneni & Tegmark, "Language Models Use Trigonometry to Do Addition", arXiv:2502.00873](https://arxiv.org/abs/2502.00873): numbers 0–99 lie on a generalised helix with Fourier periods T = 2, 5, 10 and 100. *Consequence for us:* non-cyclic numeric concepts (years, temperatures, ages) can still contain periodic components (value mod 10, mod 100), which could produce genuine loops.
@@ -17,7 +17,7 @@ The source project's [shape catalog](https://github.com/BurnyCoder/shape-fitting
   - calendar dates are also roughly arranged around a loop;
   - Engels et al.'s weekday and month circles show distortion in 3D.
 
-  They warn that a 2D principal-component view can hide structure that runs through PC3. No persistent homology.
+  The colour and date loops are 3D PCA views of 3,072-dimensional text-embedding vectors, not LLM residual activations. They warn that a 2D principal-component view can hide structure that runs through PC3. No persistent homology.
 - **Supervised shape testing.** [Tiblias et al., "Hypothesis-Driven Feature Manifold Analysis in LLMs via Supervised Multi-Dimensional Scaling", arXiv:2510.01025](https://arxiv.org/abs/2510.01025) compare candidate shapes with supervised MDS; temporal features form circles, lines and clusters *(summary)*.
 - **SAEs and concept manifolds.** [Bhalla et al., "Do Sparse Autoencoders Capture Concept Manifolds?", arXiv:2604.28119](https://arxiv.org/abs/2604.28119) (colours, years, temperature, age templates used by the source project).
 - **Toy models of superposition.** [Elhage et al. 2022](https://transformer-circuits.pub/2022/toy_model/index.html): features arrange as digons, triangles, pentagons and tetrahedra (uniform polytopes).
@@ -58,7 +58,7 @@ Steering around a detected hole is the natural causal follow-up and is listed as
 ## 3. Persistent homology of neural representations
 
 - [Naitzat, Zhitnikov, Lim, "Topology of Deep Neural Networks", JMLR 21(184):1–40, 2020](https://jmlr.org/papers/v21/20-345.html). Well-trained networks simplify the topology of the data, layer by layer, towards β0 = 1 and βk = 0.
-  - Method: Vietoris–Rips homology at one fixed scale on a k-nearest-neighbour graph geodesic distance, with k and ε calibrated once on data whose Betti numbers are known.
+  - Method: Vietoris–Rips homology on a k-nearest-neighbour graph geodesic distance; on simulated data at one fixed scale, with k and ε calibrated on data whose Betti numbers are known, and on real data as full persistence barcodes per layer. No null model or significance test.
 - [Gardinazzi et al., "Persistent Topological Features in Large Language Models", ICML 2025 (PMLR 267), arXiv:2410.11042](https://arxiv.org/abs/2410.11042), [code](https://github.com/RitAreaSciencePark/ZigZagLLMs). Zigzag persistence of kNN flag complexes across layers (Llama-2-7B, Llama-3-8B, Mistral-7B, Pythia-6.9B), mostly H1. It is about how topology changes across layers, not about concept manifolds.
 - [Jakubowski, Gašić, Zibrowius, "Topology of Word Embeddings: Singularities Reflect Polysemy", *SEM 2020](https://aclanthology.org/2020.starsem-1.11). A local, H0-based polysemy score; it measures local neighbourhoods, not global loops.
 - [Ballester, Casacuberta, Escalera, "Topological Data Analysis for Neural Network Analysis: A Comprehensive Survey", arXiv:2312.05840](https://arxiv.org/abs/2312.05840). Survey of four areas: architecture, decision boundaries, internal representations, training dynamics.
@@ -80,7 +80,7 @@ Steering around a detected hole is the natural causal follow-up and is listed as
 - [Chaudhuri, Gerçek, Pandey, Peyrache, Fiete, Nat. Neurosci. 22:1512–1520 (2019)](https://doi.org/10.1038/s41593-019-0460-x); [code](https://github.com/FieteLab/SPUD_Analysis-of-manifold-structure-in-head-direction-data). A head-direction ring.
   - Pipeline in the released code: Isomap to 10 dimensions, then removal of points with few neighbours within the 1st percentile of pairwise distances, then Ripser with Z2 coefficients.
   - A long bar was judged significant by its persistence, without a shuffle test.
-  - They note that persistent homology cannot distinguish topologically trivial manifolds with different geometries, such as a plane and a filled ball.
+  - They note that persistent homology cannot distinguish topologically trivial manifolds with different geometries, such as a hyperplane and a filled ball.
 - [Gardner et al., "Toroidal topology of population activity in grid cells", Nature 602:123–128 (2022)](https://doi.org/10.1038/s41586-021-04268-7); [full text](https://pmc.ncbi.nlm.nih.gov/articles/PMC8810387/).
   - Preprocessing: z-scoring, the first 6 principal components, and fuzzy-kNN density downsampling to 1200 points.
   - Persistence: Vietoris–Rips persistent cohomology with Z47 coefficients.
@@ -103,7 +103,7 @@ Steering around a detected hole is the natural causal follow-up and is listed as
   - ℓ(p) = A·log log π(p) + B, with A = 1 for Vietoris–Rips and A = 1/2 for Čech, and B = −λ − A·L̄. L̄ is the mean of log log π over all points of the diagram, and λ is the Euler–Mascheroni constant.
   - Under the null, ℓ follows the left Gumbel distribution, F(x) = 1 − exp(−eˣ). The p-value is exp(−e^{ℓ(p)}).
   - Bonferroni correction divides α by |dgm_k|.
-  - The paper's experiments use thousands of points or more and state that the tails converge slowly. It gives no minimum sample size.
+  - The paper's simulations use 10⁴–10⁶ points (Supplementary Tables 3–4) and its real data roughly 9,000–50,000; one hypothesis-testing demo uses 1,000 points. It states that the tails converge slowly and gives no minimum sample size.
   - The released code keeps only points with π > 1 before averaging. We do the same, since zero-persistence points have log log π = −∞.
   - The result is a conjecture, supported empirically; it fails for perturbed lattices and repulsive point processes.
   - *Consequence:* we use it descriptively on real clouds (N = 5–1496, and some clouds are deterministic grids) and calibrate it on synthetic clouds for each N bin.
@@ -114,7 +114,7 @@ Steering around a detected hole is the natural causal follow-up and is listed as
 
 ## 6. Comparing topology across clouds
 
-- **Bottleneck and Wasserstein distances.** Computed exactly by Hera ([Kerber, Morozov, Nigmetov, "Geometry Helps to Compare Persistence Diagrams", ACM JEA 22 (2017)](https://doi.org/10.1145/3064175); an algorithms paper), which is bundled in GUDHI.
+- **Bottleneck and Wasserstein distances.** GUDHI's default `bottleneck_distance` (used here, exact with e = 0) is a CGAL-based implementation by F. Godi after [Efrat, Itai & Katz, "Geometry Helps in Bottleneck Matching and Related Problems", Algorithmica 31:1–28 (2001)](https://doi.org/10.1007/s00453-001-0016-8). GUDHI also bundles Hera ([Kerber, Morozov, Nigmetov, "Geometry Helps to Compare Persistence Diagrams", ACM JEA 22 (2017)](https://doi.org/10.1145/3064175)) as `gudhi.hera`, which this project does not use ([GUDHI documentation](https://gudhi.inria.fr/python/latest/bottleneck_distance_user.html)).
   - By definition, a p-Wasserstein distance sums over every matched point, including near-diagonal (noise) points ([Cohen-Steiner, Edelsbrunner, Harer, Mileyko, "Lipschitz functions have L_p-stable persistence", Found. Comput. Math. 10:127-139 (2010)](https://doi.org/10.1007/s10208-010-9060-6)), and the number of noise points grows with N. The bottleneck distance is driven by the largest mismatch.
   - We therefore compare clouds of very different N with the bottleneck distance on *significant* features only. Thresholding gives up the stability theorem above: a bar just above the threshold in one cloud and just below it in a nearly identical cloud changes the distance by about half its length. So Exp4 is exploratory.
 - **Vector representations.** Persistence images, [Adams et al., JMLR 18(8):1–35 (2017)](https://jmlr.org/papers/v18/16-337.html); persistence landscapes, [Bubenik, JMLR 16:77–102 (2015)](https://jmlr.org/papers/v16/bubenik15a.html).
@@ -134,15 +134,15 @@ Steering around a detected hole is the natural causal follow-up and is listed as
   - DTM filtrations: [Anai et al., SoCG 2019, arXiv:1811.04757](https://arxiv.org/abs/1811.04757). Implemented in GUDHI as `DTMRipsComplex`.
 - **Genus and other invariants.** Standard algebraic topology ([Hatcher, *Algebraic Topology*, 2002](https://pi.math.cornell.edu/~hatcher/AT/AT.pdf)).
   - For a closed connected orientable surface, χ = b0 − b1 + b2 = 2 − 2g, so g = b1/2. For an orientable surface with n boundary circles, χ = 2 − 2g − n, so the genus cannot be read off the Betti numbers alone.
-  - In ℝ³ every closed embedded surface is orientable. Subcomplexes of ℝ³ have torsion-free homology (Alexander duality, [Hatcher](https://pi.math.cornell.edu/~hatcher/AT/AT.pdf) Cor. 3.45), so each complex has the same Betti numbers over every field.
-  - Persistence can still depend on the field, through torsion in the *relative* homology of a pair of complexes: in ℝ³, H0 and H2 bars are field-independent but H1 bars can change, as for a Möbius band ([Obayashi & Yoshiwaki, "Field choice problem in persistent homology", DCG 70:645-670 (2023)](https://doi.org/10.1007/s00454-023-00544-7), [arXiv:1911.11350](https://arxiv.org/abs/1911.11350)). In their experiment, 1 of 10,000 random alpha filtrations in [0,1]³ had such torsion, so a field-comparison check is almost always, but not always, a no-op.
+  - In ℝ³ every closed embedded surface is orientable: a closed non-orientable n-manifold does not embed in ℝⁿ⁺¹ ([Hatcher](https://pi.math.cornell.edu/~hatcher/AT/AT.pdf), remark after Cor. 3.46, p. 256). Subcomplexes of ℝ³ have torsion-free homology (Hatcher Cor. 3.46, a consequence of Alexander duality, Cor. 3.45), so each complex has the same Betti numbers over every field.
+  - Persistence can still depend on the field, through torsion in the *relative* homology of a pair of complexes: in ℝ³, H0 and H2 bars are field-independent but H1 bars can change, as for a Möbius band ([Obayashi & Yoshiwaki, "Field choice problem in persistent homology", DCG 70:645-670 (2023)](https://doi.org/10.1007/s00454-023-00544-7), [arXiv:1911.11350](https://arxiv.org/abs/1911.11350)). In their experiment (§8), 1 of 10,000 alpha filtrations of Poisson point clouds in [0,1]³ with 1,000 points on average had such torsion, so a field-comparison check is almost always, but not always, a no-op.
   - A solid torus has Betti numbers (1,1,0), the same as a circle, but the two are homotopy equivalent, so no homotopy invariant can separate them. The real limitation is that Betti numbers do not determine the homotopy type: the torus and S² ∨ S¹ ∨ S¹ both have (1,2,1).
 
 ## 8. Pitfalls specific to PCA projections
 
-- [Antognini & Sohl-Dickstein, "PCA of high dimensional random walks with comparison to neural network training", NeurIPS 2018, arXiv:1806.08805](https://arxiv.org/abs/1806.08805). Projections of random walks onto PCA subspaces trace Lissajous curves. PC1–PC2 gives a horseshoe, and higher pairs give closed-looking figures, which could produce spurious H1.
+- [Antognini & Sohl-Dickstein, "PCA of high dimensional random walks with comparison to neural network training", NeurIPS 2018, arXiv:1806.08805](https://arxiv.org/abs/1806.08805). Projections of random walks onto PCA subspaces trace Lissajous curves: a parabola in PC1–PC2, and closed-looking figures in higher pairs, which could produce spurious H1.
 - [Shinn, "Phantom oscillations in principal component analysis", PNAS 120(48):e2311420120 (2023)](https://doi.org/10.1073/pnas.2311420120). Smoothness and shifts produce oscillatory principal components.
-- [Diaconis, Goel, Holmes, "Horseshoes in multidimensional scaling and local kernel methods", Ann. Appl. Stat. 2(3):777–807 (2008)](https://doi.org/10.1214/08-AOAS165).
+- [Diaconis, Goel, Holmes, "Horseshoes in multidimensional scaling and local kernel methods", Ann. Appl. Stat. 2(3):777–807 (2008)](https://doi.org/10.1214/08-AOAS165). Explains the horseshoe shapes of MDS and kernel projections: a latent ordering of the data, seen only through local similarities, bends into a horseshoe.
 - **Helix vs circle.** A helix is contractible (b1 = 0), but seen down its axis it looks like a circle. A closed loop of clusters with a small drift is fitted as a helix.
 - **Small N and noise.** At N = 7–12 the barcode is sparse. A missing loop is not evidence that no loop exists without a power analysis.
 

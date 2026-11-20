@@ -139,7 +139,9 @@ def betti_label(b0: int, b1: int, b2: int) -> str:
 
 def genus(b0: int, b1: int, b2: int) -> int | None:
     """Genus of a closed orientable surface (b0 = 1, b2 = 1: chi = 2 - 2g, g = b1 / 2); None otherwise.
-    Surfaces in R^3 are orientable; an odd b1 with b2 = 1 is not a closed surface, so None."""
+    Closed surfaces embedded in R^3 are orientable (a closed non-orientable n-manifold does not embed in R^{n+1}:
+    Hatcher 2002, remark after Cor. 3.46, p. 256); an odd b1 with b2 = 1 is not a closed surface, so None.
+    The value is the genus such a surface would have: Betti numbers alone do not show that the space is a surface."""
     if b0 == 1 and b2 == 1 and b1 % 2 == 0:
         return b1 // 2
     return None

@@ -4,7 +4,9 @@ Global context (reports/preregistration.md, section 7): a p-Wasserstein distance
 including the near-diagonal noise bars whose number grows with N (true by its definition, e.g. Cohen-Steiner et al.
 2010, doi:10.1007/s10208-010-9060-6), so clouds of N = 5..1496 are compared with the bottleneck distance on
 *significant* bars only (H0 components from the b0 rule, H1/H2 bars significant under the design-matched MC null),
-summed over dimensions; GUDHI computes it exactly (Hera; Kerber, Morozov & Nigmetov 2017, doi:10.1145/3064175).
+summed over dimensions. gudhi.bottleneck_distance with e = 0 computes it exactly (GUDHI's CGAL-based implementation
+by F. Godi, after Efrat, Itai & Katz 2001, Algorithmica 31:1-28, doi:10.1007/s00453-001-0016-8; not the Hera
+implementation, gudhi.hera.bottleneck_distance; https://gudhi.inria.fr/python/latest/bottleneck_distance_user.html).
 Discarding bars by a threshold gives up the bottleneck stability theorem (Cohen-Steiner, Edelsbrunner & Harer
 2007, doi:10.1007/s00454-006-1276-5): a bar just above the threshold in one cloud and just below it in a nearly
 identical cloud changes the distance by about half its length, so this similarity is exploratory only. The

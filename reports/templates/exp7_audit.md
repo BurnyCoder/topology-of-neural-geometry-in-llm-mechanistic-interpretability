@@ -85,7 +85,7 @@ For prompt-template designs the loop statistic is the largest persistence ratio 
 
 - The ordinal sets and the random walks and Gaussian processes are open curves. Their most persistent loops (π {{exp2.open.pi_min:2}}–{{exp2.open.pi_max:2}}) lie far below their Gaussian nulls' 95th percentiles ({{exp2.open.q95_min:2}}–{{exp2.open.q95_max:2}}); the smallest p is {{exp2.open.p_min:2}}.
 - A matched Gaussian blob simply has more loops than a curve. "0 of 6" and "0 of 20" therefore say little about false positives on *nearly closed* curves, the relevant confound.
-- The random-init networks are the informative calibration. One of 3 has p = {{exp2.grokinit.p_top_loop}}, consistent with the nominal 5%.
+- The random-init networks are the informative calibration. One of 3 has p = {{exp2.grokinit.p_top_loop}}, consistent with the nominal 5%, but three controls say little: under the null, at least one of 3 falls below 0.05 with probability 1 − 0.95³ ≈ 0.14.
 
 ## 5. Ten dimensions
 

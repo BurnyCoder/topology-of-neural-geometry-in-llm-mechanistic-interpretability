@@ -4,8 +4,10 @@ Global context: a persistence diagram always contains short "noise" bars; Method
 bars are real holes (reports/preregistration.md, section 4).
 - Universal null (Bobrowski & Skraba 2023, Sci. Rep. 13:12274, doi:10.1038/s41598-023-37842-2, eqs. for
   pi, l and the left-Gumbel law): l = A log log pi + B, B = -lambda - A * mean(log log pi), p = exp(-e^l),
-  Bonferroni within the diagram (A = 1/2 Cech, 1 Rips: AVALS in the authors' modules/PDplot.py). Validated on
-  large samples (n = 9,000-50,000 in the paper's examples), so descriptive on real data.
+  Bonferroni within the diagram (A = 1/2 Cech, 1 Rips: AVALS in the authors' modules/PDplot.py). The law is a
+  conjecture supported empirically on large samples (simulations with n = 10^4-10^6, Supplementary Tables 3-4;
+  real data with roughly 9,000-50,000 points), and the paper notes slowly converging tails, so it is descriptive
+  on our real clouds (N = 5-1,496).
 - Monte Carlo nulls (primary on real data): the maximum pi of H_k over M null clouds that pass through the
   same preprocessing, adapted from the shuffle threshold of Gardner et al. 2022 (doi:10.1038/s41586-021-04268-7,
   Methods): they pooled the bars of 1,000 shuffles and used the longest lifetime (death - birth) per dimension as

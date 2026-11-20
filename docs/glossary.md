@@ -61,11 +61,11 @@ Two spaces have the same **homotopy type** if one can be continuously deformed i
 
 ### Margin ratio rho_A
 ρ_A = m / (2ν) asks whether the data can resolve the fitted shape's topology.
-- m is the smallest parameter change that would change the topology, for example the gap between a helix's two ends, or a hole's diameter.
+- m is the size of the smallest geometric feature whose closing or collapse would change the topology: a gap, for example between a helix's two ends, or a diameter, for example of a hole or a torus tube. It is a length in the data's units, not the parameter change itself.
 - ν is the cloud's noise-and-coverage scale: the median distance from the points to the shape plus the 95th-percentile distance from the shape to the points.
 
 ### Resolvable
-ρ_A ≥ 1: the topological feature is larger than the noise, so the data can distinguish it. Below 1, a fitted "open helix" cannot be told apart from a closed loop.
+ρ_A ≥ 1: the topological feature is larger than twice the noise-and-coverage scale. This is a heuristic, not a theorem: balls of radius ν grown from both sides of a gap m meet once 2ν ≥ m. A rigorous counterpart, in terms of the shape's reach rather than its margin, is the sampling theorem of [Niyogi, Smale & Weinberger 2008](https://doi.org/10.1007/s00454-008-9053-2) (Prop. 3.1). Below 1, a fitted "open helix" cannot be told apart from a closed loop.
 
 ## Method B: persistent homology of the cloud
 
@@ -81,7 +81,7 @@ Vertices, edges, triangles and tetrahedra glued along shared faces. It is a comb
 
 ### Alpha complex
 The simplicial complex used here, computed with [GUDHI](https://gudhi.inria.fr/python/latest/delaunay_complex_user.html).
-- At every radius it is homotopy equivalent to the union of balls, so it has exactly the same holes ([Edelsbrunner 1995](https://doi.org/10.1007/BF02574053), via the nerve theorem). It is a smaller complex than the Čech complex, but the two filtrations have the same persistence diagrams ([Bauer & Edelsbrunner 2017](https://doi.org/10.1090/tran/6991), [arXiv](https://arxiv.org/abs/1312.1231)). It uses only Delaunay simplices, so it stays small.
+- At every radius it is homotopy equivalent to the union of balls, so it has exactly the same holes ([Edelsbrunner 1995](https://doi.org/10.1007/BF02574053), Thm 3.2; the nerve theorem gives the same). It is a smaller complex than the Čech complex, but the two filtrations have the same persistence diagrams ([Bauer & Edelsbrunner 2017](https://doi.org/10.1090/tran/6991), Cor. 6.1, [arXiv](https://arxiv.org/abs/1312.1231)). Both results assume points in general position, which real activations satisfy generically; in degenerate inputs such as a regular polygon, ties only create zero-length bars, which are dropped. It uses only Delaunay simplices, so it stays small.
 - An edge enters at half its length if no other point lies inside the circle (sphere, in 3D) that has the edge as diameter (a Gabriel edge); otherwise it enters together with the earliest triangle on it whose third corner lies inside that sphere ([GUDHI](https://gudhi.inria.fr/doc/latest/group__alpha__complex.html)).
 - A triangle enters at the radius of its circumcircle if that circle's smallest sphere is empty; otherwise, by the same rule, together with a tetrahedron. In general a simplex enters at the radius of its smallest empty circumsphere.
 - The examples page draws its edges as r grows.
@@ -93,7 +93,7 @@ Adds a simplex whenever all its points are pairwise within distance 2r. It is ch
 The nested sequence of complexes as r grows. Every simplex has an entry radius, and nothing is ever removed.
 
 ### Homology H0 H1 H2
-H0 = connected pieces, H1 = loops, H2 = voids, computed with coefficients mod 2. For complexes in ℝ³, H0 and H2 bars do not depend on that choice; H1 bars can, in rare cases such as a Möbius band ([Obayashi & Yoshiwaki 2023](https://doi.org/10.1007/s00454-023-00544-7): 1 in 10,000 random alpha filtrations; `tests/test_tda.py`). In the explorer's persistence diagram, H1 loops are dots and H2 voids are triangles.
+H0 = connected pieces, H1 = loops, H2 = voids, computed with coefficients mod 2. For complexes in ℝ³, H0 and H2 bars do not depend on that choice; H1 bars can, in rare cases such as a Möbius band ([Obayashi & Yoshiwaki 2023](https://doi.org/10.1007/s00454-023-00544-7), Cor. 1–2 and Example 1: 1 in 10,000 alpha filtrations of Poisson clouds in [0,1]³ with 1,000 points on average; `tests/test_tda.py`). In the explorer's persistence diagram, H1 loops are dots and H2 voids are triangles.
 
 ### Birth and death
 A loop is **born** at the radius where it first closes and **dies** at the radius where it is filled in. A piece (H0) is born at 0 and dies when it merges with an older piece.
@@ -118,7 +118,7 @@ One closed surface of triangles that encloses a given void (an H2 bar). The expl
 - Because it is a ratio, it does not change if the cloud is scaled.
 - Loops made by noise have π close to 1. Any loop of 3 points has π ≤ 2/√3, and a regular k-gon of points gives 1/sin(π/k) (our derivation, checked in `tests/test_tda.py` and the [worked example](worked_example.md)).
 - 1/sin(π/k) is the value for k point-like concept centres, not a ceiling for a ring of k clusters: spread within the clusters lets neighbours connect earlier, so a ring of noisy clusters can have a larger π (`tests/test_tda.py::test_cluster_ring_can_exceed_point_polygon_ratio`).
-- The largest π of pure noise grows slowly with the number of points, like (log N / log log N)^(1/k) for k-dimensional holes ([Bobrowski, Kahle & Skraba 2017](https://doi.org/10.1214/16-AAP1232), for uniform-like samples).
+- The largest π of pure noise grows slowly with the number of points, like (log N / log log N)^(1/k) for k-dimensional holes ([Bobrowski, Kahle & Skraba 2017](https://doi.org/10.1214/16-AAP1232), Thm 3.1, proven for a homogeneous Poisson process in the unit cube; densities bounded above and below on a compact support are only remarked).
 
 ### Top H1 pi
 The largest π among a cloud's loops: its most persistent loop. This is the statistic of the loop test. In the README's example figure, the bars show it divided by the null's 95th percentile.
@@ -136,7 +136,7 @@ The 95th percentile of the 999 null maxima. In the persistence diagrams it is th
 p = (1 + number of null maxima ≥ the observed π) / (M + 1) ([Phipson & Smyth 2010](https://doi.org/10.2202/1544-6115.1585)). With M = 999 the smallest possible value is 0.001. "loop p (MC)" in the explorer is this p for the cloud's most persistent loop.
 
 ### Universal null
-A theory-based alternative: for large random samples, ℓ = A·log log π − λ − A·L̄ (A = ½ for alpha/Čech, 1 for Rips; L̄ the mean of log log π, λ the Euler–Mascheroni constant) follows a left-skewed Gumbel law, so p = exp(−e^ℓ), with a Bonferroni correction within the diagram ([Bobrowski & Skraba 2023](https://doi.org/10.1038/s41598-023-37842-2); [code](https://github.com/primozskraba/PersistenceUniversality)). The paper's examples use 9,000–50,000 points. It is reported only descriptively, because it is very conservative at these sample sizes.
+A theory-based alternative: for large random samples, ℓ = A·log log π − λ − A·L̄ (A = ½ for alpha/Čech, 1 for Rips; L̄ the mean of log log π, λ the Euler–Mascheroni constant) follows a left-skewed Gumbel law, so p = exp(−e^ℓ), with a Bonferroni correction within the diagram ([Bobrowski & Skraba 2023](https://doi.org/10.1038/s41598-023-37842-2); [code](https://github.com/primozskraba/PersistenceUniversality)). The law is a conjecture, supported empirically with 10⁴–10⁶ points in simulations and roughly 9,000–50,000 in real data, with slowly converging tails. It is reported only descriptively, because it is very conservative at our sample sizes (N = 5–1,496).
 
 ### Characteristic scale r_c
 r_c = √(birth · death) of the most significant loop or void: the middle of its bar on a log scale, where that feature is most clearly alive. If there is none, r_c is half the b0 rule's cut length (the cut is an edge length, a diameter). Method B's Betti numbers (all three), Euler characteristic, genus and Betti label are read at r_c.
@@ -192,4 +192,4 @@ A loop through the clusters that the concept goes around once only in a post hoc
 ## Statistics
 
 ### Holm and Benjamini-Hochberg
-Corrections for testing many hypotheses. Holm controls the chance of any false positive among the primary tests. Benjamini–Hochberg controls the expected share of false positives among the exploratory tests (its adjusted values are called q).
+Corrections for testing many hypotheses. Holm controls the chance of any false positive among the primary tests. Benjamini–Hochberg controls the expected share of false positives among the exploratory tests (its adjusted values are called q), for independent tests or tests with positive regression dependence ([Benjamini & Yekutieli 2001](https://doi.org/10.1214/aos/1013699998)).
