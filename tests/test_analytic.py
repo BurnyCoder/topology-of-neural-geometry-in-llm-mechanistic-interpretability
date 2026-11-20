@@ -29,6 +29,16 @@ def test_torus_genus_one():
     assert math.isclose(t["margin"], min(2 * 0.4, 2 * 0.6))
 
 
+def test_horn_and_spindle_torus():
+    # Horn torus (r = R): the torus with one longitude pinched to a point, ~ S^2 v S^1, (1, 1, 1).
+    # Spindle torus (r > R): its image is an outer "apple" and an inner "lemon" sphere glued at the two axis points,
+    # ~ S^2 v S^2 v S^1, so (1, 1, 2) and chi = 2 (two bounded complementary regions = two voids).
+    h = topo("torus", R=1.0, ratio=1.0)
+    s = topo("torus", R=1.0, ratio=1.4)
+    assert (h["b0"], h["b1"], h["b2"], h["chi"]) == (1, 1, 1, 1)
+    assert (s["b0"], s["b1"], s["b2"], s["chi"], s["manifold"]) == (1, 1, 2, 2, False)
+
+
 def test_arc_closed_vs_open():
     c = topo("arc", normal=[0, 0, 1], radius=2.0, extent_rad=2 * math.pi, closed=True, bisector=None)
     o = topo("arc", normal=[0, 0, 1], radius=2.0, extent_rad=math.pi, closed=False, bisector=[1, 0, 0])

@@ -113,9 +113,13 @@ def shape_topology(family: str, params: dict) -> dict:
             # central hole closes (r -> R, horn torus).
             return _result(1, 2, 1, 2, "torus", min(2 * small, 2 * (big - small)), genus=1)
         if small == big:
-            # Horn torus: homotopy equivalent to S^2 v S^1 (not a manifold at the centre).
+            # Horn torus: the torus with one longitude pinched to a point; attaching a disc along an essential
+            # circle of T^2 gives S^2 v S^1 (not a manifold at the centre).
             return _result(1, 1, 1, 2, "sphere v circle", 0.0, manifold=False)
-        return _result(1, 1, 1, 2, "spindle torus (self-intersecting)", 0.0, manifold=False,
+        # Spindle torus (r > R): the generating circle crosses the axis, so the image is an outer "apple" and an
+        # inner "lemon", each a 2-sphere, glued at the two axis points: S^2 v S^2 v S^1, (1, 1, 2), chi = 2. By
+        # Alexander duality its two bounded complementary regions are its two voids (Hatcher 2002, Thm 3.44).
+        return _result(1, 1, 2, 2, "sphere v sphere v circle (self-intersecting spindle torus)", 0.0, manifold=False,
                        note="source caps ratio <= 0.95, so this does not occur")
     raise ValueError(f"unknown family {family!r}")
 
