@@ -7,7 +7,8 @@ do the concepts (days, months, residues) sit around it in their semantic cyclic 
 once? (reports/preregistration.md, section 5). Statistics:
 - concept circular means (aggregate first, so prompt templates are not pseudo-replicates);
 - alignment R = max_s |mean_c exp(i(theta_c - s phi_c))| with a permutation null over concept labels;
-- winding number of the semantic cycle in theta; exact cyclic-order test p = 2/(n-1)!;
+- winding number of the semantic cycle in theta; cyclic-order test with p <= 2/(n-1)! (exact when every circular
+  gap between concept means is below pi, otherwise conservative; see cyclic_order_p);
 - closure ratio of the semantic cycle in the full activation space (descriptive).
 """
 
@@ -130,7 +131,12 @@ def cyclic_order_matches(theta_c: np.ndarray) -> bool:
 
 
 def cyclic_order_p(n: int) -> float:
-    """Probability that a random labelling reproduces the cyclic order up to rotation/reflection: 2n / n!."""
+    """Probability that a random labelling reproduces the cyclic order up to rotation/reflection: 2n / n! = 2/(n-1)!.
+
+    This is an upper bound on the null probability of `cyclic_order_matches`, which also needs every wrapped step
+    to go the same way: for a fixed set of concept angles, a random labelling matches with probability 2/(n-1)!
+    if every circular gap between neighbouring angles is below pi, and with probability 0 otherwise
+    (tests/test_circular_stats.py::test_cyclic_order_p_is_an_upper_bound)."""
     return 2.0 / math.factorial(n - 1)
 
 

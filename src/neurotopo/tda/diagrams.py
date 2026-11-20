@@ -2,9 +2,11 @@
 
 Global context: Method B (reports/preregistration.md, section 4) measures the holes of a point cloud with
 persistent homology. The alpha complex is a different (smaller) complex than the Cech complex, but at every
-radius it is homotopy equivalent to the union of balls (Edelsbrunner 1995, doi:10.1007/BF02574053), and the
-whole alpha filtration is collapse-equivalent to the Cech filtration, so their persistence diagrams agree
-(Bauer & Edelsbrunner 2017, doi:10.1090/tran/6991). Vietoris-Rips is only interleaved with Cech (de Silva &
+radius it is homotopy equivalent to the union of balls (Edelsbrunner 1995, doi:10.1007/BF02574053, Thm 3.2), and
+the Cech filtration collapses onto the alpha (Delaunay) filtration, so their persistence diagrams agree (Bauer &
+Edelsbrunner 2017, doi:10.1090/tran/6991, Thm 5.10 and Cor. 6.1). Both results assume points in general position
+(Bauer & Edelsbrunner, Def. 4.2), which real activations satisfy generically; ties in degenerate test inputs
+(regular polygons) only create zero-length bars, which are dropped below. Vietoris-Rips is only interleaved with Cech (de Silva &
 Ghrist 2007, doi:10.2140/agt.2007.7.339, Thm 2.5) and can carry classes the union of balls lacks, e.g. 2-spheres
 for points on a circle (Adamaszek & Adams 2017, doi:10.2140/pjm.2017.290.1). So alpha is the primary complex for
 H0/H1/H2; Rips (ripser.py, Tralie et al. 2018, doi:10.21105/joss.00925) is used for higher-dimensional checks
@@ -23,8 +25,9 @@ def alpha_diagrams(points: np.ndarray, maxdim: int = 2, precision: str = "safe")
     """Alpha-complex persistence diagrams H0..H_maxdim of a cloud in R^3, in radius units, over Z/2.
 
     Z/2 is not guaranteed to give the same diagram as another field: for filtrations in R^3, H0 and H2 are
-    field-independent but H1 can change when the relative homology has torsion, which Obayashi & Yoshiwaki found
-    in 1 of 10,000 random alpha filtrations (Discrete Comput. Geom. 70:645-670, 2023, doi:10.1007/s00454-023-00544-7;
+    field-independent (Obayashi & Yoshiwaki, Discrete Comput. Geom. 70:645-670, 2023, doi:10.1007/s00454-023-00544-7,
+    Cor. 1-2) but H1 can change when the relative homology has torsion, which they found in 1 of 10,000 alpha
+    filtrations of Poisson clouds in [0,1]^3 with 1,000 points on average (section 8;
     tests/test_tda.py::test_persistence_can_depend_on_the_coefficient_field).
 
     GUDHI's AlphaComplex filtration values are *squared* radii (create_simplex_tree(output_squared_values=True)

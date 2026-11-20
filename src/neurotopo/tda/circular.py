@@ -25,8 +25,12 @@ def circular_coordinates(points: np.ndarray, prime: int = 47, max_landmarks: int
     if dgm1.size == 0:                                   # no H1 class at all (DREiMac would raise IndexError)
         return {"theta": None, "bar": None, "n_landmarks": n_land, "error": "no H1 class"}
     try:
-        # standard_range=True (preregistered) requires Rips death >= 2 x birth (DREiMac EMCoords.get_cover_radius),
-        # which guarantees the class is non-trivial in the Cech complex; False only guarantees it in the Rips complex.
+        # standard_range=True (preregistered) requires Rips death >= 2 x birth (DREiMac 0.3.2 EMCoords.get_cover_radius),
+        # which DREiMac documents as guaranteeing the class is non-trivial in the Cech complex; False only guarantees it
+        # in the Rips complex. DREiMac's theory page also takes the cover radius >= the landmark covering radius
+        # d_H(landmarks, X); 0.3.2 does not check that term, so the guarantee is exact when every point is a
+        # landmark (N <= 200: weekdays, months, residues) and approximate for larger clouds (colours, days_time).
+        # (DREiMac's default prime is 41; the preregistered 47 is passed explicitly.)
         theta = cc.get_coordinates(perc=perc, cocycle_idx=cocycle_idx, standard_range=standard_range)
     except Exception as exc:
         # Only DREiMac's "class too short" refusal means "no usable loop" (deviations D3); anything else is a bug.

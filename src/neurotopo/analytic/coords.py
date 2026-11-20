@@ -129,7 +129,8 @@ def dense_samples(family: str, p: dict, n: int = 4000) -> np.ndarray:
 
 def _area_weight(family: str, p: dict, u: np.ndarray, v: np.ndarray) -> np.ndarray:
     """Area element of the parametrisation up to a constant (source `local()` weights): the sphere and disc
-    parametrisations are already area-uniform; the cone's element is r(s), the torus's R + r cos v."""
+    parametrisations are already area-uniform; the cone's element is r(s), the torus's R + r cos v. The
+    paraboloid keeps weight 1 (uniform over its projected disc; its true element sqrt(1 + |grad z|^2) is not used)."""
     if family == "cone":
         return float(p["r_bot"]) + float(p["dr"]) * v + 1e-9
     if family == "torus":
@@ -138,7 +139,10 @@ def _area_weight(family: str, p: dict, u: np.ndarray, v: np.ndarray) -> np.ndarr
 
 
 def random_samples(family: str, p: dict, n: int, seed: int = 0) -> np.ndarray:
-    """n noise-free samples uniform in arc length / area (rejection on the area element), world frame.
+    """n noise-free samples, world frame: uniform in arc length for curves, and uniform in area (rejection on the
+    area element) for spheres, caps, discs, cones and tori. Paraboloids get weight 1 in `_area_weight`, so they
+    are uniform in their projected disc, not in surface area (per unit area, sparser near the rim of a strongly
+    curved patch, where the surface is steepest).
 
     Regular parameter grids create anisotropic cells whose alpha complexes have long spurious H1 bars
     (pi ~ 4 on a torus grid, ~17 near a sphere grid's poles), so persistence checks use random samples.

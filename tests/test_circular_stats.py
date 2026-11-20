@@ -73,3 +73,18 @@ def test_monotone_arc_is_not_a_cyclic_order():
     assert circular.winding(th) == 0
     assert not circular.cyclic_order_matches(th)
     assert circular.cyclic_order_matches(np.linspace(0, 2 * np.pi, 7, endpoint=False))
+
+
+def test_cyclic_order_p_is_an_upper_bound():
+    # Null rate of cyclic_order_matches under random relabelling of a fixed set of concept angles (independent math
+    # fact-check): 2/(n-1)! when every circular gap is below pi, and 0 when the angles fit in a half circle (then the
+    # closing step wraps the wrong way), so cyclic_order_p is exact in the first case and conservative in the second.
+    import itertools
+    n = 6
+    rng = np.random.default_rng(0)
+    spread = np.sort(2 * np.pi * (np.arange(n) + 0.3 * rng.random(n)) / n)   # gaps about 2 pi / n < pi
+    half = np.sort(0.9 * np.pi * rng.random(n))                              # all angles within 0.9 pi
+    rates = [np.mean([circular.cyclic_order_matches(th[list(p)]) for p in itertools.permutations(range(n))])
+             for th in (spread, half)]
+    assert math.isclose(rates[0], circular.cyclic_order_p(n))
+    assert rates[1] == 0.0

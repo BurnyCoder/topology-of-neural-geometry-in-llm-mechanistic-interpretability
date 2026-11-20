@@ -6,9 +6,11 @@ space whose homology is textbook material (Hatcher, Algebraic Topology, 2002,
 https://pi.math.cornell.edu/~hatcher/AT/AT.pdf: contractible spaces, S^1, S^2, T^2, finite point sets),
 and compact orientable surfaces with boundary satisfy chi = 2 - 2g - n_boundary. So Betti numbers,
 Euler characteristic, genus and boundary components follow exactly from family + parameters. The
-"margin" is the length of the smallest parameter change that changes the topology (e.g. closing an arc's
-gap, collapsing a torus tube); divided by the cloud's noise scale it says whether the fitted topology is
-resolvable from the data (reports/preregistration.md, section 3).
+"margin" is the size, in data units, of the smallest geometric feature whose closing or collapse changes the
+topology: a gap (an open arc's or helix's endpoint gap) or a diameter (a circle's hole, a torus tube). It is a
+feature size, not the parameter change itself (shrinking a circle's radius r to 0 is a change of r; its margin is
+the hole diameter 2r). Divided by twice the cloud's noise scale it says, heuristically, whether the fitted
+topology is resolvable from the data (reports/preregistration.md, section 3; tda/ground_truth.py).
 """
 
 from __future__ import annotations
@@ -95,7 +97,9 @@ def shape_topology(family: str, params: dict) -> dict:
             # Closed sphere S^2: b2 = 1 (one enclosed void), chi = 2, genus 0.
             return _result(1, 0, 1, 2, "sphere", 2 * r, genus=0)
         alpha = float(p["cap_half_angle_rad"])
-        # Polar cap: a disc; it closes into a sphere when its opening 2 r sin(alpha) shrinks to 0.
+        # Polar cap: a disc; it closes into a sphere when its opening (diameter 2 r sin(alpha)) shrinks to 0 as
+        # alpha -> pi. A cap smaller than a hemisphere (alpha < pi/2) must first widen to the full diameter 2 r
+        # before it can close, so its margin is taken as 2 r (preregistered rule: 2 r sin(max(alpha, pi/2))).
         return _result(1, 0, 0, 2, "point", 2 * r * math.sin(max(alpha, math.pi / 2)), n_boundary=1, genus=0)
     if family == "cone":
         r_bot = float(p["r_bot"])
@@ -113,8 +117,10 @@ def shape_topology(family: str, params: dict) -> dict:
             # central hole closes (r -> R, horn torus).
             return _result(1, 2, 1, 2, "torus", min(2 * small, 2 * (big - small)), genus=1)
         if small == big:
-            # Horn torus: the torus with one longitude pinched to a point; attaching a disc along an essential
-            # circle of T^2 gives S^2 v S^1 (not a manifold at the centre).
+            # Horn torus: the torus with one longitude pinched to a point, T^2 / C for an essential circle C. Cutting
+            # T^2 along C gives a cylinder whose two boundary circles go to one point, so T^2 / C is S^2 with two
+            # points identified, which is homotopy equivalent to S^2 v S^1 (Hatcher 2002, Example 0.8); not a
+            # manifold at the centre.
             return _result(1, 1, 1, 2, "sphere v circle", 0.0, manifold=False)
         # Spindle torus (r > R): the generating circle crosses the axis, so the image is an outer "apple" and an
         # inner "lemon", each a 2-sphere, glued at the two axis points: S^2 v S^2 v S^1, (1, 1, 2), chi = 2. By
