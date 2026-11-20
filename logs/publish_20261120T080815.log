@@ -1,0 +1,18 @@
+2026-11-20 08:08:15 INFO root: phase publish, log file C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\logs\publish_20261120T080815.log
+2026-11-20 08:08:19 INFO httpx2: HTTP Request: POST https://huggingface.co/api/validate-yaml "HTTP/1.1 200 OK"
+2026-11-20 08:08:19 INFO httpx2: HTTP Request: POST https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry/preupload/main "HTTP/1.1 200 OK"
+2026-11-20 08:08:19 WARNING huggingface_hub.hf_api: No files have been modified since last commit. Skipping to prevent empty commit.
+2026-11-20 08:08:20 INFO httpx2: HTTP Request: GET https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry/revision/main "HTTP/1.1 200 OK"
+2026-11-20 08:08:21 INFO httpx2: HTTP Request: POST https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry/preupload/main "HTTP/1.1 200 OK"
+2026-11-20 08:08:33 WARNING huggingface_hub._upload_pipeline: No files have been modified since last commit. Skipping to prevent empty commit.
+2026-11-20 08:08:33 INFO httpx2: HTTP Request: GET https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry/revision/main "HTTP/1.1 200 OK"
+2026-11-20 08:08:35 INFO httpx2: HTTP Request: POST https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry/preupload/main "HTTP/1.1 200 OK"
+2026-11-20 08:08:36 INFO httpx2: HTTP Request: POST https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry/commit/main "HTTP/1.1 200 OK"
+2026-11-20 08:08:36 INFO httpx2: HTTP Request: POST https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry/preupload/main "HTTP/1.1 200 OK"
+2026-11-20 08:08:40 INFO httpx2: HTTP Request: POST https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry/commit/main "HTTP/1.1 200 OK"
+2026-11-20 08:08:40 INFO httpx2: HTTP Request: POST https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry/preupload/main "HTTP/1.1 200 OK"
+2026-11-20 08:08:40 WARNING huggingface_hub.hf_api: No files have been modified since last commit. Skipping to prevent empty commit.
+2026-11-20 08:08:41 INFO httpx2: HTTP Request: GET https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry/revision/main "HTTP/1.1 200 OK"
+2026-11-20 08:08:41 INFO httpx2: HTTP Request: POST https://huggingface.co/api/collections/BurnyCoder/fitting-geometric-shapes-to-neural-geometry-6ae635f979b04232274230ee/items "HTTP/1.1 409 Conflict"
+2026-11-20 08:08:41 INFO httpx2: HTTP Request: GET https://huggingface.co/api/collections/BurnyCoder/fitting-geometric-shapes-to-neural-geometry-6ae635f979b04232274230ee "HTTP/1.1 200 OK"
+2026-11-20 08:08:41 INFO neurotopo.report.publish: published results to BurnyCoder/topology-of-neural-geometry (commit bd9139cdf7adf15a908d95525b5f2e5ad8a156f7)
