@@ -55,6 +55,36 @@ def test_regular_ngon_ratio(n):
     assert np.isclose(diagrams.ratios(h1)[0], 1 / np.sin(np.pi / n), rtol=1e-6)
 
 
+def test_cluster_ring_can_exceed_point_polygon_ratio():
+    # 1/sin(pi/n) is the ratio of n point-like centres, not a ceiling for a ring of n noisy clusters: spread lets
+    # neighbouring clusters connect earlier (smaller birth), so the ring's pi grows with the spread (audit D12).
+    rng = np.random.default_rng(0)
+    t = 2 * np.pi * np.arange(7) / 7
+    c = np.c_[np.cos(t), np.sin(t), np.zeros(7)]
+    pis = [diagrams.max_ratio(diagrams.alpha_diagrams(np.repeat(c, 30, 0) + 0.15 * rng.normal(size=(210, 3)))[1])
+           for _ in range(9)]
+    assert np.median(pis) > 1 / np.sin(np.pi / 7)
+
+
+def test_persistence_can_depend_on_the_coefficient_field():
+    # Each subcomplex of R^3 has torsion-free homology, but persistence can still depend on the field
+    # (Obayashi & Yoshiwaki 2023, doi:10.1007/s00454-023-00544-7): a Moebius band's boundary circle winds twice
+    # around its core, so boundary -> band is multiplication by 2 on H1, zero over Z/2 and an isomorphism over Z/3.
+    import gudhi
+    bars = {}
+    for p in (2, 3):
+        st = gudhi.SimplexTree()
+        for i in range(5):
+            st.insert([i], 0.0)
+            st.insert([i, (i + 2) % 5], 0.0)                     # the boundary circle 0-2-4-1-3 enters first
+        for tri in [(0, 1, 2), (1, 2, 3), (2, 3, 4), (3, 4, 0), (4, 0, 1)]:
+            st.insert(list(tri), 1.0)                            # then the 5-vertex Moebius band
+        st.compute_persistence(homology_coeff_field=p, persistence_dim_max=True)
+        bars[p] = sorted(map(tuple, st.persistence_intervals_in_dimension(1).tolist()))
+    assert bars[2] == [(0.0, 1.0), (1.0, np.inf)]
+    assert bars[3] == [(0.0, np.inf)]
+
+
 def test_rips_12gon_has_phantom_h2_alpha_does_not():
     # Rips on the regular 12-gon creates spurious H2 classes (Adamaszek & Adams 2017); alpha does not.
     t = 2 * np.pi * np.arange(12) / 12

@@ -1,10 +1,14 @@
 """Persistence diagrams: alpha complexes in R^3 (GUDHI) and Vietoris-Rips complexes (ripser.py).
 
 Global context: Method B (reports/preregistration.md, section 4) measures the holes of a point cloud with
-persistent homology. In R^3 the alpha complex has exactly the persistence of the Cech complex (union of
-balls, nerve theorem) and no Rips "phantom" classes (de Silva & Ghrist 2007, doi:10.2140/agt.2007.7.339;
-Adamaszek & Adams 2017, arXiv:1503.03669), so it is the primary complex for H0/H1/H2. Rips (ripser.py,
-Tralie et al. 2018, doi:10.21105/joss.00925) is used for higher-dimensional checks and circular coordinates.
+persistent homology. The alpha complex is a different (smaller) complex than the Cech complex, but at every
+radius it is homotopy equivalent to the union of balls (Edelsbrunner 1995, doi:10.1007/BF02574053), and the
+whole alpha filtration is collapse-equivalent to the Cech filtration, so their persistence diagrams agree
+(Bauer & Edelsbrunner 2017, doi:10.1090/tran/6991). Vietoris-Rips is only interleaved with Cech (de Silva &
+Ghrist 2007, doi:10.2140/agt.2007.7.339, Thm 2.5) and can carry classes the union of balls lacks, e.g. 2-spheres
+for points on a circle (Adamaszek & Adams 2017, doi:10.2140/pjm.2017.290.1). So alpha is the primary complex for
+H0/H1/H2; Rips (ripser.py, Tralie et al. 2018, doi:10.21105/joss.00925) is used for higher-dimensional checks
+and circular coordinates.
 All diagrams are returned as lists [H0, H1, H2] of (n_k, 2) arrays (birth, death) in *radius* units.
 """
 
@@ -18,8 +22,15 @@ from ripser import ripser
 def alpha_diagrams(points: np.ndarray, maxdim: int = 2, precision: str = "safe") -> list[np.ndarray]:
     """Alpha-complex persistence diagrams H0..H_maxdim of a cloud in R^3, in radius units, over Z/2.
 
+    Z/2 is not guaranteed to give the same diagram as another field: for filtrations in R^3, H0 and H2 are
+    field-independent but H1 can change when the relative homology has torsion, which Obayashi & Yoshiwaki found
+    in 1 of 10,000 random alpha filtrations (Discrete Comput. Geom. 70:645-670, 2023, doi:10.1007/s00454-023-00544-7;
+    tests/test_tda.py::test_persistence_can_depend_on_the_coefficient_field).
+
     GUDHI's AlphaComplex filtration values are *squared* radii (create_simplex_tree(output_squared_values=True)
-    is the default; https://gudhi.inria.fr/python/latest/alpha_complex_user.html), so we take square roots.
+    is the default; https://gudhi.inria.fr/python/latest/delaunay_complex_ref.html), so we take square roots.
+    A non-Gabriel simplex enters with "the minimum of the filtration values of the codimension 1 cofaces that make
+    it not Gabriel" (https://gudhi.inria.fr/doc/latest/group__alpha__complex.html).
     """
     pts = np.asarray(points, dtype=np.float64)
     st = gudhi.AlphaComplex(points=pts, precision=precision).create_simplex_tree()

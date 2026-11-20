@@ -46,6 +46,10 @@ def projection_row(dataset_id: str) -> dict:
         out[f"rips{k}_pi1"] = diagrams.max_ratio(dr[1])
         out[f"rips{k}_b1_univ"] = int(nulls.universal_significant(dr[1], A=1.0).sum())
     from scipy.spatial.distance import pdist, squareform
+    # Cosine dissimilarity 1 - cos(angle) is not a metric (no triangle inequality; scipy.spatial.distance.cosine
+    # docs) and is about angle^2 / 2 for small angles, so its pi is roughly the square of the angular-distance pi
+    # and not comparable with the Euclidean pi above. Rips accepts any dissimilarity, and the universal-null count
+    # is unchanged by squaring the filtration (l is centred), so this stays a descriptive check.
     dm = squareform(pdist(c["x"], metric="cosine"))
     dr = diagrams.rips_diagrams(dm, maxdim=1, distance_matrix=True)
     out["ripsD_cos_pi1"] = diagrams.max_ratio(dr[1])
