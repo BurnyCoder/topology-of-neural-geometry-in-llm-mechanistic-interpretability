@@ -8,7 +8,7 @@
 \graphicspath{ {../docs/figures/} }
 \title{Holes in Neural Geometry: Exact Topology of Fitted Shapes and Persistent Homology\\of Top-3-PCA Activation Clouds, and Whether Cyclic Concepts Travel Around Them}
 \author{Libor ``Burny'' Burian}
-\date{16 November 2026}
+\date{20 November 2026}
 \begin{document}
 \maketitle
 
@@ -39,12 +39,12 @@ Steering experiments are preregistered and postponed.
 
 \section{Introduction}
 
-Low-dimensional shapes in activations are a recurring finding.
+Low-dimensional shapes in activations and embeddings are a recurring finding.
 \begin{itemize}
   \item Circles for weekdays and months~\citep{engels2025notall}.
   \item A helix of GPT-2 positions~\citep{yedidia2023helix}.
   \item Circles of residues in grokked modular addition~\citep{nanda2023progress}.
-  \item Loops for colours and dates~\citep{modell2025origins}.
+  \item Loops for colours and dates in text-embedding vectors~\citep{modell2025origins}.
 \end{itemize}
 Manifold steering~\citep{wurgaft2026manifold,goodfire2026geometry} moves activations along a fitted manifold. On a weekday manifold this shifts the output from Monday to Tuesday and so on, whereas linear steering cuts across the manifold.
 
@@ -64,7 +64,7 @@ These works identify shapes geometrically. A geometric label such as ``helix'' d
 \begin{itemize}
   \item Layer-wise topology simplification~\citep{naitzat2020topology}.
   \item Zigzag persistence across LLM layers~\citep{gardinazzi2025persistent}.
-  \item Betti numbers of modular-addition representations~\citep{moisescu2025modular} and H1 at grokking~\citep{tang2026grokking}. Neither uses a null model.
+  \item Betti numbers of modular-addition representations~\citep{moisescu2025modular} and H1 at grokking~\citep{tang2026grokking}. Neither tests bars against a null model; the second compares with networks trained on permuted labels.
   \item A persistence ratio for small centroid clouds of imposed cycles~\citep{david2026context}.
 \end{itemize}
 
@@ -72,7 +72,7 @@ These works identify shapes geometrically. A geometric label such as ``helix'' d
 
 \paragraph{Inference.} The universal null~\citep{bobrowski2023universal} gives per-bar $p$-values. Gardner et al.~\citep{gardner2022toroidal} threshold bars at the longest lifetime over all bars of 1{,}000 shuffles, a heuristic in their words; our Monte Carlo null adapts this to the ratio $\pi$, one maximum per null draw and the $p$-value $(1+b)/(M+1)$~\citep{phipson2010permutation}.
 
-\paragraph{Pitfalls.} PCA horseshoes and Lissajous loops~\citep{antognini2018pca,shinn2023phantom}, and Rips phantom classes~\citep{adamaszek2017rips}.
+\paragraph{Pitfalls.} PCA horseshoes~\citep{diaconis2008horseshoes}, Lissajous curves of random walks~\citep{antognini2018pca}, phantom oscillations~\citep{shinn2023phantom}, and Rips phantom classes~\citep{adamaszek2017rips}.
 
 \paragraph{Gap.} We found no peer-reviewed work that tests, with a null model, whether a cyclic concept's representation has a 1-cycle aligned with its semantic order. The closest is a preprint that compares the persistence ratio of centroid clouds of imposed cycles with random points~\citep{david2026context}, without a traversal test. We also found none that compares the exact topology of fitted parametric shapes with persistent homology of the same clouds.
 
@@ -104,11 +104,11 @@ The synthetic test set (39{,}000 clouds, 13 families, 5--1024 points, 3 noise le
   \item torus: $T^2$ (genus 1);
   \item clusters and polytopes: point sets.
 \end{itemize}
-The margin $m$ is the smallest parameter change that alters the topology (for example, a helix's endpoint gap). Its ratio to the noise-and-coverage scale $\nu$ is $\rho_A = m/(2\nu)$; the topology is resolvable if $\rho_A \ge 1$.
+The margin $m$ is the size of the smallest geometric feature whose closing or collapse alters the topology: a gap (for example, a helix's endpoint gap) or a diameter (a circle's hole, a torus tube). Its ratio to the noise-and-coverage scale $\nu$ is $\rho_A = m/(2\nu)$; the topology is called resolvable if $\rho_A \ge 1$. This is a heuristic (balls of radius $\nu$ grown from both sides of a gap $m$ meet once $2\nu \ge m$), not a recovery guarantee like the reach-based sampling theorem of~\citep{niyogi2008finding}.
 
 Every point gets the parameter of its nearest point on the fit: curve parameter, azimuth, height, or nearest centroid. The rules agree with persistent homology of dense noise-free samples for {{exp0.dense_agree:3}} of {{exp0.dense_n}} shapes.
 
-\paragraph{Method B.} Alpha complexes in $\mathbb{R}^3$, computed with GUDHI~\citep{gudhi}. They are smaller than \v{C}ech complexes but homotopy equivalent to the union of balls at every radius~\citep{edelsbrunner1995union}, and their filtration has the same persistence diagrams as the \v{C}ech filtration~\citep{bauer2017morse}. Rips complexes (ripser~\citep{tralie2018ripser}) are only interleaved with \v{C}ech~\citep{desilva2007coverage} and can have phantom classes~\citep{adamaszek2017rips}.
+\paragraph{Method B.} Alpha complexes in $\mathbb{R}^3$, computed with GUDHI~\citep{gudhi}. They are smaller than \v{C}ech complexes but homotopy equivalent to the union of balls at every radius~\citep{edelsbrunner1995union}, and their filtration has the same persistence diagrams as the \v{C}ech filtration~\citep{bauer2017morse}; both results assume points in general position, which real activations satisfy generically. Rips complexes (ripser~\citep{tralie2018ripser}) are only interleaved with \v{C}ech~\citep{desilva2007coverage} and can have phantom classes~\citep{adamaszek2017rips}.
 
 A bar is significant if its persistence ratio $\pi = \text{death}/\text{birth}$ has a Monte Carlo $p = (1+\#\{\text{null maxima} \ge \pi\})/(M+1) < 0.05$ against the maximum $\pi$ of $M=999$ draws of a design-matched null, which is essentially exceeding the null's 95th percentile. Every draw passes through the same normalisation.
 \begin{itemize}
@@ -209,7 +209,7 @@ Both Monte Carlo nulls are Gaussian. They match the covariance, not the intrinsi
 \begin{itemize}
   \item On the 3{,}120-cloud synthetic subset, Exp1 had run the design-(b) null in 3D. On rank-3 clouds this is the same distribution as the real-data sampler (median $|q_{95}$ ratio$-1|={{audit3.eq.median_rel:3}}$).
   \item It detects {{audit3.mc.sens:2}} [{{audit3.mc.sens_lo:2}}, {{audit3.mc.sens_hi:2}}] of true holes. But it flags {{audit3.mc.fpr:3}} [{{audit3.mc.fpr_lo:3}}, {{audit3.mc.fpr_hi:3}}] of resolvable hole-free clouds: spheres and caps {{audit3.mc.fam.sphere_b0:2}}, paraboloids {{audit3.mc.fam.paraboloid_b0:2}}, helices {{audit3.mc.fam.helix_b0:2}}, discs {{audit3.mc.fam.disc_b0:2}}, but open arcs only {{audit3.mc.fam.arc_b0:2}} and blobs, its own model, {{audit3.mc.fam.blob_b0:2}}.
-  \item The rate rises with $N$ ({{audit3.mc.fpr_bin0:2}} to {{audit3.mc.fpr_bin3:2}}) and is not caused by outliers. Maximal noise persistence grows with $N$ at a rate set by the homology degree, with constants that depend on the dimension~\citep{bobrowski2017maximally}; the theorem covers compactly supported densities, not Gaussians, so it does not by itself predict this rate.
+  \item The rate rises with $N$ ({{audit3.mc.fpr_bin0:2}} to {{audit3.mc.fpr_bin3:2}}) and is not caused by outliers. Maximal noise persistence grows with $N$ at a rate set by the homology degree, with constants that depend on the dimension~\citep{bobrowski2017maximally}; the theorem is proven for a homogeneous Poisson process in the unit cube (densities bounded above and below on a compact support are only remarked), not for Gaussians or points on surfaces, so it does not by itself predict this rate.
   \item The flagged hole-free clouds have top $\pi$ of {{audit3.mc.flag_pi_q10:2}}--{{audit3.mc.flag_pi_q90:2}} (10th--90th percentile), which covers the residue, days-with-times and month loops. Only colours ($\pi={{exp2.colors.top_pi1:2}}$) is far above.
   \item The cluster-centre null (design a) was simulated on hole-free arrangements of concept centres (a hemisphere cap, a planar lattice), next to rings, open arcs and Gaussian centres. At the real variance structure even rings rarely pass ({{audit3.k12.ring.n_pass}}/40 for 12 clusters), so the pre-specified verdict is ``{{audit3.k12.verdict}}''. Across cells, caps and lattices pass at most {{audit3.k12.holefree_pass_max:3}}, whereas rings and open arcs pass in up to {{audit3.k12.ring.pass_max:2}}.
   \item No cap or lattice replicate reached the months' $\pi$ ({{audit3.k12.holefree_pi_ge_real_all}} of {{audit3.k12.holefree_n_all}}).

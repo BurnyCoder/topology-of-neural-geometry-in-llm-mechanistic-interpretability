@@ -127,7 +127,7 @@ Code: [`circular_coordinates`](../src/neurotopo/tda/circular.py), using [DREiMac
 - **Cocycle.** Persistent cohomology with Z/47 coefficients gives, for the most persistent class, a **cocycle**: a number on every edge that sums to ±1 around the loop and to 0 around every filled triangle. Think of a cut across the ring, where every edge that crosses the cut gets 1. DREiMac lifts it to integers.
 - **Range check** (`standard_range=True`, preregistered): the class's Rips death must be at least twice its birth.
   - In the toy, birth = 0.751 and death = 1.868 (diameters), a ratio of 2.49 ≥ 2, so the check passes.
-  - The ring cannot be filled until edges span 3 concepts; edges spanning 2 are not enough, as for 7 evenly spaced points on a circle ([Adamaszek & Adams 2017](https://arxiv.org/abs/1503.03669)).
+  - The ring is filled only when edges join concepts three steps apart (for example Mon–Thu); edges two steps apart (Mon–Wed) still leave a circle. This is the behaviour of 7 evenly spaced points on a circle: their Rips complex with edges to the first and second neighbours is homotopy equivalent to S¹ (the cyclic graph power C₇², [Adamaszek & Adams 2017](https://arxiv.org/abs/1503.03669), Thm 4.3), and with third neighbours it is the full simplex.
   - `standard_range=False` is the relaxed post hoc setting (deviation D5).
 - **Harmonic smoothing.** Choose one real number f_v per landmark to minimise Σ_edges (α_e − (f_head − f_tail))², where α_e is the cocycle on edge e (DREiMac uses scipy's `lsqr`). Then θ = 2π·f mod 2π, with a partition of unity filling in between landmarks.
 

@@ -13,7 +13,7 @@ Date: 2026-11-15. Code: `src/neurotopo/experiments/exp4_similarity.py`, `exp5_ro
 
 ![MDS and dendrogram](../docs/figures/fig_exp4.png)
 
-**Caveat.** Keeping only significant bars gives up the bottleneck stability theorem ([Cohen-Steiner, Edelsbrunner & Harer 2007](https://doi.org/10.1007/s00454-006-1276-5)): a bar just above the threshold in one cloud and just below it in a nearly identical cloud changes the distance by about half its length. The distance is computed exactly with Hera in GUDHI ([Kerber, Morozov & Nigmetov 2017](https://doi.org/10.1145/3064175)).
+**Caveat.** Keeping only significant bars gives up the bottleneck stability theorem ([Cohen-Steiner, Edelsbrunner & Harer 2007](https://doi.org/10.1007/s00454-006-1276-5)): a bar just above the threshold in one cloud and just below it in a nearly identical cloud changes the distance by about half its length. The distance is computed exactly with `gudhi.bottleneck_distance` (e = 0), GUDHI's CGAL-based implementation by F. Godi after [Efrat, Itai & Katz 2001](https://doi.org/10.1007/s00453-001-0016-8) ([GUDHI documentation](https://gudhi.inria.fr/python/latest/bottleneck_distance_user.html)), not GUDHI's separate Hera interface.
 
 **Learning.** Bottleneck distance in absolute radius units is dominated by bar length, not by π. A scale-free variant, for example log-coordinates of bars, is listed in the to-do. This exploratory analysis is reported as uninformative.
 
@@ -44,7 +44,7 @@ Date: 2026-11-15. Code: `src/neurotopo/experiments/exp4_similarity.py`, `exp5_ro
 
 **Interpretation.**
 - Raw persistence ratios are not comparable across dimensions and sample sizes. The top-10 statement therefore rests on the matched null above, which was added post hoc.
-- **In 10 dimensions, loops are not specific to cyclic concepts.** Years, age, counting and temperature have significant top-10 loops, as expected from PCA Lissajous and Fourier features of numbers. Months and residues do not.
+- **In 10 dimensions, loops are not specific to cyclic concepts.** Years, age, counting and temperature have significant top-10 loops. This is consistent both with Fourier features of numbers ([Kantamneni & Tegmark 2025](https://arxiv.org/abs/2502.00873)) and with the Lissajous-like PCA projections of smooth or random-walk curves ([Antognini & Sohl-Dickstein 2018](https://arxiv.org/abs/1806.08805); [Shinn 2023](https://doi.org/10.1073/pnas.2311420120)); this test cannot tell the two apart. Months and residues do not.
 - The post hoc traversal test shows that ordinal values do not wind around those loops. Only colours keep both a loop and a single winding in 10D, and the colour prompts' own RGB values already have that loop (audit D8, [exp7_audit.md](exp7_audit.md)).
 - The months and residue loops are strongest in the top-3 PCs and fade in higher dimensions. For residues this is expected, because several Fourier circles coexist in other PC pairs.
 - None of the conclusions depends on the Monte Carlo seed or on the offset nuisance factor.
