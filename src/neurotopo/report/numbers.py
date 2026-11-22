@@ -68,6 +68,22 @@ def collect() -> dict:
         n["exp0.gp_gap_max"] = max(r["closure_gap"] for r in gp) if gp else float("nan")
         st = pd.read_csv(_res("exp0", "synth_test_topology.csv.gz"))
         n["exp0.synth_resolvable"] = float(st["resolvable"].mean())
+        # Helix fits: which feature sets the margin (independent audit, 2026-11-22). The margin is min(end gap, |pitch|)
+        # for turns > 1 (analytic/topology.py); rho_A < 1 with the pitch as margin means that adjacent turns merge at the
+        # noise scale into a tube with one loop around the axis, which is a different statement from "the ends meet".
+        from neurotopo.analytic.topology import helix_end_gap        # lazy: report modules import little at load time
+        from neurotopo.data import source
+        fits = source.real_results()
+        hel = [i for i in t.index if t.loc[i, "family"] == "helix"]
+        pitch_set = [i for i in hel if np.isclose(t.loc[i, "margin"], abs(fits[i]["params"]["pitch"]))]
+        n["exp0.helix_n"], n["exp0.helix_pitch_margin_n"] = len(hel), len(pitch_set)
+        prim = ["R5a_llama_weekdays", "R5b_llama_months", "R2_grokking_WE"]
+        for d in prim:
+            p = fits[d]["params"]
+            n[f"exp0.{SHORT[d]}.turns"] = float(p["turns"])
+            n[f"exp0.{SHORT[d]}.endgap_rho"] = helix_end_gap(p) / (2 * float(t.loc[d, "nu"]))   # end gap / (2 nu)
+        n["exp0.prim_turns_min"] = min(float(fits[d]["params"]["turns"]) for d in prim)
+        n["exp0.prim_turns_max"] = max(float(fits[d]["params"]["turns"]) for d in prim)
     # Coordinates on fitted shapes.
     if _res("coords", "point_coordinates.json").exists():
         for q in read_json(_res("coords", "point_coordinates.json")):
@@ -184,6 +200,7 @@ def collect() -> dict:
                     n[f"exp2.{sh}.q_loop"] = float(d.loc[i, "q_top_loop"])
                     n[f"exp2.{sh}.q_void"] = float(d.loc[i, "q_top_void"])
             n["exp2.n_void_q05"] = int((d["q_top_void"] < 0.05).sum())       # voids surviving BH over the 44 tests
+        n["exp2.source_dev_max"] = float(d["source_deviation"].max())        # largest |recomputed - stored| coordinate
         trained = d[d.index.str.startswith("R") & ~d.index.str.startswith("R3_")]   # trained models, not the toy models
         n["exp2.trained_n"], n["exp2.trained_voids"] = len(trained), int((trained["p_top_void"] < 0.05).sum())
         # The colours cloud's largest void (README void figure; post hoc, chosen after browsing the explorer).
@@ -426,6 +443,12 @@ def collect() -> dict:
             n["audit3.tori.pi_min"], n["audit3.tori.pi_max"] = min(t["void_pi"] for t in tori), max(t["void_pi"] for t in tori)
             n["audit3.tori.birth_over_cut_min"] = min(t["void_birth"] / t["cut"] for t in tori)
             n["audit3.tori.birth_over_cut_max"] = max(t["void_birth"] / t["cut"] for t in tori)
+    # Independent audit (D14): the top-10-PC loop test on the 20 smooth-curve controls (experiments/exp9_independent_audit.py).
+    if _res("exp9_audit4", "summary.json").exists():
+        a4 = read_json(_res("exp9_audit4", "summary.json"))
+        n["audit4.n"], n["audit4.n_sig"], n["audit4.decision"] = a4["n"], a4["n_significant"], a4["decision"]
+        n["audit4.pi_max"], n["audit4.q95_min"], n["audit4.q95_max"] = a4["pi_max"], a4["q95_min"], a4["q95_max"]
+        n["audit4.ci_hi"] = a4["rate_ci"][1]
     # Worked example (experiments/toy_example.py): every number of docs/worked_example.md, keys "toy.<name>".
     if _res("toy", "summary.json").exists():
         n.update({f"toy.{k}": v for k, v in read_json(_res("toy", "summary.json"))["numbers"].items()})

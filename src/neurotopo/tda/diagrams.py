@@ -37,7 +37,8 @@ def alpha_diagrams(points: np.ndarray, maxdim: int = 2, precision: str = "safe")
     """
     pts = np.asarray(points, dtype=np.float64)
     st = gudhi.AlphaComplex(points=pts, precision=precision).create_simplex_tree()
-    st.compute_persistence(homology_coeff_field=2, min_persistence=0.0)   # all bars, Z/2 coefficients
+    st.compute_persistence(homology_coeff_field=2, min_persistence=0.0)   # bars of positive length (GUDHI keeps
+    # those strictly longer than min_persistence), Z/2 coefficients
     out = []
     for k in range(maxdim + 1):
         iv = np.asarray(st.persistence_intervals_in_dimension(k), dtype=np.float64).reshape(-1, 2)

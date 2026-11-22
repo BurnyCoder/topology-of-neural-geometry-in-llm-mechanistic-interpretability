@@ -40,6 +40,16 @@ def _min_pairwise(points) -> float:
     return float(d[np.triu_indices(len(p), 1)].min())
 
 
+def helix_end_gap(params: dict) -> float:
+    """Distance between the two ends of a helix c + r cos t e1 + r sin t e2 + h t / (2 pi) e3, t in [-pi turns,
+    pi turns] (source curves.py:154). Its margin is this gap, or the pitch |h| if turns > 1 and |h| is smaller:
+    then adjacent turns touch first and the thickened coil becomes a tube with one loop around its axis."""
+    r, h, t = float(params["radius"]), float(params["pitch"]), math.pi * float(params["turns"])
+    a = np.array([r * math.cos(t), r * math.sin(t), h * t / (2 * math.pi)])      # end at t = +pi turns
+    b = np.array([r * math.cos(-t), r * math.sin(-t), -h * t / (2 * math.pi)])   # end at t = -pi turns
+    return float(np.linalg.norm(a - b))
+
+
 def shape_topology(family: str, params: dict) -> dict:
     """Exact invariants of a fitted (or ground-truth) shape given its canonical describe() parameters.
 
@@ -75,12 +85,8 @@ def shape_topology(family: str, params: dict) -> dict:
         # Closed ellipse = S^1; the hole collapses when the minor axis 2b reaches 0.
         return _result(1, 1, 0, 1, "circle", 2 * float(p["b"]))
     if family == "helix":
-        r, h, turns = float(p["radius"]), float(p["pitch"]), float(p["turns"])
-        # Endpoints at t = +-pi*turns of c + r cos t e1 + r sin t e2 + h t / (2 pi) e3 (source curves.py:154).
-        t = math.pi * turns
-        a = np.array([r * math.cos(t), r * math.sin(t), h * t / (2 * math.pi)])
-        b = np.array([r * math.cos(-t), r * math.sin(-t), -h * t / (2 * math.pi)])
-        m = float(np.linalg.norm(a - b))
+        h, turns = float(p["pitch"]), float(p["turns"])
+        m = helix_end_gap(p)             # the gap between the two ends
         if turns > 1:
             m = min(m, abs(h))           # adjacent turns touching would turn the curve into a tube (b1 = 1)
         return _result(1, 0, 0, 1, "point", m, n_boundary=2)

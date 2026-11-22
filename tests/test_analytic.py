@@ -12,7 +12,7 @@ import numpy as np
 import pytest
 
 from neurotopo.analytic import coords
-from neurotopo.analytic.topology import shape_topology
+from neurotopo.analytic.topology import helix_end_gap, shape_topology
 from neurotopo.data import source
 from neurotopo.tda import diagrams, nulls
 
@@ -87,6 +87,17 @@ def test_pointsets_and_curves():
         assert t["b1"] == (1 if fam == "ellipse" else 0)
         assert t["chi"] == t["b0"] - t["b1"] + t["b2"]
     assert math.isclose(topo("ringing", a1=1.0, a2=0.5, a3=0.2)["margin"], 2 * math.hypot(1.0, 0.2))
+
+
+def test_helix_margin_is_end_gap_or_pitch():
+    # Half a turn: ends at t = +-pi/2, i.e. (0, r, h/4) and (0, -r, -h/4), so the end gap is sqrt(4 r^2 + h^2 / 4),
+    # and with turns <= 1 the margin is that gap.
+    p = {"radius": 1.0, "pitch": 2.0, "turns": 0.5}
+    assert math.isclose(helix_end_gap(p), math.sqrt(4 + 1)) and math.isclose(topo("helix", **p)["margin"], math.sqrt(5))
+    # A tight coil (independent audit, 2026-11-22): many turns, small pitch. Its margin is the pitch, because adjacent
+    # turns touch long before the ends meet; this is the case of every real helix fit (reports/exp0_analytic.md).
+    coil = {"radius": 1.5, "pitch": 0.3, "turns": 5.6}
+    assert helix_end_gap(coil) > 0.3 and math.isclose(topo("helix", **coil)["margin"], 0.3)
 
 
 def test_euler_characteristic_of_surfaces():
