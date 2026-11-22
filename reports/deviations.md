@@ -241,3 +241,25 @@ An independent audit, which ignored the earlier audits and fact-checks, re-read 
 - at least 5 of 20 significant at p < 0.05 (one-sided exact binomial p = 0.016 against 0.05): smooth random curves alone produce such loops, so the PCA-artefact explanation is plausible;
 - at most 2 of 20: the project's own smooth-curve controls do not support that explanation;
 - 3 or 4: undetermined.
+
+**Outcome (after the run):** 0 of 20 controls are significant; their largest top-10 Rips ratio is 1.009, against null thresholds of 1.39–1.73 (`results/exp9_audit4/`). By the rule above, the PCA-artefact explanation is not supported by the smooth-curve controls. The documentation now says the ordinal top-10 loops need structure these controls lack, such as periodic number features, clusters or noise around a smooth curve; the controls have no independent noise, so noise is not ruled out. These numbers are hand-copied in this log only; the reports quote them through `run.py report`.
+
+**Corrections (wording, citations, one helper; no verdict and no earlier result file changes):**
+- **Helix fits.** For all 12 helix fits the margin is the pitch (adjacent turns), not the end gap. ρ_A < 1 therefore means the coil's turns merge into a tube with one loop around its axis at the noise scale. It does not mean "the ends are closer than the noise": the residue fit's ends are resolvably apart. The conclusion that the fit cannot tell an open from a closed curve stands. `analytic.topology.helix_end_gap` is factored out, tested, and used by Method A and the report.
+- **Months.** "The months lie on a closed saddle loop" became "the shape of a closed saddle loop; the periodic fit assumes closure", with the largest-step evidence.
+- **Citations.**
+  - Engels et al. did intervene on the circle angle.
+  - Gardinazzi et al. App. C, the shouvik-majumder re-implementation, Gupta et al. 2026 and Karkada et al. 2026 are added to the related work.
+  - Horseshoes from distance-decaying covariance are attributed to Novembre & Stephens 2008.
+  - The Antognini & Sohl-Dickstein curves are open.
+  - The Erickson bound, the Niyogi–Smale–Weinberger and Obayashi–Yoshiwaki pointers, the Chaudhuri and Gardner pipelines, and the Fasy et al. sentence are corrected.
+  - Nanda et al. is ICLR 2023.
+- **Licences and tools.** GUDHI's bottleneck distance is GPL-3.0 too. persim is a dependency, not a used tool.
+- **Wording.**
+  - The random-init calibration sentences.
+  - The trained-cloud void count.
+  - A subsample fraction.
+  - The clean-room to-do.
+- **D3.** The rule D3 calls "preregistered" ("a cyclic set with no loop counts as a failure") is in `plan.md`, which was pushed with the preregistration in the same commit (b6cc417). It is not in `preregistration.md` itself.
+
+Details: [reviews/independent-audit.md](reviews/independent-audit.md). **No preregistered verdict changes.**
