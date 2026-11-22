@@ -1,8 +1,9 @@
 Third-party dependencies (installed from PyPI, not redistributed in this repository)
 
-- GUDHI (https://gudhi.inria.fr), MIT overall. Its AlphaComplex module (gudhi/delaunay_complex.py)
-  declares GPL-3.0 because it builds on CGAL. This repository's own source code stays MIT; anyone who
-  redistributes a combined binary that includes GUDHI's alpha complex must follow GPL-3.0.
-- ripser.py and persim (scikit-tda), MIT.
+- GUDHI (https://gudhi.inria.fr), MIT overall. Its AlphaComplex module (gudhi/delaunay_complex.py) and its
+  bottleneck distance (gudhi/bottleneck.py) declare GPL-3.0 because they build on CGAL. This repository's own
+  source code stays MIT; anyone who redistributes a combined binary that includes these GUDHI modules must
+  follow GPL-3.0.
+- ripser.py and persim (scikit-tda), MIT. persim is installed as a dependency of ripser.py and DREiMac.
 - DREiMac (scikit-tda), Apache-2.0.
 - The git submodule external/shape-fitting (BurnyCoder/shape-fitting-in-neural-geometry-in-llm-mechanistic-interpretability), MIT.

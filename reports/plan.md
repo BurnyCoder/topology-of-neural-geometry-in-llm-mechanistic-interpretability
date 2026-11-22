@@ -1,6 +1,6 @@
 # Plan and status
 
-Last updated: 2026-11-20.
+Last updated: 2026-11-22.
 
 ## Status
 
@@ -27,6 +27,7 @@ Last updated: 2026-11-20.
 | 16. Worked example of the method (2026-11-16) | done: `run.py toy` runs every step of the loop and ring test on a 21-point toy week with the real-data functions; [docs/worked_example.md](../docs/worked_example.md) and its interactive version on the explorer site; closed-form checks in tests/test_toy_example.py |
 | 17. Math fact-check against the TDA and interpretability literature (2026-11-20, D12) | done: [reviews/math-fact-check.md](reviews/math-fact-check.md). Method B now reads b0 at r_c like b1/b2 and uses a Betti label instead of "homotopy class"; spindle-torus Betti numbers fixed; overstated or mis-cited sentences corrected with sources; 8 new tests; Exp2 regenerated; no verdict changed |
 | 18. Independent math fact-check (2026-11-20, D13) | done: [reviews/math-fact-check-2.md](reviews/math-fact-check-2.md). Every definition, theorem, statistic and citation checked against its primary source; mis-citations fixed (bottleneck implementation, Hatcher Cor. 3.46, universal-null sample sizes, Bobrowski–Kahle–Skraba assumptions, helix Delaunay size, PCA horseshoes); wording of the margin, the cyclic-order p and the DREiMac guarantee made exact; 1 new test; no code path, number or verdict changed |
+| 19. Independent audit (2026-11-22, D14) | done: [reviews/independent-audit.md](reviews/independent-audit.md). No verdict wrong; docs regenerate from `results/` without drift; `run.py audit4` (decision rule committed before the run) finds no top-10 loop in any of the 20 smooth-curve controls, so the ordinal top-10 loops are not a generic PCA artefact; helix margin = pitch, not end gap (`helix_end_gap`, 1 new test); months' saddle-loop claim hedged; missing related work added (Gardinazzi App. C, shouvik-majumder, Gupta et al. 2026, Karkada et al. 2026); citation, licence and wording fixes |
 | A hole-specific loop test (null resampled from hole-free fitted shapes at the cloud's noise) | not done (future work, D9) |
 | Colour controls with model inference (random-init Llama on the 900 prompts; colour names instead of hex codes) | not done (needs model inference; postponed) |
 
@@ -182,7 +183,7 @@ Anyone with only the GitHub repo and the Hugging Face Hub must be able to replic
   Pass condition: every file in `results/` and every generated table matches the committed ones (exactly, or to within 1e-9 for floats). Any mismatch gets fixed and re-tested.
 
 ## Setup decisions
-- **Python 3.11 with uv**, local `.venv`. DREiMac (circular coordinates, Apache-2.0, [JOSS 2023](https://doi.org/10.21105/joss.05791)) requires Python below 3.12. gudhi 3.13, ripser 0.6.15 and persim 0.4.1 all ship cp311 Windows wheels (checked on PyPI).
+- **Python 3.11 with uv**, local `.venv`. DREiMac (circular coordinates, Apache-2.0, [JOSS 2023](https://doi.org/10.21105/joss.05791)) requires Python below 3.12. gudhi 3.13 and ripser 0.6.15 ship cp311 Windows wheels, and persim 0.4.1 is a pure-Python wheel (py3-none-any; checked on PyPI).
   - Dependencies: numpy, scipy, scikit-learn, pandas, gudhi, ripser, persim, dreimac, matplotlib, pyyaml, python-dotenv, joblib, huggingface_hub, pytest.
 - **The source repo becomes a git submodule** at `external/shape-fitting`, pinned to 4c5f3b6. It provides provenance, the viz JSON and `real_results.json`.
   - It is **not installed as a dependency**: it pins Python 3.12, torch cu130, transformers and bitsandbytes.

@@ -61,11 +61,11 @@ Two spaces have the same **homotopy type** if one can be continuously deformed i
 
 ### Margin ratio rho_A
 ρ_A = m / (2ν) asks whether the data can resolve the fitted shape's topology.
-- m is the size of the smallest geometric feature whose closing or collapse would change the topology: a gap, for example between a helix's two ends, or a diameter, for example of a hole or a torus tube. It is a length in the data's units, not the parameter change itself.
+- m is the size of the smallest geometric feature whose closing or collapse would change the topology: a gap, for example between a helix's two ends or between two adjacent turns of a helix (its pitch), or a diameter, for example of a hole or a torus tube. It is a length in the data's units, not the parameter change itself.
 - ν is the cloud's noise-and-coverage scale: the median distance from the points to the shape plus the 95th-percentile distance from the shape to the points.
 
 ### Resolvable
-ρ_A ≥ 1: the topological feature is larger than twice the noise-and-coverage scale. This is a heuristic, not a theorem: balls of radius ν grown from both sides of a gap m meet once 2ν ≥ m. A rigorous counterpart, in terms of the shape's reach rather than its margin, is the sampling theorem of [Niyogi, Smale & Weinberger 2008](https://doi.org/10.1007/s00454-008-9053-2) (Prop. 3.1). Below 1, a fitted "open helix" cannot be told apart from a closed loop.
+ρ_A ≥ 1: the topological feature is larger than twice the noise-and-coverage scale. This is a heuristic, not a theorem: balls of radius ν grown from both sides of a gap m meet once 2ν ≥ m. A rigorous counterpart, in terms of the shape's reach rather than its margin, is the covering condition of [Niyogi, Smale & Weinberger 2008](https://doi.org/10.1007/s00454-008-9053-2) (Prop. 3.1; its random-sample version is Thm 3.1). Below 1, the data do not resolve the fitted topology. For the real helix fits the smallest feature is the spacing between adjacent turns: at the noise scale the thickened coil is a tube with one loop around its axis, so a fitted "open helix" cannot be told apart from a closed loop.
 
 ## Method B: persistent homology of the cloud
 
@@ -93,7 +93,7 @@ Adds a simplex whenever all its points are pairwise within distance 2r. It is ch
 The nested sequence of complexes as r grows. Every simplex has an entry radius, and nothing is ever removed.
 
 ### Homology H0 H1 H2
-H0 = connected pieces, H1 = loops, H2 = voids, computed with coefficients mod 2. For complexes in ℝ³, H0 and H2 bars do not depend on that choice; H1 bars can, in rare cases such as a Möbius band ([Obayashi & Yoshiwaki 2023](https://doi.org/10.1007/s00454-023-00544-7), Cor. 1–2 and Example 1: 1 in 10,000 alpha filtrations of Poisson clouds in [0,1]³ with 1,000 points on average; `tests/test_tda.py`). In the explorer's persistence diagram, H1 loops are dots and H2 voids are triangles.
+H0 = connected pieces, H1 = loops, H2 = voids, computed with coefficients mod 2. For complexes in ℝ³, H0 and H2 bars do not depend on that choice; H1 bars can, in rare cases such as a Möbius band ([Obayashi & Yoshiwaki 2023](https://doi.org/10.1007/s00454-023-00544-7), Cor. 1–2; Example 1 is the Möbius band; §8: 1 in 10,000 alpha filtrations of Poisson clouds in [0,1]³ with 1,000 points on average; `tests/test_tda.py`). In the explorer's persistence diagram, H1 loops are dots and H2 voids are triangles.
 
 ### Birth and death
 A loop is **born** at the radius where it first closes and **dies** at the radius where it is filled in. A piece (H0) is born at 0 and dies when it merges with an older piece.
