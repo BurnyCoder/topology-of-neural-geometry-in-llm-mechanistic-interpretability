@@ -1,6 +1,6 @@
 # State-of-the-art review: topology of neural representation manifolds
 
-Date: 2026-11-15; corrected 2026-11-20 by the independent math fact-check ([reviews/math-fact-check-2.md](reviews/math-fact-check-2.md)). Author: Libor "Burny" Burian (review compiled with Claude Code; every claim below links to its source).
+Date: 2026-11-15; corrected 2026-11-20 by the independent math fact-check ([reviews/math-fact-check-2.md](reviews/math-fact-check-2.md)) and 2026-11-22 by the independent audit ([reviews/independent-audit.md](reviews/independent-audit.md)). Author: Libor "Burny" Burian (review compiled with Claude Code; every claim below links to its source).
 
 Scope: what is known about (i) low-dimensional shapes in neural activations, (ii) topological data analysis (TDA) of neural representations, (iii) statistical inference for persistent homology, and (iv) practical tooling, as needed for this project. The project computes the topology of the top-3-PCA activation clouds that the sibling project [shape-fitting](https://github.com/BurnyCoder/shape-fitting-in-neural-geometry-in-llm-mechanistic-interpretability) classified into 13 geometric shape families, and tests whether semantically cyclic concepts travel around a hole.
 
@@ -17,6 +17,8 @@ The full source catalogue, with methods and numbers, is in [literature-review.md
 3. **Topology of neural representations.**
    - Persistent homology is used to describe how layers change data topology ([Naitzat et al.](https://jmlr.org/papers/v21/20-345.html); [Gardinazzi et al.](https://arxiv.org/abs/2410.11042)) and to count Betti numbers of modular-addition representations ([Moisescu-Pareja et al.](https://arxiv.org/abs/2512.25060); [Tang et al.](https://arxiv.org/abs/2605.06352)). None of these tests individual bars against a null model: Naitzat et al. calibrate on data of known topology, Gardinazzi et al. compare informally with token-shuffled prompts, Moisescu-Pareja et al.'s permutation tests compare neuron statistics, and Tang et al. compare with networks trained on permuted labels.
    - A persistence ratio against random points is used for small centroid clouds of *imposed* cycles ([David & Fomin](https://arxiv.org/abs/2607.24425)).
+   - Month tokens' zigzag barcodes across layers are shown, without a null, in [Gardinazzi et al.](https://arxiv.org/abs/2410.11042) (App. C). A re-implementation of Engels et al. that is not peer reviewed ([shouvik-majumder/circular-features](https://github.com/shouvik-majumder/circular-features)) states that weekday and month loops are correctly ordered and exceed a covariance-matched Gaussian null, without test statistics.
+   - Weekday representations may be seven discrete states on a circle rather than a continuous ring ([Gupta, Fruengel & Heimersheim 2026](https://arxiv.org/abs/2610.37796), abstract).
    - In neuroscience, rings and tori are detected by persistent homology, by bar length ([Chaudhuri et al.](https://doi.org/10.1038/s41593-019-0460-x), who decode with a fitted spline) or against shuffled data ([Gardner et al.](https://doi.org/10.1038/s41586-021-04268-7)), and decoded with persistent-cohomology circular coordinates ([Rybakken, Baas & Dunn](https://arxiv.org/abs/1711.07205); Gardner et al.).
 4. **Inference.** The universal null distribution ([Bobrowski & Skraba 2023](https://doi.org/10.1038/s41598-023-37842-2)) gives per-bar p-values; it is a conjecture supported empirically on large samples (simulations with 10^4–10^6 points, real data with roughly 9,000–50,000). Max-over-shuffle thresholds ([Gardner et al.](https://doi.org/10.1038/s41586-021-04268-7): the longest lifetime over all bars of 1,000 shuffles) are a heuristic, in Gardner et al.'s own word.
 5. **Known pitfalls.** PCA and MDS projections create horseshoes ([Diaconis, Goel & Holmes 2008](https://doi.org/10.1214/08-AOAS165)), PCA projections of random walks are Lissajous curves ([Antognini & Sohl-Dickstein](https://arxiv.org/abs/1806.08805)), and smooth data produce phantom oscillations in PCA ([Shinn](https://doi.org/10.1073/pnas.2311420120)). Rips complexes create phantom classes ([Adamaszek & Adams](https://arxiv.org/abs/1503.03669)).
@@ -37,7 +39,6 @@ New here, as far as we found:
 
 ## 11. Not verified, so not used for claims
 
-- The venue of Nanda et al. 2023: the arXiv page gives none, so we cite the arXiv version.
 - The library and filtration used in David & Fomin's Appendix I.
 - What the "k = 250" kNN parameter in Moisescu-Pareja et al. is used for, and their numeric Betti results.
 - The detailed parts of arXiv:2605.05115 beyond about the first 40% of its HTML. The layer, PCA dimension, spline method and results quoted above are from the verbatim part.

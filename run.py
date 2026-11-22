@@ -2,7 +2,7 @@
 
 Global context: each phase is one imported function from `neurotopo`; this file only wires them together.
 `all` = fetch -> exp0 -> coords -> power -> power2 -> exp1 -> exp1outliers -> exp2 -> exp3 -> exp3posthoc -> exp4
--> exp5 -> audit -> audit3 -> toy -> voids -> loops -> report -> site, needs no GPU and no local files beyond the GitHub clone (inputs come from the pinned
+-> exp5 -> audit -> audit3 -> audit4 -> toy -> voids -> loops -> report -> site, needs no GPU and no local files beyond the GitHub clone (inputs come from the pinned
 Hugging Face dataset revision). exp6sim / exp6 (steering) are postponed and not part of `all`.
 `publish-inputs` is maintainer-only (uploads the export of scripts/export_source_artifacts.py).
 """
@@ -31,6 +31,7 @@ PHASES = {
     "exp5": ("neurotopo.experiments.exp5_robustness", "run"),
     "audit": ("neurotopo.experiments.exp7_audit", "run"),
     "audit3": ("neurotopo.experiments.exp8_null_specificity", "run"),
+    "audit4": ("neurotopo.experiments.exp9_independent_audit", "run"),  # top-10 loops of smooth-curve controls (D14)
     "toy": ("neurotopo.experiments.toy_example", "run"),             # worked example (docs/worked_example.md)
     "voids": ("neurotopo.experiments.void_search", "run"),           # every void scored; interesting ones (post hoc)
     "loops": ("neurotopo.experiments.loop_search", "run"),           # every loop scored; interesting ones (post hoc)
@@ -40,7 +41,7 @@ PHASES = {
     "site": ("neurotopo.report.site", "run"),
     "publish": ("neurotopo.report.publish", "run"),
 }
-ALL = ["fetch", "exp0", "coords", "power", "power2", "exp1", "exp1outliers", "exp2", "exp3", "exp3posthoc", "exp4", "exp5", "audit", "audit3", "toy", "voids", "loops", "report", "site"]   # exp6sim / exp6: postponed
+ALL = ["fetch", "exp0", "coords", "power", "power2", "exp1", "exp1outliers", "exp2", "exp3", "exp3posthoc", "exp4", "exp5", "audit", "audit3", "audit4", "toy", "voids", "loops", "report", "site"]   # exp6sim / exp6: postponed
 
 
 def main(argv=None) -> None:

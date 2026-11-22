@@ -1,6 +1,6 @@
 # Where the labelled points sit on their fitted shapes (exploratory, deviation D4)
 
-Date: 2026-11-15. Code: `src/neurotopo/experiments/coords_check.py`. Results: `results/coords/`. No model is run: only the stored clouds and the source fits are used.
+Date: 2026-11-15; wording corrected 2026-11-22 (independent audit, D14). Code: `src/neurotopo/experiments/coords_check.py`. Results: `results/coords/`. No model is run: only the stored clouds and the source fits are used.
 
 ## Question
 
@@ -51,7 +51,7 @@ The author asked: project the original labelled points onto the fitted shape, an
   - This ordering is not specific: random smooth processes fitted as helices show the same (Exp0).
   - The concept order is on the azimuth.
   - The axial direction is neither the concept order nor the prompt offset.
-  - For months, the axial position is a second harmonic of the month angle. That is the signature of a closed, saddle-shaped loop (cos φ, sin φ, cos 2φ), like a tennis-ball seam, which the helix family can only approximate.
+  - For months, the axial position is a second harmonic of the month angle. That is the shape a closed, saddle-shaped loop (cos φ, sin φ, cos 2φ), like a tennis-ball seam, would give, and the helix family can only approximate it. The fit is periodic by construction, so it assumes closure rather than testing it; in 3D the December → January step is the largest of the 12 ({{audit.loc.months.lastfirst:2}}× the median; audit D8).
 - **Ordinal concepts lie in order along curves:** a PCA horseshoe for counts and temperature, a spiral on a sphere fit for GPT-2 positions.
 - **Days with times** (Llama layer 19, last token) represent the day linearly along an open curve. Monday and Sunday are at opposite ends.
 

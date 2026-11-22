@@ -1,0 +1,17 @@
+{
+ "n": 20,
+ "n_significant": 0,
+ "rate_ci": [
+  0.0,
+  0.1684334709830855
+ ],
+ "binom_p_vs_005": 1.0,
+ "by_kind": {
+  "gp": 0,
+  "walk": 0
+ },
+ "pi_max": 1.008832289985487,
+ "q95_min": 1.3907674525978806,
+ "q95_max": 1.7344989628210092,
+ "decision": "not supported by the smooth-curve controls"
+}

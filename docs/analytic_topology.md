@@ -44,6 +44,6 @@ The **margin** m is the size, in the data's units, of the smallest geometric fea
 
 ## Numerical check
 
-The analytic Betti numbers are compared with alpha-complex persistent homology of dense noise-free random samples of each shape: 10,000 samples for surfaces, and 2,000 slightly jittered samples for curves, whose Delaunay triangulation can otherwise grow superlinearly (Ω(n^{3/2}) for evenly spaced points on a helix, [Erickson 2003](https://doi.org/10.1007/s00454-003-2927-4), Thm 2.3). Only bars with π > 4 that are born below m/4 are counted.
+The analytic Betti numbers are compared with alpha-complex persistent homology of dense noise-free random samples of each shape: 10,000 samples for surfaces, and 2,000 slightly jittered samples for curves, whose Delaunay triangulation can otherwise grow superlinearly ([Erickson 2003](https://doi.org/10.1007/s00454-003-2927-4): Ω(n^{3/2}) for a helix with about √n points per turn, Thm 2.3; every point is joined to every point less than a full turn away, Lemma 2.1, so a helix with T turns has about n²/T edges). Only bars with π > 4 that are born below m/4 are counted.
 - The exact topology holds at scales below the margin. A loop born at about m/2 is a near-closure, for example the two ends of a helix with a small gap. It is reported separately as `near_closure_loops`.
 - Results are in `results/exp0/dense_check.csv` and summarised in [reports/exp0_analytic.md](../reports/exp0_analytic.md).

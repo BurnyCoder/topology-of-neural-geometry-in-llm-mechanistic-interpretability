@@ -1,6 +1,6 @@
 # Exp2: persistent-homology invariants of the 44 real clouds (Method B)
 
-Date: 2026-11-15. Code: `src/neurotopo/experiments/exp2_invariants.py`, `realdata.py`. Results: `results/exp2/`, with nulls cached in `results/nulls/`.
+Date: 2026-11-15; wording corrected 2026-11-22 (independent audit, D14). Code: `src/neurotopo/experiments/exp2_invariants.py`, `realdata.py`. Results: `results/exp2/`, with nulls cached in `results/nulls/`.
 
 ## Method
 
@@ -95,7 +95,7 @@ Grey: Monte Carlo null distribution of the largest H1 persistence ratio (999 des
 - **A loop is not traversal.** The days_time loop is not a ring of days at all. The residue loop is unstable under subsampling (stability 0.26; 0.33 against a size-matched threshold), most likely because its top PCA eigenvalues are nearly equal (0.099 vs 0.096 for the 3rd and 4th), so subsamples rotate the top-3 view.
 - **Weekdays are the exception.** The 7 day centres form no loop in the top-3 PCs, and the most persistent loop of the cloud lies inside one cluster. For 7 evenly spaced point-like centres the polygon's loop has π = 1/sin(π/7) ≈ 2.3 (spread within the clusters can raise it), and the power simulation shows that the loop test has limited power at 7 clusters, but here there is no polygon loop to detect.
 - **A loop is not a hole (third audit, D9).** Both nulls are Gaussian, so a significant loop means "more persistent than a covariance-matched Gaussian". On synthetic clouds of known topology, the design-(b) null flags loops on 0.17 of hole-free clouds (spheres and caps 0.73, paraboloids 0.37). Hole claims need independent evidence: the traversal, the localisation, and the concept centres alone ([exp8_audit3.md](exp8_audit3.md)).
-- **Caveats:** two random-init or toy controls cross the 5% line, consistent with the nominal error rate over this many tests. The days_time loop is unstable under subsampling. For prompt-template designs, the maximum-π statistic does not say *where* a loop lives; the audit's localisation check (D8) is needed to tell a ring of concepts from a loop inside one cluster.
+- **Caveats:** among the random-init controls, the grokking embedding's loop (p = 0.046, q = 0.25) and the GPT-2 and weekday voids (p = 0.020 and 0.045) cross the 5% line; with 44 tests per dimension about 2 chance hits each are expected, and none survives Benjamini–Hochberg. The dense toy model's loop does survive (q = 0.011): it is a 4-cycle of its 5-point polytope ([loops.md](loops.md)), real geometry rather than a chance hit. The days_time loop is unstable under subsampling. For prompt-template designs, the maximum-π statistic does not say *where* a loop lives; the audit's localisation check (D8) is needed to tell a ring of concepts from a loop inside one cluster.
 
 ## Learnings
 

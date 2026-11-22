@@ -290,6 +290,8 @@ def render_templates(nums: dict) -> None:
     pairs = [(root / "README.template.md", root / "README.md")]
     for folder in ("reports", "docs"):
         pairs += [(t, root / folder / t.name) for t in sorted((root / folder / "templates").glob("*.md"))]
+    # Reviews with generated numbers (reports/templates/reviews/*.md -> reports/reviews/*.md; independent audit, D14).
+    pairs += [(t, root / "reports" / "reviews" / t.name) for t in sorted((root / "reports" / "templates" / "reviews").glob("*.md"))]
     pairs += [(root / "paper" / "main.template.tex", root / "paper" / "main.tex")]
     for src, dst in pairs:
         if src.exists():

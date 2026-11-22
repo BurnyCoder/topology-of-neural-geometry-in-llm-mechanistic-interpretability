@@ -11,7 +11,7 @@ This page explains *why* each choice was made. The exact rules are in [reports/p
 ## Two ways to find holes
 
 **Method A: exact topology of the fitted shape.** The fitted shape is a parametrised manifold, so its Betti numbers are exact ([docs/analytic_topology.md](analytic_topology.md)). What is uncertain is whether the *data* resolve that topology. The margin ratio ρ_A = m/(2ν) answers that, heuristically: m is the size of the smallest gap or diameter whose closing or collapse would alter the topology, and ν is the cloud's noise plus coverage gaps. Balls of radius ν from both sides of a gap m meet once 2ν ≥ m; this is a rule of thumb, not a recovery theorem such as [Niyogi, Smale & Weinberger 2008](https://doi.org/10.1007/s00454-008-9053-2).
-- Why: a fitted helix says "no hole". If its two ends are closer than the noise (ρ_A < 1), the data cannot distinguish it from a closed loop.
+- Why: a fitted helix says "no hole". If its two ends, or two adjacent turns, are closer than twice the noise scale (ρ_A < 1), the thickened helix has a loop around its axis, and the data cannot distinguish it from a closed loop. For every real helix fit it is the adjacent turns: the fits are tight coils whose margin is their pitch ([reports/exp0_analytic.md](../reports/exp0_analytic.md)).
 
 **Method B: persistent homology of the data.** Primary reference for the idea of counting holes with persistent homology: [What is...persistent homology?](https://www.youtube.com/watch?v=w6Jx1vFp_Gk) (VisualMath). We use alpha complexes, not Rips, in ℝ³:
 - the alpha complex is homotopy equivalent to the union of balls at every radius ([Edelsbrunner 1995](https://doi.org/10.1007/BF02574053)), and its filtration has the same persistence diagrams as the Čech filtration ([Bauer & Edelsbrunner 2017](https://doi.org/10.1090/tran/6991));
@@ -50,7 +50,7 @@ This follows manifold steering ([Wurgaft et al. 2026](https://arxiv.org/abs/2605
   - random-init Llama on the same prompts;
   - the grokking model at initialisation;
   - ordinal concepts in 7 and 12 bins, so the number of concepts matches;
-  - 20 ordinal-process controls (Gaussian processes and random walks), which produce PCA horseshoes ([Diaconis, Goel & Holmes 2008](https://doi.org/10.1214/08-AOAS165)), Lissajous-like projections ([Antognini & Sohl-Dickstein 2018](https://arxiv.org/abs/1806.08805)) and helices without any cyclic semantics.
+  - 20 ordinal-process controls (Gaussian processes and random walks), whose principal components are sinusoids of the index ([Novembre & Stephens 2008](https://doi.org/10.1038/ng.139) for distance-decaying covariance; [Antognini & Sohl-Dickstein 2018](https://arxiv.org/abs/1806.08805) for random walks), so they trace horseshoes and open Lissajous-type curves, and are often fitted as helices, without any cyclic semantics. (Horseshoes in MDS and kernel projections: [Diaconis, Goel & Holmes 2008](https://doi.org/10.1214/08-AOAS165).)
 - **Nuisance factors:** the "k days from" offset word precedes the concept token. Exp5 removes the per-offset means.
 - **Instrument validity:** the persistent-homology estimators are validated on 39,000 synthetic clouds with *exact* ground-truth topology (Exp1), restricted to clouds whose topology is resolvable, and reported as a function of ρ_A.
 

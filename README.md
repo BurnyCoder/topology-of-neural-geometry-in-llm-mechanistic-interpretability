@@ -2,9 +2,9 @@
 
 Do concepts that are cyclic in meaning (days, months, colours, residues mod n) occupy a region of activation space with a **hole that the concept goes around**? This repository answers that question with exact topology and persistent homology, for 44 activation and weight clouds from language models and toy networks.
 
-**Status (2026-11-15):** all preregistered topology analyses are done. They use only stored activations; no model inference was run. A second and a third independent audit added post hoc checks and corrected several plain-language claims; no preregistered verdict changed ([reports/exp7_audit.md](reports/exp7_audit.md), [reports/exp8_audit3.md](reports/exp8_audit3.md)). Model steering and simulated steering are preregistered and **postponed by the author**.
+**Status (2026-11-15):** all preregistered topology analyses are done. They use only stored activations; no model inference was run. Three independent audits added post hoc checks and corrected several plain-language claims; no preregistered verdict changed ([reports/exp7_audit.md](reports/exp7_audit.md), [reports/exp8_audit3.md](reports/exp8_audit3.md), [reports/reviews/independent-audit.md](reports/reviews/independent-audit.md), 2026-11-22). Model steering and simulated steering are preregistered and **postponed by the author**.
 
-**Links:** [paper (PDF)](paper/main.pdf) · [interactive explorer](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/) · [how the example results were made (interactive)](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/examples.html) · [worked example of the method](docs/worked_example.md) ([interactive](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/worked_example.html)) · [method and terms](docs/glossary.md) · [inputs and results on Hugging Face](https://huggingface.co/datasets/BurnyCoder/topology-of-neural-geometry) · [preregistration](reports/preregistration.md) · [summary of all experiments](reports/summary.md) · math fact-checks: [first](reports/reviews/math-fact-check.md), [independent second](reports/reviews/math-fact-check-2.md)
+**Links:** [paper (PDF)](paper/main.pdf) · [interactive explorer](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/) · [how the example results were made (interactive)](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/examples.html) · [worked example of the method](docs/worked_example.md) ([interactive](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/worked_example.html)) · [method and terms](docs/glossary.md) · [inputs and results on Hugging Face](https://huggingface.co/datasets/BurnyCoder/topology-of-neural-geometry) · [preregistration](reports/preregistration.md) · [summary of all experiments](reports/summary.md) · math fact-checks: [first](reports/reviews/math-fact-check.md), [independent second](reports/reviews/math-fact-check-2.md) · [independent audit](reports/reviews/independent-audit.md)
 
 ## What we found, in plain words
 
@@ -70,9 +70,9 @@ A loop alone does not prove a hole. The loop test also flags many hole-free shap
   - The panel shows the void with the largest empty middle (#3 of 785 by π). Its shell's corners cover 21 of the 36 hues, and the hue ring winds around its centre once.
   - It closes at radius 0.451, right after the hue ring is filled in (0.438), and fills at 0.535. This suggests the ring's middle is not a flat disc: filling it in walls off a pocket.
   - It is not significant: π = 1.19, below the null's 95th percentile (1.35; p = 0.865). Random Gaussian clouds of the same design usually have a more persistent void. The farthest 2% of the points are left out of the panel so the ring fills it.
-- **GPT-2 positions at random init**, orange: a small void (circled) with p = 0.020, but q = 0.18 after the correction, and it comes back in only 1% of subsamples. We read it as a chance hit among 44 tests.
+- **GPT-2 positions at random init**, orange: a small void (circled) with p = 0.020, but q = 0.18 after the correction, and it comes back in only 0.005 of the 200 subsamples. We read it as a chance hit among 44 tests.
 - **Trained GPT-2 positions**, black: the shape fitter calls this cloud a closed sphere, which has a void, but the data has none. Its most persistent void is a thin one (π = 1.02, below the null's 95th percentile of 1.39). The positions trace a spiral curve, not a surface.
-- **None of the other 14 trained-model clouds** (the language-model concepts and the grokking network) has a significant void, even before correction (0 at p < 0.05).
+- **None of the 14 trained-model clouds other than the toy models** (the language-model concepts, GPT-2 positions and the grokking network) has a significant void, even before correction (0 at p < 0.05).
 - Explore any loop or void of any of the 44 clouds in the [explorer](https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/): set the radius, then pick a loop or void, or click its marker. Voids are drawn as see-through shells.
 
 ![The life of a void: the toy model with 6 features at four radii, from loops to a closed void to a filled one, with its persistence diagram](docs/figures/fig_void_life.png)
@@ -122,7 +122,7 @@ For a regular octahedron the void lives from √(2/3) ≈ 0.816 to 1, a persiste
   - In simulations, evenly spread hole-free arrangements of 12 centres reached the months' loop strength in 0 of 320 replicates (third audit, D9), so a hole-free sheet of month centres is an unlikely explanation.
   - The loop test cannot tell a closed ring from a nearly closed arc, and the December → January step is the largest of the 12 (1.9× the median step).
   - The months go around it in calendar order, but only with an analysis setting we relaxed after seeing the first results, and only in 3 dimensions.
-- **The random-init controls behaved as chance predicts.** One of 3 random-init networks has a loop at p = 0.046, about what the 5% level predicts, and nothing goes around it.
+- **The random-init controls are compatible with chance.** One of 3 random-init networks has a loop at p = 0.046 (q = 0.25 after Benjamini–Hochberg), and nothing goes around it. Under the null, at least one of 3 falls below 0.05 with probability 0.14, so this says little either way.
   - The ordinal concepts (0 of 6) and 20 random walks and smooth curves (0 of 20) showed no loop either. They were never at risk, though: they are open curves, whose most persistent loops (ratio 1.00–1.63) stay far below the thresholds that blob-like random clouds set (1.79–2.16).
 
 **What did not work**
@@ -134,7 +134,7 @@ For a regular octahedron the void lives from √(2/3) ≈ 0.816 to 1, a persiste
 - **Days with times of day: no ring of days.** The significant loop (p = 0.013; q = 0.082 after Benjamini–Hochberg over 44 tests) is a small loop inside one day's cluster: it dies at radius 0.045, before any two days' clusters touch (0.16). It appears in only 3% of subsamples, and the 7 day centres alone form no loop (ratio 1.11).
 - **Our strictest, pre-committed test passed for nothing.** For weekdays, months and residues we committed in advance to three conditions: a ring, going around once, and surviving with 10 dimensions. None passed (0 of 3), and neither did the fitted-shape version (0 of 3).
 - **With 10 dimensions, a loop alone means little.** Years, ages, temperatures and counts also form loops there, and their values do not go around them. Of the cyclic concepts, only colours still go around once in 10 dimensions; months, residues, weekdays and days with times do not.
-- **"Helix or closed ring?" cannot be decided.** The shape fitter called weekdays, months and residues helices (open curves). At this noise level, a helix and a closed ring look the same.
+- **"Helix or closed ring?" cannot be decided from the fitted shape.** The shape fitter called weekdays, months and residues helices (open curves). But each fitted helix is a tight coil of 5.7–9.7 turns, and its adjacent turns lie closer together than twice the data's noise scale. At that scale the thickened coil is a tube with one loop around its axis, just as a thickened closed ring has. So the helix label says nothing about whether the concepts close up; that question is answered from the data (the loop tests and the closure gap below).
 - **Our hole detector was less accurate than the shape label.**
   - The test bed was 39,000 synthetic shapes with known holes. The pre-committed detector counted the pieces, holes and voids exactly right 62% of the time (averaged over shape families). Reading the count off the fitter's shape label scored 81%. The label comes from a fitter trained on the same 13 synthetic families, so this comparison is in-distribution for the label.
   - On clouds far from any change of topology (ρ_A ≥ 4, a cut chosen after the results), a tuned version of the detector does best: 92% vs 82% for the label. No torus reaches that cut, and 49% of those clouds are blobs, discs or paraboloids, which have no hole.
@@ -148,7 +148,7 @@ All statistics behind these sentences are in [Results](#results). The words are 
 
 - **What it is.** A topological analysis of the point clouds that the sibling project [shape-fitting](https://github.com/BurnyCoder/shape-fitting-in-neural-geometry-in-llm-mechanistic-interpretability) classified into 13 geometric shape families. Each cloud is the **top-3 PCA coordinates** of activations or weights for one concept, for example the residual stream of Llama-3.1-8B at the token of each weekday.
 - **Motivation.**
-  - Interpretability research keeps finding shapes in activations and embeddings: circles for weekdays and months ([Engels et al. 2024](https://arxiv.org/abs/2405.14860)), a helix for GPT-2 positions ([Yedidia 2023](https://www.lesswrong.com/posts/qvWP3aBDBaqXvPNhS/gpt-2-s-positional-embedding-matrix-is-a-helix)), circles of residues in grokked modular addition ([Nanda et al. 2023](https://arxiv.org/abs/2301.05217)), and loops for colours and dates in text-embedding vectors ([Modell et al. 2025](https://arxiv.org/abs/2505.18235)).
+  - Interpretability research keeps finding shapes in activations and embeddings: circles for weekdays and months ([Engels et al. 2025](https://arxiv.org/abs/2405.14860)), a helix for GPT-2 positions ([Yedidia 2023](https://www.lesswrong.com/posts/qvWP3aBDBaqXvPNhS/gpt-2-s-positional-embedding-matrix-is-a-helix)), circles of residues in grokked modular addition ([Nanda et al. 2023](https://arxiv.org/abs/2301.05217)), and loops for colours and dates in text-embedding vectors ([Modell et al. 2025](https://arxiv.org/abs/2505.18235)).
   - Manifold steering moves activations *along* such a curved manifold and changes the model's answer in semantic order (Monday → Tuesday → …) ([Wurgaft et al. 2026](https://arxiv.org/abs/2605.05115); [Goodfire](https://www.goodfire.com/research/manifold-steering); the [Neural Geometry series](https://www.goodfire.com/research/neural-geometry)).
   - The topological question behind that: is there a hole you can travel around, and does the semantic cycle go around it exactly once? If so, steering around the loop should be semantically meaningful, and topology should help find where to steer.
 - **How it works.** Two independent methods, then one shared test:
@@ -163,12 +163,12 @@ All statistics behind these sentences are in [Results](#results). The words are 
 - **Results.** Positive and negative examples are in plain words above; every statistic, table and figure is in [Results](#results).
 - **Novelty**, as far as our [state-of-the-art review](reports/state-of-the-art-review.md) found:
   - **Exact topology of uniquely parametrised fitted shapes,** compared with persistent homology of the same clouds.
-  - **A preregistered, null-controlled test** that a loop exists *and* that the semantic cycle winds around it once, with design-matched negative controls. Prior work counts Betti numbers without a null ([Moisescu-Pareja et al.](https://arxiv.org/abs/2512.25060); [Tang et al.](https://arxiv.org/abs/2605.06352)), judges loops by eye ([Modell et al.](https://arxiv.org/abs/2505.18235)), or tests centroids of imposed cycles ([David & Fomin](https://arxiv.org/abs/2607.24425)).
+  - **A preregistered, null-controlled test** that a loop exists *and* that the semantic cycle winds around it once, with design-matched negative controls. Prior work counts Betti numbers without a null ([Moisescu-Pareja et al.](https://arxiv.org/abs/2512.25060); [Tang et al.](https://arxiv.org/abs/2605.06352)), shows zigzag barcodes of month tokens across layers without a null ([Gardinazzi et al. 2025](https://arxiv.org/abs/2410.11042), App. C), judges loops by eye ([Modell et al.](https://arxiv.org/abs/2505.18235)), tests centroids of imposed cycles ([David & Fomin](https://arxiv.org/abs/2607.24425)), or, in a re-implementation of Engels et al. that is not peer reviewed, states that weekday and month loops are correctly ordered and exceed a covariance-matched Gaussian null, without test statistics ([shouvik-majumder/circular-features](https://github.com/shouvik-majumder/circular-features)).
   - **Validation of a Betti-number estimator** against exact topology on 39,000 synthetic clouds of 13 families.
 - **Features and technologies.**
   - **Pipeline:** one command (`run.py all`), CPU only. Inputs are pinned and hash-verified on Hugging Face, and a clean-room replication passed.
   - **Outputs:** every number in the documentation is generated from `results/`. A GitHub Pages explorer shows the results.
-  - **Tools:** Python 3.11 with uv, GUDHI, ripser.py, persim, DREiMac, NumPy/SciPy, matplotlib and plotly.js ([details](#features)).
+  - **Tools:** Python 3.11 with uv, GUDHI, ripser.py, DREiMac, NumPy/SciPy, matplotlib and plotly.js ([details](#features)).
 
 ![Pipeline](docs/figures/fig_pipeline.png)
 
@@ -240,6 +240,7 @@ Each method gives a circle-valued coordinate for the hole (θ_A, θ_B), and both
 | Colour activations → the prompts' own RGB values (audit, D8) | top H1 π 5.02 → 8.01 (null q95 2.76, p = 0.001); the 36 hue means wind once around the RGB loop (angle in PC1–PC2) |
 | Noise scale ν of Method A: main → median term only → doubled coverage term | resolvable fits: 27 → 41 → 24 of 44 |
 | DREiMac `standard_range` True → False (post hoc, D5) | months: no coordinate → winding 1 (R = 0.72); days_time: no coordinate → winding 0 |
+| Top-10-PC loop test on the 20 smooth-curve controls (independent audit, D14; rule fixed before the run) | 0 of 20 significant (largest ratio 1.01, null thresholds 1.39–1.73): the ordinal top-10 loops are not a generic PCA artefact of ordered curves |
 | Synthetic clouds with vs without outliers (D7) | P's false holes: 0.031 → 0.065; DTM filtration not required (threshold 0.10); outlier-proxy factor 4 and 8 instead of 6: 0.050–0.074 |
 
 **Better or worse, in plain words.**
@@ -284,7 +285,7 @@ Each method gives a circle-valued coordinate for the hole (θ_A, θ_B), and both
 
 ![Top-10-PC loop test](docs/figures/fig_top10.png)
 
-*Loops beyond the top-3 PCs (post hoc).* The observed largest Rips H1 ratio in the top-10 principal components (dot) is compared with a matched null's 95th percentile (bar). A filled dot means p < 0.05. In 10 dimensions, ordinal sets also get loops; colours keep by far the strongest one. The ordinal loops are consistent both with Fourier features of numbers ([Kantamneni & Tegmark 2025](https://arxiv.org/abs/2502.00873)) and with the PCA artefacts of smooth or random-walk curves ([Antognini & Sohl-Dickstein 2018](https://arxiv.org/abs/1806.08805); [Shinn 2023](https://doi.org/10.1073/pnas.2311420120)); this test cannot tell them apart.
+*Loops beyond the top-3 PCs (post hoc).* The observed largest Rips H1 ratio in the top-10 principal components (dot) is compared with a matched null's 95th percentile (bar). A filled dot means p < 0.05. In 10 dimensions, ordinal sets also get loops; colours keep by far the strongest one. The ordinal loops are not a generic PCA artefact of ordered curves: the same test finds no top-10 loop in any of the 20 smooth Gaussian-process and random-walk controls (0 of 20; their largest ratio is 1.01, against null thresholds of 1.39–1.73; post hoc, decision rule fixed before the run, independent audit D14). Their PCA projections are open Lissajous-type curves ([Antognini & Sohl-Dickstein 2018](https://arxiv.org/abs/1806.08805)), and in 10 dimensions those stay open. So the ordinal loops come from structure the controls lack, for example periodic features of numbers ([Kantamneni & Tegmark 2025](https://arxiv.org/abs/2502.00873)), clustering, or noise around a curve (the controls have no independent noise); this test cannot tell which.
 
 ### Preregistered verdicts and findings per dataset
 
@@ -356,7 +357,7 @@ The per-dataset findings, with every statistic, are in [reports/findings_per_dat
 - Marker shape gives the fitted shape's Betti vector: circle = no hole, square = a hole (b1 = 1), triangle = a void (b2 = 1).
 - The x-axis is the margin ratio ρ_A: the size of the smallest gap or diameter whose closing or collapse would alter the topology, divided by twice the data's noise scale (log scale).
 - Right of the dashed line (ρ_A ≥ 1), the fitted topology is resolvable. Fits whose topology cannot change (blob, disc, paraboloid; ρ_A = ∞) are omitted.
-- The cyclic sets' helices lie left of the line: whether those curves are open or closed cannot be decided from the data.
+- The cyclic sets' helices lie left of the line. For 12 of the 12 helix fits the margin is the spacing between adjacent turns (the pitch), not the gap between the two ends: at the noise scale the turns merge into a tube with one loop around the axis, so the fit cannot tell an open curve from a closed loop.
 
 ![Helix fits: winding vs closure](docs/figures/fig_exp0_helix.png)
 
@@ -376,7 +377,7 @@ The per-dataset findings, with every statistic, are in [reports/findings_per_dat
 
 *Accuracy against the margin ratio ρ_A, over all 39,000 clouds.*
 - The persistence estimators fail on clouds whose topology is unresolvable (left of the dashed line). The family label degrades less, because it reads the topology off the label rather than off the data.
-- This is why accuracies are scored on resolvable clouds, and why the unresolvable helix fits of the real cyclic sets cannot be called open or closed.
+- This is why accuracies are scored on resolvable clouds, and why the unresolvable helix fits of the real cyclic sets say nothing about whether those concepts form open or closed curves.
 
 ![False positives with and without outliers](docs/figures/fig_exp1_outliers.png)
 
@@ -429,8 +430,9 @@ Full design decisions: [docs/methodology.md](docs/methodology.md). Every technic
   - **Instrument validity (H5):** synthetic accuracy against baselines, with cluster-bootstrap CIs.
   - Exploratory tests use Benjamini–Hochberg.
   - **Second audit (post hoc, D8):** a colour stimulus baseline, where each top loop lives relative to the concept clusters, the preregistered closure ratio, PCA eigenvalue gaps, size-matched subsample stability, and CIs for the power simulation ([reports/exp7_audit.md](reports/exp7_audit.md)).
+  - **Independent audit (post hoc, D14):** a top-10-PC loop test on the 20 smooth-curve controls, a regeneration check of every document against `results/`, and a web check of the cited sources ([reports/reviews/independent-audit.md](reports/reviews/independent-audit.md)).
   - **Third audit (post hoc, D9):** whether the loop test is specific to holes. It covers the sensitivity and false-loop rate of every synthetic estimator, the cluster-centre null on hole-free arrangements of concept centres, centre loops in other projections, and the dense-check tori ([reports/exp8_audit3.md](reports/exp8_audit3.md)).
-- **Preregistration and deviations:** the [preregistration](reports/preregistration.md) has a power addendum (A1) and a steering amendment (A2). Every later change is logged with its date and whether it was decided before or after the results ([deviations D1–D9, P1–P2](reports/deviations.md)).
+- **Preregistration and deviations:** the [preregistration](reports/preregistration.md) has a power addendum (A1) and a steering amendment (A2). Every later change is logged with its date and whether it was decided before or after the results ([deviations D1–D14, P1–P2](reports/deviations.md)).
 
 ## Architecture (graph)
 
@@ -471,6 +473,7 @@ run.py <phase>
   exp5         robustness: Rips vs alpha, top-k PCs (with matched null), full-D cosine, offset removal, seeds, noise scale
   audit        post hoc checks of the second audit (D8): colour RGB baseline, loop localisation, closure ratio, PCA gaps, stability
   audit3       post hoc checks of the third audit (D9): is the loop test specific to holes? (synthetic rates, cluster null, tori)
+  audit4       post hoc check of the independent audit (D14): top-10-PC loop test on the 20 smooth-curve controls
   toy          worked example: every step of the loop and ring test on a 21-point toy week (docs/worked_example.md)
   voids        every void of every cloud scored; the interesting ones picked by rule (post hoc, D10; reports/voids.md)
   loops        every loop of every cloud scored; the interesting ones picked by rule (post hoc, D11; reports/loops.md)
@@ -532,7 +535,7 @@ Settings (seeds, null draws, thresholds, dataset groups) live in [configs/base.y
 
 ## Technologies
 
-uv, Python 3.11, NumPy, SciPy, scikit-learn, pandas, [GUDHI](https://gudhi.inria.fr) (alpha complexes, bottleneck), [ripser.py](https://github.com/scikit-tda/ripser.py), [persim](https://github.com/scikit-tda/persim), [DREiMac](https://github.com/scikit-tda/DREiMac), matplotlib, plotly.js (explorer), Hugging Face Hub, pytest, LaTeX (paper).
+uv, Python 3.11, NumPy, SciPy, scikit-learn, pandas, [GUDHI](https://gudhi.inria.fr) (alpha complexes, bottleneck), [ripser.py](https://github.com/scikit-tda/ripser.py), [DREiMac](https://github.com/scikit-tda/DREiMac), matplotlib, plotly.js (explorer), Hugging Face Hub, pytest, LaTeX (paper). [persim](https://github.com/scikit-tda/persim) is installed as a dependency of ripser.py and DREiMac but not called directly.
 
 ## Repository layout
 
@@ -545,7 +548,7 @@ uv, Python 3.11, NumPy, SciPy, scikit-learn, pandas, [GUDHI](https://gudhi.inria
   - `steering/`: postponed steering code.
   - `report/`: tables, figures, site, numbers.
 - `external/shape-fitting/`: the source project (git submodule, commit 4c5f3b6).
-- `reports/`: literature and state-of-the-art reviews, preregistration (with addendum and amendment), deviations, plan, [progress](reports/progress.md), one report per experiment, summary, and `reviews/` (the [first](reports/reviews/math-fact-check.md) and the independent [second](reports/reviews/math-fact-check-2.md) math fact-check). `reports/templates/` holds the report sources; `reports/generated/` holds generated tables.
+- `reports/`: literature and state-of-the-art reviews, preregistration (with addendum and amendment), deviations, plan, [progress](reports/progress.md), one report per experiment, summary, and `reviews/` (the [first](reports/reviews/math-fact-check.md) and the independent [second](reports/reviews/math-fact-check-2.md) math fact-check, and the [independent audit](reports/reviews/independent-audit.md), rendered from `reports/templates/reviews/`). `reports/templates/` holds the report sources; `reports/generated/` holds generated tables.
 - `docs/`: [methodology](docs/methodology.md), [method and terms](docs/glossary.md), [worked example](docs/worked_example.md) (source: `docs/templates/`), [exact topology of the families](docs/analytic_topology.md), [reproducing the inputs](docs/reproduce_inputs.md), figures, explorer.
 - `paper/`: LaTeX source and PDF.
 - `results/`: machine-readable results of every phase.
@@ -561,10 +564,10 @@ uv, Python 3.11, NumPy, SciPy, scikit-learn, pandas, [GUDHI](https://gudhi.inria
 - A distance for comparing clouds that is not dominated by absolute scale (Exp4 was uninformative), for example bottleneck distance in log-π coordinates.
 - Torus and thin-loop detection: the synthetic accuracy for tori is near zero at these sample sizes.
 - Optional Exp0b: refit the synthetic clouds with the published source checkpoint, to score Method A on fitted rather than ground-truth parameters (needs model inference).
-- A clean-room replication run that includes the `exp1outliers`, `audit` and `audit3` phases.
+- A clean-room replication run that includes the phases added or rerun after the 2026-11-15 check: `exp1outliers`, `audit`, `audit3`, `audit4`, `toy`, `voids`, `loops`, and `exp2` after deviation D12.
 - **A hole-specific loop test** (D9). The Gaussian nulls also reject hole-free sheets and caps. A null drawn from hole-free shapes fitted to each cloud (for example, the best hole-free family of the source fitter, resampled at the cloud's noise) would test for a hole rather than for non-Gaussian structure.
 - **Colour controls that need model inference** (postponed): a random-init Llama on the same 900 prompts, and colour prompts by name instead of hex code, to separate the model's hue code from the hue circle of the input.
 
 ## License
 
-MIT ([LICENSE](LICENSE)). GUDHI's alpha complex is GPL-3.0 through CGAL; see [NOTICE](NOTICE).
+MIT ([LICENSE](LICENSE)). GUDHI's alpha complex and bottleneck distance are GPL-3.0 through CGAL; see [NOTICE](NOTICE).

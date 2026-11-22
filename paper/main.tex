@@ -8,7 +8,7 @@
 \graphicspath{ {../docs/figures/} }
 \title{Holes in Neural Geometry: Exact Topology of Fitted Shapes and Persistent Homology\\of Top-3-PCA Activation Clouds, and Whether Cyclic Concepts Travel Around Them}
 \author{Libor ``Burny'' Burian}
-\date{20 November 2026}
+\date{22 November 2026}
 \begin{document}
 \maketitle
 
@@ -26,9 +26,9 @@ Results per dataset:
   \item \textbf{Months:} a loop through the month clusters ($p=0.002$). Simulated hole-free arrangements of the centres do not reach its strength, but a closed ring cannot be told from a nearly closed arc. The months go around it only in a post hoc analysis, and only in the top-3 PCs, so a ring is suggestive.
   \item \textbf{Days with times:} no ring of days. The only significant loop is small, lies inside one day's cluster, and is unstable.
   \item \textbf{Weekdays:} no ring of days. The 7 day centres form no loop in the top-3 PCs, and the cloud's most persistent loop ($p=0.094$) lies inside one day's cluster. The loop test is also weak at 7 clusters. The days are ordered around their fitted helix's axis, but random smooth processes show the same ordering.
-  \item \textbf{Ordinal concepts and 20 random-process controls:} no loops in the top-3 PCs, but as open curves they never approach the Gaussian null's threshold. Ordinal concepts gain loops in 10 PCs, but their values do not wind around them.
+  \item \textbf{Ordinal concepts and 20 random-process controls:} no loops in the top-3 PCs, but as open curves they never approach the Gaussian null's threshold. Ordinal concepts gain loops in 10 PCs, but their values do not wind around them; the smooth-curve controls gain none (0/20, post hoc), so these loops are not a generic PCA artefact of ordered curves.
 \end{itemize}
-Whether the fitter's ``helices'' for cyclic concepts are open or closed is unresolvable at the data's noise scale ($\rho_A \approx 0.11$). Months come closest to closing.
+The fitter's ``helices'' for cyclic concepts are tight coils whose adjacent turns merge at the data's noise scale ($\rho_A \approx 0.11$), so the fit cannot say whether a concept is an open or a closed curve. Months come closest to closing.
 
 The strict preregistered conjunctions pass for none of the three primary cyclic sets: 0/3 by fitted-shape topology and 0/3 by persistent homology. Specificity holds, but it is weakly informative, because sensitivity is zero. A post hoc audit finds that the Gaussian Monte Carlo null behind the loop test also rejects many hole-free shapes (false loops on 0.17 of hole-free synthetic clouds, 0.73 of spheres and caps). A significant loop is therefore evidence of non-Gaussian structure, and the ring claims rest on the traversal tests.
 
@@ -74,7 +74,7 @@ These works identify shapes geometrically. A geometric label such as ``helix'' d
 
 \paragraph{Pitfalls.} PCA horseshoes~\citep{diaconis2008horseshoes}, Lissajous curves of random walks~\citep{antognini2018pca}, phantom oscillations~\citep{shinn2023phantom}, and Rips phantom classes~\citep{adamaszek2017rips}.
 
-\paragraph{Gap.} We found no peer-reviewed work that tests, with a null model, whether a cyclic concept's representation has a 1-cycle aligned with its semantic order. The closest is a preprint that compares the persistence ratio of centroid clouds of imposed cycles with random points~\citep{david2026context}, without a traversal test. We also found none that compares the exact topology of fitted parametric shapes with persistent homology of the same clouds.
+\paragraph{Gap.} We found no peer-reviewed work that tests, with a null model, whether a cyclic concept's representation has a 1-cycle aligned with its semantic order. The nearest peer-reviewed use of persistent homology on a month representation is a visualisation of zigzag barcodes for the 12 month tokens across Mistral's layers, without a null~\citep[App.~C]{gardinazzi2025persistent}. A preprint compares the persistence ratio of centroid clouds of imposed cycles with random points~\citep{david2026context}, without a traversal test. A public re-implementation of Engels et al.\ (not peer reviewed) states that weekdays and months form correctly ordered loops that exceed a covariance-matched Gaussian null, without reporting test statistics~\citep{majumder2026circular}. We also found none that compares the exact topology of fitted parametric shapes with persistent homology of the same clouds.
 
 \section{Data}
 
@@ -129,7 +129,7 @@ Fig.~\ref{fig:toy} walks through every step on a 21-point toy week.
 \begin{figure}[!htbp]\centering\includegraphics[width=\linewidth]{fig_toy.png}
 \caption{Worked example on a synthetic toy week of 7 concepts (an illustration, not data). Top: balls of radius $r$ around every point at three radii: a tiny loop inside one concept, seven separate blobs, and the ring through all concepts. Bottom: the H1 persistence diagram with the null's 95th-percentile line $d=q_{95}\,b$, the null distribution of the largest persistence ratio, and the concepts' mean angles of $\theta_B$.}\label{fig:toy}\end{figure}
 
-\paragraph{Preregistration.} The hypotheses, nulls and decision rules were pushed before any topology was computed. Amendment A2, which makes steering the primary hypothesis, was pushed before any persistent homology of real data. Deviations D1--D11 are logged with dates (D10--D11, the void and loop searches, only add descriptive figures).
+\paragraph{Preregistration.} The hypotheses, nulls and decision rules were pushed before any topology was computed. Amendment A2, which makes steering the primary hypothesis, was pushed before any persistent homology of real data. Deviations D1--D14 are logged with dates (D10--D11, the void and loop searches, only add descriptive figures; D12--D14 are fact-checks and an independent audit, which corrected descriptive invariants and wording and added one post hoc control).
 
 \section{Results}
 
@@ -162,7 +162,7 @@ Bc: majority vector & 0.555 [0.553, 0.557] & control\\\bottomrule
 \subsection{Exact topology of the fitted shapes}
 \begin{itemize}
   \item 2 of 44 fits have a hole (cones for years and colours) and 1 has a void (GPT-2 W$_\text{pos}$, a closed sphere). 27 of 44 fitted topologies are resolvable.
-  \item The three primary cyclic sets are helices with $\rho_A = 0.11, 0.11, 0.23$, so open vs closed is unresolvable. For prompt-template designs this is partly a property of the design (gaps between clusters). H1-A passes 0/3.
+  \item The three primary cyclic sets are helices with $\rho_A = 0.11, 0.11, 0.23$. Each is a coil of 5.7--9.7 turns whose margin is its pitch: adjacent turns are closer than twice the noise scale, so at that scale the fit is a tube with one loop around its axis, like a thickened closed ring, and open vs closed is unresolvable from the fit. For prompt-template designs the coverage term, and so $\nu$, is inflated by the gaps between clusters. H1-A passes 0/3.
   \item The concepts sit around the helix axis in order:
   \begin{itemize}
     \item weekdays: $R=0.83$, exact $p=0.003$, winding 1;
@@ -171,7 +171,7 @@ Bc: majority vector & 0.555 [0.553, 0.557] & control\\\bottomrule
   \end{itemize}
   \item Position along the helix does not track the concept order (weekdays $\rho=0.00$).
   \item This winding is not specific: 8 of 8 Gaussian-process controls fitted as helices wind too, with the same minimum $p$. Only months stand out by their closure gap (Fig.~\ref{fig:helix}): 0.04 radii, against 0.33--2.20 for the controls. The weekdays' 0.80 lies inside the control range.
-  \item Post hoc, the months' axial position is a second Fourier harmonic of the month angle ($R^2=0.83$ vs 0.10 for the first). The months lie on a closed saddle loop.
+  \item Post hoc, the months' axial position is a second Fourier harmonic of the month angle ($R^2=0.83$ vs 0.10 for the first). This is the shape of a closed, saddle-shaped loop, but the periodic fit assumes closure rather than testing it, and in 3D the December $\to$ January step is the largest of the 12 (1.92$\times$ the median step).
   \item Ordinal concepts lie along open curves (counting $\rho=0.999$, temperature -0.997).
 \end{itemize}
 
@@ -200,7 +200,7 @@ Table~\ref{tab:real} and Figs.~\ref{fig:examples}--\ref{fig:power} summarise the
     \item non-cyclic sets with a winding record (any variable or dimension): R1\_gpt2\_wpos;
     \item random-init controls with a winding record: C3\_llama\_months\_init.
   \end{itemize}
-  \item In a top-10-PC loop test with a matched null (post hoc), significant loops are found for R5c\_llama\_days\_time, R4\_llama\_counting, R6\_llama\_years, R8a\_llama\_temperature, R8b\_llama\_age, R7\_llama\_colors. In 10D, loops are therefore not specific to cyclic concepts; only colours combine a loop with a single winding there.
+  \item In a top-10-PC loop test with a matched null (post hoc), significant loops are found for R5c\_llama\_days\_time, R4\_llama\_counting, R6\_llama\_years, R8a\_llama\_temperature, R8b\_llama\_age, R7\_llama\_colors. In 10D, loops are therefore not specific to cyclic concepts; only colours combine a loop with a single winding there. The same test finds no loop in any of the 20 smooth Gaussian-process and random-walk controls (largest ratio 1.01; independent audit, D14, decision rule fixed before the run): their PCA projections are open Lissajous-type curves~\citep{antognini2018pca}, so the ordinal loops need structure the controls lack, such as periodic number features~\citep{kantamneni2025trig}, clusters or noise around a curve.
   \item In a corrected power simulation (post hoc), a weekday-like ring of 7 clusters passes the loop test in 6 of 40 replicates (exact 95\% CI 0.06--0.30), and a month-like ring in 0.25. The simulated clusters are tighter than the real ones. The full preregistered conjunction passes cluster rings in at most 0.05 of replicates, so H1-B was nearly untestable for weekdays and months.
 \end{itemize}
 
