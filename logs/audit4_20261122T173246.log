@@ -1,0 +1,24 @@
+2026-11-22 17:32:46 INFO root: phase audit4, log file C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\logs\audit4_20261122T173246.log
+2026-11-22 17:34:03 INFO neurotopo.experiments.exp9_independent_audit: C1 controls, top-10 loop test:
+           id   k  rips_pi1  null_q95  p_loop    m  kind
+0     C1_gp_0  10  1.000000  1.718679     1.0  199    gp
+1     C1_gp_1  10  1.000000  1.521500     1.0  199    gp
+2     C1_gp_2  10  1.000000  1.567177     1.0  199    gp
+3     C1_gp_3  10  1.008832  1.474881     1.0  199    gp
+4     C1_gp_4  10  1.000000  1.734499     1.0  199    gp
+5     C1_gp_5  10  1.003680  1.414636     1.0  199    gp
+6     C1_gp_6  10  1.000000  1.474021     1.0  199    gp
+7     C1_gp_7  10  1.000615  1.575282     1.0  199    gp
+8     C1_gp_8  10  1.000000  1.688022     1.0  199    gp
+9     C1_gp_9  10  1.000000  1.655683     1.0  199    gp
+10  C1_walk_0  10  1.000000  1.391915     1.0  199  walk
+11  C1_walk_1  10  1.000000  1.402522     1.0  199  walk
+12  C1_walk_2  10  1.000000  1.402500     1.0  199  walk
+13  C1_walk_3  10  1.000000  1.399549     1.0  199  walk
+14  C1_walk_4  10  1.000000  1.390767     1.0  199  walk
+15  C1_walk_5  10  1.000000  1.412494     1.0  199  walk
+16  C1_walk_6  10  1.000000  1.393801     1.0  199  walk
+17  C1_walk_7  10  1.000000  1.397449     1.0  199  walk
+18  C1_walk_8  10  1.000000  1.400162     1.0  199  walk
+19  C1_walk_9  10  1.000000  1.398424     1.0  199  walk
+2026-11-22 17:34:03 INFO neurotopo.experiments.exp9_independent_audit: significant: 0 of 20 ({'gp': 0, 'walk': 0}); decision: not supported by the smooth-curve controls
