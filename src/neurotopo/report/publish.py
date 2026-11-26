@@ -38,12 +38,18 @@ def run():
     payload = {"README.md":hub.dataset_card(manifest).encode(), "paper.pdf":root/"paper/main.pdf",
                "summary.md":external_markdown(root/"reports/summary.md"),
                f"reports/reviews/{REVIEW}.md":external_markdown(root/f"reports/reviews/{REVIEW}.md")}
+    # A running publish log is incomplete. Experiment logs are already closed and can be mirrored.
+    active_logs = {Path(h.baseFilename).resolve() for h in logging.getLogger().handlers if hasattr(h,"baseFilename")}
     for folder in ("results","logs"):
-        payload.update({p.relative_to(root).as_posix():p for p in (root/folder).rglob("*") if p.is_file()})
+        payload.update({p.relative_to(root).as_posix():p for p in (root/folder).rglob("*")
+                        if p.is_file() and p.resolve() not in active_logs})
     ops = []
     for name,value in sorted(payload.items()):
         entry = remote.get(name)
         data = value.read_bytes() if isinstance(value,Path) else value
+        if isinstance(value,Path) and value.suffix in {".csv",".tsv",".json",".log",".md",".txt"}:
+            # Match the checked-in Git blobs under the repository text=auto eol=lf rule.
+            value = data = data.replace(b"\r\n",b"\n")
         if entry and entry.size==len(data):
             if entry.lfs:
                 same = entry.lfs.sha256 == hashlib.sha256(data).hexdigest()
