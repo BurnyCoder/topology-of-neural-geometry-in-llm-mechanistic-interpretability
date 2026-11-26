@@ -50,7 +50,7 @@ The explorer lets you vary ball radius, select a bar, view a path or shell, and 
 
 ## Reproduce the results
 
-Use Git with submodules, [uv](https://docs.astral.sh/uv/) and Python 3.11. The PDF phase uses pdfLaTeX with BibTeX, or Tectonic. For the final automated text check, install Poppler’s pdftotext or the Python package pypdf. Calculations run on CPU. The normal route reads the exported activations without loading a language model.
+Use Git with submodules, [uv](https://docs.astral.sh/uv/) and Python 3.11. The PDF phase uses pdfLaTeX with BibTeX, or Tectonic. For the final automated text check, install Poppler’s pdftotext or the Python package pypdf. Calculations run on CPU. The synthetic replay saves completed batches in `data/replay/exp1/` and resumes after interruption when the input manifest, parameters, code and lockfile match. Set `LOKY_MAX_CPU_COUNT` to a smaller worker count on memory-limited machines. The normal route reads the exported activations without loading a language model.
 
 ```bash
 git clone --recursive https://github.com/BurnyCoder/topology-of-neural-geometry-in-llm-mechanistic-interpretability.git

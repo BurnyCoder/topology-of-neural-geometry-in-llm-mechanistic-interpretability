@@ -1,9 +1,8 @@
 """Exp1: validation of the persistent-homology Betti estimators against the registered catalog target (H5).
 
 Global context (reports/preregistration.md, section 6, H5): on the source's fixed synthetic test set (39,000
-clouds, 13 families), the exact Betti numbers of every ground-truth shape are known (Exp0, Method A on the
-regenerated parameters). We score estimators of (b0, b1, b2) on clouds whose topology is resolvable
-(rho_A >= 1), macro-averaged over families (polytope on b0 only), with 95% cluster-bootstrap CIs over the
+clouds, 13 families), the source's catalog assigns target Betti vectors to the recorded parameters.
+We score estimators on catalog-eligible clouds (rho_A >= 1), macro-averaged over families (polytope on b0 only), with 95% cluster-bootstrap CIs over the
 generator chunks of 25 clouds:
 - P  (preregistered primary): alpha + universal null (A = 1/2) for b1/b2, single-linkage b0;
 - S  (secondary, deviations D1): Rips H1 + universal null (A = 1) for b1, alpha universal for b2;
@@ -25,6 +24,7 @@ from scipy import stats
 
 from neurotopo import config
 from neurotopo.data import synthetic
+from neurotopo.experiments import exp1_batches
 from neurotopo.experiments.common import env_record, out_dir, read_json, write_json
 from neurotopo.stats.tests import cluster_bootstrap
 from neurotopo.tda import diagrams, estimators, nulls
@@ -91,8 +91,9 @@ def run() -> None:
     sset = synthetic.load("test")
     gt = pd.read_csv(config.path("results") / "exp0" / "synth_test_topology.csv.gz")
     log.info("summarising %d test clouds", len(sset))
-    rows = Parallel(n_jobs=-1, batch_size=16)(delayed(_summ)(sset.cloud(i), t["b0_tau"], t["b0_minfrac"])
-                                              for i in range(len(sset)))
+    checkpoints = exp1_batches.checkpoint_folder(t)
+    rows = exp1_batches.measured_rows(checkpoints, "persistence", range(len(sset)),
+        lambda i:delayed(_summ)(sset.cloud(i),t["b0_tau"],t["b0_minfrac"]), 500)
     s = pd.DataFrame(rows)
     s["b0_pred"] = [r[f"{t['b0_tau']}|{t['b0_minfrac']}"] for r in s["b0_grid"]]
     if not np.array_equal(gt["sample_id"], sset.meta["sample_id"]):
@@ -107,8 +108,8 @@ def run() -> None:
     # Monte Carlo null on the baseline subset.
     sub = np.flatnonzero(synthetic.baseline_subset(df))
     seed = cfg["seed"]
-    mc = Parallel(n_jobs=-1, batch_size=4)(delayed(_mc)(sset.cloud(i), seed * 10 ** 6 + int(i),
-                                                        cfg["synthetic"]["mc_draws_synth"]) for i in sub)
+    mc = exp1_batches.measured_rows(checkpoints, "matched_gaussian", sub,
+        lambda i:delayed(_mc)(sset.cloud(i),seed*10**6+i,cfg["synthetic"]["mc_draws_synth"]), 64)
     df["b1_mc"], df["b2_mc"] = np.nan, np.nan
     df.loc[sub, "b1_mc"] = [m[0] for m in mc]
     df.loc[sub, "b2_mc"] = [m[1] for m in mc]
@@ -174,7 +175,7 @@ def score_table(df, t, sset, sub, out):
     calib = {}
     for b in range(4):
         idx = blobs[df["n_bin"].to_numpy()[blobs] == b]
-        pv = np.concatenate([np.asarray(x) for x in Parallel(n_jobs=-1)(delayed(_blob_pvalues)(sset.cloud(i)) for i in idx)])
+        pv = np.concatenate([np.asarray(x) for x in Parallel(n_jobs=exp1_batches.worker_count())(delayed(_blob_pvalues)(sset.cloud(i)) for i in idx)])
         calib[int(b)] = {"fwer_alpha_universal": float((df["b1_alpha_univ"].to_numpy()[idx] > 0).mean()),
                          "ks_uniform_D": float(stats.kstest(pv, "uniform").statistic) if pv.size else None,
                          "n_pvalues": int(pv.size), "n_clouds": len(idx), "by_noise_bin": {}}
@@ -236,7 +237,7 @@ def outlier_check() -> None:
     pi = np.load(out / "pi_top.npz")
     df["pi1_top"], df["pi2_top"] = list(pi["pi1"]), list(pi["pi2"])
     k = cfg["outliers"]["far_factor"]
-    df["n_far"] = Parallel(n_jobs=-1, batch_size=64)(delayed(far_points)(sset.cloud(i), sset.gt(i), k)
+    df["n_far"] = Parallel(n_jobs=exp1_batches.worker_count(), batch_size=64)(delayed(far_points)(sset.cloud(i), sset.gt(i), k)
                                                       for i in range(len(sset)))
     with open(config.path("submodule") / "configs" / "base.yaml", encoding="utf-8") as f:
         gen = yaml.safe_load(f)["synth"]
@@ -266,7 +267,7 @@ def outlier_check() -> None:
     sens = {}
     preds = predictions(df, read_json(out / "summary.json")["tuning"])
     for kf in cfg["outliers"]["far_factor_sensitivity"]:
-        fl = np.array(Parallel(n_jobs=-1, batch_size=64)(delayed(far_points)(sset.cloud(i), sset.gt(i), kf)
+        fl = np.array(Parallel(n_jobs=exp1_batches.worker_count(), batch_size=64)(delayed(far_points)(sset.cloud(i), sset.gt(i), kf)
                                                           for i in range(len(sset)))) > 0
         sens[str(kf)] = {"flagged_fraction": float(fl.mean()), "n_outlier_contractible": int((contr & fl).sum()),
                          **{name: float((((preds[name][:, 1] > 0) | (preds[name][:, 2] > 0))[contr & fl]).mean())
