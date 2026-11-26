@@ -26,3 +26,9 @@ def test_paired_angular_rank_reversals_and_known_gap_controls():
         assert rows.at[("angular",family,"Bb_family_implied"),"P_minus_method"] < 0
     controls = pd.read_csv(root/"analytic_controls.csv")
     assert len(controls)==4 and controls.agrees.all()
+    assert set(controls.Bc_majority) == {"(1, 0, 0)"}
+    for estimator in ("P_alpha_universal", "S_rips_universal", "Ba_fixed_pi"):
+        assert controls[estimator].str.fullmatch(r"\(\d+, \d+, \d+\)").all()
+    assert controls.Bb_family_implied.isna().all()
+    assert (controls.Ba_fixed_pi == controls.expected).all()
+    assert (controls.P_alpha_universal == controls.expected).tolist() == [False, True, False, True]

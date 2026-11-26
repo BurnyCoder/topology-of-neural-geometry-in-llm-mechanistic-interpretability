@@ -189,7 +189,8 @@ def collect() -> dict:
                 n[f"exp2.{s}.b0"], n[f"exp2.{s}.b0_rc"] = int(d.loc[i, "b0"]), int(d.loc[i, "b0_rc"])
                 n[f"exp2.{s}.ratio"] = float(d.loc[i, "top_pi1"] / d.loc[i, "null_q95_pi1"])   # ring strength / chance
         sm = read_json(_res("exp2", "summary.json"))
-        n["exp2.agree"] = sm["agree_b1b2_A_vs_B"]
+        n["exp2.agree"] = sm["agree_full_A_vs_B"]
+        n["exp2.agree_b1b2"] = sm["agree_b1b2_A_vs_B"]
         n["exp2.n_loop"], n["exp2.n_void"] = sm["n_with_loop_mc"], sm["n_with_void_mc"]
         if "n_loop_q05" in sm:
             n["exp2.n_loop_q05"] = sm["n_loop_q05"]

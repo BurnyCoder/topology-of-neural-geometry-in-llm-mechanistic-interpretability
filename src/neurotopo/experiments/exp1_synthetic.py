@@ -59,15 +59,14 @@ def predictions(df: pd.DataFrame, t: dict) -> dict[str, np.ndarray]:
     """(N, 3) predicted Betti vectors of every estimator."""
     b0 = df["b0_pred"].to_numpy()
     pi1, pi2 = np.array(df["pi1_top"].tolist()), np.array(df["pi2_top"].tolist())
-    fam_pred = df["family_pred"].to_numpy()
-    fmap = {f: np.array(v) for f, v in t["family_map"].items()}
     out = {
         "P_alpha_universal": np.c_[b0, df["b1_alpha_univ"], df["b2_alpha_univ"]],
         "S_rips_universal": np.c_[b0, df["b1_rips_univ"], df["b2_alpha_univ"]],
         "Ba_fixed_pi": np.c_[b0, (pi1 > t["pi0_1"]).sum(1), (pi2 > t["pi0_2"]).sum(1)],
-        "Bb_family_implied": np.stack([fmap[f] for f in fam_pred]),
         "Bc_majority": np.tile(np.array(t["majority"]), (len(df), 1)),
     }
+    if "family_pred" in df:
+        out["Bb_family_implied"] = np.stack([t["family_map"][f] for f in df["family_pred"]])
     return out
 
 

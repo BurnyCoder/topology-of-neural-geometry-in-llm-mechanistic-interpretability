@@ -40,7 +40,7 @@ def universal_pvalues(dgm: np.ndarray, A: float) -> np.ndarray:
 
     The mean L of log log pi is taken over bars with pi > 1, as in the authors' released code
     (github.com/primozskraba/PersistenceUniversality, modules/PDplot.py), since log log 1 = -inf. The paper averages
-    over all of dgm_k; the two agree here because zero-length bars are dropped, so every finite bar has pi > 1.
+    over the diagram. We exclude nonfinite ratios and ratios within 1e-12 of one to handle roundoff.
     """
     pi = ratios(dgm)
     valid = np.isfinite(pi) & (pi > 1.0 + 1e-12)

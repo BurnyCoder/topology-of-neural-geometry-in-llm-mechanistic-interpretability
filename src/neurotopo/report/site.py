@@ -232,7 +232,7 @@ function draw() { const d = cur, P = d.points, byTheta = document.getElementById
   S.innerHTML = "";                                                            // all loops, then voids, alive at r, most persistent first
   S.add(new Option("all " + count(loops, "loop") + " and " + count(voids, "void") + " alive at r", ""));
   on.forEach(h => { const o = new Option(label(h), key(h)); o.style.color = colours(d, h.kind)[h.k]; S.add(o); });
-  if (sel !== null && !isOn) S.add(new Option(label(sel) + ", not alive at this r", key(sel)));
+  if (sel !== null && !isOn) S.add(new Option(label(sel) + ", bar inactive at this radius", key(sel)));
   S.value = key(sel);
   document.getElementById("selinfo").textContent = sel === null ? "" : "Showing " + sel.kind + " #" + (sel.k + 1) + " of " +
     bars(d, sel.kind).length + " (ranked by persistence ratio pi)" + (isOn ? "." : ": not alive at this radius, so not drawn.");
@@ -533,7 +533,10 @@ def run() -> None:
             loop = lp(np.linspace(0, 2 * np.pi, 200)).tolist()
         rp = replay(y)                                    # edges, loops with cycles, voids with shells, colours (slider replay)
         t = topo.loc[did]
-        rows = [["Betti (b0,b1,b2)", f"({t['b0']},{t['b1']},{t['b2']})",
+        estimate = inv.loc[did] if inv is not None else None
+        rows = [["H4 vector (components, loops, voids)", f"({t['b0']},{t['b1']},{t['b2']})",
+                 f"({estimate.b0},{estimate.b1_mc},{estimate.b2_mc}) across scales" if estimate is not None else None],
+                ["Scale-specific filtered counts", f"({t['b0']},{t['b1']},{t['b2']})",
                  f"({inv.loc[did, 'b0_rc']},{inv.loc[did, 'b1_rc']},{inv.loc[did, 'b2_rc']}) at r_c" if inv is not None else None],
                 ["Euler characteristic (A) / alternating filtered counts (B)", int(t["chi"]), int(inv.loc[did, "chi_rc"]) if inv is not None else None],
                 ["genus (A) / surface-conditional value (B)", t["genus"] if pd.notna(t["genus"]) else "-", inv.loc[did, "genus_rc"] if inv is not None and pd.notna(inv.loc[did, "genus_rc"]) else "-"],

@@ -60,7 +60,7 @@ def fig_pipeline() -> None:
     boxes = {
         "src": (0.0, 0.62, "shape-fitting repo (submodule)\n44 clouds: top-3 PCA points,\nlabels, fitted shapes", "#e0ecf4"),
         "hf": (0.0, 0.12, "Hugging Face inputs\nraw activations, 39k synthetic\nclouds + exact GT params", "#e0ecf4"),
-        "A": (0.26, 0.62, "Method A: exact topology\nof the fitted shape\n(b0,b1,b2), chi, genus, rho_A", "#f4f1de"),
+        "A": (0.26, 0.62, "Method A: catalog topology\nof the reported fit\n(b0,b1,b2), chi, genus, rho_A", "#f4f1de"),
         "B": (0.26, 0.12, "Method B: alpha persistent\nhomology + design-matched\nMonte Carlo null", "#f4f1de"),
         "tA": (0.52, 0.62, "hole coordinate theta_A\n(parameter on the fit)", "#f4f1de"),
         "tB": (0.52, 0.12, "hole coordinate theta_B\n(persistent cohomology,\nDREiMac)", "#f4f1de"),
@@ -122,7 +122,7 @@ def fig_exp0_margin() -> None:
     for mk, lab in (("o", "no hole (b1 = b2 = 0)"), ("s", "hole (b1 = 1)"), ("^", "void (b2 = 1)")):
         ax.scatter([], [], marker=mk, c="w", edgecolor="k", label=lab)
     ax.legend(fontsize=8, loc="lower right")
-    ax.set_title("Method A: exact topology of the 44 fitted shapes", fontsize=10)
+    ax.set_title("Method A: topology of the 44 catalog fits", fontsize=10)
     save(fig, "fig_exp0_margin")
 
 
@@ -139,7 +139,7 @@ def fig_exp1_estimators() -> None:
     ax.set_yticks(range(len(names)))
     ax.set_yticklabels(names, fontsize=8)
     ax.set_xlim(0, 1)
-    ax.set_xlabel("exact (b0, b1, b2) accuracy, macro over 13 families (resolvable clouds, 95% CI)")
+    ax.set_xlabel("Catalog accuracy, equal family weights (polytope: components only, 95% CI)")
     ax.invert_yaxis()
     save(fig, "fig_exp1_estimators")
 
@@ -156,7 +156,7 @@ def fig_exp1_by_rho() -> None:
     ax.axvline(2.5, color="k", ls="--", lw=0.8)
     ax.set_ylim(0, 1)
     ax.set_xlabel("margin ratio rho_A bin (right of dashed line: resolvable)")
-    ax.set_ylabel("exact (b0,b1,b2) accuracy")
+    ax.set_ylabel("Catalog target accuracy")
     ax.legend(fontsize=7)
     save(fig, "fig_exp1_by_rho")
 
@@ -442,8 +442,7 @@ def anim_clouds() -> None:
 def fig_examples() -> None:
     """Plain-language positive and negative examples. Top: each cloud (PC1-PC2), coloured by position in its cycle
     (years: by value), titled with the two verdicts of report/examples.headline (is there a ring; does the concept
-    go around it once). Bottom: observed top H1 persistence ratio / the null's 95th percentile, so a bar above 1 is
-    a significant loop (p < 0.05)."""
+    go around it once). Bottom: observed top H1 persistence ratio / the null's 95th percentile, a descriptive reference line. The decision uses the Monte Carlo rank."""
     from neurotopo.experiments import realdata
     from neurotopo.report.examples import EXAMPLES, concept_positions, headline
     inv = pd.read_csv(config.path("results") / "exp2" / "invariants.csv").set_index("id")
@@ -470,7 +469,7 @@ def fig_examples() -> None:
     ax.set_xticklabels([n.replace("\n", " ") for _, n in EXAMPLES], fontsize=8)
     ax.set_xlim(-0.5, len(EXAMPLES) - 0.5)
     ax.set_ylim(0, max(ratios) * 1.15)
-    ax.set_ylabel("top loop persistence / Gaussian null's\n95th pct. (above 1 = significant loop)", fontsize=8)
+    ax.set_ylabel("top loop ratio / fitted null's\n95th percentile", fontsize=8)
     for i, r in enumerate(ratios):
         inside_bar = 0.8 < r < 0.97                                 # label just below the dashed line: put it in the bar
         ax.text(i, r - 0.03 if inside_bar else r + 0.03, f"{r:.2f}", ha="center", va="top" if inside_bar else "bottom",

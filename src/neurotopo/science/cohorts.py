@@ -6,7 +6,7 @@ from joblib import Parallel, delayed
 from neurotopo import config
 from neurotopo.data import synthetic
 from neurotopo.experiments import exp1_synthetic as exp1
-from neurotopo.experiments.common import out_dir
+from neurotopo.experiments.common import out_dir, read_json
 from neurotopo.tda.ground_truth import far_points
 
 
@@ -51,3 +51,18 @@ def run():
         rows.append(dict(cohort=cohort, comparison="flagged minus unflagged", hits=None, n=None,
                          rate=rates[0]-rates[1], low=intervals[2,0], high=intervals[2,1]))
     pd.DataFrame(rows).to_csv(out/"false_positives.csv",index=False)
+    expdir = config.path("results")/"exp1"
+    with np.load(expdir/"pi_top.npz") as pi:
+        df["pi1_top"],df["pi2_top"] = list(pi["pi1"]),list(pi["pi2"])
+    estimators = exp1.predictions(df,read_json(expdir/"summary.json")["tuning"])
+    measured = {m:pd.Series((p[:,1]>0)|(p[:,2]>0),index=df.index) for m,p in estimators.items()}
+    mc = df[["b1_mc","b2_mc"]]
+    measured["MC_gaussian3d (subset)"] = mc.gt(0).any(axis=1).where(mc.notna().all(axis=1))
+    strata = []
+    for method,hit in measured.items():
+        cohort = df.loc[df.eligible & hit.notna(),["n_bin","noise_bin","flag"]].copy()
+        cohort["hit"] = hit.loc[cohort.index].astype(int)
+        table = cohort.groupby(["n_bin","noise_bin","flag"]).hit.agg(hits="sum",n="size").reset_index()
+        table["method"],table["rate"] = method,table.hits/table.n
+        strata.append(table)
+    pd.concat(strata,ignore_index=True).to_csv(out/"false_positive_strata.csv",index=False)

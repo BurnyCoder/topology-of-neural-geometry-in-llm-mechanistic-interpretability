@@ -12,9 +12,9 @@ import numpy as np
 import pandas as pd
 
 from neurotopo.data import source
-from neurotopo.experiments import realdata
-from neurotopo.experiments.common import out_dir
-from neurotopo.tda import diagrams
+from neurotopo.experiments import exp1_synthetic, realdata
+from neurotopo.experiments.common import out_dir, read_json
+from neurotopo.tda import diagrams, estimators
 
 log = logging.getLogger(__name__)
 
@@ -119,12 +119,19 @@ def analytic_controls():
     circle = np.c_[np.cos(t), np.sin(t), np.zeros_like(t)]
     cases = [("circle", circle, (1,1,0)), ("open arc, 120-degree gap", circle[t <= 4*np.pi/3], (1,0,0)),
              ("sphere", sphere, (1,0,1)), ("spherical cap, z >= -0.5", sphere[z >= -.5], (1,0,0))]
+    tuning = read_json(out_dir("exp1")/"summary.json")["tuning"]
+    tau, minfrac = tuning["b0_tau"], tuning["b0_minfrac"]
     rows = []
     for name, points, target in cases:
         tree = gudhi.AlphaComplex(points=points).create_simplex_tree(output_squared_values=False)
         tree.compute_persistence(homology_coeff_field=2, persistence_dim_max=True)
         betti = tree.persistent_betti_numbers(.30, .30)
         vector = tuple((list(betti)+[0,0,0])[:3])
-        rows.append(dict(shape=name, n=len(points), radius=.30, expected=str(target), observed=str(vector),
-                         agrees=vector==target))
+        stats = estimators.summarize(points, [tau], [minfrac])
+        stats["b0_pred"] = stats["b0_grid"][f"{tau}|{minfrac}"]
+        predictions = exp1_synthetic.predictions(pd.DataFrame([stats]), tuning)
+        row = dict(shape=name, n=len(points), radius=.30, expected=str(target), observed=str(vector),
+                   agrees=vector==target, Bb_family_implied=None)
+        row.update({name: str(tuple(map(int, values[0]))) for name, values in predictions.items()})
+        rows.append(row)
     pd.DataFrame(rows).to_csv(out_dir("science") / "analytic_controls.csv", index=False)

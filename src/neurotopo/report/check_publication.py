@@ -69,6 +69,10 @@ def run():
                 raise ValueError(f"{d}: rendered intervals differ")
             if dim==1 and rows.certified.tolist()!=item["cycle_certified"]:
                 raise ValueError(f"{d}: rendered path certificates differ")
+        vector = tuple(map(int,assessment.loc[d,["b0","b1_mc","b2_mc"]]))
+        expected = "("+",".join(map(str,vector))+") across scales"
+        if item["rows"][0][2] != expected:
+            raise ValueError(f"{d}: H4 explorer vector differs")
         if not np.isclose(item["q95_pi1"],assessment.at[d,"null_q95_pi1"]):
             raise ValueError(f"{d}: reference threshold differs")
     for e in read_json(root/"docs/data/examples.json"):
@@ -84,7 +88,8 @@ def compare(replica):
     files = ["science/"+n for n in ("decisions.csv","matrix.csv","h4_datasets.csv","h6_datasets.csv",
              "null_replay.csv","calibration_draws.csv","calibration.csv","representatives.csv.gz","analytic_controls.csv",
              "benchmark.csv","sensitivity_differences.csv","false_positives.csv","false_positive_rows.csv.gz","closure_counts.csv","angular_domains.csv",
-             "dataset_assessment.csv","blobs.csv")] + ["exp0/real_topology.csv","exp1/per_cloud.csv.gz","exp2/invariants.csv"]
+             "dataset_assessment.csv","blobs.csv","false_positive_strata.csv")] + ["exp0/real_topology.csv","exp1/per_cloud.csv.gz","exp2/invariants.csv","exp4/bottleneck_matrix.csv",
+            "exp5/projection.csv","exp5/topk_null.csv","exp5/nu_variants.csv"]
     for name in files:
         a = pd.read_csv(root/name,low_memory=False)
         b = pd.read_csv(replica/"results"/name,low_memory=False)
