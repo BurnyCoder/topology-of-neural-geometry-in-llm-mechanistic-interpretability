@@ -1,5 +1,8 @@
 # Deviations from the preregistration and the plan
 
+**D15 · 26 November 2026.** Full-vector agreement now includes components. The all-eligible false-positive denominator includes open arcs and caps. The fixed-cohort angular-domain sensitivity, fitted-null simulations and cycle certification are post hoc. The historical decisions and the amended H6 status are listed alongside their evidence in the [independent audit](reviews/2026-11-26-scientific-audit.md).
+
+
 Each entry is dated and states what changed, why, and whether it was decided before or after seeing results.
 
 ## D1 (2026-11-15, before any result on the synthetic test set or on real data): add a Rips-H1 universal-null estimator

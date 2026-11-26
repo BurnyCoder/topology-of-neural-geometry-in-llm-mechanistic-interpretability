@@ -1,5 +1,8 @@
 # Math fact-check: persistent homology and mechanistic interpretability
 
+**Historical report · erratum, 26 November 2026.** This records an earlier analysis. Its family and loop comparisons use catalog labels and its Gaussian reference results apply to the simulated designs. The [independent audit](2026-11-26-scientific-audit.md) supersedes interpretations of raw angular topology, full-vector agreement, open-family false-positive denominators, uniform calibration and representative-cycle identity. The earlier author's tests and decisions remain part of the chronology.
+
+
 Libor "Burny" Burian, 2026-11-20. Logged as deviation [D12](../deviations.md).
 
 > **Superseded in part** by the independent second check, [math-fact-check-2.md](math-fact-check-2.md) (D13). It found that this review's "9,000–50,000 points" for the universal null is wrong (the simulations use 10⁴–10⁶), and that torsion-freeness in ℝ³ is Hatcher Cor. 3.46, not Cor. 3.45. This file is kept unchanged below as a record.

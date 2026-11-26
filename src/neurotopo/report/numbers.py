@@ -69,8 +69,7 @@ def collect() -> dict:
         st = pd.read_csv(_res("exp0", "synth_test_topology.csv.gz"))
         n["exp0.synth_resolvable"] = float(st["resolvable"].mean())
         # Helix fits: which feature sets the margin (independent audit, 2026-11-22). The margin is min(end gap, |pitch|)
-        # for turns > 1 (analytic/topology.py); rho_A < 1 with the pitch as margin means that adjacent turns merge at the
-        # noise scale into a tube with one loop around the axis, which is a different statement from "the ends meet".
+        # for turns > 1. This compares two length scales. The topology of an offset also depends on geometry and coverage.
         from neurotopo.analytic.topology import helix_end_gap        # lazy: report modules import little at load time
         from neurotopo.data import source
         fits = source.real_results()
@@ -463,6 +462,8 @@ def collect() -> dict:
                                                                 "fpr_bin0", "fpr_bin3", "fpr_outlier", "fpr_clean"))]:
         if isinstance(n.get(k), float):
             n[k + "_pct"] = int(np.floor(100 * n[k] + 0.5))         # half-up, consistent with the 2-digit text
+    from neurotopo.report.science import scalars
+    n.update(scalars())
     return n
 
 

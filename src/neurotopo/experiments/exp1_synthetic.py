@@ -1,4 +1,4 @@
-"""Exp1: validation of the persistent-homology Betti estimators against exact ground-truth topology (H5).
+"""Exp1: validation of the persistent-homology Betti estimators against the registered catalog target (H5).
 
 Global context (reports/preregistration.md, section 6, H5): on the source's fixed synthetic test set (39,000
 clouds, 13 families), the exact Betti numbers of every ground-truth shape are known (Exp0, Method A on the

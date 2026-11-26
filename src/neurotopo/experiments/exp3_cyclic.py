@@ -54,6 +54,9 @@ def method_b(dataset_id: str, seed: int) -> dict:
             "theta3_error": cc3["error"], "theta10_error": cc10["error"], "rips_bar3": cc3["bar"],
             "alpha_top_bar": None if top is None else top.tolist(), "rips_alpha_overlap": overlap,
             "coverage3": cc3.get("uncovered"), "coverage10": cc10.get("uncovered"),
+            "diagnostics": {k: {"n_landmarks": cc["n_landmarks"], "candidate_radius_interval": cc.get("candidate_bar"),
+                                "cover_radius": cc.get("cover_radius"), "uncovered": cc.get("uncovered")}
+                            for k,cc in (("3d",cc3), ("top10",cc10))},
             "records3": rec3, "records10": rec10}
 
 

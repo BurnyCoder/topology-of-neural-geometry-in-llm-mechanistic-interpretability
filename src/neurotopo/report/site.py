@@ -2,7 +2,7 @@
 
 Global context: an interactive page to inspect, for each of the 44 clouds, the top-3 PCA points (coloured by
 concept or by the cohomology coordinate theta_B), the fitted shape, the loop B used for steering, the alpha complex
-at a radius r with a representative cycle of each loop and a shell of each void alive at r, the alpha persistence
+at a radius r with a birth path for each loop and a shell of each void alive at r, the alpha persistence
 diagram with the design-matched null thresholds (H1 and H2), and the Method A / Method B invariants and
 travel-around-the-hole statistics. A second page, docs/worked_example.html, renders docs/worked_example.md (the
 step-by-step worked example on the toy cloud of experiments/toy_example.py) with live plots of that toy: balls
@@ -23,7 +23,7 @@ from neurotopo import config
 from neurotopo.data import source
 from neurotopo.experiments import realdata
 from neurotopo.experiments.common import _clean, read_json
-from neurotopo.report.examples import replay
+from neurotopo.report.examples import replay, loop_certificates
 from neurotopo.report.figures import group_of, short
 from neurotopo.steering import loops
 
@@ -66,7 +66,7 @@ const q = (id, name) => '<a class="q" href="#" title="' + (name || "What is this
 REPLAY_JS = r"""<script>
 // Shared by the explorer and the examples page: replay persistent homology on a cloud. The radius slider is
 // logarithmic (all clouds have RMS radius 1). At radius r the 3D view shows the alpha complex's edges and one
-// representative cycle of every loop alive at r, in that loop's own colour (data from report/examples.replay); the
+// birth path for every loop interval alive at r, in that loop's own colour (data from report/examples.replay); the
 // explorer also draws the shell of every void alive at r as a translucent surface in that void's own colour.
 const RMIN = 0.002, RMAX = 1.5, LN = Math.log(RMAX / RMIN);
 const toR = t => RMIN * Math.exp(LN * t / 1000), toT = r => Math.round(1000 * Math.log(Math.max(r, RMIN) / RMIN) / LN);
@@ -84,7 +84,7 @@ function loopTraces(d, alive, only = null) {             // one closed cycle per
   const P = d.points, out = [];
   alive.forEach((a, k) => { if (!a || (only !== null && k !== only)) return; const c = d.cycles[k].concat([d.cycles[k][0]]), b = d.h1[k];
     out.push({type: "scatter3d", mode: "lines", x: c.map(i => P[i][0]), y: c.map(i => P[i][1]), z: c.map(i => P[i][2]), showlegend: false,
-      line: {color: d.loop_colour[k], width: only === null ? 7 : 12}, hoverinfo: "text", text: "loop born " + b[0].toFixed(4) + ", dies " + b[1].toFixed(4)}); });
+      line: {color: d.loop_colour[k], width: only === null ? 7 : 12}, hoverinfo: "text", text: pathStatus(d,k) + "; bar born " + b[0].toFixed(4) + ", dies " + b[1].toFixed(4)}); });
   return out; }
 function voidTraces(d, alive, only = null) {             // one translucent surface: the shells of the alive voids (or of `only`)
   const P = d.points, I = [], J = [], K = [], C = [];      // mesh3d triangles index into the cloud's points, coloured per face
@@ -109,6 +109,7 @@ function ballTrace(d, r) {                               // a ball of radius r a
     hoverinfo: "skip", showlegend: false, name: "balls of radius r"}; }
 const holeMarker = (colour, alive, sel = null) =>({color: colour, opacity: alive.map((a, k) => (a || k === sel ? 1 : 0.2)),   // solid while alive,
   size: alive.map((a, k) => (k === sel ? 16 : a ? 10 : 5)), line: {color: "#000", width: alive.map((a, k) => (k === sel ? 2.5 : 0))}});   // ringed if picked
+const pathStatus = (d,k) => d.cycle_certified ? (d.cycle_certified[k] ? "certified cycle" : "birth path survives paired death") : "birth path";
 const loopMarker = (d, alive, sel = null) => holeMarker(d.loop_colour, alive, sel);
 </script>"""
 
@@ -131,8 +132,9 @@ table{border-collapse:collapse}td,th{border:1px solid #ddd;padding:2px 6px}
 .ctl{padding:6px 12px;font-size:13px}
 </style></head><body>
 <div id="side"><b>Topology of neural geometry</b><br><small>Exact topology of fitted shapes (Method A), persistent
-homology (Method B) and travel around the hole.
+homology (Method B) and semantic alignment in projected coordinates.
 <a href="#" onclick="term('the-method-in-one-minute'); return false">What am I looking at? The method and all terms</a>
+<a href="scientific-audit.html">Scientific audit and corrected scores</a>
 <a href="examples.html">How the six example results were made (animated)</a>
 <a href="worked_example.html">Worked example: how the loop and ring test works, step by step</a>
 <a href="https://github.com/BurnyCoder/topology-of-neural-geometry-in-llm-mechanistic-interpretability">GitHub</a></small>
@@ -214,7 +216,7 @@ function draw() { const d = cur, P = d.points, byTheta = document.getElementById
   cur.loopCurve = pd.length;                                                  // which trace a click must hit to pick a loop
   const tip = b => "born " + b[0].toFixed(4) + ", dies " + b[1].toFixed(4) + ", pi = " + (b[1] / b[0]).toFixed(2);
   pd.push({x: d.h1.map(b => b[0]), y: d.h1.map(b => b[1]), mode: "markers", name: "H1 (loops, own colours)", marker: loopMarker(d, alive, ls), hoverinfo: "text",
-    text: d.h1.map(b => "loop " + tip(b))});
+    text: d.h1.map((b,k) => pathStatus(d,k) + "; loop " + tip(b))});
   if (d.h1.length) pd.push({x: [d.h1[0][0]], y: [d.h1[0][1]], mode: "markers", marker: {size: 15, color: "rgba(0,0,0,0)", line: {color: "#000", width: 2}}, name: "most persistent loop", hoverinfo: "skip"});
   cur.voidCurve = pd.length;                                                  // which trace a click must hit to pick a void
   pd.push({x: d.h2.map(b => b[0]), y: d.h2.map(b => b[1]), mode: "markers", name: "H2 (voids, own colours)", hoverinfo: "text",
@@ -224,7 +226,7 @@ function draw() { const d = cur, P = d.points, byTheta = document.getElementById
     xaxis: ax("birth"), yaxis: ax("death"), legend: {x: 0.98, y: 0.02, xanchor: "right", yanchor: "bottom", font: {size: 10}}, uirevision: d.id})   // below the diagonal: always empty
     .then(gd => { if (!pdBound) { gd.on("plotly_click", pickFromDiagram); pdBound = true; } });
   const S = document.getElementById("onesel"), on = holesAlive(d, r), label = h => { const b = bars(d, h.kind)[h.k];
-    return h.kind + " #" + (h.k + 1) + ": pi = " + (b[1] / b[0]).toFixed(2) + " (born " + b[0].toFixed(4) + ", dies " + b[1].toFixed(4) + ")"; };
+    return (h.kind === "loop" ? pathStatus(d,h.k) : h.kind) + " #" + (h.k + 1) + ": pi = " + (b[1] / b[0]).toFixed(2) + " (born " + b[0].toFixed(4) + ", dies " + b[1].toFixed(4) + ")"; };
   const loops = alive.filter(Boolean).length, voids = valive.filter(Boolean).length, isOn = sel !== null && on.some(h => key(h) === key(sel));
   const count = (n, w) => n + " " + w + (n === 1 ? "" : "s");
   S.innerHTML = "";                                                            // all loops, then voids, alive at r, most persistent first
@@ -533,8 +535,8 @@ def run() -> None:
         t = topo.loc[did]
         rows = [["Betti (b0,b1,b2)", f"({t['b0']},{t['b1']},{t['b2']})",
                  f"({inv.loc[did, 'b0_rc']},{inv.loc[did, 'b1_rc']},{inv.loc[did, 'b2_rc']}) at r_c" if inv is not None else None],
-                ["Euler characteristic", int(t["chi"]), int(inv.loc[did, "chi_rc"]) if inv is not None else None],
-                ["genus", t["genus"] if pd.notna(t["genus"]) else "-", inv.loc[did, "genus_rc"] if inv is not None and pd.notna(inv.loc[did, "genus_rc"]) else "-"],
+                ["Euler characteristic (A) / alternating filtered counts (B)", int(t["chi"]), int(inv.loc[did, "chi_rc"]) if inv is not None else None],
+                ["genus (A) / surface-conditional value (B)", t["genus"] if pd.notna(t["genus"]) else "-", inv.loc[did, "genus_rc"] if inv is not None and pd.notna(inv.loc[did, "genus_rc"]) else "-"],
                 ["homotopy type (A) / Betti label (B)", t["homotopy"], inv.loc[did, "betti_label_rc"] if inv is not None else None],
                 ["margin ratio rho_A / top H1 pi", float(t["rho_A"]), float(inv.loc[did, "top_pi1"]) if inv is not None else None],
                 ["resolvable / loop p (MC)", bool(t["resolvable"]), float(inv.loc[did, "p_top_loop"]) if inv is not None else None]]
@@ -543,7 +545,7 @@ def run() -> None:
         scale = c["frame"]["scale"]
         d = {"id": did, "family": t["family"], "points": np.round(y, 4).tolist(), "labels": c["labels"], "colour": colour,
              "cyclic": cyclic, "theta": theta, "loop": loop, "shape": np.round(viz["shape"] / scale, 4).tolist(),
-             "h1": np.round(rp["h1"], 5).tolist(), "h2": np.round(rp["h2"], 5).tolist(), "cycles": [c.tolist() for c in rp["cycles"]],
+             "cycle_certified": loop_certificates(did, len(rp["h1"])), "h1": np.round(rp["h1"], 5).tolist(), "h2": np.round(rp["h2"], 5).tolist(), "cycles": [c.tolist() for c in rp["cycles"]],
              "loop_colour": rp["loop_colour"], "shells": [s.tolist() for s in rp["shells"]], "void_colour": rp["void_colour"],
              "edges": rp["edges"].tolist(), "edge_r": np.round(rp["edge_r"], 5).tolist(),
              "h0_deaths": np.round(rp["h0_deaths"], 5).tolist(), "connect_r": loc.get(did, {}).get("connect_radius"),

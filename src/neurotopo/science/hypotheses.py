@@ -7,7 +7,7 @@ import pandas as pd
 from scipy.stats import binomtest, false_discovery_control
 
 from neurotopo import config
-from neurotopo.data import source
+from neurotopo.data import source, synthetic
 from neurotopo.experiments import exp0_analytic, exp2_invariants, exp3_cyclic, exp3_posthoc
 from neurotopo.experiments.common import out_dir, read_json, write_json
 
@@ -67,7 +67,14 @@ def run():
                                  winding=rec.get("winding"), coordinate10="inapplicable"))
             r3 = next((r for r in b[d]["records3"] if r["variable"]==var), {})
             r10 = next((r for r in b[d]["records10"] if r["variable"]==var), {})
-            rows.append(dict(hypothesis=hypothesis, id=d, variable=var, method="B", hole=bool(b[d]["p_loop"]<.05),
+            diagnostics = b[d].get("diagnostics", {})
+            ratios = {}
+            for space,fields in diagnostics.items():
+                interval = fields["candidate_radius_interval"]
+                ratios["candidate_ratio_"+space] = interval[1]/interval[0] if interval and interval[0]>0 else None
+                ratios["landmarks_"+space] = fields["n_landmarks"]
+                ratios["cover_radius_"+space] = fields["cover_radius"]
+            rows.append(dict(hypothesis=hypothesis, id=d, variable=var, method="B", hole=bool(b[d]["p_loop"]<.05), **ratios,
                              p_loop=b[d]["p_loop"], coordinate=b[d]["theta3_error"] or "available",
                              p_raw=r3.get("p"), R=r3.get("R"), winding=r3.get("winding"), coordinate10=b[d]["theta10_error"] or "available",
                              R10=r10.get("R"), p10=r10.get("p"), winding10=r10.get("winding"), frequency=r3.get("k"),
@@ -114,12 +121,30 @@ def run():
     steer = []
     for d in [*cyc,"R7_llama_colors",*ordinal,*init,*c1]:
         steer.append(dict(id=d, detected_top3_loop=bool(inv.loc[d,"p_top_loop"]<.05),
-                          simulated="untested", model="untested" if d in cyc+["R7_llama_colors"] else "control or outside model phase",
+                          simulated="untested", loop_comparison="hypothesis cohort" if inv.loc[d,"p_top_loop"]<.05 else "descriptive",
+                          model="untested" if d in cyc+["R7_llama_colors"] else "control or outside model phase",
                           random_loop_p=None, proportion_winding_once=None, on_manifold=None, vocabulary_mass=None))
     pd.DataFrame(steer).to_csv(out / "h6_datasets.csv", index=False)
+    # One row for every real observation and hypothesis, including explicit out-of-scope statuses.
+    audit_rows = []
+    for d in inv.index:
+        for h in ("H1","H2","H3"):
+            hits = df[(df.id==d) & (df.hypothesis==h)]
+            audit_rows.append(dict(id=d,hypothesis=h,eligibility="designated" if len(hits) else "outside designated set",
+                                   result="see decisions.csv for each A/B conjunction" if len(hits) else "inapplicable"))
+        audit_rows.append(dict(id=d,hypothesis="H4",eligibility="vector and classification" if d in pool else "vector only",
+                               result="h4_datasets.csv"))
+        audit_rows.append(dict(id=d,hypothesis="H5",eligibility="real dataset",result="inapplicable"))
+        eligible = any(x["id"]==d for x in steer)
+        audit_rows.append(dict(id=d,hypothesis="H6",eligibility="planned simulated cohort" if eligible else "outside simulated cohort",
+                               result="untested; see h6_datasets.csv" if eligible else "inapplicable"))
+    for family in synthetic.FAMILIES:
+        audit_rows.append(dict(id=family,hypothesis="H5",eligibility="catalog-eligible synthetic test rows",result="benchmark.csv"))
+    pd.DataFrame(audit_rows).to_csv(out/"matrix.csv",index=False)
     bh = summary["exploratory"]
     discrepancy = np.max(np.abs(false_discovery_control([v["p"] for v in bh]) - [v["q_bh"] for v in bh])) if bh else 0
-    checks = [h1==summary["H1_verdict_passes_of_3"], h4==summary["H4"]["balanced_accuracy"],
+    design_checks = [np.allclose(false_discovery_control(inv[f"p_top_{m}"]),inv[f"q_top_{m}"]) for m in ("loop","void")]
+    checks = [all(design_checks), h1==summary["H1_verdict_passes_of_3"], h4==summary["H4"]["balanced_accuracy"],
               mcn==summary["H4"]["mcnemar"], all(h3[m]==summary["H3"][m]["pass"] for m in h3),
               all(h2[m][k]==summary["H2_summary"][m][{"ordinal":"ordinal_pass","init":"init_pass","process":"c1_pass"}[k]]
                   for m in h2 for k in h2[m]), discrepancy<1e-12, np.array_equal(full,inv["agree_betti"])]

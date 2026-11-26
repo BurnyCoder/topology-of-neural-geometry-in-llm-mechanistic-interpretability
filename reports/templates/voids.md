@@ -9,6 +9,8 @@ Date: 2026-11-16. Author: Libor "Burny" Burian.
 
 A void is an empty region walled in by a closed surface, like the inside of a hollow ball: an H2 bar of the alpha complex ([glossary](../docs/glossary.md#representative-void)). Exp2 tests only each cloud's most persistent void. This phase lists all {{voids.n_voids}} voids of the {{voids.n_clouds}} clouds that have any (of {{voids.n_clouds_total}}) and picks the ones worth showing by fixed rules, so the README's void figures do not rest on picking by eye. The rules were written after browsing the explorer, so they are post hoc.
 
+The independent audit verified the displayed mod-two shell against its paired death for all {{sci.rep2.total}} positive intervals. The shell represents a cavity of an offset in the measured projection. [Certificates](../results/science/representatives.csv.gz)
+
 ## Method
 
 For every void: its bar (birth, death), persistence ratio π = death / birth, representative shell (a closed surface of triangles, present at the birth radius and filled exactly at the death radius) and centre (the circumcentre of the tetrahedron that fills it; no point is closer to it than the death radius).

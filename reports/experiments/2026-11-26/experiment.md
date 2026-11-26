@@ -1,0 +1,3 @@
+# Independent replay, 26 November 2026
+
+The [dated protocol](../../reviews/2026-11-26-protocol.md) specifies sample sizes, null draws, nuisance settings, fixed eligibility, bootstrap units and falsification checks. The [report](../../reviews/2026-11-26-scientific-audit.md) records registered and post hoc results, published corrections, and the commands for independent reproduction. No neural model was trained for this analysis. The experimental unit varies between concept, source chunk, generated outer dataset and dataset/seed pair according to the test. [Machine-readable results](../../../results/science/)

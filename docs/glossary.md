@@ -49,10 +49,10 @@ The source project fitted each cloud with one of 13 parametrised families: blob,
 - **Method B** reads all three at the characteristic scale r_c: b0 is the number of pieces of the alpha complex at r_c (pieces smaller than the b0 rule's minimum size do not count), and b1, b2 count the significant loops and voids alive at r_c. Before deviation D12, b0 came from the b0 rule's own cut, a different scale. Separately, the b0 rule (a single-linkage clustering rule tuned on validation clouds) gives the cloud's number of clusters.
 
 ### Euler characteristic
-χ = b0 − b1 + b2 (the Euler–Poincaré formula, [Hatcher 2002](https://pi.math.cornell.edu/~hatcher/AT/AT.pdf), Thm 2.44). One number that summarises the Betti numbers: 2 for a sphere, 0 for a circle or a torus, 1 for a disc. For Method B it is computed from the significant loops and voids only, so it is the χ of the signal, not of the whole alpha complex at r_c (which also holds short noise loops).
+χ = b0 − b1 + b2 (the Euler–Poincaré formula, [Hatcher 2002](https://pi.math.cornell.edu/~hatcher/AT/AT.pdf), Thm 2.44). One number that summarises the Betti numbers: 2 for a sphere, 0 for a circle or a torus, 1 for a disc. For Method B this alternating sum uses filtered estimates and is a descriptive summary. Establishing the Euler characteristic of an actual space requires its full Betti numbers.
 
 ### Genus
-The number of handles of a closed surface, from χ = 2 − 2g: 0 for a sphere, 1 for a torus. "–" when the space is not a closed surface.
+For a connected closed orientable surface, χ = 2 − 2g and g counts handles: 0 for a sphere, 1 for a torus. "–" when the space is not a closed surface.
 
 ### Homotopy type and Betti label
 Two spaces have the same **homotopy type** if one can be continuously deformed into the other, for example a circle, an annulus and a solid torus, or a point and a disc ([Hatcher 2002](https://pi.math.cornell.edu/~hatcher/AT/AT.pdf), ch. 0). No homotopy invariant, homology included, can tell such spaces apart.
@@ -65,7 +65,7 @@ Two spaces have the same **homotopy type** if one can be continuously deformed i
 - ν is the cloud's noise-and-coverage scale: the median distance from the points to the shape plus the 95th-percentile distance from the shape to the points.
 
 ### Resolvable
-ρ_A ≥ 1: the topological feature is larger than twice the noise-and-coverage scale. This is a heuristic, not a theorem: balls of radius ν grown from both sides of a gap m meet once 2ν ≥ m. A rigorous counterpart, in terms of the shape's reach rather than its margin, is the covering condition of [Niyogi, Smale & Weinberger 2008](https://doi.org/10.1007/s00454-008-9053-2) (Prop. 3.1; its random-sample version is Thm 3.1). Below 1, the data do not resolve the fitted topology. For the real helix fits the smallest feature is the spacing between adjacent turns: at the noise scale the thickened coil is a tube with one loop around its axis, so a fitted "open helix" cannot be told apart from a closed loop.
+ρ_A ≥ 1: the topological feature is larger than twice the noise-and-coverage scale. This is a heuristic, not a theorem: balls of radius ν grown from both sides of a gap m meet once 2ν ≥ m. A rigorous counterpart, in terms of the shape's reach rather than its margin, is the covering condition of [Niyogi, Smale & Weinberger 2008](https://doi.org/10.1007/s00454-008-9053-2) (Prop. 3.1; its random-sample version is Thm 3.1). Below one, the fit fails the specified eligibility rule. For several helices the pitch drives the ratio. An offset must be measured to determine whether it contains a loop. [Margins and fits](../results/exp0/real_topology.csv)
 
 ## Method B: persistent homology of the cloud
 
@@ -102,9 +102,7 @@ A loop is **born** at the radius where it first closes and **dies** at the radiu
 One dot (birth, death) per loop or void. Dots on the diagonal live for no time; dots far above it persist over a wide range of scales. The examples page draws it on log axes, where the distance above the diagonal is log π.
 
 ### Representative loop
-One closed path of edges that carries a given loop. The site and the README animation draw it in the loop's own colour while the loop is alive, so each dot in the persistence diagram can be matched with a closed path in the cloud.
-- It is built from the edge whose entry creates the loop (from GUDHI's persistence pairs), closed by the shortest path between the edge's two ends through edges that entered earlier.
-- A loop has many such paths; this one is for display, and the statistics never use it.
+For a positive alpha H1 interval the drawing closes its birth edge by an earlier shortest edge path. The path is present at birth and can carry an older class through the paired death. The explorer identifies which chains bound when that death simplex enters. A certified chain is one of several possible representatives over F₂. [All certificates](../results/science/representatives.csv.gz)
 
 ### Representative void
 One closed surface of triangles that encloses a given void (an H2 bar). The explorer draws it as a see-through shell in the void's own colour while the void is alive, so each triangle in the persistence diagram can be matched with a shell in the cloud.
@@ -127,7 +125,7 @@ The largest π among a cloud's loops: its most persistent loop. This is the stat
 M = 999 random clouds that match the data's design. Each goes through the same top-3 PCA and alpha complex, and its largest π is recorded. The data's loop is compared with this distribution of maxima, which controls for the many loops every cloud has. This is adapted from [Gardner et al. 2022](https://doi.org/10.1038/s41586-021-04268-7), who pooled the bars of 1,000 shuffled datasets and used the longest lifetime (death − birth) as a threshold, which they call a heuristic; here the statistic is the scale-free ratio π, one maximum per null cloud, with a Monte Carlo p-value.
 - **Cluster-centre null** (prompt-template designs): the concept centres are redrawn from a Gaussian with their own covariance, and every prompt keeps its offset from its concept centre.
 - **Matched Gaussian** (one point per value): a Gaussian cloud with the data's full covariance.
-- Both are Gaussian, so a significant loop means "more persistent than a covariance-matched Gaussian blob", not necessarily a hole (deviation D9).
+- The rank is relative to the fitted design-specific reference. Fitting nuisance parameters can alter finite-sample size. [Nested calibration](../results/science/calibration.csv) · [Dufour](https://doi.org/10.1016/j.jeconom.2005.06.007)
 
 ### Null 95th percentile q95
 The 95th percentile of the 999 null maxima. In the persistence diagrams it is the red line d = q95 · b: loops above it are significant at about the 5% level. The exact rule is the Monte Carlo p-value below (p < 0.05), which can differ from "above q95" by one null draw at the boundary.
@@ -136,7 +134,7 @@ The 95th percentile of the 999 null maxima. In the persistence diagrams it is th
 p = (1 + number of null maxima ≥ the observed π) / (M + 1) ([Phipson & Smyth 2010](https://doi.org/10.2202/1544-6115.1585)). With M = 999 the smallest possible value is 0.001. "loop p (MC)" in the explorer is this p for the cloud's most persistent loop.
 
 ### Universal null
-A theory-based alternative: for large random samples, ℓ = A·log log π − λ − A·L̄ (A = ½ for alpha/Čech, 1 for Rips; L̄ the mean of log log π, λ the Euler–Mascheroni constant) follows a left-skewed Gumbel law, so p = exp(−e^ℓ), with a Bonferroni correction within the diagram ([Bobrowski & Skraba 2023](https://doi.org/10.1038/s41598-023-37842-2); [code](https://github.com/primozskraba/PersistenceUniversality)). The law is a conjecture, supported empirically with 10⁴–10⁶ points in simulations and roughly 9,000–50,000 in real data, with slowly converging tails. It is reported only descriptively, because it is very conservative at our sample sizes (N = 5–1,496).
+P and S use the proposed score ℓ = A log(log π) − γ − A mean(log(log π)) and exp(−exp ℓ), with a within-diagram Bonferroni threshold. This is an empirical score for the present benchmark. Weak universality fixes dimension, degree and complex type. The proposed left-Gumbel form fails in degree-one Čech counterexamples. [Original method](https://doi.org/10.1038/s41598-023-37842-2) · [Weak universality](https://arxiv.org/html/2406.05553v1) · [Counterexamples](https://arxiv.org/html/2610.08257v1) · [Observed calibration](../results/science/blobs.csv)
 
 ### Characteristic scale r_c
 r_c = √(birth · death) of the most significant loop or void: the middle of its bar on a log scale, where that feature is most clearly alive. If there is none, r_c is half the b0 rule's cut length (the cut is an edge length, a diameter). Method B's Betti numbers (all three), Euler characteristic, genus and Betti label are read at r_c.
@@ -150,7 +148,7 @@ Half the smallest distance between points of two different concepts. Below this 
 ## Travel around the hole
 
 ### theta_A and theta_B (hole coordinates)
-Each point gets an angle that increases by one full turn around the loop.
+When the construction succeeds it assigns an angle to each point. The label sequence can have zero, one or several turns.
 - **θ_A** is the point's position along the fitted shape (Method A).
 - **θ_B** comes from persistent cohomology ([de Silva, Morozov & Vejdemo-Johansson 2011](https://doi.org/10.1007/s00454-011-9344-x), computed with [DREiMac](https://github.com/scikit-tda/DREiMac)):
   - the most persistent loop gives a **cocycle**, a cut across the ring;
@@ -181,7 +179,7 @@ How many times the concepts' cycle (Monday → … → Sunday → Monday) goes a
 The cloud's most persistent loop has p < 0.05 against the design-matched Monte Carlo null. This alone is not evidence of a hole: the null also rejects many hole-free shapes such as curved sheets and caps (deviation D9).
 
 ### Ring
-A loop that runs through the concept clusters (not inside one) and that the concept goes around once in the preregistered analysis.
+The earlier galleries used this shorthand for a projected loop and aligned labels. Neither measurement determines whether the underlying full-dimensional concept space is a closed continuous curve.
 
 ### Goes around once
 Alignment p < 0.05 and winding number ±1 for the concept variable.

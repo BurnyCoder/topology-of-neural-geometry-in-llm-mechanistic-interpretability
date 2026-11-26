@@ -38,7 +38,7 @@ def run() -> None:
         for name, pts in (("3d", c["y"]), ("top10", y10)):
             cc = circular.circular_coordinates(pts, standard_range=False)
             recs = alignment.records(did, cc["theta"], c["labels"], cfg["seed"]) if cc["theta"] is not None else []
-            r[name] = {"error": cc["error"], "rips_bar": cc["bar"], "uncovered": cc.get("uncovered"), "records": recs}
+            r[name] = {"error": cc["error"], "rips_bar": cc["bar"], "uncovered": cc.get("uncovered"), "cover_radius": cc.get("cover_radius"), "n_landmarks": cc["n_landmarks"], "records": recs}
         res[did] = r
         first = lambda k: (r[k]["records"] or [{}])[0]
         log.info("%-26s 3D: R=%s p=%s w=%s | top10: R=%s p=%s w=%s", did, first("3d").get("R"), first("3d").get("p"),

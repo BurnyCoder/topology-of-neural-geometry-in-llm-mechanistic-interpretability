@@ -2,6 +2,8 @@
 
 This page explains *why* each choice was made. The exact rules are in [reports/preregistration.md](../reports/preregistration.md), and changes to them are in [reports/deviations.md](../reports/deviations.md). This page does not repeat either. For every step of the loop and ring test carried out with numbers on a toy cloud, see [worked_example.md](worked_example.md). Every technical term is defined in [glossary.md](glossary.md).
 
+The amended primary steering hypothesis is untested. For registered and post hoc endpoints, the clean replay and projection-specific sampling uncertainty, see the [dated audit](../reports/reviews/2026-11-26-scientific-audit.md).
+
 ## Objects of study
 
 **The 44 clouds** are exactly the source project's top-3 PCA clouds (`fit_frame`: centre, top-3 eigenvectors, skewness signs, RMS radius 1).
@@ -24,10 +26,10 @@ This page explains *why* each choice was made. The exact rules are in [reports/p
 - The null is matched to the design: a cluster-centre null for prompt-template designs, whose clusters would otherwise make any arrangement look loopy against a plain Gaussian, and a full-dimensional matched Gaussian for one-point-per-value designs.
 - **What it does not test (deviation D9).** Both nulls are Gaussian, so a significant loop means "more persistent than a covariance-matched Gaussian".
   - Hole-free surfaces, caps and helices often pass too, and for clustered designs so do nearly closed arcs of centres. On synthetic clouds of known topology, the matched-Gaussian null flags a sizeable share of hole-free clouds; the rates are in [reports/exp8_audit3.md](../reports/exp8_audit3.md).
-  - Claims of a hole therefore rest on independent evidence: traversal against a label-permutation null, loop localisation, and the concept centres alone.
+  - Traversal, localisation and centre-only calculations reuse these observations. Together they describe the measured projection. The dataset provides no independently sampled representation or steering intervention. [Dataset evidence](../results/science/dataset_assessment.csv)
   - A hole-specific null (resampling hole-free fitted shapes at the cloud's noise) is future work.
 
-The universal null of Bobrowski & Skraba (2023) is reported, but it is descriptive. It is calibrated (unit tests), but at our sample sizes it is very conservative on alpha complexes (deviation D1).
+P uses the empirical Gumbel score proposed by Bobrowski and Skraba. Report observed calibration by blob size and noise. A subsequent preprint rules out its exact limiting form in specific degree-one Čech settings. [Stratified calibration](../results/science/blobs.csv) · [Original score](https://doi.org/10.1038/s41598-023-37842-2) · [Counterexamples](https://arxiv.org/html/2610.08257v1)
 
 ## Travel around the hole, and steering
 

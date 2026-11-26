@@ -1,167 +1,28 @@
-# Literature review: topology of neural representation manifolds
+# Literature review of topology and semantic cycles
 
-Date: 2026-11-15; corrected 2026-11-20 by the independent math fact-check ([reviews/math-fact-check-2.md](reviews/math-fact-check-2.md)) and 2026-11-22 by the independent audit ([reviews/independent-audit.md](reviews/independent-audit.md)). Author: Libor "Burny" Burian (compiled with Claude Code; every claim links to its source).
+Libor “Burny” Burian · revised 26 November 2026
 
-This file catalogues the sources, with the specific methods and numbers this project uses. The synthesis of the state of the art, the gap and the novelty are in [state-of-the-art-review.md](state-of-the-art-review.md). Facts were checked against the papers' own pages (arXiv abstract/HTML, PMC full text, GitHub READMEs) on 2026-11-15; *(summary)* marks facts checked only from a summary of a page.
+## What prior studies measured
 
-## 1. Shapes found in neural activations (context)
+Engels et al. discovered calendar-related feature clusters and tested the effect of replacing activations in fitted calendar subspaces. Their interventions supply causal evidence in the models and prompts they tested. The present study asks whether a strict persistent-coordinate test passes on a separate, fixed corpus. Wurgaft et al. connect fitted paths to output changes through model interventions. Their experiments motivate the registered H6 readouts, which remain unmeasured here. [Engels et al., §§4–5](https://arxiv.org/html/2405.14860) · [Wurgaft et al.](https://arxiv.org/html/2605.05115v1) · [H6 protocol](preregistration.md)
 
-The source project's [shape catalog](https://github.com/BurnyCoder/shape-fitting-in-neural-geometry-in-llm-mechanistic-interpretability/blob/main/docs/shape_catalog.md) lists the shapes and where they were found. The ones that matter here are:
-- **Weekday and month circles.** [Engels et al., "Not All Language Model Features Are One-Dimensionally Linear", ICLR 2025, arXiv:2405.14860](https://arxiv.org/abs/2405.14860) found circles in clusters of sparse-autoencoder features (GPT-2 layer 7, Mistral-7B layer 8). They found the clusters automatically, by clustering SAE decoder vectors on cosine similarity, scored them with separability and mixture indices, and tested causality by interventions in Mistral-7B and Llama-3-8B, mostly on circles fitted by PCA of the hidden states rather than on the SAE clusters: they replaced the projection on the circle subspace with the circle's point for a target day or month, and in Mistral swept a grid of positions (r, θ) inside the circle (§5). They did not steer along a continuous fitted path, as manifold steering does, and no persistent homology was used ([code, MIT](https://github.com/JoshEngels/MultiDimensionalFeatures)).
-- **Helix of GPT-2 positions.** [Yedidia, "GPT-2's positional embedding matrix is a helix", LessWrong, 21 Jul 2023](https://www.lesswrong.com/posts/qvWP3aBDBaqXvPNhS/gpt-2-s-positional-embedding-matrix-is-a-helix). It reports that a 3-dimensional PCA subspace explains about 90% of the variance of gpt2-small's positional embeddings. Blog post, not peer reviewed.
-- **Circles in grokked modular addition.** [Nanda, Chan, Lieberum, Smith, Steinhardt, "Progress measures for grokking via mechanistic interpretability", arXiv:2301.05217](https://arxiv.org/abs/2301.05217): embeddings of residues mod 113 lie on circles, one per key Fourier frequency k, so the order around a circle is k·a mod 113. [Zhong, Liu, Tegmark, Andreas, "The Clock and the Pizza", NeurIPS 2023, arXiv:2306.17844](https://arxiv.org/abs/2306.17844) separate circle-like ("clock") from disc-like ("pizza") solutions.
-- **Number helices.** [Kantamneni & Tegmark, "Language Models Use Trigonometry to Do Addition", arXiv:2502.00873](https://arxiv.org/abs/2502.00873): numbers 0–99 lie on a generalised helix with Fourier periods T = 2, 5, 10 and 100. *Consequence for us:* non-cyclic numeric concepts (years, temperatures, ages) can still contain periodic components (value mod 10, mod 100), which could produce genuine loops.
-- **Representation manifolds in general.** [Modell, Rubin-Delanchy, Whiteley, "The Origins of Representation Manifolds in Large Language Models", arXiv:2505.18235 (2025)](https://arxiv.org/abs/2505.18235), §2.3:
-  - colour embeddings are "roughly arranged around a loop" in hue order;
-  - layer-7 GPT-2-small activations for the years of the twentieth century show "a clear one-dimensional curve" (a curve, not a loop; their Fig. 1 caption says the activations were processed by an SAE);
-  - calendar dates are also roughly arranged around a loop;
-  - Engels et al.'s weekday and month circles show distortion in 3D.
+In modular addition, Nanda et al. identified representations and computations at key Fourier frequencies. Zhong et al. distinguish Clock and Pizza computations. Both can have circular input embeddings. The name Pizza refers to the algorithm using the combined inputs and cannot diagnose whether an embedding cloud is disk-shaped. This motivates repeating the frequency search inside each permutation and limiting conclusions to the observed checkpoint. [Nanda et al.](https://arxiv.org/abs/2301.05217) · [Zhong et al., §2 and Fig. 1](https://arxiv.org/abs/2306.17844) · [Local frequency test](../src/neurotopo/stats/circular.py)
 
-  The colour and date loops are 3D PCA views of 3,072-dimensional text-embedding vectors, not LLM residual activations. They warn that a 2D principal-component view can hide structure that runs through PC3. No persistent homology.
-- **Supervised shape testing.** [Tiblias et al., "Hypothesis-Driven Feature Manifold Analysis in LLMs via Supervised Multi-Dimensional Scaling", arXiv:2510.01025](https://arxiv.org/abs/2510.01025) compare candidate shapes with supervised MDS; temporal features form circles, lines and clusters *(summary)*.
-- **SAEs and concept manifolds.** [Bhalla et al., "Do Sparse Autoencoders Capture Concept Manifolds?", arXiv:2604.28119](https://arxiv.org/abs/2604.28119) (colours, years, temperature, age templates used by the source project).
-- **Why months form circles.** [Karkada, Korchinski, Nava, Wyart, Bahri, "Symmetry in language statistics shapes the geometry of model representations", arXiv:2602.15029 (ICML 2026)](https://arxiv.org/abs/2602.15029) prove, for word-embedding models, that translation symmetry in co-occurrence statistics shapes such geometry, including the circle of calendar months, and report that the predictions match large text-embedding models and LLMs *(abstract)*.
-- **Weekdays as discrete states.** [Gupta, Fruengel, Heimersheim, "Spokes, not a Ring: Revisiting the Weekday Manifold in Language Models", arXiv:2610.37796 (Oct 2026)](https://arxiv.org/abs/2610.37796) report that weekday representations behave more like seven discrete states arranged in a circle than like a continuous ring, with a step-like response to on-manifold steering *(abstract)*. This fits our weekday cloud: 7 tight clusters whose most persistent loop lies inside one cluster.
-- **Toy models of superposition.** [Elhage et al. 2022](https://transformer-circuits.pub/2022/toy_model/index.html): features arrange as digons, triangles, pentagons and tetrahedra (uniform polytopes).
+Modell et al. describe geometric patterns in text embeddings and hidden representations, including colours and calendar dates. Their choice of representation and projection matters when comparing figures. Gardinazzi et al. analyze topological features across layers, including zigzag persistence. Moisescu-Pareja et al. and Tang et al. examine the topology of modular-addition or grokking representations. David and Fomin study how imposed semantic structure depends on context. These studies motivate comparison across designs without assigning their numerical results to this corpus. [Modell et al.](https://arxiv.org/abs/2505.18235) · [Gardinazzi et al.](https://arxiv.org/abs/2410.11042) · [Moisescu-Pareja et al.](https://arxiv.org/abs/2512.25060) · [Tang et al.](https://arxiv.org/abs/2605.06352) · [David and Fomin](https://arxiv.org/html/2607.24425v1)
 
-The source project's own result ([README](https://github.com/BurnyCoder/shape-fitting-in-neural-geometry-in-llm-mechanistic-interpretability#readme), commit 4c5f3b6): its fitter labels the Llama-3.1-8B weekday, month and grokked-embedding clouds "helix", GPT-2 positions "sphere", years and colours "cone". Its coarse shape class agrees with the literature on 7 of 12 preregistered datasets, which is not more often than a label-permutation null or than always answering "curve". A helix label is therefore not evidence against a closed loop, and this project checks the topology directly.
+## What the topology methods establish
 
-## 2. Manifold steering and Goodfire's Neural Geometry series (inspiration for "travelling around the hole")
+Betti numbers are ranks of homology groups over a specified field. Equal Betti vectors alone do not classify spaces up to homotopy. The alpha filtration encodes offsets of Euclidean point samples through a Delaunay subcomplex. GUDHI can report alpha filtration values as squared radii or radii. Vietoris–Rips and Čech complexes need not have the same topology at a given scale. Results about a finite offset require specifying its radius and projected points. [Hatcher, chapter 2](https://pi.math.cornell.edu/~hatcher/AT/AT.pdf) · [Bauer and Edelsbrunner](https://arxiv.org/abs/1312.1231) · [GUDHI alpha manual](https://gudhi.inria.fr/python/latest/delaunay_complex_ref.html) · [Adamaszek and Adams](https://arxiv.org/abs/1503.03669)
 
-- **Manifold steering.** [Wurgaft, Rager, Kowal, Shyam, Feucht, Bhalla, Haklay, Bigelow, Sarfati, McGrath, Lewis, Merullo, Goodman, Fel, Geiger, Lubana, "Manifold Steering Reveals the Shared Geometry of Neural Network Representation and Behavior", arXiv:2605.05115 (May 2026)](https://arxiv.org/abs/2605.05115). Blog post: [Steering Along Manifolds to Control Neural Networks (Goodfire, 7 May 2026)](https://www.goodfire.com/research/manifold-steering).
+Persistent cohomology can produce circle-valued coordinates by lifting and smoothing a suitable cocycle. The DREiMac coordinate depends on the selected landmark class, scale and coverage. Gardner et al. used persistent cohomology to examine toroidal population activity, and Rybakken et al. used cohomological coordinates for neural decoding. A coordinate and a displayed alpha birth path can correspond to different classes. The local audit compares scales and fields and verifies displayed paths against paired death simplices. [de Silva et al.](https://doi.org/10.1007/s00454-011-9344-x) · [DREiMac theory](https://dreimac.scikit-tda.org/en/latest/theory.html) · [Gardner et al.](https://doi.org/10.1038/s41586-021-04268-7) · [Rybakken et al.](https://arxiv.org/abs/1711.07205) · [Local certificates](../results/science/representatives.csv.gz)
 
-  Method, from the [HTML v1](https://arxiv.org/html/2605.05115v1):
-  - prompts are "What day is k days after z?";
-  - activations come from Llama 3.1 8B layer 28 and are reduced "to 64 dimensions via PCA";
-  - cubic splines are fitted through the concept centroids;
-  - linear steering interpolates (1−t)h0 + t·h1;
-  - manifold steering moves along the spline, π_m(t) = s((1−t)u0 + t·u1);
-  - days are "arranged in order around a loop".
+The reach-based sampling theorem of Niyogi et al. uses assumptions about smooth manifolds and sampling density. The present family-specific margin is a ratio of selected feature sizes to empirical residual and coverage distances. No bound connecting it to reach was established. The upstream functions also distinguish the parameters determining actual angular support from a threshold used to describe near-closed samples. [Niyogi et al.](https://doi.org/10.1007/s00454-008-9053-2) · [Arc generator](https://github.com/BurnyCoder/shape-fitting-in-neural-geometry-in-llm-mechanistic-interpretability/blob/4c5f3b665381380c81af22827bb3959032dac417/src/neurogeom/shapes/curves.py#L68-L105) · [Sphere generator](https://github.com/BurnyCoder/shape-fitting-in-neural-geometry-in-llm-mechanistic-interpretability/blob/4c5f3b665381380c81af22827bb3959032dac417/src/neurogeom/shapes/surfaces.py#L63-L98)
 
-  Reported results:
-  - Manifold steering moves the output distribution along the behaviour manifold, while linear steering cuts across it.
-  - Before any intervention, distances in activation space follow geodesics on the output-distribution manifold: r = 0.99 vs 0.89 (weekdays), 0.89 vs 0.53 (months), 0.999 vs 0.71 (letters), 0.999 vs 0.36 (ages). These are correlations measured on unsteered activations, not steering results; the steering comparison uses a separate measure (E_BC), on which manifold steering beats linear steering in all four settings.
-  - Settings beyond weekdays: months, letters, ages, in-context grid and cylinder graphs, and a Mountain Car world model.
-  - The paper does not use persistent homology, as far as the parts we read show.
-- **The Neural Geometry series** ([index](https://www.goodfire.com/research/neural-geometry)):
-  - [The World Inside Neural Networks](https://www.goodfire.com/research/the-world-inside-neural-networks) (Geiger et al., 7 May 2026);
-  - [Steering Along Manifolds to Control Neural Networks](https://www.goodfire.com/research/manifold-steering) (Wurgaft et al., 7 May 2026);
-  - [A Geometric Calculator Inside a Neural Network](https://www.goodfire.com/research/a-geometric-calculator) (Feucht et al., 14 May 2026), on addition through circular number representations in Llama 3.1 8B;
-  - [Can SAEs Capture Neural Geometry?](https://www.goodfire.com/research/can-saes-capture-neural-geometry) (Bhalla et al., 21 May 2026);
-  - [Meandering on Manifolds: The Neural Geometry of Stories Over Time](https://www.goodfire.com/research/stories-in-space) (Bigelow et al., 23 Jun 2026);
-  - [Uncovering Neural Geometry in Vision Models With Block-Sparse Featurizers](https://www.goodfire.com/research/bsf-vision) (Fel et al., 7 Jul 2026).
+## Statistical interpretation
 
-**How this project relates.** Manifold steering moves activations *along* a fitted manifold and shows the output follows the semantic order (Monday → Tuesday → …). That is a causal statement about travelling along the manifold. This project asks two *observational, topological* questions:
-1. Is there a hole? We answer it with the exact topology of the fitted shape and with persistent homology.
-2. Does the semantic order go around that hole exactly once? We measure the winding of a circular coordinate.
+Bobrowski and Skraba proposed an empirical left-Gumbel approximation for transformed persistence ratios. Their weak-universality result fixes ambient dimension, homological degree and filtration type. Heo's 2026 preprint, Theorem 1.1 and Corollary 1.4, derives distinct limiting centered degree-one Čech laws for two and three dimensions in the studied models, and excludes the left-Gumbel form. Finite-sample use of the formula needs empirical validation. The benchmark reports size-by-noise rates and does not infer uniform p-values from a pooled set of dependent bars. [Proposed score](https://doi.org/10.1038/s41598-023-37842-2) · [Weak universality](https://arxiv.org/html/2406.05553v1) · [Counterexamples](https://arxiv.org/html/2610.08257v1) · [Local calibration](../results/science/blobs.csv)
 
-Steering around a detected hole is the natural causal follow-up and is listed as future work.
+Monte Carlo randomization tests require an exchangeability argument for the statistic, including any selection repeated after relabeling. A fitted Gaussian reference is a parametric plug-in approximation. Outer simulations estimate its rejection rate at specified nuisance values. Generator chunks share draws, so the benchmark resamples chunks jointly when estimating paired differences. PCA of random walks and smooth data can yield apparent oscillations, which motivates limited negative controls and explicit projection sensitivity. [Phipson and Smyth](https://doi.org/10.2202/1544-6115.1585) · [Dufour](https://doi.org/10.1016/j.jeconom.2005.06.007) · [Field and Welsh](https://doi.org/10.1111/j.1467-9868.2007.00593.x) · [Antognini and Sohl-Dickstein](https://arxiv.org/abs/1806.08805) · [Shinn](https://doi.org/10.1073/pnas.2311420120)
 
-## 3. Persistent homology of neural representations
-
-- [Naitzat, Zhitnikov, Lim, "Topology of Deep Neural Networks", JMLR 21(184):1–40, 2020](https://jmlr.org/papers/v21/20-345.html). Well-trained networks simplify the topology of the data, layer by layer, towards β0 = 1 and βk = 0.
-  - Method: Vietoris–Rips homology on a k-nearest-neighbour graph geodesic distance; on simulated data at one fixed scale, with k and ε calibrated on data whose Betti numbers are known, and on real data as full persistence barcodes per layer. No null model or significance test.
-- [Gardinazzi et al., "Persistent Topological Features in Large Language Models", ICML 2025 (PMLR 267), arXiv:2410.11042](https://arxiv.org/abs/2410.11042), [code](https://github.com/RitAreaSciencePark/ZigZagLLMs). Zigzag persistence of kNN flag complexes across layers (Llama-2-7B, Llama-3-8B, Mistral-7B, Pythia-6.9B), mostly H1. It is mostly about how topology changes across layers. Its Appendix C uses a calendar-month task in Mistral ("a toy example using a calendar month task to visualize how we track zigzag barcodes", §3.2) to show the zigzag barcodes of the 12 month tokens across layers, without a null model or significance test. This is the nearest peer-reviewed use of persistent homology on a month representation we found.
-- [Jakubowski, Gašić, Zibrowius, "Topology of Word Embeddings: Singularities Reflect Polysemy", *SEM 2020](https://aclanthology.org/2020.starsem-1.11). A local, H0-based polysemy score; it measures local neighbourhoods, not global loops.
-- [Ballester, Casacuberta, Escalera, "Topological Data Analysis for Neural Network Analysis: A Comprehensive Survey", arXiv:2312.05840](https://arxiv.org/abs/2312.05840). Survey of four areas: architecture, decision boundaries, internal representations, training dynamics.
-- [Rieck et al., "Neural Persistence", ICLR 2019, arXiv:1812.09764](https://arxiv.org/abs/1812.09764). H0 persistence of weight graphs; this is weight space, not activation clouds.
-- [Moisescu-Pareja et al., "On the geometry and topology of representations: the manifolds of modular addition", arXiv:2512.25060](https://arxiv.org/abs/2512.25060). Uses the reference Betti numbers disc (1,0,0), circle (1,1,0) and 2-torus (1,2,1), and computes Betti numbers of representations of modular-addition networks with Ripser. We found no null model in the text we read.
-- [Tang, Wang, García-Redondo, Monod, "Topological Signatures of Grokking", arXiv:2605.06352](https://arxiv.org/abs/2605.06352). Reports "a sharp increase in both the maximum and total persistence of first homology (H1)" of embedding-matrix point clouds at grokking.
-- [David & Fomin, "Context Is King: How In-Context Specification Shapes the Geometry of Concepts", arXiv:2607.24425](https://arxiv.org/abs/2607.24425). The main text reports "a dominant H1 loop for the imposed cycle, none for the tree".
-  - Appendix I *(summary)*: a persistence ratio, the dominant H1 bar relative to random points with matched N and dimension, computed on centroid clouds of N = 7–12. Imposed cycles give 8.4×–11.5×; an imposed tree gives 2.0× in Gemma-31B (the random floor) but 4.7× in Qwen-27B.
-  - It is framed as a "confirmatory diagnostic, not a primary test". This is the closest template for small-N loop tests.
-- [shouvik-majumder/circular-features](https://github.com/shouvik-majumder/circular-features). A personal re-implementation of Engels et al. (README: "not the authors' code"); not peer reviewed.
-  - Data: weekday × month prompts in GPT-2 small and Gemma-2-2B-IT.
-  - Method: persistent homology with an ideal-torus positive control.
-  - Findings: "Weekdays and months form correctly ordered loops that exceed the nulls in both models", against "a Gaussian matched to each item set's covariance", with no test statistics in the README; "The loops are deformed: 57% (weekdays) and 38% (months) of their variance is in the first circular harmonic"; and "the joint representation is not a torus".
-  - This is the closest precedent for a null-controlled loop-plus-order claim on weekdays and months, but it is not peer reviewed and its order test is not described.
-
-**Gap.** We found no peer-reviewed work that tests, with a null model, whether weekday or month representations have a significant H1 class *and* whether the semantic order winds once around it. The nearest works are Gardinazzi et al.'s month barcodes (peer reviewed, no null) and the shouvik-majumder re-implementation (a Gaussian null and an order claim, not peer reviewed, no statistics). We also found none that compares the exact topology of fitted parametric shapes with the persistent homology of the same clouds.
-
-## 4. Neuroscience precedent: detecting rings and tori in population activity
-
-- [Chaudhuri, Gerçek, Pandey, Peyrache, Fiete, Nat. Neurosci. 22:1512–1520 (2019)](https://doi.org/10.1038/s41593-019-0460-x); [code](https://github.com/FieteLab/SPUD_Analysis-of-manifold-structure-in-head-direction-data). A head-direction ring.
-  - Pipeline in the released code: Isomap to 10 dimensions, then, optionally (the paper's nt-TDA variant), removal of points whose number of neighbours within the 1st percentile of pairwise distances is in the bottom 20%, then Ripser with Z2 coefficients.
-  - A long bar was judged significant by its persistence, without a shuffle test.
-  - They note that persistent homology cannot distinguish topologically trivial manifolds with different geometries, such as a hyperplane and a filled ball.
-- [Gardner et al., "Toroidal topology of population activity in grid cells", Nature 602:123–128 (2022)](https://doi.org/10.1038/s41586-021-04268-7); [full text](https://pmc.ncbi.nlm.nih.gov/articles/PMC8810387/).
-  - Preprocessing: z-scoring, the first 6 principal components, and fuzzy-kNN density downsampling to 1200 points.
-  - Persistence: Vietoris–Rips persistent cohomology with Z47 coefficients, on a distance matrix built from fuzzy-neighbourhood strengths (not Euclidean distances).
-  - Significance: 1000 shuffles; a bar is real if it is longer than the maximum lifetime over all shuffles.
-  - Decoding: circular coordinates from cocycles smoothed by least squares.
-- [Rybakken, Baas, Dunn, Neural Computation 31(1):68–93 (2019)](https://arxiv.org/abs/1711.07205). Blind decoding of head direction with persistent cohomology and circular coordinates.
-- [de Silva, Morozov, Vejdemo-Johansson, "Persistent cohomology and circular coordinates", Discrete Comput. Geom. 45:737–759 (2011)](https://doi.org/10.1007/s00454-011-9344-x). The base algorithm: integer cocycle, then harmonic smoothing, then a circle-valued map.
-- [DREiMac: Perea, Scoccola, Tralie, JOSS 8(91):5791 (2023)](https://doi.org/10.21105/joss.05791); [code, Apache-2.0](https://github.com/scikit-tda/DREiMac). A maintained implementation of sparse circular coordinates.
-
-**What we reuse:**
-- the max-over-null threshold of Gardner et al., with a design-matched null;
-- coefficients Z_p with p = 47;
-- circular coordinates from DREiMac;
-- decoding a circle-valued coordinate per point and checking it against the semantic index. This last idea is the basis of our "travel around the hole" test.
-
-## 5. Statistical inference for persistence diagrams
-
-- **Universal null distribution.** [Bobrowski & Skraba, "A universal null-distribution for topological data analysis", Sci. Rep. 13:12274 (2023)](https://doi.org/10.1038/s41598-023-37842-2); [full text](https://pmc.ncbi.nlm.nih.gov/articles/PMC10382541/); [code, GPL-3.0](https://github.com/primozskraba/PersistenceUniversality).
-  - For a point p = (b, d) of the degree-k diagram (k ≥ 1), π(p) = d/b.
-  - ℓ(p) = A·log log π(p) + B, with A = 1 for Vietoris–Rips and A = 1/2 for Čech, and B = −λ − A·L̄. L̄ is the mean of log log π over all points of the diagram, and λ is the Euler–Mascheroni constant.
-  - Under the null, ℓ follows the left Gumbel distribution, F(x) = 1 − exp(−eˣ). The p-value is exp(−e^{ℓ(p)}).
-  - Bonferroni correction divides α by |dgm_k|.
-  - The paper's simulations use 10⁴–10⁶ points (Supplementary Tables 3–4) and its real data roughly 9,000–50,000; one hypothesis-testing demo uses 1,000 points. It states that the tails converge slowly and gives no minimum sample size.
-  - The released code keeps only points with π > 1 before averaging. We do the same, since zero-persistence points have log log π = −∞.
-  - The result is a conjecture, supported empirically; it fails for perturbed lattices and repulsive point processes.
-  - *Consequence:* we use it descriptively on real clouds (N = 5–1496, and some clouds are deterministic grids) and calibrate it on synthetic clouds for each N bin.
-- **Bootstrap confidence sets.** [Fasy, Lecci, Rinaldo, Wasserman, Balakrishnan, Singh, "Confidence sets for persistence diagrams", Ann. Statist. 42(6):2301–2339 (2014)](https://doi.org/10.1214/14-AOS1252). Subsampling and bootstrap bands with asymptotic, conservative guarantees. In our judgement (not a statement of the paper) asymptotic bands are not informative at N ≲ 100.
-- **Stability.** [Cohen-Steiner, Edelsbrunner, Harer, "Stability of Persistence Diagrams", DCG 37:103–120 (2007)](https://doi.org/10.1007/s00454-006-1276-5). The bottleneck distance between diagrams of distance functions is bounded by the Hausdorff distance between the point sets. Because the Hausdorff distance is not robust, one outlier can create or destroy features.
-- **Permutation tests between groups of diagrams.** [Robinson & Turner, "Hypothesis testing for topological data analysis", J. Appl. Comput. Topol. 1:241 (2017)](https://doi.org/10.1007/s41468-017-0008-7).
-- **Multiple testing with persistent homology.** [Vejdemo-Johansson & Mukherjee, Found. Data Sci. 4(4):667–705 (2022)](https://doi.org/10.3934/fods.2022018).
-
-## 6. Comparing topology across clouds
-
-- **Bottleneck and Wasserstein distances.** GUDHI's default `bottleneck_distance` (used here, exact with e = 0) is a CGAL-based implementation by F. Godi after [Efrat, Itai & Katz, "Geometry Helps in Bottleneck Matching and Related Problems", Algorithmica 31:1–28 (2001)](https://doi.org/10.1007/s00453-001-0016-8). GUDHI also bundles Hera ([Kerber, Morozov, Nigmetov, "Geometry Helps to Compare Persistence Diagrams", ACM JEA 22 (2017)](https://doi.org/10.1145/3064175)) as `gudhi.hera`, which this project does not use ([GUDHI documentation](https://gudhi.inria.fr/python/latest/bottleneck_distance_user.html)).
-  - By definition, a p-Wasserstein distance sums over every matched point, including near-diagonal (noise) points ([Cohen-Steiner, Edelsbrunner, Harer, Mileyko, "Lipschitz functions have L_p-stable persistence", Found. Comput. Math. 10:127-139 (2010)](https://doi.org/10.1007/s10208-010-9060-6)), and the number of noise points grows with N. The bottleneck distance is driven by the largest mismatch.
-  - We therefore compare clouds of very different N with the bottleneck distance on *significant* features only. Thresholding gives up the stability theorem above: a bar just above the threshold in one cloud and just below it in a nearly identical cloud changes the distance by about half its length. So Exp4 is exploratory.
-- **Vector representations.** Persistence images, [Adams et al., JMLR 18(8):1–35 (2017)](https://jmlr.org/papers/v18/16-337.html); persistence landscapes, [Bubenik, JMLR 16:77–102 (2015)](https://jmlr.org/papers/v16/bubenik15a.html).
-- **Subsampling for large clouds.** [Chazal et al., "Subsampling Methods for Persistent Homology", ICML 2015](https://proceedings.mlr.press/v37/chazal15.html).
-
-## 7. Practical choices for 3D point clouds
-
-- **Alpha vs Rips.**
-  - The alpha complex is a filtered subcomplex of the Delaunay triangulation. At every radius it is homotopy equivalent to the union of balls ([Edelsbrunner, "The union of balls and its dual shape", DCG 13:415-440 (1995)](https://doi.org/10.1007/BF02574053)), and its filtration has the same persistence diagrams as the Čech filtration ([Bauer & Edelsbrunner, "The Morse theory of Čech and Delaunay complexes", Trans. AMS 369:3741-3762 (2017)](https://doi.org/10.1090/tran/6991)). It is a smaller complex than Čech, so in ℝ³ it gives the Čech persistence exactly and cheaply.
-  - Vietoris–Rips is only interleaved with Čech ([de Silva & Ghrist, Algebr. Geom. Topol. 7:339–358 (2007)](https://doi.org/10.2140/agt.2007.7.339), Thm 2.5) and has phantom classes.
-  - Example of a phantom class: the Rips complex of points evenly spaced on a circle becomes a higher-dimensional sphere at larger scales ([Adamaszek & Adams, "The Vietoris–Rips complexes of a circle", Pacific J. Math. 290:1-40 (2017)](https://doi.org/10.2140/pjm.2017.290.1), [arXiv:1503.03669](https://arxiv.org/abs/1503.03669)). By their Thm 4.3, the Rips complex of the regular 12-gon is a wedge of three 2-spheres at some scales (spurious H2), while alpha has no H2. Our unit tests check this numerically.
-  - Decision: alpha for H0/H1/H2 in 3D; Rips (ripser) for higher-dimensional checks, for H1 only.
-- **Reference values (derived by us; checked numerically in our tests).** For a regular n-gon, the alpha (Čech) H1 bar is born at half the side length, R·sin(π/n), and dies at the circumradius R, so π = 1/sin(π/n). That gives 2.305 for n = 7 and 3.864 for n = 12.
-  - These are the values for n point-like concept centres. They are not a ceiling for a loop made of n noisy clusters: spread within the clusters lets neighbouring clusters connect earlier (smaller birth), so the ring's π can be larger (`tests/test_tda.py::test_cluster_ring_can_exceed_point_polygon_ratio`; corrected in the [math fact-check](reviews/math-fact-check.md)).
-- **Outliers and density.**
-  - Distance to a measure (DTM): [Chazal, Cohen-Steiner, Mérigot, Found. Comput. Math. 11:733–751 (2011)](https://doi.org/10.1007/s10208-011-9098-0).
-  - DTM filtrations: [Anai et al., SoCG 2019, arXiv:1811.04757](https://arxiv.org/abs/1811.04757). Implemented in GUDHI as `DTMRipsComplex`.
-- **Genus and other invariants.** Standard algebraic topology ([Hatcher, *Algebraic Topology*, 2002](https://pi.math.cornell.edu/~hatcher/AT/AT.pdf)).
-  - For a closed connected orientable surface, χ = b0 − b1 + b2 = 2 − 2g, so g = b1/2. For an orientable surface with n boundary circles, χ = 2 − 2g − n, so the genus cannot be read off the Betti numbers alone.
-  - In ℝ³ every closed embedded surface is orientable: a closed non-orientable n-manifold does not embed in ℝⁿ⁺¹ ([Hatcher](https://pi.math.cornell.edu/~hatcher/AT/AT.pdf), remark after Cor. 3.46, p. 256). Subcomplexes of ℝ³ have torsion-free homology (Hatcher Cor. 3.46, a consequence of Alexander duality, Cor. 3.45), so each complex has the same Betti numbers over every field.
-  - Persistence can still depend on the field, through torsion in the *relative* homology of a pair of complexes: in ℝ³, H0 and H2 bars are field-independent but H1 bars can change, as for a Möbius band ([Obayashi & Yoshiwaki, "Field choice problem in persistent homology", DCG 70:645-670 (2023)](https://doi.org/10.1007/s00454-023-00544-7), [arXiv:1911.11350](https://arxiv.org/abs/1911.11350)). In their experiment (§8), 1 of 10,000 alpha filtrations of Poisson point clouds in [0,1]³ with 1,000 points on average had such torsion, so a field-comparison check is almost always, but not always, a no-op.
-  - A solid torus has Betti numbers (1,1,0), the same as a circle, but the two are homotopy equivalent, so no homotopy invariant can separate them. The real limitation is that Betti numbers do not determine the homotopy type: the torus and S² ∨ S¹ ∨ S¹ both have (1,2,1).
-
-## 8. Pitfalls specific to PCA projections
-
-- [Antognini & Sohl-Dickstein, "PCA of high dimensional random walks with comparison to neural network training", NeurIPS 2018, arXiv:1806.08805](https://arxiv.org/abs/1806.08805). Projections of random walks onto PCA subspaces trace Lissajous curves: PC_k ∝ cos(kπt), so a parabola in PC1–PC2. The curves are open; some 2D pairs (for example PC2–PC3) cross themselves and enclose a lobe, which can give spurious H1 in 2D, but in the top-3 or top-10 space the curve stays an open arc, because PC1 is monotone along it (our derivation from their formula). Consistent with this, our 20 random-walk and Gaussian-process controls have no top-3 or top-10 loop (Exp2; independent audit, D14).
-- [Shinn, "Phantom oscillations in principal component analysis", PNAS 120(48):e2311420120 (2023)](https://doi.org/10.1073/pnas.2311420120). Smoothness and shifts produce oscillatory principal components.
-- [Diaconis, Goel, Holmes, "Horseshoes in multidimensional scaling and local kernel methods", Ann. Appl. Stat. 2(3):777–807 (2008)](https://doi.org/10.1214/08-AOAS165). Explains the horseshoe shapes of MDS and kernel projections: a latent ordering of the data, seen only through local similarities, bends into a horseshoe.
-- **Helix vs circle.** A helix is contractible (b1 = 0), but seen down its axis it looks like a circle. A closed loop of clusters with a small drift is fitted as a helix.
-- **Small N and noise.** At N = 7–12 the barcode is sparse. A missing loop is not evidence that no loop exists without a power analysis.
-
-**Mitigations used in this project:**
-- Repeat the H1 test on the top-5 and top-10 principal components and on full-dimensional cosine distances.
-- Require the alignment of the circular coordinate with the semantic order to survive in the top-10 principal components.
-- Use design-matched nulls, for example a cluster-centre null for prompt-template designs.
-- Run a synthetic power simulation before freezing the decision rules.
-
-## 9. Tools (checked on PyPI on 2026-11-15; installed in this repository's uv environment)
-
-| Package | Version | Licence | Use here |
-|---|---|---|---|
-| [GUDHI](https://gudhi.inria.fr) | 3.13.0 | MIT; AlphaComplex and bottleneck distance GPL-3.0 (CGAL) | alpha complexes, bottleneck distances |
-| [ripser.py](https://github.com/scikit-tda/ripser.py) ([Tralie et al., JOSS 2018](https://doi.org/10.21105/joss.00925); [Bauer, J. Appl. Comput. Topol. 2021](https://doi.org/10.1007/s41468-021-00071-5)) | 0.6.15 | MIT | Rips persistence in higher dimensions, cocycles |
-| [persim](https://github.com/scikit-tda/persim) | 0.4.1 | MIT | not called directly; a dependency of ripser.py and DREiMac |
-| [DREiMac](https://github.com/scikit-tda/DREiMac) | 0.3.2 | Apache-2.0 | circular coordinates; requires Python < 3.12, which is why the project uses Python 3.11 |
-| giotto-tda | 0.6.2 | AGPL-3.0 | not used: no wheels beyond Python 3.12, and it pins scikit-learn 1.3.2 |
+The [state-of-the-art review](state-of-the-art-review.md) maps these designs to the comparison in this study. The [claim register](reviews/2026-11-26-scientific-audit.md) records how each methodological conclusion bears on the published results.
 

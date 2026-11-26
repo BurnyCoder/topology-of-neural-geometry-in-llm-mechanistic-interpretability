@@ -1,5 +1,8 @@
 # Plan and status
 
+**26 November 2026 audit plan and disposition.** Reconstruct H1–H6, compare original and angular targets at fixed eligibility, rebuild clustered uncertainty, calibrate fitted reference draws, certify displayed chains, and regenerate all public artifacts. The [audit protocol](reviews/2026-11-26-protocol.md), [results](../results/science/) and [claim register](reviews/2026-11-26-scientific-audit.md) track these deliverables. The remaining scientific work is the postponed intervention and independent model/prompt replication.
+
+
 Last updated: 2026-11-22.
 
 ## Status

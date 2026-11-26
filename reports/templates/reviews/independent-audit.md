@@ -1,5 +1,8 @@
 # Independent audit: scientific soundness, hypothesis evaluation, methods and citations
 
+**Historical report · erratum, 26 November 2026.** This records an earlier analysis. Its family and loop comparisons use catalog labels and its Gaussian reference results apply to the simulated designs. The [independent audit](2026-11-26-scientific-audit.md) supersedes interpretations of raw angular topology, full-vector agreement, open-family false-positive denominators, uniform calibration and representative-cycle identity. The earlier author's tests and decisions remain part of the chronology.
+
+
 Libor "Burny" Burian, 2026-11-22. Logged as deviation [D14](../deviations.md).
 
 **Question.** Are the results scientifically sound? Are the hypotheses evaluated correctly against the preregistered rules? Are the methods and definitions used the way topological data analysis (TDA), statistics and mechanistic interpretability use them? Is every claim correct and sourced?

@@ -1,91 +1,11 @@
-# Summary of all experiments
+# Summary of the neural geometry study
 
-Date: 2026-11-15; updated 2026-11-22 (independent audit, D14). Author: Libor "Burny" Burian. Every number below is generated from `results/` by `run.py report`.
+**Libor “Burny” Burian · 26 November 2026**
 
-## The question in plain words
+Weekdays, months and modular residues all fail the complete registered observational test by both methods. In three PCs the months have a significant alpha loop, and residues also align and wind once in a strict Rips coordinate. Months lack a usable registered coordinate and residues lose theirs in ten PCs. Hue has a 3D alignment in both activation and input RGB data. These are observational results in specific projections. The amended primary H6 steering experiment is untested. [Conditions and Holm adjustments](../results/science/decisions.csv) · [RGB control](../results/exp7_audit/summary.json) · [Steering readouts](../results/science/h6_datasets.csv)
 
-Language models seem to store some concepts on loops: days of the week, months, colours on a colour wheel, numbers modulo 113 in a model trained on modular arithmetic. If a concept really lives on a loop, there is a **hole** in the middle that you can walk around. Walking around it should step through the concept in order (Monday, Tuesday, …, Sunday, back to Monday). That would make "steering around the hole" a meaningful way to control the model.
+H2's specificity falsification rule was not triggered. H3's day-phase conjunction failed. H4 full-vector agreement is {{sci.h4_full}}/{{sci.n_real}}. Agreement restricted to loops and voids is {{sci.h4_partial}}/{{sci.n_real}}. All three classifiers attain balanced accuracy {{exp3.H4.conj_B:2}} on the designated labeled sets. [H1–H4 reconstruction](../results/science/hypotheses.json) · [Paired vectors](../results/science/h4_datasets.csv)
 
-We checked, without running any model, whether the activation clouds really have such holes, and whether the concepts go around them in order.
+For H5 the registered catalog macro accuracies are {{exp1.P.acc:3}} for the alpha persistence estimator, {{exp1.Ba.acc:3}} for the tuned-threshold baseline and {{exp1.Bb.acc:3}} for the fitted-family baseline. The catalog calls near-complete arcs and caps closed. Using the true angular domains reverses the relative ranking of P and the family baseline in both families, with the original predictions and eligible rows. The flagged-cloud false-positive count is {{sci.fpr.all.flag.hits}}/{{sci.fpr.all.flag.n}}. The registered ablation trigger remains unmet. [Scores and paired intervals](../results/science/benchmark.csv) · [Flagged and unflagged denominators](../results/science/false_positives.csv)
 
-## Experiments overview
-
-| Exp | What | Data | Method | Main result |
-|---|---|---|---|---|
-| 0 | Exact topology of the fitted shapes | 44 real fits, 40,560 synthetic ground-truth shapes | closed-form Betti numbers, margin ratio, point coordinates on the fit | cyclic sets are fitted as helices (no hole), but as tight coils whose adjacent turns merge at the noise scale (ρ_A ≈ {{exp0.weekdays.rho:2}}), so the fit cannot say whether they are open or closed; concepts sit around the helix axis in order, but so do the indices of {{exp0.gp_wind1}} of {{exp0.gp_helix_n}} random-process helix controls |
-| coords | Where labelled points sit on the fit | 44 real fits | intrinsic coordinates; Spearman, circular alignment, NMI | the months' axial positions follow a 2nd harmonic (R² {{coords.months.harmonic.h2:2}}, post hoc), the shape of a closed saddle loop, but the periodic fit assumes closure; ordinal concepts lie along open curves |
-| power | Tuning and power | validation stream; simulated rings, arcs and random sets | Monte Carlo | preregistered simulation misspecified (rings trivially detected, D6). Corrected simulation (post hoc): the loop test detects weekday-like rings in {{power2.weekdays.loop:2}}, month-like in {{power2.months.loop:2}}, residue-like in {{power2.grok.loop:2}} of replicates; the full conjunction passes cluster rings in ≤ {{power2.months.ring_all_max:2}} |
-| 1 | Are the persistent-homology estimators right? | 39,000 synthetic clouds, exact topology | alpha and Rips persistence, universal and Monte Carlo nulls, baselines | preregistered estimator {{exp1.P.acc:2}} vs fixed threshold {{exp1.Ba.acc:2}} vs family label {{exp1.Bb.acc:2}}; on clouds far from a topology change (ρ_A ≥ 4, post hoc, no tori) P {{exp1.well.P.acc:2}} vs family label {{exp1.well.Bb.acc:2}} (the label is in-distribution); persistence beats the label for open/closed arcs and caps/spheres; outliers raise P's false-positive rate to {{exp1.out.P.outlier:3}} (D7), below the DTM threshold of {{exp1.out.thr:2}} |
-| 2 | Holes in the real clouds | 44 real clouds | alpha persistence + design-matched null (999 draws) | loops through the concept clusters in colours, residues and months; in days_time only a small loop inside one day's cluster (unstable); borderline in the random-init grokking embedding; none in weekdays, ordinal concepts or random-process controls (open curves, never near the threshold); after BH over 44 tests: {{exp2.loops_q05}} |
-| 3 | Do cyclic concepts go around the hole? | cyclic, ordinal and control sets | DREiMac circular coordinate, permutation tests, winding | preregistered H1-A {{exp3.H1A}}/3, H1-B {{exp3.H1B}}/3, H4 balanced accuracy {{exp3.H4.conj_B:2}}; specificity {{exp3.H2.B.falsified}} but weakly informative; post hoc, months, residues and colours wind once in 3D, days_time does not |
-| 4 | Topological similarity | 44 clouds + templates | bottleneck distance on significant bars | uninformative (dominated by absolute scale); MDS map and dendrogram in `fig_exp4.png` |
-| 5 | Robustness | key sets | top-k PCs, cosine distance, offset removal, seeds | top-10-PC loop test with matched null (post hoc): significant for {{exp5.top10.sig_ids}}. Loops in 10D are not specific; only colours' values wind around theirs. Months robust to offsets and seeds |
-| 6 | Steering around the holes | – | designed; simulated and LLM steering | **postponed by the author** |
-| 7 | Second audit (post hoc, D8) | stored activations, colour prompts | colour RGB baseline, loop localisation, closure ratio, PCA gaps, size-matched stability, power CIs | the colour prompts' RGB values already have the hue loop (π {{audit.rgb.pi:2}}, p = {{audit.rgb.p}}); the weekday and days_time loops lie inside one cluster; grokking's top PCs are nearly degenerate (5 Fourier frequencies); no verdict changes |
-| 8 | Third audit (post hoc, D9) | stored results, synthetic test set, simulated nulls | loop sensitivity and false-loop rate per estimator; cluster-centre null on hole-free centres; centre loops in other projections | the loop test is not hole-specific: its Gaussian null flags {{audit3.mc.fpr:2}} of hole-free synthetic clouds (spheres and caps {{audit3.mc.fam.sphere_b0:2}}); the cluster-centre null is undetermined at the real variance structure. Ring claims rest on the traversal (colours, residues); months downgraded to "suggestive"; no verdict changes |
-| 9 | Independent audit (post hoc, D14) | stored results, 20 smooth-curve controls, cited sources | regeneration of every document; top-10-PC loop test with matched null; web source checks | {{audit4.n_sig}} of {{audit4.n}} smooth-curve controls have a top-10 loop, so the ordinal top-10 loops are not a PCA artefact of ordered curves; helix margins are pitches (adjacent turns), not end gaps; no verdict changes |
-| loops | Every loop, scored (post hoc, D11) | {{loops.n_loops}} loops of {{loops.n_clouds}} clouds | representative cycles; each loop's p against the cloud's Exp2 null; concept winding along the cycle; rules: significant, large, goes around once | {{loops.n_interesting}} interesting loops. Months, month centres, grokked residues and colours: the concepts wind once along the significant loop's drawn cycle (post hoc); their verdicts stand (residues ring, colours ring inherited from the stimuli, months ring suggestive). The toy models' loops are polytope 4-cycles, days_time's is inside one cluster, and grokking at init is chance-level. The residues' second loop shows that winding on short cycles is not specific to one Fourier frequency |
-| voids | Every void, scored (post hoc, D10) | {{voids.n_voids}} voids of {{voids.n_clouds}} clouds | representative shells and centres; each void's p against the cloud's Exp2 null; rules: significant, large, shape and meaning | {{voids.n_interesting}} interesting voids. Only the toy models' voids (exploratory sets) pass every check (significant, the largest, spanning the cloud, every feature a corner). Weekday and month centres and the colours hue ring wall in voids that are not significant, and a random curve has one of the largest voids |
-
-## Datasets (from the source project)
-
-| Dataset | Model / layer | Concept | Fitted family | Hole (Method B)? | Concept goes around? |
-|---|---|---|---|---|---|
-| weekdays | Llama-3.1-8B, layer 5, day token | day (cyclic) | {{exp0.weekdays.family}} | no (p = {{exp2.weekdays.p_top_loop}}; the day centres form no loop) | around the fit's axis yes, but not specific (random-process controls also wind) |
-| months | Llama-3.1-8B, layer 5, month token | month (cyclic) | {{exp0.months.family}} | loop yes (p = {{exp2.months.p_top_loop}}); ring suggestive | yes in 3D, post hoc only; not in the top-10 PCs |
-| residues | 1-layer transformer, W_E (weights) | a mod 113 (cyclic) | {{exp0.grok.family}} | yes (p = {{exp2.grok.p_top_loop}}) | yes in 3D, not in the top-10 PCs |
-| days with times | Llama-3.1-8B, layer 19, last token | day, time (cyclic) | {{exp0.daystime.family}} | only a small loop inside one day's cluster, unstable (p = {{exp2.daystime.p_top_loop}}) | no ring of days; days ordered linearly along the fitted curve |
-| colours | Llama-3.1-8B, layer 19, last token | hue (cyclic) | {{exp0.colors.family}} | yes (p = {{exp2.colors.p_top_loop}}), but the prompts' RGB values have it too | yes, also in the top-10 PCs |
-| years, temperature, age | Llama-3.1-8B, layer 19 | ordinal | {{exp0.years.family}}, {{exp0.temperature.family}}, {{exp0.age.family}} | no (open curves, never near the threshold) | no (ordered along a curve) |
-| GPT-2 positions | GPT-2 W_pos (weights) | ordinal | {{exp0.wpos.family}} | no (no void either) | spiral, ordered pole to pole |
-| counting | Llama-3.1-8B / Pythia, characters since newline | ordinal | {{exp0.counting.family}} | no | ordered along the curve |
-| 20 random walks / Gaussian processes | synthetic, ℝ⁷⁶⁸ | index (ordinal) | ringing / helix | no ({{exp2.c1_loops}}/20) | no |
-| random-init controls | untrained Llama / grokking init | same prompts | clusters / polytope / blob | grokking init borderline (p = {{exp2.grokinit.p_top_loop}}) | no |
-
-## Glossary
-
-- **Point cloud / top-3 PCA:** each prompt's activation is a point in a space with thousands of dimensions. We keep the 3 directions of largest variance.
-- **Topology:** the properties of a shape that survive bending without tearing, such as the number of pieces, loops and enclosed voids.
-- **Betti numbers (b0, b1, b2):** the counts of connected pieces, of independent loops (holes you can walk around), and of enclosed voids. Circle (1,1,0); sphere (1,0,1); torus, the doughnut surface, (1,2,1).
-- **Euler characteristic χ** = b0 − b1 + b2. **Genus:** the number of handles of a closed surface, b1/2 when b2 = 1.
-- **Persistent homology:** grow balls around every point and record when loops appear (birth) and fill in (death). Short-lived loops are noise. A loop more persistent than in Gaussian clouds of the same spread is not by itself a hole: many hole-free shapes, such as curved sheets and caps, also pass that test (D9).
-- **Persistence ratio π** = death / birth. It is scale-free, so it can be compared across clouds.
-- **Null model:** random Gaussian clouds that share the data's size and spread. A loop counts only if it outlives 95% of the loops found in 999 such random clouds. That rules out "a Gaussian blob", not every hole-free shape: curved sheets, caps and helices also often pass, and so do nearly closed arcs of cluster centres (third audit, D9).
-- **Alpha complex / Rips complex:** two ways of turning points into a shape. Alpha is exact in 3D; Rips works in any dimension but adds spurious features.
-- **Circular coordinate (θ):** an angle assigned to each point, going once around the hole. It comes from the fitted shape (θ_A) or from persistent cohomology (θ_B, DREiMac).
-- **Alignment R:** how well the concepts' angles match their semantic order. R = 1 is perfect. **Winding:** how many times the semantic cycle goes around the hole; 1 means exactly once.
-- **Margin ratio ρ_A:** how far the fitted shape is from changing its topology, relative to the noise. Below 1, the data cannot tell, for example, a tightly wound helix (adjacent turns closer than the noise) from a closed loop around its axis.
-- **Steering:** editing an activation inside the model to change its output. **Manifold steering:** moving along a curved path instead of a straight line.
-
-## In plain words: what was found
-
-- **Colours** have a robust hole that hue goes around once, but the colour prompts' own RGB values already have that hole (the prompts avoid greys), so this shows that the model keeps its input's hue circle, not that it builds one.
-- **Residues mod 113** have a hole the residues go around once. The top-3 view of it is unstable, because the embeddings spread their variance almost evenly over 5 Fourier frequencies, and it fails the preregistered higher-dimension check.
-- **Months** have a loop through the 12 month clusters. Evenly spread hole-free arrangements did not reach its strength in simulation, but whether it is a closed ring or a nearly closed arc cannot be decided. The months go around it only in a post hoc analysis, and only in the top-3 PCs.
-- **Days with times** have no ring of days: the only significant loop is small, lies inside one day's cluster, and is unstable.
-- **Weekdays** are ordered around a circle on the fitted helix, but so are the indices of random smooth processes. In the top-3 PCs the 7 day centres form no loop at all; the test is also weak for 7 clusters, so a ring in other dimensions is not ruled out.
-- **Ordinal concepts** (years, temperatures, ages, positions, counts) and **random controls** have no holes; they lie along open curves, which this null never flags. Because the strict tests never fired for any cyclic set either, this is weak evidence of specificity.
-- **The shape fitter's "helices"** cannot be told apart from closed loops at this noise level. Months come closest to closing.
-- **The topology instrument** is conservative. It is good at telling open from closed curves and caps from spheres, and weak for tori and thin loops. The loop test used on the real data is the opposite: it finds most true holes, but it also flags many hole-free shapes. So on its own, a loop is not proof of a hole.
-- **Not yet tested:** whether steering *around* these loops changes the model's answers in order. That needs model runs, which are postponed.
-
-## Reports
-
-- [exp0_analytic.md](exp0_analytic.md)
-- [coords_check.md](coords_check.md)
-- [exp1_synthetic.md](exp1_synthetic.md)
-- [exp2_invariants.md](exp2_invariants.md)
-- [exp3_cyclic.md](exp3_cyclic.md)
-- [exp4_exp5.md](exp4_exp5.md)
-- [exp6_steering.md](exp6_steering.md)
-- [exp7_audit.md](exp7_audit.md)
-- [exp8_audit3.md](exp8_audit3.md)
-- [reviews/independent-audit.md](reviews/independent-audit.md)
-- [loops.md](loops.md)
-- [voids.md](voids.md)
-- [findings_per_dataset.md](findings_per_dataset.md)
-- [preregistration.md](preregistration.md)
-- [deviations.md](deviations.md)
-- [plan.md](plan.md)
-- [literature-review.md](literature-review.md)
-- [state-of-the-art-review.md](state-of-the-art-review.md)
+The fresh Monte Carlo replay reproduces every reference rank. The chain audit finds {{sci.rep1.failed}} shortest birth paths that survive their paired death. Every selected gallery loop and every displayed shell passes the boundary check. The explorer identifies uncertified paths. [Certificates](../results/science/representatives.csv.gz) · [Audit report and sources](reviews/2026-11-26-scientific-audit.md) · [Paper](../paper/main.pdf) · [Dataset-by-dataset findings](findings_per_dataset.md)

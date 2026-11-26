@@ -1,5 +1,8 @@
 # Preregistration: topology of top-3-PCA neural activation clouds
 
+**26 November 2026 editorial note.** This is the dated protocol, including its original predictions and amendments. The [independent audit](reviews/2026-11-26-scientific-audit.md) distinguishes those specifications from observed outcomes and corrects the subsequent H4, H5 and visualization reports.
+
+
 - **Authors:** Libor "Burny" Burian (analysis executed by Claude Code to the author's specification).
 - **Date:** 2026-11-15.
 - **Repository:** https://github.com/BurnyCoder/topology-of-neural-geometry-in-llm-mechanistic-interpretability

@@ -101,7 +101,7 @@ def characteristic_scale(dgms: list[np.ndarray], sig: list[np.ndarray], pvals: l
 
 def betti_at_scale(dgms: list[np.ndarray], sig: list[np.ndarray], r: float, mst: tuple, min_frac: float
                    ) -> tuple[int, int, int]:
-    """Betti numbers of the alpha complex at one radius r: b0 = its components (mst = (edge lengths, pairs, N);
+    """Filtered counts at radius r: b0 = its components (mst = (edge lengths, pairs, N);
     minimum component size min_frac), b1/b2 = significant bars alive at r (birth <= r < death)."""
     w, ij, n = mst
     out = [b0_at_radius(w, ij, n, r, min_frac)]

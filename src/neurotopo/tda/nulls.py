@@ -29,6 +29,8 @@ from threadpoolctl import threadpool_limits
 from neurotopo.geometry.pca import rms_normalise
 from neurotopo.tda.diagrams import alpha_diagrams, max_ratio, ratios
 
+# Strong universality is an empirical scoring assumption. The H1 Cech Gumbel law has
+# counterexamples in d=2,3 (Heo, Cor. 1.4, https://arxiv.org/html/2610.08257v1).
 EULER_GAMMA = 0.5772156649015329            # lambda in Bobrowski & Skraba 2023
 
 

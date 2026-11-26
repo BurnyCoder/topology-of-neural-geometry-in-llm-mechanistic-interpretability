@@ -59,10 +59,7 @@ def concept_positions(d: str, labels: list[str], n_bins: int = 12) -> np.ndarray
 
 
 def headline(d: str) -> dict:
-    """The example figure's two verdicts. A top-3 loop beyond the design-matched Gaussian null is not enough for
-    "ring": that null also rejects many hole-free shapes (audit D9), and a significant loop inside one concept's
-    cluster is not a ring of concepts (audit D8). So "ring: yes" needs a loop through the clusters that the concept
-    goes around once in the preregistered analysis; with only post hoc traversal it is "suggestive"."""
+    """Summarise the measured 3D loop and alignment separately from the top-ten or steering endpoints."""
     a = _audit()
     small = v.loop(d) and a.get("localisation", {}).get(d, {}).get("within_concept_loop", False)
     ring = v.loop(d) and not small
@@ -70,11 +67,17 @@ def headline(d: str) -> dict:
     control = d == CONTROL
     inherited = d == "R7_llama_colors" and ring and bool(a and a["colour_baseline"]["rgb"]["p_loop"] < 0.05)
     ok = (ring and goes == "yes" and not inherited) or (control and not ring)
-    verdict = "ring: no (a small loop inside\none cluster)" if small else \
-        "ring: yes, but the RGB\nstimuli have it too" if inherited else \
-        "ring: yes" if ring and goes == "yes" else \
-        f"loop: yes; ring: {'suggestive' if goes == 'only post hoc' else 'not shown'}" if ring else \
-        "ring: no" + (" (as expected)" if control else "")
+    if small:
+        verdict = "3D loop within one cluster"
+    elif inherited:
+        verdict = "3D hue alignment\nalso in RGB"
+    elif ring and goes == "yes":
+        verdict = "3D alignment and winding"
+    elif ring:
+        verdict = "3D loop; alignment\n" + ("only post hoc" if goes == "only post hoc" else "unavailable")
+    else:
+        verdict = "3D loop test below threshold"
+
     return {"ring": bool(ring), "small": bool(small), "goes": goes, "ok": bool(ok), "verdict": verdict,
             "colour": "#1b7837" if ok else ("#b35806" if ring else "#333333")}
 
@@ -135,6 +138,19 @@ def replay(y: np.ndarray) -> dict:
             "top": 0}
 
 
+@lru_cache(maxsize=1)
+def _certificates():
+    path = config.path("results")/"science/representatives.csv.gz"
+    return pd.read_csv(path).query("dimension == 1").sort_values("k").groupby("id").certified.agg(list).to_dict()
+
+
+def loop_certificates(d, count):
+    flags = _certificates()[d]
+    if len(flags) != count:
+        raise ValueError(f"{d}: loop certificates and persistence intervals differ in length")
+    return flags
+
+
 def example(d: str) -> dict:
     """Everything needed to replay how dataset d's result was made (arrays as numpy, see site.py for JSON)."""
     seed = config.load()["seed"]
@@ -144,7 +160,7 @@ def example(d: str) -> dict:
     inv = _inv().loc[d]
     loc = _audit().get("localisation", {}).get(d)
     return {"id": d, "name": dict(EXAMPLES).get(d, d).replace("\n", " "), **headline(d), "points": c["y"],
-            "pos": concept_positions(d, c["labels"]), "cyclic": d != CONTROL, **rp, "top_pi": top_pi,
+            "pos": concept_positions(d, c["labels"]), "cyclic": d != CONTROL, **rp, "cycle_certified": loop_certificates(d, len(rp["h1"])), "top_pi": top_pi,
             "q95": float(inv["null_q95_pi1"]), "p_loop": float(inv["p_top_loop"]),
             "ratio": top_pi / float(inv["null_q95_pi1"]), "null_max": realdata.null(d, seed)[:, 0],
             "connect_r": float(loc["connect_radius"]) if loc else None,

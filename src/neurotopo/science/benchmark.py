@@ -75,6 +75,18 @@ def run():
     if positions or not df.sample_id.is_unique:
         raise ValueError("Unmatched test sample identifiers")
     pd.DataFrame(records).to_csv(out / "angular_domains.csv", index=False)
+    # Validate that the validation generator uses the same reporting rule; it remains a separate split.
+    counts = []
+    for split in ("val","test"):
+        with (inp/f"{split}_gt_params.jsonl").open(encoding="utf-8") as stream:
+            for line in stream:
+                v = json.loads(line)
+                if v["family"] not in ("arc","sphere"):
+                    continue
+                frac = v["raw"]["extent_frac" if v["family"]=="arc" else "cap_frac"]
+                counts.append((split,v["family"],bool(v["describe"]["closed"]),frac==1.0))
+    counts = pd.DataFrame(counts, columns=["split","family","catalog_closed","raw_complete"])
+    counts.value_counts(sort=False).rename("n").reset_index().to_csv(out/"closure_counts.csv",index=False)
     archive = synthetic.predictions().query("system == 'method'").set_index("sample_id", verify_integrity=True)
     if not np.array_equal(archive.loc[df.sample_id, "family_pred"].to_numpy(), df.family_pred.to_numpy()):
         raise ValueError("Published fitter predictions differ from the input export")
@@ -100,6 +112,19 @@ def run():
             rows.append(dict(target=target, group=g, method=method, accuracy=est[i,j], low=lo, high=hi,
                              P_minus_method=est[i,ref]-est[i,j], difference_low=dl, difference_high=dh))
     pd.DataFrame(rows).to_csv(out / "benchmark.csv", index=False)
+    changes = []
+    pcat, pang = (labels.index((t,"P_alpha_universal")) for t in ("catalog","angular"))
+    for i, g in enumerate(group):
+        for method in methods:
+            cat, ang = (labels.index((t,method)) for t in ("catalog","angular"))
+            delta = boots[:,i,ang] - boots[:,i,cat]
+            contrast = boots[:,i,pang] - boots[:,i,pcat] - delta
+            low,high = np.nanquantile(delta,[.025,.975])
+            dl,dh = np.nanquantile(contrast,[.025,.975])
+            changes.append(dict(group=g,method=method,angular_minus_catalog=est[i,ang]-est[i,cat],low=low,high=high,
+                                change_in_P_advantage=est[i,pang]-est[i,pcat]-est[i,ang]+est[i,cat],
+                                contrast_low=dl,contrast_high=dh))
+    pd.DataFrame(changes).to_csv(out/"sensitivity_differences.csv",index=False)
     # Sample identifiers are scoped to a split. Hash actual ordered point content for cross-split duplicates.
     hashes = []
     for split in ("val", "test"):

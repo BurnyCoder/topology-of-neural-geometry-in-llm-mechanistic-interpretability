@@ -7,7 +7,7 @@ shape, so its Betti numbers, chi, genus and boundary components are exact. This 
 2. reads off the hole coordinate theta_A of every point on fits that have a hole (closed arc, ellipse,
    frustum, torus) and, descriptively, the axial winding of helix fits, and runs the alignment test
    (H1-A for weekdays/months/grokking, H2-A for ordinal sets and controls);
-3. computes the exact ground-truth topology and rho_A of all 40,560 synthetic clouds (primary ground truth of
+3. computes the Method A catalog target and rho_A of all 40,560 synthetic clouds (primary ground truth of
    Exp1);
 4. checks the analytic rules numerically: persistent homology of dense noise-free samples of the shapes.
 """
@@ -92,7 +92,7 @@ def helix_closure(dataset_id: str, labels: list[str], ic: dict, params: dict, va
 
 
 def synth_row(sset: synthetic.SynthSet, i: int) -> dict:
-    """Exact ground-truth invariants and rho_A of synthetic cloud i (normalised frame)."""
+    """Registered catalog invariants and heuristic rho_A of synthetic cloud i (normalised frame)."""
     fam = sset.meta["family_name"].iat[i]
     p = sset.params[i]
     topo = shape_topology(fam, p)

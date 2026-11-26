@@ -65,7 +65,7 @@ def exp0_family_homotopy_table() -> str:
     t = pd.crosstab(d["family_name"], d["Betti vector"])
     r = pd.crosstab(d.loc[d["resolvable"], "family_name"], d.loc[d["resolvable"], "Betti vector"])
     out = t.astype(str) + " (" + r.reindex_like(t).fillna(0).astype(int).astype(str) + ")"
-    head = "Clouds per family and exact ground-truth Betti vector (in brackets: resolvable, rho_A >= 1)."
+    head = "Clouds per family and catalog Betti target (in brackets: resolvable, rho_A >= 1)."
     return head + "\n\n" + tables.md_table(out.reset_index().rename(columns={"family_name": "family"}), 0)
 
 
@@ -313,6 +313,10 @@ def run() -> None:
             for f in [config.ROOT / "README.md", *sorted((config.ROOT / "reports").glob("*.md"))]:
                 replace_block(f, key, txt)
             log.info("generated %s", key)
+    if have("science", "summary.json"):
+        from neurotopo.report import science
+        science.dossier()
+        science.figure()
     figures.fig_pipeline()
     if have("exp0", "real_alignment.json"):
         figures.fig_exp0_helix()

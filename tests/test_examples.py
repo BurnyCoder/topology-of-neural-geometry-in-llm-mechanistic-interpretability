@@ -42,9 +42,9 @@ def test_loop_representatives_toy():
 
 
 def test_headlines_match_the_readme_figure():
-    want = {"R7_llama_colors": "ring: yes, but the RGB\nstimuli have it too", "R2_grokking_WE": "ring: yes",
-            "R5b_llama_months": "loop: yes; ring: suggestive", "R5a_llama_weekdays": "ring: no",
-            "R5c_llama_days_time": "ring: no (a small loop inside\none cluster)", "R6_llama_years": "ring: no (as expected)"}
+    want = {"R7_llama_colors": "3D hue alignment\nalso in RGB", "R2_grokking_WE": "3D alignment and winding",
+            "R5b_llama_months": "3D loop; alignment\nonly post hoc", "R5a_llama_weekdays": "3D loop test below threshold",
+            "R5c_llama_days_time": "3D loop within one cluster", "R6_llama_years": "3D loop test below threshold"}
     for d, v in want.items():
         assert examples.headline(d)["verdict"] == v, d
 
