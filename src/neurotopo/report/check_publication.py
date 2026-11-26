@@ -122,10 +122,20 @@ def compare(replica):
                   "toy/summary.json","power/val_tuning.json","power/real_second_order.json"]
     for name in json_files:
         compare_json(read_json(root/name),read_json(replica/"results"/name),name)
+    arrays = {}
+    for name in ("exp1/pi_top.npz", "exp3/theta_B.npz"):
+        with np.load(root/name, allow_pickle=False) as original, np.load(replica/"results"/name, allow_pickle=False) as replay:
+            if set(original.files) != set(replay.files):
+                raise ValueError(f"{name}: array names differ")
+            arrays[name] = {}
+            for key in original.files:
+                observed = original[key]
+                np.testing.assert_allclose(observed, replay[key], atol=1e-10, rtol=1e-9, err_msg=f"{name}:{key}")
+                arrays[name][key] = list(observed.shape)
     write_json(root/"science/reproduction.json",{"replica_commit":subprocess.check_output(
         ["git","rev-parse","HEAD"],cwd=replica,text=True).strip(),"input_manifest_sha256":read_json(root/"science/inputs.json")["manifest_sha256"],
         "table_rows_compared":summary,"absolute_tolerance":1e-10,"relative_tolerance":1e-9,
-        "json_compared":json_files})
+        "json_compared":json_files,"array_shapes_compared":arrays})
 
 
 if __name__=="__main__":
