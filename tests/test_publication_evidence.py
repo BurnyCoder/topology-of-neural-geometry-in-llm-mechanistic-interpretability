@@ -81,3 +81,13 @@ def test_claim_index_covers_the_adjudicated_ledger():
 
     ledger = pd.read_csv(config.ROOT/"reports/reviews/2026-11-26-claims.tsv", sep="\t")
     assert set(TERMS) == set(ledger.claim)
+
+def test_rendered_benchmark_is_independent_of_json_key_order(monkeypatch):
+    from neurotopo.report import build
+
+    expected = build.exp1_table()
+    scores = build.read_json(build.res("exp1", "summary.json"))
+    for name in ("table", "fpr_contractible"):
+        scores[name] = dict(reversed(scores[name].items()))
+    monkeypatch.setattr(build, "read_json", lambda _: scores)
+    assert build.exp1_table() == expected
