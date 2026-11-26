@@ -2,11 +2,15 @@
 import numpy as np
 import pandas as pd
 from joblib import Parallel, delayed
+from scipy.stats import kstest
 
 from neurotopo import config
 from neurotopo.data import synthetic
-from neurotopo.experiments import exp1_synthetic as exp1
+from neurotopo.experiments import exp1_batches, exp1_synthetic as exp1
 from neurotopo.experiments.common import out_dir, read_json
+from neurotopo.geometry.pca import rms_normalise
+from neurotopo.stats.tests import cluster_bootstrap
+from neurotopo.tda import diagrams, nulls
 from neurotopo.tda.ground_truth import far_points
 
 
@@ -21,6 +25,35 @@ def interval_pair(fp, flag, chunks, repetitions):
         a,b,c,d = by_chunk[rng.integers(len(by_chunk), size=len(by_chunk))].sum(axis=0)
         draws[j] = a/b, c/d, a/b-c/d
     return np.quantile(draws, [.025,.975], axis=0).T
+
+
+def blob_scores(points):
+    """Retain finite alpha bar scores by degree using the actual within-diagram transformation."""
+    dgm = diagrams.alpha_diagrams(rms_normalise(points))
+    by_degree = []
+    for h in (1, 2):
+        p = nulls.universal_pvalues(dgm[h], A=.5)
+        by_degree.append(p[np.isfinite(p)])
+    return by_degree
+
+
+def calibrate_blob_strata(clouds, df, out, repetitions):
+    """Report within-cloud detections and descriptive pooled bar KS distances in every size/noise cell."""
+    rows = []
+    for (size,noise), group in df[df.family_name.eq("blob")].groupby(["n_bin","noise_bin"]):
+        scores = Parallel(n_jobs=exp1_batches.worker_count())(delayed(blob_scores)(clouds.cloud(i)) for i in group.index)
+        for h in (1,2):
+            values = [r[h-1] for r in scores]
+            detections = np.array([int((p<.05/max(1,len(p))).sum()) for p in values])
+            if not np.array_equal(detections,group[f"b{h}_alpha_univ"].to_numpy()):
+                raise ValueError(f"Raw blob bar counts differ in size {size}, noise {noise}, degree {h}")
+            pooled = np.concatenate(values)
+            hit = detections>0
+            rate,low,high = cluster_bootstrap(hit,group.chunk.to_numpy(),np.mean,n_boot=repetitions)
+            rows.append(dict(dimension=h,n_bin=size,noise_bin=noise,n_clouds=len(hit),hits=int(hit.sum()),
+                             rate=rate,low=low,high=high,valid_bars=len(pooled),
+                             pooled_bar_KS_D=kstest(pooled,"uniform").statistic if pooled.size else None))
+    pd.DataFrame(rows).to_csv(out/"blob_score_strata.csv",index=False)
 
 
 def run():
@@ -66,3 +99,4 @@ def run():
         table["method"],table["rate"] = method,table.hits/table.n
         strata.append(table)
     pd.concat(strata,ignore_index=True).to_csv(out/"false_positive_strata.csv",index=False)
+    calibrate_blob_strata(s,df,out,cfg["synthetic"]["bootstrap"])

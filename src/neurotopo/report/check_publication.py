@@ -103,7 +103,7 @@ def compare(replica):
     files = ["science/"+n for n in ("decisions.csv","matrix.csv","h4_datasets.csv","h6_datasets.csv",
              "null_replay.csv","calibration_draws.csv","calibration.csv","representatives.csv.gz","analytic_controls.csv",
              "benchmark.csv","sensitivity_differences.csv","false_positives.csv","false_positive_rows.csv.gz","closure_counts.csv","angular_domains.csv",
-             "dataset_assessment.csv","blobs.csv","false_positive_strata.csv")] + ["exp0/real_topology.csv","exp1/per_cloud.csv.gz","exp2/invariants.csv","exp4/bottleneck_matrix.csv",
+             "dataset_assessment.csv","blobs.csv","blob_score_strata.csv","false_positive_strata.csv")] + ["exp0/real_topology.csv","exp1/per_cloud.csv.gz","exp2/invariants.csv","exp4/bottleneck_matrix.csv",
             "exp5/projection.csv","exp5/topk_null.csv","exp5/nu_variants.csv",
             "exp0/dense_check.csv","exp0/synth_val_topology.csv.gz","exp0/synth_test_topology.csv.gz",
             "power/power_simulation.csv","power/power_summary.csv","power/power_v2_simulation.csv","power/power_v2_summary.csv",

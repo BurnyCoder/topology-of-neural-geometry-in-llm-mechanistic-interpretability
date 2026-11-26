@@ -43,3 +43,13 @@ def test_steering_matrix_includes_both_model_checkpoints():
         assert h6.at[name,"model_role"]=="checkpoint control"
         assert h6.at[name,"model"]=="untested"
     assert h6["random_loop_p"].isna().all()
+
+def test_blob_calibration_covers_every_degree_size_and_noise_cell():
+    p = config.path("results")/"science/blob_score_strata.csv"
+    if not (p.parent/"false_positives.csv").exists():
+        pytest.skip("audit tables have not been generated")
+    d = pd.read_csv(p).set_index(["dimension","n_bin","noise_bin"])
+    expected = {(h,n,k) for h in (1,2) for n in range(4) for k in range(3)}
+    assert set(d.index)==expected and (d.n_clouds==250).all()
+    assert d.hits.sum()==round((d.rate*d.n_clouds).sum())
+    assert d.loc[d.valid_bars>0,"pooled_bar_KS_D"].between(0,1).all()
