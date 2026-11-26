@@ -2,7 +2,22 @@
 
 The normal route needs no GPU and no local files beyond a GitHub clone. `uv run python run.py fetch` downloads `inputs/` of the Hugging Face dataset [BurnyCoder/topology-of-neural-geometry](https://huggingface.co/datasets/BurnyCoder/topology-of-neural-geometry) at the revision pinned in `configs/base.yaml`, and checks every file against `inputs/manifest.json` (SHA-256).
 
-This page explains how those inputs were produced, so they can be regenerated from public sources.
+## Repeat the scientific audit
+
+In a fresh recursive checkout of the release revision, install the locked environment and run the observational analysis. The paper build also requires LaTeX. The command fetches the pinned inputs, recomputes the statistics, rebuilds the public outputs and checks them against the result tables. [Audit entry point](../run.py)
+
+```bash
+uv sync --frozen
+uv run --frozen python run.py science
+```
+
+To test an independent reproduction, keep the release checkout and run the commands above in a second checkout of the same revision with its own local data directory. From the release checkout, run the command below with the path to the completed second checkout. It writes a new record after comparing the numerical tables, structured results, persistence scores and circular coordinates. The record includes tolerances, array shapes, row counts, source revision and input-manifest digest. The copy distributed with the release records the November 2026 audit. [Comparison code](../src/neurotopo/report/check_publication.py) · [Release comparison](../results/science/reproduction.json)
+
+```bash
+uv run --frozen python -m neurotopo.report.check_publication --replica PATH_TO_SECOND_CHECKOUT
+```
+
+The following sections describe how to regenerate the inputs themselves from their upstream sources.
 
 ## What the inputs are
 

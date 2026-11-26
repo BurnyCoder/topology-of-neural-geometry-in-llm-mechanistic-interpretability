@@ -1,12 +1,15 @@
-"""PCA normalisation identical to the source project's `fit_frame` (numpy, float64).
+"""Float64 NumPy implementation of the source study's single-cloud PCA convention.
 
-Global context: the source project (`external/shape-fitting/src/neurogeom/geometry/preprocess.py`,
-`normalize_batch`) maps every activation cloud to "top-3 PCA coordinates": centre -> project on the top-3
-eigenvectors of the covariance -> flip each axis so its skewness is >= 0 -> for D == 3 force a right-handed
-frame -> divide by the RMS radius. Topology is invariant to all of these steps except the projection, but
-re-implementing them exactly lets us (i) check bit-for-bit that our clouds equal the source's stored clouds
-and (ii) push every null draw through exactly the same pipeline. `k` generalises to the top-k PCs used by
-the robustness checks (top-5/top-10).
+The upstream PyTorch implementation centres the observations, projects onto leading principal
+axes, fixes signs using skewness, restores a right-handed frame for a three-dimensional input,
+and divides by the projected RMS radius. This code also accepts k for the projection checks.
+Translation, orthogonal changes of basis and positive uniform scaling preserve the topology of
+the represented set. Scaling changes filtration radii, and projection can change which holes
+are detected. The source and replay can differ in floating-point rounding or the choice of
+basis inside a repeated eigenspace.
+
+Source: https://github.com/BurnyCoder/shape-fitting-in-neural-geometry-in-llm-mechanistic-interpretability/blob/4c5f3b665381380c81af22827bb3959032dac417/src/neurogeom/geometry/preprocess.py
+The independent replay records observed ratios and null differences in results/science/null_replay.csv.
 """
 
 from __future__ import annotations

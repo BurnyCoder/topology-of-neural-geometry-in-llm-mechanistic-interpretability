@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 
 from neurotopo.experiments.exp1_synthetic import contractible_cohort
-from neurotopo.experiments.exp2_invariants import agreement
+from neurotopo.experiments.exp2_invariants import agreement, save_summary
 from neurotopo.science.benchmark import angular_target
 from neurotopo.science.cycles import BoundaryBasis
 from neurotopo.stats.circular import order_test
@@ -27,6 +27,16 @@ def test_catalog_flag_and_raw_domain_define_distinct_targets():
 def test_full_agreement_includes_components():
     df = pd.DataFrame(dict(A_b0=[1, 1], A_b1=[1, 0], A_b2=[0, 0], b0=[2, 1], b1_mc=[1, 0], b2_mc=[0, 0]))
     assert agreement(df).tolist() == [False, True]
+
+
+def test_historical_and_clean_invariant_tables_have_the_same_schema(tmp_path):
+    base = pd.DataFrame([dict(id="sample", A_b0=1, A_b1=0, A_b2=0, b0=2, b1_mc=0, b2_mc=0,
+                              p_top_loop=0.25, p_top_void=0.75)])
+    save_summary(base, tmp_path)
+    expected = (tmp_path/"invariants.csv").read_bytes()
+    archived = base.assign(agree_b1b2=False, q_top_loop=0, q_top_void=0)
+    save_summary(archived, tmp_path)
+    assert (tmp_path/"invariants.csv").read_bytes() == expected
 
 
 def test_order_test_for_nonmatch_and_adaptive_frequency():

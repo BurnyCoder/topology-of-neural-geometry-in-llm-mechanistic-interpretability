@@ -80,6 +80,8 @@ def agreement(df: pd.DataFrame) -> np.ndarray:
 
 def save_summary(df, out):
     """Expose the full vector and the loop/void-only endpoint side by side."""
+    # Regenerating a historical table must produce the same schema as a fresh run.
+    df = df.drop(columns=["agree_betti", "agree_b1b2", "q_top_loop", "q_top_void"], errors="ignore")
     df["agree_betti"] = agreement(df)
     df["agree_b1b2"] = (df["A_b1"] == df["b1_mc"]) & (df["A_b2"] == df["b2_mc"])
     from neurotopo.stats.tests import bh
