@@ -32,3 +32,14 @@ def test_paired_angular_rank_reversals_and_known_gap_controls():
     assert controls.Bb_family_implied.isna().all()
     assert (controls.Ba_fixed_pi == controls.expected).all()
     assert (controls.P_alpha_universal == controls.expected).tolist() == [False, True, False, True]
+
+def test_steering_matrix_includes_both_model_checkpoints():
+    p = config.path("results")/"science/h6_datasets.csv"
+    if not p.exists():
+        pytest.skip("audit tables have not been generated")
+    h6 = pd.read_csv(p).set_index("id")
+    assert len(h6)==44
+    for name in ("C3_grokking_WE_init","C3_grokking_WE_memorised"):
+        assert h6.at[name,"model_role"]=="checkpoint control"
+        assert h6.at[name,"model"]=="untested"
+    assert h6["random_loop_p"].isna().all()

@@ -45,3 +45,16 @@ def null_pvalue(t_obs: float, t_null: np.ndarray) -> float:
     """(1 + #{T_null >= T_obs}) / (M + 1)."""
     t_null = np.asarray(t_null)
     return float((1 + np.sum(t_null >= t_obs - 1e-12)) / (t_null.size + 1))
+
+def cohort_verdict(outcomes: list) -> str:
+    """Summarize measured conjunctions while preserving missing readouts and an empty cohort."""
+    if not outcomes:
+        return "no eligible datasets"
+    measured = [v for v in outcomes if v is not None]
+    if not measured:
+        return "unmeasured"
+    if len(measured) != len(outcomes):
+        return "incomplete"
+    if all(measured):
+        return "supported"
+    return "partially supported" if any(measured) else "not supported"

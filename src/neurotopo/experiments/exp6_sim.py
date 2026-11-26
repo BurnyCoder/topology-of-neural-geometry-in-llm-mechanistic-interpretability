@@ -84,7 +84,7 @@ def dataset_sim(dataset_id: str, seed: int) -> dict:
     cen = np.stack([z[con.index == k].mean(0) for k in range(n)])
     loop_set = {"chord_centroids": (lambda lp: (lambda i: lp))(loops.chord_path(cen))}
     if th is not None:
-        lb = loops.loop_from_coordinate(z, th, n_bins=2 * min(n, 36))
+        lb = loops.loop_from_coordinate(z, th, n_bins=loops.steering_bins(n))
         loop_set["B_cohomology"] = (lambda lp: (lambda i: lp))(lb)
     fa = fitted_loop_factory(dataset_id, z)
     if fa is not None:
@@ -104,50 +104,51 @@ def dataset_sim(dataset_id: str, seed: int) -> dict:
                               "p": metrics.null_pvalue(b["T"], t_null)}
         res["H6_sim_pass"] = bool(res["random_null"]["p"] < 0.05 and b["frac_wind1"] >= 0.5 and b["vocab_mass"] >= 0.5)
     else:
-        res["H6_sim_pass"] = False
+        res.update(H6_sim_pass=None, missing_endpoint="coordinate unavailable")
     return res
 
 
-def grokking_sim(seed: int) -> dict:
-    """Residues mod 113 (one point each): ridge phase probe at k* (leave one residue out); on-manifold = steered
-    point within the 95th percentile of nearest-neighbour distances among the embeddings."""
-    c = realdata.cloud(GROK)
+def grokking_sim(seed: int, dataset_id: str = GROK) -> dict:
+    """Use a leave-one-residue-out phase probe and the registered centroid-distance criterion."""
+    c = realdata.cloud(dataset_id)
     x, fr = c["x"], c["frame"]
     z = (x - fr["mean"]) @ fr["basis"]
     a = np.array([int(s) for s in c["labels"]])
-    th = theta_b(GROK)
+    th = theta_b(dataset_id)
     if th is None:
-        return {"id": GROK, "H6_sim_pass": False}
+        return {"id": dataset_id, "H6_sim_pass": None, "missing_endpoint": "coordinate unavailable"}
     _, kstar, _ = cs.max_over_frequency(th, a, 113, 56)
     phase = 2 * np.pi * kstar * a / 113
     k_steps = 2 * 113
     deltas = 2 * np.pi * np.arange(k_steps) / k_steps
-    from scipy.spatial import cKDTree
-    nn = cKDTree(x).query(x, k=2)[0][:, 1]
-    r95 = float(np.quantile(nn, 0.95))
-    probes = {i: offline.PhaseProbe(x, phase, np.arange(len(x)) != i) for i in range(len(x))}
+    if len(np.unique(a)) != len(a):
+        raise ValueError("Residue phase probes require one row per residue")
+    masks = [np.arange(len(x)) != i for i in range(len(x))]
+    probes = [offline.PhaseProbe(x, phase, mask) for mask in masks]
+    centroids = [offline.CentroidDecoder(x, a, 113, mask) for mask in masks]
     order = np.argsort((kstar * a) % 113)
-    lb = loops.loop_from_coordinate(z, th, n_bins=56)
+    lb = loops.loop_from_coordinate(z, th, n_bins=loops.steering_bins(len(a)))
     def run(loop_for, zz, basis):
         per = []
         for i in range(len(x)):
             h = x[i] + offline.steer_displacements(loop_for(i), zz[i], basis, deltas)
-            others = np.delete(x, i, 0)
-            dist = cKDTree(others).query(h)[0]
-            per.append({"prompt": i, **metrics.traversal(probes[i].decode(h), deltas), "vocab_mass": float(np.mean(dist <= r95))})
+            _, dist = centroids[i].decode(h)
+            # Every training class is a singleton, so the registered within-centroid radius is zero.
+            per.append({"prompt": i, **metrics.traversal(probes[i].decode(h), deltas),
+                        "vocab_mass": float(np.mean(dist <= centroids[i].radius95))})
         return per
-    res = {"id": GROK, "k_star": int(kstar)}
+    res = {"id": dataset_id, "k_star": int(kstar), "on_manifold_definition": "registered singleton centroid radius"}
     for name, lp in {"B_cohomology": lb, "chord_centroids": loops.chord_path(z[order])}.items():
         per = run(lambda i: lp, z, fr["basis"])
         res[name] = {**metrics.dataset_statistic(per), "per_prompt": per}
-    fa = fitted_loop_factory(GROK, z)
+    fa = fitted_loop_factory(dataset_id, z)
     if fa is not None:
         per = run(fa, z, fr["basis"])
         res["A_fitted_axis_circle"] = {**metrics.dataset_statistic(per), "per_prompt": per}
     _, fr10 = fit_frame(x, k=10)
     z10 = (x - fr10["mean"]) @ fr10["basis"]
     centre10 = ((lb.pts.mean(0) @ fr["basis"].T + fr["mean"]) - fr10["mean"]) @ fr10["basis"]
-    rng = np.random.default_rng(dataset_seed(GROK + "sim", seed))
+    rng = np.random.default_rng(dataset_seed(dataset_id + "sim", seed))
     t_null = np.array([metrics.dataset_statistic(run(lambda i, rl=loops.random_loop(centre10, lb.radius, np.eye(10), rng)[0]: rl,
                                                      z10, fr10["basis"]))["T"] for _ in range(M_RANDOM)])
     b = res["B_cohomology"]
@@ -175,13 +176,13 @@ def run() -> None:
                  res[did]["hole_detected_B"], b.get("T", np.nan), b.get("frac_wind1", np.nan), b.get("vocab_mass", np.nan),
                  res[did].get("random_null", {}).get("p"), res[did]["chord_centroids"]["T"], res[did]["H6_sim_pass"])
         write_json(out / "simulated_steering.json", res)
-    res[GROK] = grokking_sim(cfg["seed"])
-    res[GROK]["hole_detected_B"] = bool(exp3[GROK]["loop"])
+    for did in (GROK, "C3_grokking_WE_init"):
+        res[did] = grokking_sim(cfg["seed"], did)
+        res[did]["hole_detected_B"] = bool(exp3[did]["loop"])
     write_json(out / "simulated_steering.json", res)
     cyc = [d for d in g["cyclic_primary"] + g["cyclic_secondary"] if res[d]["hole_detected_B"]]
     write_json(out / "summary.json", {
         "cyclic_with_hole": cyc, "cyclic_with_hole_pass": [d for d in cyc if res[d]["H6_sim_pass"]],
         "noncyclic_with_hole_pass": [d for d in res if d not in g["cyclic_primary"] + g["cyclic_secondary"] + ["R7_llama_colors"]
                                      and res[d]["hole_detected_B"] and res[d]["H6_sim_pass"]],
-        "verdict": ("supported" if cyc and all(res[d]["H6_sim_pass"] for d in cyc) else
-                    "partially supported" if any(res[d]["H6_sim_pass"] for d in cyc) else "not supported")})
+        "verdict": metrics.cohort_verdict([res[d]["H6_sim_pass"] for d in cyc])})

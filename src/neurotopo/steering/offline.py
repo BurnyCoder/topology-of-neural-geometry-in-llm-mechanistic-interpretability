@@ -52,7 +52,8 @@ class CentroidDecoder:
         d2 = (h ** 2).sum(1)[:, None] - 2 * h @ np.where(self.valid[:, None], self.c, 0).T + self.cn[None]
         d2[:, ~self.valid] = np.inf
         k = np.argmin(d2, 1)
-        return k, np.sqrt(np.maximum(d2[np.arange(len(h)), k], 0))
+        # Direct subtraction preserves an exact zero radius for singleton training concepts.
+        return k, np.linalg.norm(h - self.c[k], axis=1)
 
 
 class PhaseProbe:

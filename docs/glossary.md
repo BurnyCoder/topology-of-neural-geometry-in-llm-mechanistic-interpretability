@@ -156,7 +156,7 @@ When the construction succeeds it assigns an angle to each point. The label sequ
 - The preregistered setting (`standard_range=True`) refuses loops whose Rips death is less than twice their birth ("too short"). The relaxed setting (`standard_range=False`) was used only post hoc.
 
 ### Loop B
-A closed curve through the cloud that follows θ_B: the mean of the points in each of 24 equal bins of θ_B, joined by a periodic cubic spline. It is drawn in red in the explorer, and it is the path planned for (postponed) steering experiments.
+The explorer draws a periodic cubic spline through the means of occupied bins of θ_B, using 24 display bins. The unrun H6 protocol specifies twice the number of concepts, capped at 72 bins. A fitted spline can leave the sampled region. [Display implementation](../src/neurotopo/report/site.py) · [Registered path construction](../reports/preregistration.md)
 
 ### Circular mean
 The average direction of angles, arg Σ e^{iθ}. An ordinary average would put 359° and 1° at 180°; the circular mean gives 0°. Each concept's angle is the circular mean of its points' angles.

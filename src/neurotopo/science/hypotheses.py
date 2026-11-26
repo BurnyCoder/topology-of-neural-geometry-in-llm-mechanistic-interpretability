@@ -133,10 +133,17 @@ def run():
         chronology[revision] = {"sha":sha,"author_date":author,"committer_date":committer}
     write_json(out/"chronology.json", {"revisions":chronology, "audited_H6_paths":deposits,"H6_deposits":recorded})
     steer = []
-    for d in [*cyc,"R7_llama_colors",*ordinal,*init,*c1]:
-        steer.append(dict(id=d, detected_top3_loop=bool(inv.loc[d,"p_top_loop"]<.05),
-                          simulated="untested", loop_comparison="hypothesis cohort" if inv.loc[d,"p_top_loop"]<.05 else "descriptive",
-                          model="untested" if d in cyc+["R7_llama_colors"] else "control or outside model phase",
+    simulated_ids = {*cyc,"R7_llama_colors",*ordinal,*init,*c1}
+    model_ids = {*cyc,"R7_llama_colors"}
+    checkpoints = {"C3_grokking_WE_init","C3_grokking_WE_memorised"}
+    for d in inv.index:
+        loop_detected = bool(inv.loc[d,"p_top_loop"]<.05)
+        planned = d in simulated_ids or d in model_ids or d in checkpoints
+        steer.append(dict(id=d, detected_top3_loop=loop_detected,
+                          simulated="untested" if d in simulated_ids else "outside planned simulated cohort",
+                          loop_comparison=("hypothesis cohort" if loop_detected else "descriptive") if planned else "inapplicable",
+                          model_role="checkpoint control" if d in checkpoints else "designated model" if d in model_ids else "outside model phase",
+                          model="untested" if d in model_ids | checkpoints else "outside model phase",
                           random_loop_p=None, proportion_winding_once=None, on_manifold=None, vocabulary_mass=None))
     pd.DataFrame(steer).to_csv(out / "h6_datasets.csv", index=False)
     # One row for every real observation and hypothesis, including explicit out-of-scope statuses.
@@ -149,9 +156,10 @@ def run():
         audit_rows.append(dict(id=d,hypothesis="H4",eligibility="vector and classification" if d in pool else "vector only",
                                result="h4_datasets.csv"))
         audit_rows.append(dict(id=d,hypothesis="H5",eligibility="real dataset",result="inapplicable"))
-        eligible = any(x["id"]==d for x in steer)
-        audit_rows.append(dict(id=d,hypothesis="H6",eligibility="planned simulated cohort" if eligible else "outside simulated cohort",
-                               result="untested; see h6_datasets.csv" if eligible else "inapplicable"))
+        role = ("simulated and model" if d in simulated_ids and d in model_ids | checkpoints else
+                "simulated" if d in simulated_ids else "model checkpoint" if d in checkpoints else "outside steering phases")
+        audit_rows.append(dict(id=d,hypothesis="H6",eligibility=role,
+                               result="inapplicable" if role=="outside steering phases" else "untested; see h6_datasets.csv"))
     for family in synthetic.FAMILIES:
         audit_rows.append(dict(id=family,hypothesis="H5",eligibility="catalog-eligible synthetic test rows",result="benchmark.csv"))
     pd.DataFrame(audit_rows).to_csv(out/"matrix.csv",index=False)
