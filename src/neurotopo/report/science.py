@@ -38,6 +38,9 @@ def scalars():
             continue
         for key in ("accuracy","low","high","P_minus_method","difference_low","difference_high"):
             n[f"sci.{r.target}.{r.group}.{METHODS[r.method]}.{key}"] = getattr(r,key)
+    mc = pd.read_csv(path/"mc_subset.csv").set_index(["target","group","method"]).loc[("catalog","macro","MC_gaussian3d")]
+    for key in ("P_minus_method","difference_low","difference_high"):
+        n[f"sci.p_vs_mc.{key}"] = mc[key]
     for r in pd.read_csv(path/"false_positives.csv").itertuples():
         prefix = ("all" if r.cohort=="catalog" else "old")+"."+{"flagged":"flag","unflagged":"unflag","flagged minus unflagged":"diff"}[r.comparison]
         for key in ("n","hits","rate","low","high"):
