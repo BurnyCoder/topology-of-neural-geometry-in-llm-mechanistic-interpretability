@@ -75,3 +75,9 @@ def test_publication_detects_spaced_missing_citations_and_orders_estimators():
     check_pdf_references("two sources [10, 26]")
     methods = ["P_alpha_universal", "Bb_family_implied", "Bc_majority", "MC_gaussian3d (subset)"]
     assert ordered_estimators(dict.fromkeys(reversed(methods))) == methods
+
+def test_claim_index_covers_the_adjudicated_ledger():
+    from neurotopo.report.occurrences import TERMS
+
+    ledger = pd.read_csv(config.ROOT/"reports/reviews/2026-11-26-claims.tsv", sep="\t")
+    assert set(TERMS) == set(ledger.claim)

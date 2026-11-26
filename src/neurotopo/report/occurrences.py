@@ -41,6 +41,7 @@ TERMS = {
     "Voids, triangulations and scale invariants":r"void|genus|Euler characteristic|r_c",
     "Exploratory similarity, power and selection":r"bottleneck|cohesion|power simulat|gallery",
     "Exact duplicate leakage and comparators":r"duplicate|leakage|validation|in.distribution",
+    "Resolved bibliography and estimator displays":r"BibTeX|bibliograph|unresolved citation|ordered_estimators|pdf_page_hashes",
     "Clock and Pizza attribution":r"pizza|Clock algorithm",
     "Steering and novelty in prior work":r"novelty|first study|as far as we|manifold steering"
 }
