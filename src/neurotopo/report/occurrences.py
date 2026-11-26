@@ -52,7 +52,6 @@ def write_index(root, paths, ledger):
         raise ValueError("Occurrence patterns and adjudicated claims differ")
     patterns = {k:re.compile(v,re.I) for k,v in TERMS.items()}
     files = [p for p in paths if (root/p).is_file() and (root/p).suffix in {".md",".tex",".py",".bib",".html"}
-             and not p.startswith(("paper/generated/","reports/generated/","tests/","reports/reviews/2026-11-26","reports/templates/reviews/2026-11-26"))
              and p!="src/neurotopo/report/occurrences.py"]
     entries = []
     for path in files:

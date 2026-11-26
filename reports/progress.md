@@ -3,7 +3,9 @@
 **26 November 2026.** The independent replay recovered the registered H1 decision. The [audit report](reviews/2026-11-26-scientific-audit.md) records the changes to H4 agreement, H5 eligibility, near-closure scoring, path certificates and calibration. The [study result tables](../results/science/) contain the current observations. Both steering phases remain untested.
 
 
-Last updated: 2026-11-22. The step-by-step status table is in [plan.md](plan.md#status); this page says where things stand.
+## Archived progress on 22 November 2026
+
+The table in [plan.md](plan.md#status) records the status at that date.
 
 **Done.** Every preregistered topology analysis (Exp0–Exp5), four independent audits (deviations D6, D8, D9, D14), two math fact-checks (D12, D13), the post hoc void and loop searches (D10, D11), the worked example, the paper, the explorer, and the results on Hugging Face. All of it uses stored activations; no model was run.
 

@@ -15,8 +15,10 @@ from neurotopo import config
 
 def fmt(v, nd: int = 3) -> str:
     """Compact number formatting for tables (inf/nan as text, small p-values in scientific notation)."""
-    if isinstance(v, str) or v is None:
-        return "-" if v is None else v
+    if v is None or v is pd.NA:
+        return "-"
+    if isinstance(v, str):
+        return v
     if isinstance(v, bool):
         return "yes" if v else "no"
     if isinstance(v, int):
@@ -36,8 +38,8 @@ def md_table(df: pd.DataFrame, nd: int = 3) -> str:
     """DataFrame -> GitHub markdown table."""
     cols = list(df.columns)
     lines = ["| " + " | ".join(str(c) for c in cols) + " |", "|" + "---|" * len(cols)]
-    for _, r in df.iterrows():
-        lines.append("| " + " | ".join(fmt(r[c], nd) for c in cols) + " |")
+    for row in df.itertuples(index=False, name=None):
+        lines.append("| " + " | ".join(fmt(value, nd) for value in row) + " |")
     return "\n".join(lines)
 
 

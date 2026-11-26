@@ -97,7 +97,7 @@ def dossier():
               "src/":"Implementation or presentation source","reports/reviews/":"Dated scientific review or erratum"}
     paths = sorted(set(p for p in files if p) | {str(p.relative_to(root).as_posix()) for p in [
         root/"reports/reviews"/(REVIEW+".md"), root/"docs/scientific-audit.html", root/"reports/paper.pdf", path/"claims.csv",
-        path/"inventory.csv"]})
+        path/"inventory.csv", path/"claim_occurrences.csv", path/"reproduction.json"]})
     pd.DataFrame([(p,next((label for prefix,label in groups.items() if p.startswith(prefix)),
                           "Study documentation, configuration or release artifact")) for p in paths],
                  columns=["path","role"]).to_csv(path/"inventory.csv",index=False)
@@ -111,10 +111,16 @@ def dossier():
     primary = decisions[decisions.hypothesis.isin(["H1","H3"])].copy()
     primary["strict 3D coordinate"] = primary.coordinate.map(lambda s: "available" if s=="available" else "unavailable")
     primary["strict top-ten coordinate"] = primary.coordinate10.map(lambda s: s if s in ("available","inapplicable") else "unavailable")
-    markdown = (root/"reports/reviews"/(REVIEW+".md")).read_text(encoding="utf-8")
+    from neurotopo.report import numbers
+    template = root/"reports/templates/reviews"/(REVIEW+".md")
+    empirical = scalars()
+    markdown = numbers.render(template.read_text(encoding="utf-8"), numbers.collect())
+    fpr = pd.read_csv(path/"false_positives.csv")
+    fpr[["n","hits"]] = fpr[["n","hits"]].astype("Int64")
+    fpr = fpr.rename(columns={"n":"Clouds","hits":"Detections","rate":"Estimate","low":"95% lower","high":"95% upper"})
     fields = {"@@primary@@":md_table(primary[["id","method","hole","p_loop","strict 3D coordinate","p_holm","winding","strict top-ten coordinate","status"]]),
               "@@comparison@@":md_table(frame), "@@calibration@@":md_table(cal), "@@blobs@@":md_table(blobs),
-              "@@controls@@":md_table(controls), "@@outliers@@":md_table(pd.read_csv(path/"false_positives.csv")),
+              "@@controls@@":md_table(controls), "@@outliers@@":md_table(fpr),
               "@@claims@@":"\n\n".join(f"**{r.claim}** ({r.disposition}). {r.assessment} [Local evidence](../../{r.local_evidence}) · [Primary source]({r.primary_source})" for r in ledger.itertuples())}
     for key,value in fields.items():
         markdown = markdown.replace(key,value)
@@ -130,6 +136,7 @@ img{{width:100%;height:auto}}table{{border-collapse:collapse;font-variant-numeri
 <img src="figures/fig_scientific_audit.png" alt="Accuracy for the persistence estimator and family baseline on the catalog and unrounded angular domains">
 <h2>Fixed-cohort benchmark</h2><section>{frame.to_html(index=False,float_format=lambda x:f'{x:.3f}',border=0)}</section>
 <p>Intervals use paired resampling of generator chunks. The angular-domain sensitivity preserves all predictions and catalog eligibility.</p>
-<h2>Corrected false-positive analysis</h2><section>{pd.read_csv(path/'false_positives.csv').to_html(index=False,float_format=lambda x:f'{x:.3f}',na_rep='—',border=0)}</section>
+<h2>Full-vector agreement and false positives</h2><p>The methods agree on components, loops and voids for {empirical['sci.h4_full']}/{empirical['sci.n_real']} datasets. Among eligible contractible clouds flagged by distance to the sampled shape, P detected a loop or void in {empirical['sci.fpr.all.flag.hits']}/{empirical['sci.fpr.all.flag.n']}. The intervals below use generator chunks.</p>
+<section>{fpr.to_html(index=False,float_format=lambda x:f'{x:.3f}',na_rep='—',border=0).replace('&lt;NA&gt;','—')}</section>
 <p>{link('results/science/h4_datasets.csv','Full-vector agreement by dataset')} · {link('results/science/decisions.csv','Every registered condition')} · {link('results/science/representatives.csv.gz','Cycle certificates')} · {link('results/science/claims.csv','Claim ledger')}</p></html>"""
     (root/"docs/scientific-audit.html").write_text(text,encoding="utf-8",newline="\n")
