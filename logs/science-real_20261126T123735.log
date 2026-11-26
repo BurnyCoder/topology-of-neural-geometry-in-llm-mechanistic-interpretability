@@ -1,0 +1,80 @@
+2026-11-26 12:37:35 INFO root: phase science-real, log file C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\logs\science-real_20261126T123735.log
+2026-11-26 12:38:00 INFO neurotopo.experiments.exp3_cyclic: R5a_llama_weekdays           loop p=0.0940 | theta_B: none
+2026-11-26 12:38:01 INFO neurotopo.experiments.exp3_cyclic: R5b_llama_months             loop p=0.0020 | theta_B: none
+2026-11-26 12:38:06 INFO neurotopo.experiments.exp3_cyclic: R2_grokking_WE               loop p=0.0010 | theta_B: R=0.973 p=1e-05 w=-1
+2026-11-26 12:38:07 INFO neurotopo.experiments.exp3_cyclic: R5c_llama_days_time          loop p=0.0130 | theta_B: none
+2026-11-26 12:38:09 INFO neurotopo.experiments.exp3_cyclic: R1_gpt2_wpos                 loop p=1.0000 | theta_B: none
+2026-11-26 12:38:09 INFO neurotopo.experiments.exp3_cyclic: R4_llama_counting            loop p=1.0000 | theta_B: none
+2026-11-26 12:38:09 INFO neurotopo.experiments.exp3_cyclic: R4b_pythia_counting          loop p=1.0000 | theta_B: none
+2026-11-26 12:38:10 INFO neurotopo.experiments.exp3_cyclic: R6_llama_years               loop p=0.7750 | theta_B: none
+2026-11-26 12:38:10 INFO neurotopo.experiments.exp3_cyclic: R8a_llama_temperature        loop p=1.0000 | theta_B: none
+2026-11-26 12:38:10 INFO neurotopo.experiments.exp3_cyclic: R8b_llama_age                loop p=0.4490 | theta_B: none
+2026-11-26 12:38:10 INFO neurotopo.experiments.exp3_cyclic: C3_llama_weekdays_init       loop p=0.7650 | theta_B: none
+2026-11-26 12:38:11 INFO neurotopo.experiments.exp3_cyclic: C3_llama_months_init         loop p=0.0740 | theta_B: none
+2026-11-26 12:38:11 INFO neurotopo.experiments.exp3_cyclic: C3_grokking_WE_init          loop p=0.0460 | theta_B: none
+2026-11-26 12:38:11 INFO neurotopo.experiments.exp3_cyclic: C1_gp_0                      loop p=1.0000 | theta_B: none
+2026-11-26 12:38:11 INFO neurotopo.experiments.exp3_cyclic: C1_gp_1                      loop p=1.0000 | theta_B: none
+2026-11-26 12:38:11 INFO neurotopo.experiments.exp3_cyclic: C1_gp_2                      loop p=1.0000 | theta_B: none
+2026-11-26 12:38:11 INFO neurotopo.experiments.exp3_cyclic: C1_gp_3                      loop p=1.0000 | theta_B: none
+2026-11-26 12:38:12 INFO neurotopo.experiments.exp3_cyclic: C1_gp_4                      loop p=1.0000 | theta_B: none
+2026-11-26 12:38:12 INFO neurotopo.experiments.exp3_cyclic: C1_gp_5                      loop p=1.0000 | theta_B: none
+2026-11-26 12:38:12 INFO neurotopo.experiments.exp3_cyclic: C1_gp_6                      loop p=1.0000 | theta_B: none
+2026-11-26 12:38:12 INFO neurotopo.experiments.exp3_cyclic: C1_gp_7                      loop p=1.0000 | theta_B: none
+2026-11-26 12:38:12 INFO neurotopo.experiments.exp3_cyclic: C1_gp_8                      loop p=1.0000 | theta_B: none
+2026-11-26 12:38:13 INFO neurotopo.experiments.exp3_cyclic: C1_gp_9                      loop p=1.0000 | theta_B: none
+2026-11-26 12:38:13 INFO neurotopo.experiments.exp3_cyclic: C1_walk_0                    loop p=1.0000 | theta_B: none
+2026-11-26 12:38:13 INFO neurotopo.experiments.exp3_cyclic: C1_walk_1                    loop p=1.0000 | theta_B: none
+2026-11-26 12:38:13 INFO neurotopo.experiments.exp3_cyclic: C1_walk_2                    loop p=1.0000 | theta_B: none
+2026-11-26 12:38:13 INFO neurotopo.experiments.exp3_cyclic: C1_walk_3                    loop p=1.0000 | theta_B: none
+2026-11-26 12:38:14 INFO neurotopo.experiments.exp3_cyclic: C1_walk_4                    loop p=1.0000 | theta_B: none
+2026-11-26 12:38:14 INFO neurotopo.experiments.exp3_cyclic: C1_walk_5                    loop p=1.0000 | theta_B: none
+2026-11-26 12:38:14 INFO neurotopo.experiments.exp3_cyclic: C1_walk_6                    loop p=1.0000 | theta_B: none
+2026-11-26 12:38:14 INFO neurotopo.experiments.exp3_cyclic: C1_walk_7                    loop p=1.0000 | theta_B: none
+2026-11-26 12:38:14 INFO neurotopo.experiments.exp3_cyclic: C1_walk_8                    loop p=1.0000 | theta_B: none
+2026-11-26 12:38:15 INFO neurotopo.experiments.exp3_cyclic: C1_walk_9                    loop p=1.0000 | theta_B: none
+2026-11-26 12:38:20 INFO neurotopo.experiments.exp3_cyclic: R7_llama_colors              loop p=0.0010 | theta_B: R=0.949 p=1e-05 w=-1
+2026-11-26 12:38:20 INFO neurotopo.experiments.exp3_cyclic: R5a_llama_weekdays_means     loop p=0.7310 | theta_B: none
+2026-11-26 12:38:20 INFO neurotopo.experiments.exp3_cyclic: R5b_llama_months_means       loop p=0.0010 | theta_B: none
+2026-11-26 12:38:20 INFO neurotopo.experiments.exp3_cyclic: C3_grokking_WE_memorised     loop p=0.8310 | theta_B: none
+2026-11-26 12:38:21 INFO neurotopo.experiments.exp3_cyclic: C3_gpt2_wpos_init            loop p=0.2990 | theta_B: none
+2026-11-26 12:38:22 INFO neurotopo.experiments.exp3_cyclic: C3_llama_counting_init       loop p=0.8810 | theta_B: none
+2026-11-26 12:38:22 INFO neurotopo.experiments.exp3_cyclic: H1 passes of 3: {'A': 0, 'B': 0}; H2 summary: {'A': {'ordinal_pass': 0, 'init_pass': 0, 'c1_pass': 0, 'falsified': False, 'c1_fpr_ci': (0.0, 0.1684334709830855)}, 'B': {'ordinal_pass': 0, 'init_pass': 0, 'c1_pass': 0, 'falsified': False, 'c1_fpr_ci': (0.0, 0.1684334709830855)}}
+2026-11-26 12:38:26 INFO neurotopo.experiments.exp3_posthoc: R5a_llama_weekdays         3D: R=0.06057950024470547 p=0.23055555555555557 w=0 | top10: R=0.5735021790713528 p=0.016666666666666666 w=0
+2026-11-26 12:38:28 INFO neurotopo.experiments.exp3_posthoc: R5b_llama_months           3D: R=0.7185559717763618 p=1e-05 w=1 | top10: R=0.3063608081502688 p=0.00352 w=0
+2026-11-26 12:38:33 INFO neurotopo.experiments.exp3_posthoc: R2_grokking_WE             3D: R=0.9588346980060091 p=1e-05 w=-1 | top10: R=0.1969208641183392 p=3e-05 w=0
+2026-11-26 12:38:37 INFO neurotopo.experiments.exp3_posthoc: R5c_llama_days_time        3D: R=0.18078493921780622 p=0.03333333333333333 w=0 | top10: R=0.4181998990564369 p=0.008333333333333333 w=0
+2026-11-26 12:38:40 INFO neurotopo.experiments.exp3_posthoc: R1_gpt2_wpos               3D: R=0.2959841228718357 p=0.9972222222222222 w=0 | top10: R=0.5263774523523467 p=0.002777777777777778 w=0
+2026-11-26 12:38:42 INFO neurotopo.experiments.exp3_posthoc: R4_llama_counting          3D: R=0.03050057432066783 p=0.30833333333333335 w=0 | top10: R=0.061460729079346264 p=0.058333333333333334 w=0
+2026-11-26 12:38:45 INFO neurotopo.experiments.exp3_posthoc: R4b_pythia_counting        3D: R=0.172160313945479 p=0.06388888888888888 w=0 | top10: R=0.03368843418777953 p=0.08333333333333333 w=0
+2026-11-26 12:38:52 INFO neurotopo.experiments.exp3_posthoc: R6_llama_years             3D: R=0.2138130071703816 p=0.46944444444444444 w=0 | top10: R=0.07449172659239456 p=0.2638888888888889 w=0
+2026-11-26 12:38:54 INFO neurotopo.experiments.exp3_posthoc: R8a_llama_temperature      3D: R=0.18045083188227176 p=0.08611111111111111 w=0 | top10: R=0.06100683640304507 p=0.019444444444444445 w=0
+2026-11-26 12:38:57 INFO neurotopo.experiments.exp3_posthoc: R8b_llama_age              3D: R=0.5455914585624537 p=0.005555555555555556 w=0 | top10: R=0.3211331642125402 p=0.011111111111111112 w=0
+2026-11-26 12:38:58 INFO neurotopo.experiments.exp3_posthoc: C3_llama_weekdays_init     3D: R=None p=None w=None | top10: R=0.06107641763074853 p=0.8333333333333334 w=0
+2026-11-26 12:39:01 INFO neurotopo.experiments.exp3_posthoc: C3_llama_months_init       3D: R=0.4316844164469314 p=0.13793 w=1 | top10: R=0.019659356796627152 p=1.0 w=0
+2026-11-26 12:39:06 INFO neurotopo.experiments.exp3_posthoc: C3_grokking_WE_init        3D: R=0.06648478394004469 p=0.82954 w=0 | top10: R=0.06176008950110854 p=0.4024 w=0
+2026-11-26 12:39:06 INFO neurotopo.experiments.exp3_posthoc: C1_gp_0                    3D: R=None p=None w=None | top10: R=None p=None w=None
+2026-11-26 12:39:07 INFO neurotopo.experiments.exp3_posthoc: C1_gp_1                    3D: R=0.1182408670223626 p=0.058333333333333334 w=0 | top10: R=None p=None w=None
+2026-11-26 12:39:08 INFO neurotopo.experiments.exp3_posthoc: C1_gp_2                    3D: R=0.03660026805270677 p=0.08055555555555556 w=0 | top10: R=None p=None w=None
+2026-11-26 12:39:11 INFO neurotopo.experiments.exp3_posthoc: C1_gp_3                    3D: R=0.3571252059477812 p=0.008333333333333333 w=0 | top10: R=0.07625657851861482 p=0.11388888888888889 w=0
+2026-11-26 12:39:11 INFO neurotopo.experiments.exp3_posthoc: C1_gp_4                    3D: R=None p=None w=None | top10: R=None p=None w=None
+2026-11-26 12:39:13 INFO neurotopo.experiments.exp3_posthoc: C1_gp_5                    3D: R=0.7246014805322305 p=0.002777777777777778 w=0 | top10: R=0.21391149206547144 p=0.05 w=0
+2026-11-26 12:39:14 INFO neurotopo.experiments.exp3_posthoc: C1_gp_6                    3D: R=0.11144382087705144 p=0.058333333333333334 w=0 | top10: R=None p=None w=None
+2026-11-26 12:39:16 INFO neurotopo.experiments.exp3_posthoc: C1_gp_7                    3D: R=0.01335100952357893 p=0.09166666666666666 w=0 | top10: R=0.02317740670016155 p=0.2388888888888889 w=0
+2026-11-26 12:39:16 INFO neurotopo.experiments.exp3_posthoc: C1_gp_8                    3D: R=None p=None w=None | top10: R=None p=None w=None
+2026-11-26 12:39:17 INFO neurotopo.experiments.exp3_posthoc: C1_gp_9                    3D: R=None p=None w=None | top10: R=None p=None w=None
+2026-11-26 12:39:17 INFO neurotopo.experiments.exp3_posthoc: C1_walk_0                  3D: R=None p=None w=None | top10: R=None p=None w=None
+2026-11-26 12:39:17 INFO neurotopo.experiments.exp3_posthoc: C1_walk_1                  3D: R=None p=None w=None | top10: R=None p=None w=None
+2026-11-26 12:39:17 INFO neurotopo.experiments.exp3_posthoc: C1_walk_2                  3D: R=None p=None w=None | top10: R=None p=None w=None
+2026-11-26 12:39:17 INFO neurotopo.experiments.exp3_posthoc: C1_walk_3                  3D: R=None p=None w=None | top10: R=None p=None w=None
+2026-11-26 12:39:18 INFO neurotopo.experiments.exp3_posthoc: C1_walk_4                  3D: R=0.025704578462143017 p=1.0 w=0 | top10: R=None p=None w=None
+2026-11-26 12:39:18 INFO neurotopo.experiments.exp3_posthoc: C1_walk_5                  3D: R=None p=None w=None | top10: R=None p=None w=None
+2026-11-26 12:39:18 INFO neurotopo.experiments.exp3_posthoc: C1_walk_6                  3D: R=None p=None w=None | top10: R=None p=None w=None
+2026-11-26 12:39:18 INFO neurotopo.experiments.exp3_posthoc: C1_walk_7                  3D: R=None p=None w=None | top10: R=None p=None w=None
+2026-11-26 12:39:18 INFO neurotopo.experiments.exp3_posthoc: C1_walk_8                  3D: R=None p=None w=None | top10: R=None p=None w=None
+2026-11-26 12:39:19 INFO neurotopo.experiments.exp3_posthoc: C1_walk_9                  3D: R=0.0542454364344363 p=1.0 w=0 | top10: R=None p=None w=None
+2026-11-26 12:39:25 INFO neurotopo.experiments.exp3_posthoc: R7_llama_colors            3D: R=0.9388914559563736 p=1e-05 w=-1 | top10: R=0.9651314277540115 p=1e-05 w=-1
+2026-11-26 12:39:26 INFO neurotopo.experiments.exp3_posthoc: R5a_llama_weekdays_means   3D: R=0.4510357061452054 p=0.06666666666666667 w=1 | top10: R=0.5630399473036012 p=0.011111111111111112 w=1
+2026-11-26 12:39:28 INFO neurotopo.experiments.exp3_posthoc: R5b_llama_months_means     3D: R=0.8290927452883848 p=1e-05 w=1 | top10: R=0.42287869107998344 p=0.00099 w=1
+2026-11-26 12:39:33 INFO neurotopo.experiments.exp3_posthoc: C3_grokking_WE_memorised   3D: R=0.07957240349084267 p=0.31205 w=0 | top10: R=0.125463308141648 p=0.30784 w=0
+2026-11-26 12:39:36 INFO neurotopo.experiments.exp3_posthoc: C3_gpt2_wpos_init          3D: R=0.0015182263523220076 p=0.31666666666666665 w=0 | top10: R=0.002480396058001195 p=0.3527777777777778 w=0
+2026-11-26 12:39:37 INFO neurotopo.experiments.exp3_posthoc: C3_llama_counting_init     3D: R=0.03997552098291563 p=0.11388888888888889 w=0 | top10: R=0.002993093385046709 p=0.6333333333333333 w=0

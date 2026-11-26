@@ -13,25 +13,12 @@ Date: 2026-11-15; wording corrected 2026-11-22 (independent audit, D14). Code: `
   - universal-null counts for alpha (A = ½) and Rips (A = 1);
   - b0 by the tuned single-linkage rule;
   - all three Betti numbers, χ and a Betti label at the characteristic scale r_c (b0 is read at r_c too since deviation D12; the label is not a homotopy class, because Betti numbers do not determine one);
-  - genus, reported only for closed surfaces;
+  - a genus candidate, conditional on a connected closed orientable surface;
   - stability: the fraction of 200 subsamples of 80% (source seeds) whose top π exceeds the full cloud's null threshold.
 
 ## Results
 
-- **8 clouds have a significant loop and 6 a significant void.** The loops:
-  - colours: π = 5.02 vs 2.38, p = 0.001, stable in 1.00 of subsamples;
-  - grokked residues: 2.45 vs 1.83, p = 0.001, stability 0.26;
-  - months: 1.72 vs 1.44, p = 0.002, stability 0.90;
-  - month means: p = 0.001;
-  - days with times: 2.01 vs 1.87, p = 0.013, stability 0.03; a small loop inside one day's cluster (bar [0.022, 0.045], clusters first touch at 0.160; audit D8);
-  - the grokking model at initialisation (p = 0.046, borderline);
-  - the toy-model clouds of superposition (5–8 points).
-- **Weekdays have no significant loop** (π = 1.32 vs 1.36, p = 0.094). That most persistent bar is a small loop inside one day's cluster (it dies at 0.032; clusters first touch at 0.192), and the 7 day centres alone have no loop (π = 1.05).
-- **No ordinal concept has a loop** (0/6), and neither do the 20 random-process controls (0/20; max π 1.37). These open curves were never at risk: their top π (1.00–1.63) is far below the Gaussian null's 95th percentile (1.79–2.16), because a blob of the same spread has more loops than a curve.
-- **GPT-2 W_pos:** fitted as a closed sphere (Method A void), but there is no significant void in the data (H2 π = 1.02). The positions trace a spiral curve, not a surface.
-- **Truth cities (exploratory prediction, preregistration section 6: b0 = 2, true vs false statements):** not supported. The tuned single-linkage rule gives b0 = 1, and b0 at the characteristic scale (the pieces of the alpha complex there) is 1. Its Betti label is acyclic.
-- **Agreement between Method A and Method B (b1, b2):** 0.705.
-- **Benjamini–Hochberg over the 44 loop tests (post hoc, D6):** 6 loops at q < 0.05: C3_tms_dense, R2_grokking_WE, R3_tms_n8, R5b_llama_months, R5b_llama_months_means, R7_llama_colors.
+The full estimated vector agrees with the fitted catalog vector on 27/44 clouds. Restricting the comparison to H1 and H2 gives 31/44. B uses the tuned component estimator and counts bars across scales. The Betti summary at r_c describes a separate scale-specific quantity. The table below reports descriptive topology and retention frequencies over subsamples. [Full paired estimates](../results/science/h4_datasets.csv) · [Independent null replay](../results/science/null_replay.csv)
 
 <!-- BEGIN:exp2 -->
 | id | N | design | top_pi1 | null_q95_pi1 | p_top_loop | top_pi2 | null_q95_pi2 | p_top_void | b0_rc | b1_rc | b2_rc | chi_rc | genus_rc | betti_label_rc | b1_alpha_univ | b1_rips_univ | loop_freq | family | A_b1 | A_b2 |
@@ -82,23 +69,4 @@ Date: 2026-11-15; wording corrected 2026-11-22 (independent audit, D14). Code: `
 | R9_llama_truth_cities | 1496 | gaussian | 1.931 | 2.202 | 0.861 | 1.287 | 1.411 | 0.672 | 1 | 0 | 0 | 1 | - | acyclic | 0 | 0 | 0.030 | ringing | 0 | 0 |
 <!-- END:exp2 -->
 
-![gallery](../docs/figures/fig_real_gallery.png)
-
-![null distributions](../docs/figures/fig_null_tests.png)
-
-Grey: Monte Carlo null distribution of the largest H1 persistence ratio (999 design-matched draws). Dashed: its 95th percentile. Solid: the observed largest ratio.
-
-## Interpretation
-
-- Topology detects loops through the concept clusters in three cyclic sets (hue, residues mod 113, months). The days_time loop lies inside one day's cluster. Topology detects no loop in weekdays, ordinal concepts or random-process controls, and a borderline one in the random-init grokking embedding.
-- **The hue loop is in the stimuli.** The colour prompts' own RGB values have the loop too (π = 8.01 vs null 2.76, p = 0.001; [exp7_audit.md](exp7_audit.md)). The model reads hex codes, so its loop is not trivial, but any continuous encoding of the stimulus colour would have it.
-- **A loop is not traversal.** The days_time loop is not a ring of days at all. The residue loop is unstable under subsampling (stability 0.26; 0.33 against a size-matched threshold), most likely because its top PCA eigenvalues are nearly equal (0.099 vs 0.096 for the 3rd and 4th), so subsamples rotate the top-3 view.
-- **Weekdays are the exception.** The 7 day centres form no loop in the top-3 PCs, and the most persistent loop of the cloud lies inside one cluster. For 7 evenly spaced point-like centres the polygon's loop has π = 1/sin(π/7) ≈ 2.3 (spread within the clusters can raise it), and the power simulation shows that the loop test has limited power at 7 clusters, but here there is no polygon loop to detect.
-- **A loop is not a hole (third audit, D9).** Both nulls are Gaussian, so a significant loop means "more persistent than a covariance-matched Gaussian". On synthetic clouds of known topology, the design-(b) null flags loops on 0.17 of hole-free clouds (spheres and caps 0.73, paraboloids 0.37). Hole claims need independent evidence: the traversal, the localisation, and the concept centres alone ([exp8_audit3.md](exp8_audit3.md)).
-- **Caveats:** among the random-init controls, the grokking embedding's loop (p = 0.046, q = 0.25) and the GPT-2 and weekday voids (p = 0.020 and 0.045) cross the 5% line; with 44 tests per dimension about 2 chance hits each are expected, and none survives Benjamini–Hochberg. The dense toy model's loop does survive (q = 0.011): it is a 4-cycle of its 5-point polytope ([loops.md](loops.md)), real geometry rather than a chance hit. The days_time loop is unstable under subsampling. For prompt-template designs, the maximum-π statistic does not say *where* a loop lives; the audit's localisation check (D8) is needed to tell a ring of concepts from a loop inside one cluster.
-
-## Learnings
-
-- The cluster-centre null matters. With a plain Gaussian null, any arrangement of tight clusters would look "loopy".
-- Stability under subsampling separates robust loops (colours 1.00, months 0.90) from fragile ones (days_time 0.03). The threshold should be computed at the subsample size, and near-equal PCA eigenvalues make any top-3 view unstable (audit, D8).
-- A significant maximum-π loop in a clustered design must be localised: check whether it dies before the clusters touch.
+The fitted Gaussian or cluster-centre reference preserves specified covariance or residual structure. It can reject open curves or caps. All projection and seed results concern this fixed corpus. Conditional Monte Carlo intervals and nested design-specific calibration are recorded in the audit. [Dataset evidence](../results/science/dataset_assessment.csv) · [Calibration](../results/science/calibration.csv) · [Independent scientific audit](reviews/2026-11-26-scientific-audit.md)

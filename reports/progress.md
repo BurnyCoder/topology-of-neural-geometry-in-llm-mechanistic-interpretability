@@ -3,7 +3,7 @@
 **26 November 2026.** The independent replay recovered the registered H1 decision. The [audit report](reviews/2026-11-26-scientific-audit.md) records the changes to H4 agreement, H5 eligibility, near-closure scoring, path certificates and calibration. The [study result tables](../results/science/) contain the current observations. Both steering phases remain untested.
 
 
-The full synthetic replay completed in the working checkout. A Ripser worker aborted during the independent checkout's first attempt. The replay now writes complete batches atomically and caps simultaneous native workers. The [replication record](../results/science/reproduction.json) reports the numerical comparisons for the completed replay. [Batch implementation](../src/neurotopo/experiments/exp1_batches.py)
+The full synthetic replay completed in the working checkout. A Ripser worker aborted during the independent checkout's first attempt. The replay now writes complete batches atomically and caps simultaneous native workers. The [replication record](../results/science/reproduction.json) gives the table row counts and array shapes for the completed two-checkout comparison. The [clean-run logs](../logs/independent-replay-2026-11-26/) record the computational phases. [Batch implementation](../src/neurotopo/experiments/exp1_batches.py)
 
 ## Archived progress on 22 November 2026
 

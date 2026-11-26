@@ -1,0 +1,35 @@
+{
+ "revisions": {
+  "b6cc417": {
+   "sha": "b6cc4173a18c035b84a6344fd7fc35a058f1dd15",
+   "author_date": "2026-11-15T08:22:09+01:00",
+   "committer_date": "2026-11-15T08:22:09+01:00"
+  },
+  "70171c9": {
+   "sha": "70171c9699b68891c9ebc9cd5618d67d8c0b646f",
+   "author_date": "2026-11-15T09:31:20+01:00",
+   "committer_date": "2026-11-15T09:31:20+01:00"
+  },
+  "26b5a32": {
+   "sha": "26b5a32f3a4532ea4ac0320aa6555467d71638af",
+   "author_date": "2026-11-15T10:35:59+01:00",
+   "committer_date": "2026-11-15T10:35:59+01:00"
+  },
+  "f82dfe1": {
+   "sha": "f82dfe1f1e3d178f7d7b06a26a9b160dc6452e74",
+   "author_date": "2026-11-15T11:06:53+01:00",
+   "committer_date": "2026-11-15T11:06:53+01:00"
+  },
+  "880e7a353c2172f019ef449cc0ff3666a39955b3": {
+   "sha": "880e7a353c2172f019ef449cc0ff3666a39955b3",
+   "author_date": "2026-11-22T18:10:23+01:00",
+   "committer_date": "2026-11-22T18:10:23+01:00"
+  }
+ },
+ "audited_H6_paths": [
+  "results/exp6_sim/simulated_steering.json",
+  "results/exp6/llama_steering.json",
+  "results/exp6/grokking_steering.json"
+ ],
+ "H6_deposits": []
+}

@@ -1,86 +1,6 @@
-# Exp1: validation of the persistent-homology Betti estimators (H5)
+# H5 synthetic instrument comparison
 
-Date: 2026-11-15. Code: `src/neurotopo/experiments/exp1_synthetic.py`, `src/neurotopo/tda/estimators.py`. Results: `results/exp1/`.
-
-## Question
-
-How well do persistent-homology estimators recover the exact topology of noisy point clouds? How does that compare with reading topology off the source fitter's predicted family?
-
-## Data
-
-- The source's fixed synthetic test set: 39,000 clouds, 13 families × 4 N-bins (5–1024 points) × 3 noise bins. Each cloud comes with its **exact ground-truth parameters**, regenerated bit-exactly on CUDA.
-- Ground truth is Method A on those parameters. Only resolvable clouds are scored (ρ_A ≥ 1): 30114 clouds, a fraction of 0.772.
-
-## Estimators
-
-- **P (preregistered):** alpha-complex universal null (Bobrowski & Skraba 2023, A = ½, Bonferroni) for b1 and b2, plus single-linkage b0 (τ = 12.0, minimum component fraction 0.02, tuned on validation).
-- **S (D1):** Rips-H1 universal null (A = 1).
-- **Ba:** fixed thresholds, π > 3.0 for H1 and π > 1.4 for H2, tuned on validation.
-- **Bb:** the source method's predicted family mapped to its modal ground-truth Betti vector (validation).
-- **Bc:** the majority vector.
-- **MC:** a 3D matched-Gaussian Monte Carlo null, 99 draws, on the 3,120-cloud subset.
-
-**Metric:** exact (b0, b1, b2) accuracy, macro-averaged over families. Polytope is scored on b0 only. CIs are a cluster bootstrap over generator chunks of 25 clouds, with 2,000 resamples.
-
-## Results
-
-- **P:** 0.618 [0.610, 0.626]
-- **S:** 0.660 [0.651, 0.670]
-- **Ba:** 0.714 [0.703, 0.725]
-- **Bb:** 0.812 [0.807, 0.816]
-- **Bc:** 0.555 [0.553, 0.557]
-- **MC (subset):** 0.594 [0.561, 0.629]
-- **Paired differences (P minus comparator):**
-  - vs Ba: -0.096 [-0.108, -0.084]
-  - vs Bb: -0.194 [-0.203, -0.185]
-  - vs Bc: 0.063 [0.055, 0.071]
-- **H5:** the preregistered estimator is significantly *worse* than the fixed-threshold and family-implied baselines, and better than the majority vector.
-- **The family label is scored in-distribution.** It comes from the source's shape fitter, which was trained on clouds from the same 13-family generator as this test set, whereas the persistence estimators are generic. The comparison says which instrument is more accurate on these 13 families, not in general.
-- **Well-resolved topology (ρ_A ≥ 4; post hoc, D6).** 18454 clouds from 12 of the 13 families: no torus reaches ρ_A ≥ 4 (0 tori), and a fraction 0.49 are blobs, discs or paraboloids, whose topology cannot change (infinite margin) and which have no hole. The macro average is therefore over a different family mix than the main table, and it drops the family where the label is best (tori). Macro, with cluster-bootstrap CIs:
-  - P: 0.751 [0.739, 0.763]
-  - Ba: 0.923 [0.915, 0.931]
-  - Bb: 0.820 [0.812, 0.829]
-  - Bc: 0.600
-  - Paired P − Bb: -0.070 [-0.084, -0.056]. P − Ba: -0.172 [-0.184, -0.160].
-  - Micro-averaged accuracies in the top ρ_A bin, used in an earlier version of the text: P 0.87, Ba 0.94, Bb 0.86.
-- **False positives** (any hole on resolvable contractible shapes): 0.019–0.054 per N-bin for P.
-- **Loop detection, not only exact vectors (third audit, D9; post hoc).** Exact-vector accuracy mixes b0, b1 and b2. The question the real data ask is narrower: does the estimator find a loop when there is one, and stay silent when there is none? Shown below is the fraction of resolvable clouds with at least one significant H1 bar, with cluster-bootstrap 95% CIs ([exp8_audit3.md](exp8_audit3.md)).
-
-  | Estimator | true holes detected (b1 ≥ 1) | false loops (b1 = 0) |
-  |---|---|---|
-  | P (all resolvable) | 0.162 [0.132, 0.194] (n = 5342) | 0.019 [0.015, 0.023] (n = 24772) |
-  | S (all resolvable) | 0.452 [0.415, 0.491] | 0.038 [0.032, 0.043] |
-  | Ba (all resolvable) | 0.566 [0.524, 0.609] | 0.016 [0.013, 0.018] |
-  | MC (3,120-cloud subset) | 0.845 [0.774, 0.909] (n = 445) | 0.174 [0.126, 0.225] (n = 1982) |
-
-  - **P is conservative.** It finds 0.00 of cone holes, 0.00 of tori and 0.29 of ellipses (subset).
-  - **MC is not specific to holes.** It is the design-(b) null of the real data in 3D: a matched Gaussian, with the same distribution as the real-data sampler on rank-3 clouds (median q95 difference 0.012). It flags loops on hole-free clouds by family as follows:
-    - blobs 0.06 (its own model, so calibrated), lines 0.04, open curves 0.00, open arcs 0.08;
-    - polytopes 0.10, discs 0.19, helices 0.20;
-    - paraboloids 0.37, spheres and caps 0.73.
-  - The false-loop rate grows with N, from 0.11 in the smallest N bin to 0.26 in the largest. It is not caused by outliers: 0.21 with outliers vs 0.16 without.
-  - The flagged hole-free clouds have top π 1.39–2.81 (10th–90th percentile; median 2.17). True holes that MC detects have 2.01–9.87.
-  - A likely reason (a hypothesis consistent with the per-family rates, not tested directly): a Gaussian null fixes the covariance, not the intrinsic dimension, and noise cycles on a 2D surface may live longer than in a 3D blob of the same spread. The largest multiplicative persistence of noise cycles grows with the number of points as (log n / log log n)^{1/k}, with constants that depend on the dimension ([Bobrowski, Kahle & Skraba 2017](https://doi.org/10.1214/16-AAP1232), Thm 3.1). This is consistent with the rise with N; the theorem is proven for a homogeneous Poisson process in the unit cube, so it does not prove the pattern for these clouds.
-- **Outlier clouds and the preregistered DTM conditional (deviation D7).**
-  - The source generator replaces random points by uniform draws from the padded bounding box but does not record which ones. The proxy was fixed before computing: an "outlier cloud" has at least one point farther than 6 × its median distance from the ground-truth shape. That covers 0.193 of all test clouds.
-  - False-positive rate on resolvable contractible clouds (95% cluster-bootstrap CI):
-
-    | Estimator | outlier clouds | clean clouds | one-sided Fisher p |
-    |---|---|---|---|
-    | P | 0.065 [0.053, 0.078] (n = 3547) | 0.031 [0.025, 0.037] (n = 12880) | 2.3e-18 |
-    | S | 0.085 [0.070, 0.101] | 0.048 [0.041, 0.057] | 5.0e-16 |
-    | Ba | 0.017 [0.012, 0.022] | 0.015 [0.012, 0.019] | 0.220 |
-    | Bb | 0.014 [0.011, 0.018] | 0.035 [0.029, 0.041] | 1.000 |
-
-  - **Decision:** outliers roughly double the false positives of the universal-null estimators (P, S), while the tuned fixed threshold (Ba) is unaffected. P stays below the preregistered threshold of 0.10, so the DTM filtration is **not required**.
-  - With factors 4 and 8 instead of 6 (post hoc), P's outlier false-positive rate ranges over 0.050–0.074, so the decision does not depend on the factor.
-  - **Proxy check:** flagged fraction vs the generator's expected fraction of clouds with at least one injected outlier, per N bin:
-    - N 5–12: 0.05 vs 0.09;
-    - N 13–64: 0.15 vs 0.20;
-    - N 65–254: 0.26 vs 0.28;
-    - N 257–1020: 0.32 vs 0.29.
-
-    The proxy misses outliers that land near the shape. In the largest clouds it also flags some extreme noise points, because there the flagged fraction exceeds the expected one.
+The registered target is the source's catalog vector at exported parameters. Eligibility requires ρ_A ≥ 1 and polytopes are scored on components alone. The majority and predicted-family targets and fixed persistence thresholds are determined on validation. The fixed-target sensitivity uses identical predictions and eligible test clouds. A cluster-bootstrap resample draws whole source generator chunks. [Registration](preregistration.md) · [Estimator implementation](../src/neurotopo/experiments/exp1_synthetic.py) · [Independent target reconstruction](../src/neurotopo/science/benchmark.py)
 
 <!-- BEGIN:exp1 -->
 | estimator | macro exact accuracy | 95% CI | n clouds |
@@ -107,20 +27,20 @@ False-positive rate (b1 >= 1 or b2 >= 1) on resolvable contractible clouds, by N
 
 | estimator | N-bin 0 | N-bin 1 | N-bin 2 | N-bin 3 |
 |---|---|---|---|---|
-| P_alpha_universal | 0.019 | 0.039 | 0.054 | 0.038 |
-| S_rips_universal | 0.003 | 0.051 | 0.084 | 0.077 |
-| Ba_fixed_pi | 0.000 | 5.0e-04 | 0.010 | 0.047 |
-| Bb_family_implied | 0.110 | 0.020 | 0.004 | 0.003 |
+| P_alpha_universal | 0.018 | 0.045 | 0.075 | 0.065 |
+| S_rips_universal | 0.002 | 0.055 | 0.107 | 0.108 |
+| Ba_fixed_pi | 0.000 | 0.002 | 0.029 | 0.076 |
+| Bb_family_implied | 0.108 | 0.024 | 0.005 | 0.003 |
 | Bc_majority | 0.000 | 0.000 | 0.000 | 0.000 |
 
 Universal-null calibration on blobs (FWER = fraction with any significant alpha H1 bar):
 
-| N-bin | fwer_alpha_universal | ks_uniform_D | n_pvalues |
-|---|---|---|---|
-| 0 | 0.003 | 0.118 | 1133.000 |
-| 1 | 0.003 | 0.074 | 12182.000 |
-| 2 | 0.000 | 0.048 | 77109.000 |
-| 3 | 0.000 | 0.035 | 444404.000 |
+| N-bin | fwer_alpha_universal | ks_uniform_D | n_pvalues | n_clouds | by_noise_bin |
+|---|---|---|---|---|---|
+| 0 | 0.009 | 0.117 | 3011 | 750 | {'0': {'n': 250, 'hits': 1, 'rate': 0.004, 'cluster_ci': [0.0, 0.012]}, '1': {'n': 250, 'hits': 2, 'rate': 0.008, 'cluster_ci': [0.0, 0.02]}, '2': {'n': 250, 'hits': 4, 'rate': 0.016, 'cluster_ci': [0.0, 0.036]}} |
+| 1 | 0.004 | 0.066 | 34043 | 750 | {'0': {'n': 250, 'hits': 1, 'rate': 0.004, 'cluster_ci': [0.0, 0.012]}, '1': {'n': 250, 'hits': 1, 'rate': 0.004, 'cluster_ci': [0.0, 0.012]}, '2': {'n': 250, 'hits': 1, 'rate': 0.004, 'cluster_ci': [0.0, 0.012]}} |
+| 2 | 0.000 | 0.048 | 185130 | 750 | {'0': {'n': 250, 'hits': 0, 'rate': 0.0, 'cluster_ci': [0.0, 0.0]}, '1': {'n': 250, 'hits': 0, 'rate': 0.0, 'cluster_ci': [0.0, 0.0]}, '2': {'n': 250, 'hits': 0, 'rate': 0.0, 'cluster_ci': [0.0, 0.0]}} |
+| 3 | 0.000 | 0.035 | 1003790 | 750 | {'0': {'n': 250, 'hits': 0, 'rate': 0.0, 'cluster_ci': [0.0, 0.0]}, '1': {'n': 250, 'hits': 0, 'rate': 0.0, 'cluster_ci': [0.0, 0.0]}, '2': {'n': 250, 'hits': 0, 'rate': 0.0, 'cluster_ci': [0.0, 0.0]}} |
 
 Per-family exact accuracy (resolvable clouds):
 
@@ -143,21 +63,8 @@ Per-family exact accuracy (resolvable clouds):
 Resolvable fraction of test clouds: 0.772.
 <!-- END:exp1 -->
 
-![estimators](../docs/figures/fig_exp1_estimators.png)
-![by rho](../docs/figures/fig_exp1_by_rho.png)
-![outliers](../docs/figures/fig_exp1_outliers.png)
+The registered P minus Ba difference is -0.096 [-0.108, -0.084]. P minus Bb is -0.194 [-0.203, -0.185]. P exceeds the majority comparator by 0.063 [0.055, 0.071]. The methods vary in access to generator-specific information, so the comparisons are in-distribution. [Result table](../results/exp1/summary.json)
 
-## Interpretation
+The pinned generators report closed arcs and spheres at an angular fraction of 0.98. A positive gap remains for 1236 test arcs and 979 sphere-family objects labeled closed. Changing only those targets reverses P versus Bb on both families. The conditional flagged-cloud false-positive rate is 350/4144 with all eligible contractible targets. Flag status measures distance to a sampled shape and can be affected by sample size or family. DTM remains below its registered activation threshold. The audit reports separate blob calibration by noise and size and exact-domain controls at a specified radius. [Paired intervals](../results/science/benchmark.csv) · [False-positive analysis](../results/science/false_positives.csv) · [Calibration](../results/science/blobs.csv) · [Known-domain controls](../results/science/analytic_controls.csv)
 
-- **Where persistent homology adds information beyond the family label:** whenever the label does not fix the topology. The fixed-threshold estimator Ba is quoted here:
-  - open vs closed arcs: 0.79 vs 0.58;
-  - caps vs full spheres: 0.76 vs 0.61.
-- **The preregistered estimator P is not better than the family label,** even on well-resolved clouds.
-- **Where it loses:** wherever the label fixes the topology but the hole is thin or two-dimensional. Ellipses: 0.51 vs 0.99. Tori: 0.11 vs 1.00. Frusta: 0.53 vs 0.94.
-- **The alpha-complex universal null is calibrated but conservative.** Its family-wise error on blobs is about 0. This is why it loses to a tuned threshold (deviation D1).
-
-## Learnings
-
-- At N ≤ 1024 the universal null of Bobrowski & Skraba is too conservative for alpha complexes in ℝ³. A Rips complex (A = 1) or a tuned threshold is more powerful.
-- Resolvability (ρ_A) is the main determinant of accuracy, so reporting accuracy against ρ_A is essential.
-- The tuned b0 rule chose the largest τ in the grid (deviation note A1). The clusters family is the weakest b0 case.
+![Comparison under catalog and unrounded angular labels](../docs/figures/fig_scientific_audit.png)

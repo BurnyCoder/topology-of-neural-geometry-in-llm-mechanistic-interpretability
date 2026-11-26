@@ -11,7 +11,7 @@ Exp2 tests only each cloud's most persistent loop, and the README's detected-loo
 
 ## Method
 
-For every loop: its bar (birth, death), persistence ratio π = death / birth, and one representative cycle (the edge that creates the loop, closed by the shortest path through earlier edges; [glossary](../docs/glossary.md#representative-loop)).
+For every loop: its bar (birth, death), persistence ratio π = death / birth, and one birth path (the edge that creates the loop, closed by the shortest path through earlier edges; [glossary](../docs/glossary.md#representative-loop)).
 - **p:** against the cloud's design-matched Exp2 null of the largest loop π. For a cloud's most persistent loop this is exactly Exp2's p (largest difference over the 44 clouds: 0.000). For other loops it is conservative.
 - **Size:** death − birth, how much the balls must still grow (in radius) to fill the loop once it has closed.
 - **Span of the cloud:** the bounding-box diagonal of the cycle's points divided by the cloud's.
@@ -60,5 +60,5 @@ For every loop: its bar (birth, death), persistence ratio π = death / birth, an
 ## Limitations
 
 - The rules are post hoc, and the per-loop p-values are not corrected over the 10729 loops. The Benjamini–Hochberg correction applies to Exp2's top loops only.
-- The cycle is one representative of each loop, for display; the winding depends on that choice. The preregistered traversal test (Exp3) uses the circular coordinate θ_B instead.
+- Each path uses a shortest route through earlier edges together with its birth edge. 329 paths carry an older class past the assigned death. All selected gallery paths pass the boundary test. Their semantic winding still depends on the chosen representative. [Every certificate](../results/science/representatives.csv.gz)
 - A significant loop is not by itself a hole: the Gaussian null also flags many hole-free shapes (audit D9).

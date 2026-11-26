@@ -74,24 +74,8 @@ Exploratory alignment records (BH q-values):
 
 ![travel around the hole](../docs/figures/fig_traversal.png)
 
-Each dot is one concept, placed at the circular mean of its points' hole angle and coloured by its position in the semantic cycle. Chords join consecutive concepts. Going round once in order gives a single non-crossing polygon (winding ±1).
+Each dot is one concept, placed at the circular mean of its points' hole angle and coloured by its position in the semantic cycle. Chords join consecutive concepts. Winding ±1 measures the sum of wrapped steps. Exact cyclic order additionally requires consistent step direction.
 
 ## Interpretation
 
-- **The strict preregistered answer is negative.** No primary cyclic set passes all conditions.
-  - The residues come closest, failing only the top-10-PC check.
-  - Months fail at the coordinate-construction step, not at the alignment.
-  - Weekdays fail at the loop step: the 7 day centres form no loop, and the cloud's most persistent loop lies inside one day's cluster (audit D8).
-- **Specificity holds, but it is weakly informative.**
-  - No ordinal or control set passes any conjunction.
-  - Sensitivity is zero, though: H4 balanced accuracy is 0.5 for every criterion.
-  - The ordinal and random-process controls are open curves, whose loop statistics never approach the null threshold, so they barely exercise the test. The random-init networks are the informative calibration (1 of 3 below 0.05; with 3 controls this says little, since at least one of 3 falls below 0.05 with probability 0.14 under the null).
-- **Post hoc,** the semantic order goes around the loop once in 3D for colours, residues and months. Days_time has no ring of days to go around. Only colours keep a winding loop in the top-10 PCs, so in 10 dimensions winding separates 1 of 5 cyclic sets from the ordinal sets, not the cyclic concepts as a group.
-- **The colour result is confounded by the input.** The colour prompts' RGB values already have the hue loop, and hue winds once around it (audit D8). The colour traversal therefore shows that the model preserves the input's hue circle.
-- **The alignment R and its permutation p measure ordering, not looping.** For example, nearly constant coordinates of random-process controls give small p with tiny R. Only winding ±1 carries the cyclic claim. The cyclic-order check was fixed to require a single winding (D6).
-- **DREiMac class vs alpha bar overlap** (preregistration §4.6): colours yes, residues yes.
-
-## Learnings
-
-- **DREiMac's `standard_range` matters for clustered designs.** A loop of 12 tight clusters can be significant yet have a Rips death/birth ratio below 2. A preregistration should state what happens in that case; here it counted as a failure (D3).
-- **The top-10-PC check is demanding.** Grokked embeddings carry several Fourier frequencies, so in 10 dimensions the single top-3 circle is no longer the dominant loop.
+The weekday loop fails in 3D. Months pass that gate but lack a strict Rips coordinate. Residues align in a frequency-reordered circle in 3D, then lack a strict coordinate in ten PCs. H3 also fails. Hue has strict 3D alignment and relaxed ten-PC alignment. A separate RGB baseline shares the 3D pattern. Equating the input and activation mechanisms requires interventions. Label permutation uses a conditional exchangeability assumption. The reported winding closes the semantic sequence by a final principal-angle step. [All gates and denominators](../results/science/decisions.csv) · [Coordinate and wavelength search](../results/exp3/method_b.json) · [Projection evidence](../results/science/dataset_assessment.csv) · [Independent scientific audit](reviews/2026-11-26-scientific-audit.md)

@@ -1,0 +1,2 @@
+2026-11-26 13:40:16 INFO root: phase exp1outliers, log file C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\logs\exp1outliers_20261126T134016.log
+2026-11-26 13:40:48 INFO neurotopo.experiments.exp1_synthetic: outlier proxy: 0.193 of clouds flagged; P outlier FPR 0.084 (threshold 0.10) -> DTM not required

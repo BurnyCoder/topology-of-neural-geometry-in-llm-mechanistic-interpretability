@@ -1,0 +1,47 @@
+{
+ "inputs": {
+  "verified_files": 52,
+  "hf_revision": "02e4d50b62d75cbf689f6df3d9ec608d2acd6315",
+  "source_commit": "4c5f3b665381380c81af22827bb3959032dac417",
+  "manifest_sha256": "d816710a70301784210912c063173d30edafa39e839f0d12044aa77afc479cf8",
+  "bytes": 337428654
+ },
+ "h1": {
+  "A": 0,
+  "B": 0
+ },
+ "h4_full": 27,
+ "h4_partial": 31,
+ "n_real": 44,
+ "null_arrays": 50,
+ "max_draw_error": 8.703260334641527e-12,
+ "max_rank_error": 0.0,
+ "certificates": {
+  "1": {
+   "total": 10729,
+   "certified": 10400,
+   "failed": 329
+  },
+  "2": {
+   "total": 4759,
+   "certified": 4759,
+   "failed": 0
+  }
+ },
+ "selected_paths_certified": true,
+ "selected_paths": 9,
+ "analytic_controls": 4,
+ "exact_cloud_overlap": 0,
+ "changes": {
+  "arc": {
+   "test": 1236,
+   "eligible": 1042,
+   "omitted_from_fpr": 1450
+  },
+  "sphere": {
+   "test": 979,
+   "eligible": 767,
+   "omitted_from_fpr": 1353
+  }
+ }
+}

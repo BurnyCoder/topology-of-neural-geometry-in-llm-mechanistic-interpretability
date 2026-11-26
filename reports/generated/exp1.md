@@ -22,20 +22,20 @@ False-positive rate (b1 >= 1 or b2 >= 1) on resolvable contractible clouds, by N
 
 | estimator | N-bin 0 | N-bin 1 | N-bin 2 | N-bin 3 |
 |---|---|---|---|---|
-| P_alpha_universal | 0.019 | 0.039 | 0.054 | 0.038 |
-| S_rips_universal | 0.003 | 0.051 | 0.084 | 0.077 |
-| Ba_fixed_pi | 0.000 | 5.0e-04 | 0.010 | 0.047 |
-| Bb_family_implied | 0.110 | 0.020 | 0.004 | 0.003 |
+| P_alpha_universal | 0.018 | 0.045 | 0.075 | 0.065 |
+| S_rips_universal | 0.002 | 0.055 | 0.107 | 0.108 |
+| Ba_fixed_pi | 0.000 | 0.002 | 0.029 | 0.076 |
+| Bb_family_implied | 0.108 | 0.024 | 0.005 | 0.003 |
 | Bc_majority | 0.000 | 0.000 | 0.000 | 0.000 |
 
 Universal-null calibration on blobs (FWER = fraction with any significant alpha H1 bar):
 
-| N-bin | fwer_alpha_universal | ks_uniform_D | n_pvalues |
-|---|---|---|---|
-| 0 | 0.003 | 0.118 | 1133.000 |
-| 1 | 0.003 | 0.074 | 12182.000 |
-| 2 | 0.000 | 0.048 | 77109.000 |
-| 3 | 0.000 | 0.035 | 444404.000 |
+| N-bin | fwer_alpha_universal | ks_uniform_D | n_pvalues | n_clouds | by_noise_bin |
+|---|---|---|---|---|---|
+| 0 | 0.009 | 0.117 | 3011 | 750 | {'0': {'n': 250, 'hits': 1, 'rate': 0.004, 'cluster_ci': [0.0, 0.012]}, '1': {'n': 250, 'hits': 2, 'rate': 0.008, 'cluster_ci': [0.0, 0.02]}, '2': {'n': 250, 'hits': 4, 'rate': 0.016, 'cluster_ci': [0.0, 0.036]}} |
+| 1 | 0.004 | 0.066 | 34043 | 750 | {'0': {'n': 250, 'hits': 1, 'rate': 0.004, 'cluster_ci': [0.0, 0.012]}, '1': {'n': 250, 'hits': 1, 'rate': 0.004, 'cluster_ci': [0.0, 0.012]}, '2': {'n': 250, 'hits': 1, 'rate': 0.004, 'cluster_ci': [0.0, 0.012]}} |
+| 2 | 0.000 | 0.048 | 185130 | 750 | {'0': {'n': 250, 'hits': 0, 'rate': 0.0, 'cluster_ci': [0.0, 0.0]}, '1': {'n': 250, 'hits': 0, 'rate': 0.0, 'cluster_ci': [0.0, 0.0]}, '2': {'n': 250, 'hits': 0, 'rate': 0.0, 'cluster_ci': [0.0, 0.0]}} |
+| 3 | 0.000 | 0.035 | 1003790 | 750 | {'0': {'n': 250, 'hits': 0, 'rate': 0.0, 'cluster_ci': [0.0, 0.0]}, '1': {'n': 250, 'hits': 0, 'rate': 0.0, 'cluster_ci': [0.0, 0.0]}, '2': {'n': 250, 'hits': 0, 'rate': 0.0, 'cluster_ci': [0.0, 0.0]}} |
 
 Per-family exact accuracy (resolvable clouds):
 

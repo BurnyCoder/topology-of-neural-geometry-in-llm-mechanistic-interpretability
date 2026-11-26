@@ -1,0 +1,2 @@
+2026-11-26 14:09:41 INFO root: phase voids, log file C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\.audit-reproduction\logs\voids_20261126T140941.log
+2026-11-26 14:09:55 INFO neurotopo.experiments.void_search: 4759 voids in 38 clouds; 10 interesting (R3_tms_n20#1, R3_tms_n6#1, R3_tms_n8#1, C3_tms_dense#1, C3_gpt2_wpos_init#1, C3_llama_weekdays_init#1, R5a_llama_weekdays_means#1, R5b_llama_months_means#1, R7_llama_colors#3, C1_gp_3#1); top-void p vs Exp2: max gap 0

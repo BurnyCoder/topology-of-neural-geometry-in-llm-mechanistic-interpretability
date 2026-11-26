@@ -10,6 +10,7 @@
   "p": 0.002777777777777778,
   "winding": 1,
   "order_match": true,
+  "order_null_bound": 0.002777777777777778,
   "order_p": 0.002777777777777778,
   "concept_theta": [
    -1.972908397512767,
@@ -34,6 +35,7 @@
   "p": 1e-05,
   "winding": 1,
   "order_match": true,
+  "order_null_bound": 5.010421677088344e-08,
   "order_p": 5.010421677088344e-08,
   "concept_theta": [
    -2.057634100818158,
@@ -63,6 +65,7 @@
   "p": 0.002777777777777778,
   "winding": -1,
   "order_match": true,
+  "order_null_bound": 0.002777777777777778,
   "order_p": 0.002777777777777778,
   "concept_theta": [
    -0.32952340023148696,
@@ -87,6 +90,7 @@
   "p": 1e-05,
   "winding": -1,
   "order_match": true,
+  "order_null_bound": 5.010421677088344e-08,
   "order_p": 5.010421677088344e-08,
   "concept_theta": [
    -0.20503303212924903,
@@ -116,6 +120,7 @@
   "p": 0.002777777777777778,
   "winding": 1,
   "order_match": true,
+  "order_null_bound": 0.002777777777777778,
   "order_p": 0.002777777777777778,
   "concept_theta": [
    0.1017272015249269,
@@ -140,6 +145,7 @@
   "p": 1e-05,
   "winding": 1,
   "order_match": true,
+  "order_null_bound": 5.010421677088344e-08,
   "order_p": 5.010421677088344e-08,
   "concept_theta": [
    -0.018039859475738974,
@@ -169,7 +175,8 @@
   "p": 0.005555555555555556,
   "winding": 1,
   "order_match": false,
-  "order_p": 0.002777777777777778,
+  "order_null_bound": 0.002777777777777778,
+  "order_p": 1.0,
   "concept_theta": [
    -0.07407678215753027,
    0.7448427125677507,
@@ -193,7 +200,8 @@
   "p": 1e-05,
   "winding": 1,
   "order_match": false,
-  "order_p": 5.010421677088344e-08,
+  "order_null_bound": 5.010421677088344e-08,
+  "order_p": 1.0,
   "concept_theta": [
    -0.18825304331790726,
    0.15990373332409658,
@@ -222,6 +230,7 @@
   "p": 0.002777777777777778,
   "winding": 1,
   "order_match": true,
+  "order_null_bound": 0.002777777777777778,
   "order_p": 0.002777777777777778,
   "concept_theta": [
    0.3611676660294254,
@@ -246,7 +255,8 @@
   "p": 1e-05,
   "winding": 1,
   "order_match": false,
-  "order_p": 5.010421677088344e-08,
+  "order_null_bound": 5.010421677088344e-08,
+  "order_p": 1.0,
   "concept_theta": [
    0.19556031427057072,
    0.6968201360098846,
@@ -275,6 +285,7 @@
   "p": 0.002777777777777778,
   "winding": -1,
   "order_match": true,
+  "order_null_bound": 0.002777777777777778,
   "order_p": 0.002777777777777778,
   "concept_theta": [
    -1.2297118737415391,
@@ -299,6 +310,7 @@
   "p": 1e-05,
   "winding": -1,
   "order_match": true,
+  "order_null_bound": 5.010421677088344e-08,
   "order_p": 5.010421677088344e-08,
   "concept_theta": [
    -1.1343460703510881,
@@ -328,6 +340,7 @@
   "p": 0.002777777777777778,
   "winding": 1,
   "order_match": true,
+  "order_null_bound": 0.002777777777777778,
   "order_p": 0.002777777777777778,
   "concept_theta": [
    -2.0117392814287562,
@@ -352,6 +365,7 @@
   "p": 1e-05,
   "winding": 1,
   "order_match": true,
+  "order_null_bound": 5.010421677088344e-08,
   "order_p": 5.010421677088344e-08,
   "concept_theta": [
    -2.0937045744606007,
@@ -381,6 +395,7 @@
   "p": 0.002777777777777778,
   "winding": 1,
   "order_match": true,
+  "order_null_bound": 0.002777777777777778,
   "order_p": 0.002777777777777778,
   "concept_theta": [
    0.8177454120791845,
@@ -405,6 +420,7 @@
   "p": 1e-05,
   "winding": 1,
   "order_match": true,
+  "order_null_bound": 5.010421677088344e-08,
   "order_p": 5.010421677088344e-08,
   "concept_theta": [
    0.7310393968451042,
@@ -435,7 +451,8 @@
   "p": 1e-05,
   "winding": -1,
   "order_match": false,
-  "order_p": 1.0129111442108665e-182
+  "order_null_bound": 5.672302407580852e-181,
+  "order_p": 1.0
  },
  {
   "id": "R5a_llama_weekdays",
@@ -448,6 +465,7 @@
   "p": 0.002777777777777778,
   "winding": 1,
   "order_match": true,
+  "order_null_bound": 0.002777777777777778,
   "order_p": 0.002777777777777778,
   "concept_theta": [
    -2.4757718177073564,
@@ -472,6 +490,7 @@
   "p": 1e-05,
   "winding": 1,
   "order_match": true,
+  "order_null_bound": 5.010421677088344e-08,
   "order_p": 5.010421677088344e-08,
   "concept_theta": [
    3.1303280941045037,
@@ -501,6 +520,7 @@
   "p": 1e-05,
   "winding": 1,
   "order_match": true,
+  "order_null_bound": 5.010421677088344e-08,
   "order_p": 5.010421677088344e-08,
   "concept_theta": [
    2.847462164578323,
@@ -530,7 +550,8 @@
   "p": 0.2,
   "winding": 0,
   "order_match": false,
-  "order_p": 0.002777777777777778,
+  "order_null_bound": 0.002777777777777778,
+  "order_p": 1.0,
   "concept_theta": [
    -2.856917556734656,
    -2.9492482278403465,
@@ -552,7 +573,8 @@
   "p": 0.03406,
   "winding": 0,
   "order_match": false,
-  "order_p": 5.010421677088344e-08,
+  "order_null_bound": 5.010421677088344e-08,
+  "order_p": 1.0,
   "concept_theta": [
    -2.9054011572597642,
    -2.721044505436252,
@@ -579,7 +601,8 @@
   "p": 0.00157,
   "winding": 0,
   "order_match": false,
-  "order_p": 5.5114638447971785e-06,
+  "order_null_bound": 5.5114638447971785e-06,
+  "order_p": 1.0,
   "concept_theta": [
    -1.7794615016109037,
    -2.1163549234304178,
@@ -604,7 +627,8 @@
   "p": 1e-05,
   "winding": 0,
   "order_match": false,
-  "order_p": 2.1430205762509337e-156,
+  "order_null_bound": 2.1430205762509337e-156,
+  "order_p": 1.0,
   "concept_theta": [
    -2.4911847995262812,
    -2.601631416254048,
@@ -719,6 +743,7 @@
   "p": 1e-05,
   "winding": 1,
   "order_match": true,
+  "order_null_bound": 1.935518591726378e-40,
   "order_p": 1.935518591726378e-40,
   "concept_theta": [
    1.701847468936047,

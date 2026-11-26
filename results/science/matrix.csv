@@ -1,0 +1,278 @@
+id,hypothesis,eligibility,result
+C1_gp_0,H1,outside designated set,inapplicable
+C1_gp_0,H2,designated,see decisions.csv for each A/B conjunction
+C1_gp_0,H3,outside designated set,inapplicable
+C1_gp_0,H4,vector only,h4_datasets.csv
+C1_gp_0,H5,real dataset,inapplicable
+C1_gp_0,H6,simulated,untested; see h6_datasets.csv
+C1_gp_1,H1,outside designated set,inapplicable
+C1_gp_1,H2,designated,see decisions.csv for each A/B conjunction
+C1_gp_1,H3,outside designated set,inapplicable
+C1_gp_1,H4,vector only,h4_datasets.csv
+C1_gp_1,H5,real dataset,inapplicable
+C1_gp_1,H6,simulated,untested; see h6_datasets.csv
+C1_gp_2,H1,outside designated set,inapplicable
+C1_gp_2,H2,designated,see decisions.csv for each A/B conjunction
+C1_gp_2,H3,outside designated set,inapplicable
+C1_gp_2,H4,vector only,h4_datasets.csv
+C1_gp_2,H5,real dataset,inapplicable
+C1_gp_2,H6,simulated,untested; see h6_datasets.csv
+C1_gp_3,H1,outside designated set,inapplicable
+C1_gp_3,H2,designated,see decisions.csv for each A/B conjunction
+C1_gp_3,H3,outside designated set,inapplicable
+C1_gp_3,H4,vector only,h4_datasets.csv
+C1_gp_3,H5,real dataset,inapplicable
+C1_gp_3,H6,simulated,untested; see h6_datasets.csv
+C1_gp_4,H1,outside designated set,inapplicable
+C1_gp_4,H2,designated,see decisions.csv for each A/B conjunction
+C1_gp_4,H3,outside designated set,inapplicable
+C1_gp_4,H4,vector only,h4_datasets.csv
+C1_gp_4,H5,real dataset,inapplicable
+C1_gp_4,H6,simulated,untested; see h6_datasets.csv
+C1_gp_5,H1,outside designated set,inapplicable
+C1_gp_5,H2,designated,see decisions.csv for each A/B conjunction
+C1_gp_5,H3,outside designated set,inapplicable
+C1_gp_5,H4,vector only,h4_datasets.csv
+C1_gp_5,H5,real dataset,inapplicable
+C1_gp_5,H6,simulated,untested; see h6_datasets.csv
+C1_gp_6,H1,outside designated set,inapplicable
+C1_gp_6,H2,designated,see decisions.csv for each A/B conjunction
+C1_gp_6,H3,outside designated set,inapplicable
+C1_gp_6,H4,vector only,h4_datasets.csv
+C1_gp_6,H5,real dataset,inapplicable
+C1_gp_6,H6,simulated,untested; see h6_datasets.csv
+C1_gp_7,H1,outside designated set,inapplicable
+C1_gp_7,H2,designated,see decisions.csv for each A/B conjunction
+C1_gp_7,H3,outside designated set,inapplicable
+C1_gp_7,H4,vector only,h4_datasets.csv
+C1_gp_7,H5,real dataset,inapplicable
+C1_gp_7,H6,simulated,untested; see h6_datasets.csv
+C1_gp_8,H1,outside designated set,inapplicable
+C1_gp_8,H2,designated,see decisions.csv for each A/B conjunction
+C1_gp_8,H3,outside designated set,inapplicable
+C1_gp_8,H4,vector only,h4_datasets.csv
+C1_gp_8,H5,real dataset,inapplicable
+C1_gp_8,H6,simulated,untested; see h6_datasets.csv
+C1_gp_9,H1,outside designated set,inapplicable
+C1_gp_9,H2,designated,see decisions.csv for each A/B conjunction
+C1_gp_9,H3,outside designated set,inapplicable
+C1_gp_9,H4,vector only,h4_datasets.csv
+C1_gp_9,H5,real dataset,inapplicable
+C1_gp_9,H6,simulated,untested; see h6_datasets.csv
+C1_walk_0,H1,outside designated set,inapplicable
+C1_walk_0,H2,designated,see decisions.csv for each A/B conjunction
+C1_walk_0,H3,outside designated set,inapplicable
+C1_walk_0,H4,vector only,h4_datasets.csv
+C1_walk_0,H5,real dataset,inapplicable
+C1_walk_0,H6,simulated,untested; see h6_datasets.csv
+C1_walk_1,H1,outside designated set,inapplicable
+C1_walk_1,H2,designated,see decisions.csv for each A/B conjunction
+C1_walk_1,H3,outside designated set,inapplicable
+C1_walk_1,H4,vector only,h4_datasets.csv
+C1_walk_1,H5,real dataset,inapplicable
+C1_walk_1,H6,simulated,untested; see h6_datasets.csv
+C1_walk_2,H1,outside designated set,inapplicable
+C1_walk_2,H2,designated,see decisions.csv for each A/B conjunction
+C1_walk_2,H3,outside designated set,inapplicable
+C1_walk_2,H4,vector only,h4_datasets.csv
+C1_walk_2,H5,real dataset,inapplicable
+C1_walk_2,H6,simulated,untested; see h6_datasets.csv
+C1_walk_3,H1,outside designated set,inapplicable
+C1_walk_3,H2,designated,see decisions.csv for each A/B conjunction
+C1_walk_3,H3,outside designated set,inapplicable
+C1_walk_3,H4,vector only,h4_datasets.csv
+C1_walk_3,H5,real dataset,inapplicable
+C1_walk_3,H6,simulated,untested; see h6_datasets.csv
+C1_walk_4,H1,outside designated set,inapplicable
+C1_walk_4,H2,designated,see decisions.csv for each A/B conjunction
+C1_walk_4,H3,outside designated set,inapplicable
+C1_walk_4,H4,vector only,h4_datasets.csv
+C1_walk_4,H5,real dataset,inapplicable
+C1_walk_4,H6,simulated,untested; see h6_datasets.csv
+C1_walk_5,H1,outside designated set,inapplicable
+C1_walk_5,H2,designated,see decisions.csv for each A/B conjunction
+C1_walk_5,H3,outside designated set,inapplicable
+C1_walk_5,H4,vector only,h4_datasets.csv
+C1_walk_5,H5,real dataset,inapplicable
+C1_walk_5,H6,simulated,untested; see h6_datasets.csv
+C1_walk_6,H1,outside designated set,inapplicable
+C1_walk_6,H2,designated,see decisions.csv for each A/B conjunction
+C1_walk_6,H3,outside designated set,inapplicable
+C1_walk_6,H4,vector only,h4_datasets.csv
+C1_walk_6,H5,real dataset,inapplicable
+C1_walk_6,H6,simulated,untested; see h6_datasets.csv
+C1_walk_7,H1,outside designated set,inapplicable
+C1_walk_7,H2,designated,see decisions.csv for each A/B conjunction
+C1_walk_7,H3,outside designated set,inapplicable
+C1_walk_7,H4,vector only,h4_datasets.csv
+C1_walk_7,H5,real dataset,inapplicable
+C1_walk_7,H6,simulated,untested; see h6_datasets.csv
+C1_walk_8,H1,outside designated set,inapplicable
+C1_walk_8,H2,designated,see decisions.csv for each A/B conjunction
+C1_walk_8,H3,outside designated set,inapplicable
+C1_walk_8,H4,vector only,h4_datasets.csv
+C1_walk_8,H5,real dataset,inapplicable
+C1_walk_8,H6,simulated,untested; see h6_datasets.csv
+C1_walk_9,H1,outside designated set,inapplicable
+C1_walk_9,H2,designated,see decisions.csv for each A/B conjunction
+C1_walk_9,H3,outside designated set,inapplicable
+C1_walk_9,H4,vector only,h4_datasets.csv
+C1_walk_9,H5,real dataset,inapplicable
+C1_walk_9,H6,simulated,untested; see h6_datasets.csv
+C3_gpt2_wpos_init,H1,outside designated set,inapplicable
+C3_gpt2_wpos_init,H2,outside designated set,inapplicable
+C3_gpt2_wpos_init,H3,outside designated set,inapplicable
+C3_gpt2_wpos_init,H4,vector only,h4_datasets.csv
+C3_gpt2_wpos_init,H5,real dataset,inapplicable
+C3_gpt2_wpos_init,H6,outside steering phases,inapplicable
+C3_grokking_WE_init,H1,outside designated set,inapplicable
+C3_grokking_WE_init,H2,designated,see decisions.csv for each A/B conjunction
+C3_grokking_WE_init,H3,outside designated set,inapplicable
+C3_grokking_WE_init,H4,vector only,h4_datasets.csv
+C3_grokking_WE_init,H5,real dataset,inapplicable
+C3_grokking_WE_init,H6,simulated and model,untested; see h6_datasets.csv
+C3_grokking_WE_memorised,H1,outside designated set,inapplicable
+C3_grokking_WE_memorised,H2,outside designated set,inapplicable
+C3_grokking_WE_memorised,H3,outside designated set,inapplicable
+C3_grokking_WE_memorised,H4,vector only,h4_datasets.csv
+C3_grokking_WE_memorised,H5,real dataset,inapplicable
+C3_grokking_WE_memorised,H6,model checkpoint,untested; see h6_datasets.csv
+C3_llama_counting_init,H1,outside designated set,inapplicable
+C3_llama_counting_init,H2,outside designated set,inapplicable
+C3_llama_counting_init,H3,outside designated set,inapplicable
+C3_llama_counting_init,H4,vector only,h4_datasets.csv
+C3_llama_counting_init,H5,real dataset,inapplicable
+C3_llama_counting_init,H6,outside steering phases,inapplicable
+C3_llama_months_init,H1,outside designated set,inapplicable
+C3_llama_months_init,H2,designated,see decisions.csv for each A/B conjunction
+C3_llama_months_init,H3,outside designated set,inapplicable
+C3_llama_months_init,H4,vector only,h4_datasets.csv
+C3_llama_months_init,H5,real dataset,inapplicable
+C3_llama_months_init,H6,simulated,untested; see h6_datasets.csv
+C3_llama_weekdays_init,H1,outside designated set,inapplicable
+C3_llama_weekdays_init,H2,designated,see decisions.csv for each A/B conjunction
+C3_llama_weekdays_init,H3,outside designated set,inapplicable
+C3_llama_weekdays_init,H4,vector only,h4_datasets.csv
+C3_llama_weekdays_init,H5,real dataset,inapplicable
+C3_llama_weekdays_init,H6,simulated,untested; see h6_datasets.csv
+C3_tms_dense,H1,outside designated set,inapplicable
+C3_tms_dense,H2,outside designated set,inapplicable
+C3_tms_dense,H3,outside designated set,inapplicable
+C3_tms_dense,H4,vector only,h4_datasets.csv
+C3_tms_dense,H5,real dataset,inapplicable
+C3_tms_dense,H6,outside steering phases,inapplicable
+R1_gpt2_wpos,H1,outside designated set,inapplicable
+R1_gpt2_wpos,H2,designated,see decisions.csv for each A/B conjunction
+R1_gpt2_wpos,H3,outside designated set,inapplicable
+R1_gpt2_wpos,H4,vector and classification,h4_datasets.csv
+R1_gpt2_wpos,H5,real dataset,inapplicable
+R1_gpt2_wpos,H6,simulated,untested; see h6_datasets.csv
+R2_grokking_WE,H1,designated,see decisions.csv for each A/B conjunction
+R2_grokking_WE,H2,outside designated set,inapplicable
+R2_grokking_WE,H3,outside designated set,inapplicable
+R2_grokking_WE,H4,vector and classification,h4_datasets.csv
+R2_grokking_WE,H5,real dataset,inapplicable
+R2_grokking_WE,H6,simulated and model,untested; see h6_datasets.csv
+R3_tms_n20,H1,outside designated set,inapplicable
+R3_tms_n20,H2,outside designated set,inapplicable
+R3_tms_n20,H3,outside designated set,inapplicable
+R3_tms_n20,H4,vector only,h4_datasets.csv
+R3_tms_n20,H5,real dataset,inapplicable
+R3_tms_n20,H6,outside steering phases,inapplicable
+R3_tms_n6,H1,outside designated set,inapplicable
+R3_tms_n6,H2,outside designated set,inapplicable
+R3_tms_n6,H3,outside designated set,inapplicable
+R3_tms_n6,H4,vector only,h4_datasets.csv
+R3_tms_n6,H5,real dataset,inapplicable
+R3_tms_n6,H6,outside steering phases,inapplicable
+R3_tms_n8,H1,outside designated set,inapplicable
+R3_tms_n8,H2,outside designated set,inapplicable
+R3_tms_n8,H3,outside designated set,inapplicable
+R3_tms_n8,H4,vector only,h4_datasets.csv
+R3_tms_n8,H5,real dataset,inapplicable
+R3_tms_n8,H6,outside steering phases,inapplicable
+R4_llama_counting,H1,outside designated set,inapplicable
+R4_llama_counting,H2,designated,see decisions.csv for each A/B conjunction
+R4_llama_counting,H3,outside designated set,inapplicable
+R4_llama_counting,H4,vector and classification,h4_datasets.csv
+R4_llama_counting,H5,real dataset,inapplicable
+R4_llama_counting,H6,simulated,untested; see h6_datasets.csv
+R4b_pythia_counting,H1,outside designated set,inapplicable
+R4b_pythia_counting,H2,designated,see decisions.csv for each A/B conjunction
+R4b_pythia_counting,H3,outside designated set,inapplicable
+R4b_pythia_counting,H4,vector and classification,h4_datasets.csv
+R4b_pythia_counting,H5,real dataset,inapplicable
+R4b_pythia_counting,H6,simulated,untested; see h6_datasets.csv
+R5a_llama_weekdays,H1,designated,see decisions.csv for each A/B conjunction
+R5a_llama_weekdays,H2,outside designated set,inapplicable
+R5a_llama_weekdays,H3,outside designated set,inapplicable
+R5a_llama_weekdays,H4,vector and classification,h4_datasets.csv
+R5a_llama_weekdays,H5,real dataset,inapplicable
+R5a_llama_weekdays,H6,simulated and model,untested; see h6_datasets.csv
+R5a_llama_weekdays_means,H1,outside designated set,inapplicable
+R5a_llama_weekdays_means,H2,outside designated set,inapplicable
+R5a_llama_weekdays_means,H3,outside designated set,inapplicable
+R5a_llama_weekdays_means,H4,vector only,h4_datasets.csv
+R5a_llama_weekdays_means,H5,real dataset,inapplicable
+R5a_llama_weekdays_means,H6,outside steering phases,inapplicable
+R5b_llama_months,H1,designated,see decisions.csv for each A/B conjunction
+R5b_llama_months,H2,outside designated set,inapplicable
+R5b_llama_months,H3,outside designated set,inapplicable
+R5b_llama_months,H4,vector and classification,h4_datasets.csv
+R5b_llama_months,H5,real dataset,inapplicable
+R5b_llama_months,H6,simulated and model,untested; see h6_datasets.csv
+R5b_llama_months_means,H1,outside designated set,inapplicable
+R5b_llama_months_means,H2,outside designated set,inapplicable
+R5b_llama_months_means,H3,outside designated set,inapplicable
+R5b_llama_months_means,H4,vector only,h4_datasets.csv
+R5b_llama_months_means,H5,real dataset,inapplicable
+R5b_llama_months_means,H6,outside steering phases,inapplicable
+R5c_llama_days_time,H1,outside designated set,inapplicable
+R5c_llama_days_time,H2,outside designated set,inapplicable
+R5c_llama_days_time,H3,designated,see decisions.csv for each A/B conjunction
+R5c_llama_days_time,H4,vector and classification,h4_datasets.csv
+R5c_llama_days_time,H5,real dataset,inapplicable
+R5c_llama_days_time,H6,simulated and model,untested; see h6_datasets.csv
+R6_llama_years,H1,outside designated set,inapplicable
+R6_llama_years,H2,designated,see decisions.csv for each A/B conjunction
+R6_llama_years,H3,outside designated set,inapplicable
+R6_llama_years,H4,vector and classification,h4_datasets.csv
+R6_llama_years,H5,real dataset,inapplicable
+R6_llama_years,H6,simulated,untested; see h6_datasets.csv
+R7_llama_colors,H1,outside designated set,inapplicable
+R7_llama_colors,H2,outside designated set,inapplicable
+R7_llama_colors,H3,outside designated set,inapplicable
+R7_llama_colors,H4,vector only,h4_datasets.csv
+R7_llama_colors,H5,real dataset,inapplicable
+R7_llama_colors,H6,simulated and model,untested; see h6_datasets.csv
+R8a_llama_temperature,H1,outside designated set,inapplicable
+R8a_llama_temperature,H2,designated,see decisions.csv for each A/B conjunction
+R8a_llama_temperature,H3,outside designated set,inapplicable
+R8a_llama_temperature,H4,vector and classification,h4_datasets.csv
+R8a_llama_temperature,H5,real dataset,inapplicable
+R8a_llama_temperature,H6,simulated,untested; see h6_datasets.csv
+R8b_llama_age,H1,outside designated set,inapplicable
+R8b_llama_age,H2,designated,see decisions.csv for each A/B conjunction
+R8b_llama_age,H3,outside designated set,inapplicable
+R8b_llama_age,H4,vector and classification,h4_datasets.csv
+R8b_llama_age,H5,real dataset,inapplicable
+R8b_llama_age,H6,simulated,untested; see h6_datasets.csv
+R9_llama_truth_cities,H1,outside designated set,inapplicable
+R9_llama_truth_cities,H2,outside designated set,inapplicable
+R9_llama_truth_cities,H3,outside designated set,inapplicable
+R9_llama_truth_cities,H4,vector only,h4_datasets.csv
+R9_llama_truth_cities,H5,real dataset,inapplicable
+R9_llama_truth_cities,H6,outside steering phases,inapplicable
+blob,H5,catalog-eligible synthetic test rows,benchmark.csv
+clusters,H5,catalog-eligible synthetic test rows,benchmark.csv
+polytope,H5,catalog-eligible synthetic test rows,benchmark.csv
+line,H5,catalog-eligible synthetic test rows,benchmark.csv
+arc,H5,catalog-eligible synthetic test rows,benchmark.csv
+ellipse,H5,catalog-eligible synthetic test rows,benchmark.csv
+helix,H5,catalog-eligible synthetic test rows,benchmark.csv
+ringing,H5,catalog-eligible synthetic test rows,benchmark.csv
+disc,H5,catalog-eligible synthetic test rows,benchmark.csv
+sphere,H5,catalog-eligible synthetic test rows,benchmark.csv
+paraboloid,H5,catalog-eligible synthetic test rows,benchmark.csv
+cone,H5,catalog-eligible synthetic test rows,benchmark.csv
+torus,H5,catalog-eligible synthetic test rows,benchmark.csv
