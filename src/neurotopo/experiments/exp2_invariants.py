@@ -71,6 +71,28 @@ def invariants_row(dataset_id: str, seed: int, t: dict, stab: bool = True) -> di
     return row
 
 
+def agreement(df: pd.DataFrame) -> np.ndarray:
+    """Compare the complete per-cloud vectors required by the descriptive H4 endpoint."""
+    fitted = df[["A_b0", "A_b1", "A_b2"]].to_numpy()
+    persistent = df[["b0", "b1_mc", "b2_mc"]].to_numpy()
+    return np.all(fitted == persistent, axis=1)
+
+
+def save_summary(df, out):
+    """Expose the full vector and the loop/void-only endpoint side by side."""
+    df["agree_betti"] = agreement(df)
+    df["agree_b1b2"] = (df["A_b1"] == df["b1_mc"]) & (df["A_b2"] == df["b2_mc"])
+    from neurotopo.stats.tests import bh
+    df["q_top_loop"] = bh(df["p_top_loop"].to_numpy())
+    df["q_top_void"] = bh(df["p_top_void"].to_numpy())
+    df.to_csv(out / "invariants.csv", index=False)
+    write_json(out / "summary.json", {"n": len(df), "agree_full_n": int(df["agree_betti"].sum()),
+               "agree_full_A_vs_B": float(df["agree_betti"].mean()), "agree_b1b2_n": int(df["agree_b1b2"].sum()),
+               "agree_b1b2_A_vs_B": float(df["agree_b1b2"].mean()), "n_with_loop_mc": int((df["b1_mc"] > 0).sum()),
+               "n_with_void_mc": int((df["b2_mc"] > 0).sum()), "n_loop_q05": int((df["q_top_loop"] < .05).sum()),
+               "loops_q05": df.loc[df["q_top_loop"] < .05, "id"].tolist()})
+
+
 def run() -> None:
     cfg = config.load()
     out = out_dir("exp2")
@@ -87,14 +109,4 @@ def run() -> None:
     a = pd.read_csv(config.path("results") / "exp0" / "real_topology.csv")
     df = df.merge(a[["id", "family", "b0", "b1", "b2", "rho_A"]].rename(columns={"b0": "A_b0", "b1": "A_b1", "b2": "A_b2"}),
                   on="id")
-    df["agree_b1b2"] = (df["A_b1"] == df["b1_mc"]) & (df["A_b2"] == df["b2_mc"])
-    # Descriptive multiplicity control across the 44 loop / void tests (audit, D6): Benjamini-Hochberg q-values.
-    from neurotopo.stats.tests import bh
-    df["q_top_loop"] = bh(df["p_top_loop"].to_numpy())
-    df["q_top_void"] = bh(df["p_top_void"].to_numpy())
-    df.to_csv(out / "invariants.csv", index=False)
-    write_json(out / "summary.json", {"n": int(len(df)), "agree_b1b2_A_vs_B": float(df["agree_b1b2"].mean()),
-                                      "n_with_loop_mc": int((df["b1_mc"] > 0).sum()),
-                                      "n_with_void_mc": int((df["b2_mc"] > 0).sum()),
-                                      "n_loop_q05": int((df["q_top_loop"] < 0.05).sum()),
-                                      "loops_q05": df.loc[df["q_top_loop"] < 0.05, "id"].tolist()})
+    save_summary(df, out)

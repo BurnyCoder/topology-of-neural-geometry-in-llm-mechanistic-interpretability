@@ -31,7 +31,13 @@ from neurotopo.tda import diagrams, estimators, nulls
 from neurotopo.geometry.pca import rms_normalise
 
 log = logging.getLogger(__name__)
-CONTRACTIBLE = {"blob", "line", "helix", "ringing", "disc", "paraboloid"}   # families that are always (1,0,0)
+def contractible_cohort(df: pd.DataFrame) -> np.ndarray:
+    """The registered eligible, connected, contractible catalog objects, including open arcs and caps.
+
+    For these thirteen known families the vector determines this predicate. Acyclicity alone
+    would not imply contractibility for a general topological space (Hatcher, Algebraic Topology).
+    """
+    return (df["resolvable"] & df["b0"].eq(1) & df["b1"].eq(0) & df["b2"].eq(0)).to_numpy()
 
 
 def _summ(points, tau, frac):
@@ -59,7 +65,7 @@ def predictions(df: pd.DataFrame, t: dict) -> dict[str, np.ndarray]:
         "P_alpha_universal": np.c_[b0, df["b1_alpha_univ"], df["b2_alpha_univ"]],
         "S_rips_universal": np.c_[b0, df["b1_rips_univ"], df["b2_alpha_univ"]],
         "Ba_fixed_pi": np.c_[b0, (pi1 > t["pi0_1"]).sum(1), (pi2 > t["pi0_2"]).sum(1)],
-        "Bb_family_implied": np.stack([fmap.get(f, np.array([1, 0, 0])) for f in fam_pred]),
+        "Bb_family_implied": np.stack([fmap[f] for f in fam_pred]),
         "Bc_majority": np.tile(np.array(t["majority"]), (len(df), 1)),
     }
     return out
@@ -108,6 +114,24 @@ def run() -> None:
     df.drop(columns=["pi1_top", "pi2_top"]).to_csv(out / "per_cloud.csv.gz", index=False)
     np.savez_compressed(out / "pi_top.npz", pi1=np.array(df["pi1_top"].tolist()), pi2=np.array(df["pi2_top"].tolist()))
 
+    score_table(df, t, sset, sub, out)
+
+
+def rescore() -> None:
+    """Replay the published scoring analysis using the deposited row-level predictions."""
+    out = out_dir("exp1")
+    df = pd.read_csv(out / "per_cloud.csv.gz", low_memory=False)
+    with np.load(out / "pi_top.npz") as pi:
+        df["pi1_top"], df["pi2_top"] = list(pi["pi1"]), list(pi["pi2"])
+    t = read_json(config.path("results") / "power/val_tuning.json")
+    val = pd.read_json(config.path("results") / "power/val_summaries.json.gz")
+    t["majority"] = list(map(int, val.loc[val["resolvable"], ["b0","b1","b2"]].value_counts().idxmax()))
+    score_table(df, t, synthetic.load("test"), np.flatnonzero(synthetic.baseline_subset(df)), out)
+
+
+def score_table(df, t, sset, sub, out):
+    """Summarise the identical empirical estimands in a full run and an archived-row replay."""
+    cfg = config.load()
     preds = predictions(df, t)
     res = df["resolvable"].to_numpy()
     fam_code = df["family"].to_numpy()
@@ -139,7 +163,7 @@ def run() -> None:
         est, lo, hi = cluster_bootstrap(both, chunks, f, n_boot=nb)
         diffs[f"P - {name}"] = {"estimate": est, "ci": [lo, hi]}
     # False-positive rates on resolvable contractible clouds (GT b1 = b2 = 0, non-point-set families), per N-bin.
-    contr = res & np.isin(df["family_name"], list(CONTRACTIBLE))
+    contr = contractible_cohort(df)
     fpr = {}
     for name, p in preds.items():
         fp = (p[:, 1] > 0) | (p[:, 2] > 0)
@@ -148,11 +172,17 @@ def run() -> None:
     blobs = np.flatnonzero(df["family_name"].to_numpy() == "blob")
     calib = {}
     for b in range(4):
-        idx = blobs[df["n_bin"].to_numpy()[blobs] == b][:300]
+        idx = blobs[df["n_bin"].to_numpy()[blobs] == b]
         pv = np.concatenate([np.asarray(x) for x in Parallel(n_jobs=-1)(delayed(_blob_pvalues)(sset.cloud(i)) for i in idx)])
         calib[int(b)] = {"fwer_alpha_universal": float((df["b1_alpha_univ"].to_numpy()[idx] > 0).mean()),
                          "ks_uniform_D": float(stats.kstest(pv, "uniform").statistic) if pv.size else None,
-                         "n_pvalues": int(pv.size)}
+                         "n_pvalues": int(pv.size), "n_clouds": len(idx), "by_noise_bin": {}}
+        for noise in sorted(df["noise_bin"].unique()):
+            sel = idx[df["noise_bin"].to_numpy()[idx] == noise]
+            hits = df["b1_alpha_univ"].to_numpy()[sel] > 0
+            rate, lo, hi = cluster_bootstrap(hits, df["chunk"].to_numpy()[sel], np.mean, n_boot=nb)
+            calib[int(b)]["by_noise_bin"][int(noise)] = {"n": len(sel), "hits": int(hits.sum()),
+                                                         "rate": rate, "cluster_ci": [lo, hi]}
     # Accuracy versus resolvability (all clouds, binned rho_A).
     bins = [0, 0.25, 0.5, 1, 2, 4, np.inf]
     rb = pd.cut(df["rho_A"].replace(np.inf, 1e9), bins, right=False)
@@ -216,7 +246,7 @@ def outlier_check() -> None:
                       "expected_with_outliers": expected_outlier_rate(df["n"].to_numpy()[nbin == b],
                                                                       gen["outlier_prob"], gen["outlier_frac_max"])}
              for b in range(4)}
-    contr = df["resolvable"].to_numpy() & np.isin(df["family_name"], list(CONTRACTIBLE))
+    contr = contractible_cohort(df)
     chunks = df["chunk"].to_numpy()
     nb = cfg["synthetic"]["bootstrap"]
     rates = {}

@@ -41,4 +41,6 @@ def circular_coordinates(points: np.ndarray, prime: int = 47, max_landmarks: int
     if dgm1.size:
         order = np.argsort(dgm1[:, 0] - dgm1[:, 1])                  # most persistent first (DREiMac ordering)
         bar = (dgm1[order[cocycle_idx]] / 2.0).tolist()
-    return {"theta": np.asarray(theta, dtype=np.float64), "bar": bar, "n_landmarks": n_land, "error": None}
+    uncovered = int(np.sum(cc._dist_land_data.min(axis=0) >= cc._r_cover))
+    return {"theta": np.asarray(theta, dtype=np.float64), "bar": bar, "n_landmarks": n_land, "error": None,
+            "uncovered": uncovered, "cover_radius": float(cc._r_cover)}

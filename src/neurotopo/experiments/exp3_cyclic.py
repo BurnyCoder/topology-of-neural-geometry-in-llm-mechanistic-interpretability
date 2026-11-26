@@ -53,6 +53,7 @@ def method_b(dataset_id: str, seed: int) -> dict:
     return {"id": dataset_id, "p_loop": p_loop, "loop": p_loop < config.load()["tda"]["alpha_level"],
             "theta3_error": cc3["error"], "theta10_error": cc10["error"], "rips_bar3": cc3["bar"],
             "alpha_top_bar": None if top is None else top.tolist(), "rips_alpha_overlap": overlap,
+            "coverage3": cc3.get("uncovered"), "coverage10": cc10.get("uncovered"),
             "records3": rec3, "records10": rec10}
 
 
