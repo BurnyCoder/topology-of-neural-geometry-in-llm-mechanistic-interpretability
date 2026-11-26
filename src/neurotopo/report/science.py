@@ -5,7 +5,7 @@ import subprocess
 
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
+
 
 from neurotopo import config
 from neurotopo.experiments.common import read_json
@@ -60,6 +60,7 @@ def comparison():
 
 
 def figure():
+    import matplotlib.pyplot as plt
     df = pd.read_csv(data()/"benchmark.csv")
     fig,axes = plt.subplots(1,3,figsize=(10,3.8),sharey=True)
     colors = {"P_alpha_universal":"#1c697c","Bb_family_implied":"#ae5925"}
@@ -88,7 +89,7 @@ def dossier():
         raise ValueError("A claim has missing local evidence")
     ledger.to_csv(path/"claims.csv", index=False)
     # This is a provenance inventory, not an automated semantic entailment score.
-    files = subprocess.check_output(["git","ls-files","-z"],cwd=root).decode().split("\0")
+    files = subprocess.check_output(["git","ls-files","--cached","--others","--exclude-standard","-z"],cwd=root).decode().split("\0")
     groups = {"logs/":"Dated observations and environment records", "docs/data/":"Explorer rendering from measured arrays",
               "docs/figures/":"Rendered measurements or simulation diagrams", "reports/generated/":"Report table from results",
               "paper/generated/":"Publication scalars from results","results/":"Measured or computed artifact",

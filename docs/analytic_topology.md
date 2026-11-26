@@ -46,5 +46,5 @@ The **margin** m is a family-specific heuristic based on selected diameters and 
 ## Numerical check
 
 The analytic Betti numbers are compared with alpha-complex persistent homology of dense noise-free random samples of each shape: 10,000 samples for surfaces, and 2,000 slightly jittered samples for curves, whose Delaunay triangulation can otherwise grow superlinearly ([Erickson 2003](https://doi.org/10.1007/s00454-003-2927-4): Ω(n^{3/2}) for a helix with about √n points per turn, Thm 2.3; every point is joined to every point less than a full turn away, Lemma 2.1, so a helix with T turns has about n²/T edges). Only bars with π > 4 that are born below m/4 are counted.
-- The exact topology holds at scales below the margin. A loop born at about m/2 is a near-closure, for example the two ends of a helix with a small gap. It is reported separately as `near_closure_loops`.
+- The dense check uses the margin to select a comparison scale. A loop born near half the endpoint distance may reflect a near-closure. The margin gives no guarantee that a sampled offset has the analytic topology at all smaller radii. The code reports candidate `near_closure_loops` separately.
 - Results are in `results/exp0/dense_check.csv` and summarised in [reports/exp0_analytic.md](../reports/exp0_analytic.md).

@@ -16,7 +16,8 @@ def run():
         if shutil.which("pdflatex") and shutil.which("bibtex"):
             cmd = ["pdflatex", "-interaction=nonstopmode", "-halt-on-error", f"-output-directory={dest}", "main.tex"]
             subprocess.run(cmd, cwd=paper, env=env, check=True)
-            subprocess.run(["bibtex", "main"], cwd=dest, env={**env, "BIBINPUTS":str(paper)+os.pathsep}, check=True)
+            shutil.copyfile(paper/"references.bib", dest/"references.bib")
+            subprocess.run(["bibtex", "main"], cwd=dest, env=env, check=True)
             for _ in range(2):
                 subprocess.run(cmd, cwd=paper, env=env, check=True)
         else:

@@ -15,6 +15,8 @@ The registered H1 result reproduces. Neither method meets the full criterion for
 
 The replay starts with {{sci.inputs}} SHA-256-verified exports and the pinned generator. It independently computes PCA scores from the smaller scatter eigensystem, evaluates alpha persistence directly in radius units, and draws fresh samples for all {{sci.null_arrays}} deposited dataset/seed arrays. Every top-loop and top-void exceedance count reproduces. A match with stored simulations checks reproducibility of the fitted reference model. For each dataset the evidence table gives the sample size, fitted family, measured 3D statistics, raw and BH-adjusted values, conditional Monte Carlo tail intervals, subsampling frequencies and available higher-dimensional checks. [Input hashes](../../results/science/inputs.json) · [Fresh draws versus deposit](../../results/science/null_replay.csv) · [Projection evidence per dataset](../../results/science/dataset_assessment.csv)
 
+[Machine-readable commit timestamps and H6 artifact search](../../results/science/chronology.json)
+
 ## Hypotheses and missing observations
 
 | Hypothesis | Decision under the stated rule | Interpretation |
@@ -75,6 +77,8 @@ For each alpha birth path or triangulated shell, we tested mod-two closure, supp
 ## Material claim dispositions
 
 The files below map each scientific conclusion to the evidence used to retain, narrow, correct or withdraw it. The file inventory identifies source, generated and historical artifacts. The original registration and dated run records retain their historical text. The present report supersedes earlier interpretations where they differ. [Machine-readable claims](../../results/science/claims.csv) · [File inventory](../../results/science/inventory.csv) · [Previous published version](https://github.com/BurnyCoder/topology-of-neural-geometry-in-llm-mechanistic-interpretability/tree/880e7a353c2172f019ef449cc0ff3666a39955b3)
+
+[Claim occurrence index by file and line](../../results/science/claim_occurrences.csv). The index locates repeated terminology. The dispositions below document the scientific judgments.
 
 @@claims@@
 

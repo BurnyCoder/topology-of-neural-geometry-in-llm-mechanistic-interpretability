@@ -50,8 +50,8 @@ def observed_max(y):
     return np.array(stats)
 
 
-def replay():
-    """Generate every seed-zero array and primary robustness seed before reading its deposited counterpart."""
+def verify_inputs():
+    """Verify the manifest identity, every file digest and the source checkout."""
     inputs = config.path("inputs")
     # Digest of the manifest retrieved independently from the pinned HF revision (see protocol).
     manifest_sha = hashlib.sha256((inputs/"manifest.json").read_bytes()).hexdigest()
@@ -61,6 +61,15 @@ def replay():
     if commit != config.load()["source_commit"]:
         raise ValueError("Source checkout differs from the pinned revision")
     count = hub.verify(inputs)
+    out = out_dir("science")
+    write_json(out / "inputs.json", {"verified_files": count, "hf_revision": config.load()["hf"]["revision"],
+                                    "source_commit": commit, "manifest_sha256": manifest_sha,
+                                    "bytes": sum(x["bytes"] if "bytes" in x else (inputs/name).stat().st_size
+                                                 for name,x in json.loads((inputs/"manifest.json").read_text())["files"].items())})
+
+def replay():
+    """Generate fresh null draws independently of the deposited arrays."""
+    verify_inputs()
     out = out_dir("science")
     ref = pd.read_csv(config.path("results") / "exp2/invariants.csv").set_index("id")
     rows = []
@@ -88,10 +97,7 @@ def replay():
                                      same_decision=(p < .05) == (old < .05)))
             log.info("Fresh nulls checked for %s", did)
             pd.DataFrame(rows).to_csv(out / "null_replay.csv", index=False)
-    write_json(out / "inputs.json", {"verified_files": count, "hf_revision": config.load()["hf"]["revision"],
-                                    "source_commit": commit, "manifest_sha256": manifest_sha,
-                                    "bytes": sum(x["bytes"] if "bytes" in x else (inputs/name).stat().st_size
-                                                 for name,x in json.loads((inputs/"manifest.json").read_text())["files"].items())})
+
 
 
 def simulate_one(n_groups, copies, fixed_residual, seed):

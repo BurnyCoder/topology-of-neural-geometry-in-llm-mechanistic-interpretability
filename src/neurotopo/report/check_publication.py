@@ -90,13 +90,13 @@ def compare(replica):
         b = pd.read_csv(replica/"results"/name,low_memory=False)
         pd.testing.assert_frame_equal(a,b,check_exact=False,atol=1e-10,rtol=1e-9)
         summary[name] = len(a)
-    for name in ("science/hypotheses.json","science/splits.json","science/inputs.json"):
+    for name in ("science/hypotheses.json","science/splits.json","science/inputs.json","science/chronology.json"):
         if read_json(root/name)!=read_json(replica/"results"/name):
             raise ValueError(f"Clean-run JSON differs: {name}")
     write_json(root/"science/reproduction.json",{"replica_commit":subprocess.check_output(
         ["git","rev-parse","HEAD"],cwd=replica,text=True).strip(),"input_manifest_sha256":read_json(root/"science/inputs.json")["manifest_sha256"],
         "table_rows_compared":summary,"absolute_tolerance":1e-10,"relative_tolerance":1e-9,
-        "json_compared":["hypotheses","splits","inputs"]})
+        "json_compared":["hypotheses","splits","inputs","chronology"]})
 
 
 if __name__=="__main__":

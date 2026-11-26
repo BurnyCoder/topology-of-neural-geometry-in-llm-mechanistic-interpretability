@@ -1,6 +1,7 @@
 """Reconstruct registered endpoints from original fits, coordinates and row-level observations."""
 from itertools import combinations
 import logging
+import subprocess
 
 import numpy as np
 import pandas as pd
@@ -118,6 +119,19 @@ def run():
     for key in ["A_b0","A_b1","A_b2","b0","b1_mc","b2_mc"]:
         per[key] = inv[key].to_numpy()
     per.to_csv(out / "h4_datasets.csv",index=False)
+    # Establish which measurements existed in the audited revision. Future runs are separate evidence.
+    old_tree = "880e7a353c2172f019ef449cc0ff3666a39955b3"
+    deposits = ["results/exp6_sim/simulated_steering.json","results/exp6/llama_steering.json","results/exp6/grokking_steering.json"]
+    recorded = subprocess.check_output(["git","ls-tree","-r","--name-only",old_tree,"--",*deposits],
+                                       cwd=config.ROOT,text=True).splitlines()
+    if recorded:
+        raise ValueError(f"Original H6 outcomes require adjudication: {recorded}")
+    chronology = {}
+    for revision in ["b6cc417","70171c9","26b5a32","f82dfe1",old_tree]:
+        sha,author,committer = subprocess.check_output(["git","show","-s","--format=%H%n%aI%n%cI",revision],
+                                                       cwd=config.ROOT,text=True).strip().splitlines()
+        chronology[revision] = {"sha":sha,"author_date":author,"committer_date":committer}
+    write_json(out/"chronology.json", {"revisions":chronology, "audited_H6_paths":deposits,"H6_deposits":recorded})
     steer = []
     for d in [*cyc,"R7_llama_colors",*ordinal,*init,*c1]:
         steer.append(dict(id=d, detected_top3_loop=bool(inv.loc[d,"p_top_loop"]<.05),
