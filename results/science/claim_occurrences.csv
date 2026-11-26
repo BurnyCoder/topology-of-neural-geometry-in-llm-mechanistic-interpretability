@@ -1384,7 +1384,7 @@ Representative cycles and shells,src/neurotopo/report/numbers.py,209
 "Voids, triangulations and scale invariants",src/neurotopo/report/numbers.py,"43,140,141,185,186,194,201,202,205,206,207,208,210,211,212,213,231,232,233,234,235,236,425,430,443,444,445,456,463"
 "Exploratory similarity, power and selection",src/neurotopo/report/numbers.py,308
 Resolved bibliography and estimator displays,src/neurotopo/report/pdf.py,"1,15,24,27"
-Identity of inputs and source,src/neurotopo/report/publish.py,55
+Identity of inputs and source,src/neurotopo/report/publish.py,80
 H3 days with times,src/neurotopo/report/science.py,119
 H4 full-vector vs loop/void agreement,src/neurotopo/report/science.py,"147,149"
 H4 classifier comparison,src/neurotopo/report/science.py,"33,147,149"

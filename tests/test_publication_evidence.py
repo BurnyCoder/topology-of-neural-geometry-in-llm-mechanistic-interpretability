@@ -91,3 +91,15 @@ def test_rendered_benchmark_is_independent_of_json_key_order(monkeypatch):
         scores[name] = dict(reversed(scores[name].items()))
     monkeypatch.setattr(build, "read_json", lambda _: scores)
     assert build.exp1_table() == expected
+
+def test_mirror_preserves_historical_git_bytes_and_normalizes_new_text():
+    import hashlib
+    from neurotopo.report.publish import mirrored_text
+
+    legacy = b"first\r\nsecond\r\n"
+    canonical = b"first\nsecond\n"
+    git_id = lambda data: hashlib.sha1(b"blob "+str(len(data)).encode()+b"\0"+data).hexdigest()
+    assert mirrored_text(legacy, git_id(legacy)) == legacy
+    assert mirrored_text(legacy, git_id(canonical)) == canonical
+    assert mirrored_text(legacy, None) == canonical
+    assert mirrored_text(b"a\0\r\nb", None) == b"a\0\r\nb"
