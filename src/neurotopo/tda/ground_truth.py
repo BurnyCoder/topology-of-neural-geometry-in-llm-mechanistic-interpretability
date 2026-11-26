@@ -1,17 +1,10 @@
 """Noise-and-coverage scale of a cloud relative to a shape, and resolvability of the shape's topology.
 
-Global context: an exact topology (Method A) is only observable in data if the smallest geometric feature whose
-closing or collapse would alter it (the margin m: a gap, or a hole or tube diameter) is large compared with the
-cloud's noise and sampling gaps. The preregistration (section 3) defines
-    nu = median(distance from each data point to the shape) + q95(distance from each shape sample to its
-         nearest data point),
-the first term measuring noise, the second the largest coverage gaps, and calls the topology resolvable when
-rho_A = m / (2 nu) >= 1. This is a heuristic, not a theorem: balls of radius nu grown from both sides of a gap of
-size m meet once 2 nu >= m. Its rigorous analogue is the sampling theorem of Niyogi, Smale & Weinberger (2008,
-doi:10.1007/s00454-008-9053-2, Prop. 3.1: an (eps/2)-dense sample of a manifold with reach tau recovers its
-homology for eps < sqrt(3/5) tau), whose reach we do not estimate. The same definition is used for real clouds (shape = fitted shape) and synthetic
-clouds (shape = noise-free ground truth), so Exp1's "resolvable" subset and the real data's margin ratios
-are comparable.
+Method A compares a family-specific feature-size proxy m with twice a sampled noise-and-coverage
+scale. The registered cutoff is a heuristic eligibility criterion. Proposition 3.1 of
+Niyogi, Smale & Weinberger requires a dense sample from a submanifold with a reach bound
+(https://doi.org/10.1007/s00454-008-9053-2). We do not estimate reach. For real data the
+distance reference is a sampled fit. For synthetic data it is the recorded noise-free design.
 """
 
 from __future__ import annotations

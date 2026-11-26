@@ -5,7 +5,7 @@ bars under the design-matched MC null (primary) and the universal null (alpha A 
 descriptive), b0 by the validation-tuned single-linkage rule, the characteristic scale r_c, all three Betti
 numbers and chi at r_c (deviation D12: b0 is now also read at r_c), genus (closed surfaces only), a Betti-number
 label (not a homotopy class; invariants.betti_label), stability over 200 subsamples of 80% (the source's
-subsample seeds), and agreement with the exact topology of the fitted shape (Exp0).
+subsample seeds), and agreement with the fitted catalog vector (Exp0).
 """
 
 from __future__ import annotations

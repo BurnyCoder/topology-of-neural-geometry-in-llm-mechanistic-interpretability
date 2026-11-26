@@ -1,9 +1,8 @@
-"""Exp0: exact topology of the fitted shapes (Method A) and the travel-around-the-hole test on them.
+"""Exp0: fitted-shape catalog and semantic coordinates.
 
-Global context (reports/preregistration.md, sections 3, 5, 6): every source fit is a uniquely parametrised
-shape, so its Betti numbers, chi, genus and boundary components are exact. This phase
-1. computes them for the 44 real fits, with the margin ratio rho_A = m / (2 nu) that says whether the fitted
-   topology is resolvable at the cloud's noise scale;
+The registered rules (reports/preregistration.md, sections 3, 5 and 6) assign a parameter record
+to each source fit. This phase
+1. computes catalog invariants and the heuristic margin ratio rho_A = m / (2 nu);
 2. reads off the hole coordinate theta_A of every point on fits that have a hole (closed arc, ellipse,
    frustum, torus) and, descriptively, the axial winding of helix fits, and runs the alignment test
    (H1-A for weekdays/months/grokking, H2-A for ordinal sets and controls);
@@ -103,7 +102,7 @@ def synth_row(sset: synthetic.SynthSet, i: int) -> dict:
 
 
 def synth_table(name: str) -> pd.DataFrame:
-    """Ground-truth topology table of the test or val set (parallel over clouds)."""
+    """Registered catalog target table of the test or val set (parallel over clouds)."""
     sset = synthetic.load(name)
     rows = Parallel(n_jobs=-1, batch_size=64)(delayed(synth_row)(sset, i) for i in range(len(sset)))
     df = pd.concat([sset.meta.reset_index(drop=True), pd.DataFrame(rows)], axis=1)
@@ -130,8 +129,8 @@ def dense_check(family: str, params: dict) -> dict:
     t = shape_topology(family, params)
     pts = dense_points(family, params)
     d = diagrams.alpha_diagrams(pts)
-    # The exact topology holds at scales below the topological margin m: a feature born at ~m/2 is a
-    # near-closure (e.g. the two ends of a helix whose gap m is small), which rho_A already quantifies.
+    # This heuristic flags later-born loops as candidate near-closures. A formal offset recovery
+    # guarantee would require additional geometry and sampling conditions.
     # Count only persistent features (pi > 4) born below m / 4.
     cut = t["margin"] / 4 if np.isfinite(t["margin"]) else np.inf
     b1, b2 = (int(((diagrams.ratios(d[k]) > DENSE_PI) & (d[k][:, 0] < cut)).sum()) for k in (1, 2))

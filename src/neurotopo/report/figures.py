@@ -106,7 +106,7 @@ def fig_exp0_helix() -> None:
 
 
 def fig_exp0_margin() -> None:
-    """Exact topology of every real fit: margin ratio rho_A (log scale), marker by Betti vector."""
+    """Fitted catalog topology for every real cloud: margin ratio rho_A (log scale), marker by Betti vector."""
     d = pd.read_csv(config.path("results") / "exp0" / "real_topology.csv")
     d = d[np.isfinite(d["rho_A"])].sort_values("rho_A")
     fig, ax = plt.subplots(figsize=(7, 8))

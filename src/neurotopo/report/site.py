@@ -131,7 +131,7 @@ body{font-family:system-ui,sans-serif;margin:0;display:flex;height:100vh;color:#
 table{border-collapse:collapse}td,th{border:1px solid #ddd;padding:2px 6px}
 .ctl{padding:6px 12px;font-size:13px}
 </style></head><body>
-<div id="side"><b>Topology of neural geometry</b><br><small>Exact topology of fitted shapes (Method A), persistent
+<div id="side"><b>Topology of neural geometry</b><br><small>Catalog topology of fitted shapes (Method A), persistent
 homology (Method B) and semantic alignment in projected coordinates.
 <a href="#" onclick="term('the-method-in-one-minute'); return false">What am I looking at? The method and all terms</a>
 <a href="scientific-audit.html">Scientific audit and corrected scores</a>

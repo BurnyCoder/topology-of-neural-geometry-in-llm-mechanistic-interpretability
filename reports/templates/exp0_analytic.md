@@ -1,4 +1,4 @@
-# Exp0: exact topology of the fitted shapes (Method A)
+# Exp0 fitted-shape catalog and semantic coordinates (Method A)
 
 Date: 2026-11-15; wording corrected 2026-11-22 (independent audit, D14). Code: `src/neurotopo/analytic/`, `src/neurotopo/experiments/exp0_analytic.py`. Results: `results/exp0/`. Rules and derivations: [docs/analytic_topology.md](../docs/analytic_topology.md). Preregistration: sections 3, 5 and 6 (H1-A, H2-A).
 
@@ -6,12 +6,12 @@ For synthetic arcs and caps, the target follows the catalog’s 0.98 closure con
 
 ## Question
 
-The source fits each cloud with a uniquely parametrised shape. What is the exact topology of that shape, and do the data resolve it?
+Which catalog topology does the source assign to each fit, and which fits pass the margin heuristic?
 
 ## Method
 
-- `shape_topology(family, params)` gives (b0, b1, b2), χ, genus, boundary components and the margin m, the size of the smallest gap or diameter whose closing or collapse alters the topology (a feature size in data units, not a parameter change). The inputs are the fitted canonical parameters (`real_results.json`) or the regenerated ground-truth parameters (synthetic clouds).
-- The **margin ratio** is ρ_A = m / (2ν), with ν = median point-to-shape distance + 95th-percentile shape-to-point distance. Both distances use the exact parametrisation (deviation D2). ρ_A ≥ 1 means the topology is resolvable, a heuristic criterion (balls of radius ν from both sides of a gap m meet once 2ν ≥ m), not a recovery theorem ([Niyogi, Smale & Weinberger 2008](https://doi.org/10.1007/s00454-008-9053-2) give one in terms of the reach).
+- `shape_topology(family, params)` gives (b0, b1, b2), χ, genus, boundary components and the margin m, a family-specific gap or diameter measured in data units. The inputs are the fitted canonical parameters (`real_results.json`) or the regenerated ground-truth parameters (synthetic clouds).
+- The **margin ratio** is ρ_A = m / (2ν), with ν = median point-to-shape distance + 95th-percentile shape-to-point distance. Both distances use sampled reference points from the parametrisation. A ratio of at least one passes the operational eligibility rule. Formal reconstruction requires additional conditions on sampling and geometry. [Noise and coverage code](../src/neurotopo/tda/ground_truth.py) · [Niyogi et al.](https://doi.org/10.1007/s00454-008-9053-2)
 - **Hole coordinate θ_A** is the parameter of each point's nearest point on the fit, read from 4,096-point curve grids or 256×256 surface grids. For fits with a hole (cone frustum) θ_A is the azimuth. For helix fits the azimuth is reported as **axial winding**, descriptive only, with the **closure gap**: the axial distance between the first and last concept means, divided by the radius.
 - **Alignment:** concept circular means, R, a permutation p (exact for 7 concepts), and the winding number.
 - **Numerical check:** alpha persistent homology of dense noise-free random samples of each fitted or ground-truth shape. Bars with π > 4 that are born below m/4 are counted. Curves use 2,000 jittered samples, because the Delaunay triangulation of points on a helix grows superlinearly ([Erickson 2003](https://doi.org/10.1007/s00454-003-2927-4): Ω(n^{3/2}) for a helix with about √n points per turn, Thm 2.3; every point is joined to every point less than a full turn away, Lemma 2.1, so a helix with T turns has about n²/T edges).
@@ -29,7 +29,7 @@ The source fits each cloud with a uniquely parametrised shape. What is the exact
 - **Not specific:** {{exp0.gp_wind1}} of {{exp0.gp_helix_n}} Gaussian-process controls fitted as helices also wind (R = {{exp0.gp_R_min:2}}–{{exp0.gp_R_max:2}}), with closure gaps of {{exp0.gp_gap_min:2}}–{{exp0.gp_gap_max:2}} ([fig_exp0_helix](../docs/figures/fig_exp0_helix.png)).
 - **Colours (exploratory):** the cone frustum's azimuth aligns with hue (R = {{exp0.colors.theta.R:3}}, winding {{exp0.colors.theta.w}}). **Years:** the frustum's azimuth does not wind (winding {{exp0.years.theta.w}}).
 - **Numerical check:** agreement {{exp0.dense_agree:3}} over {{exp0.dense_n}} shapes; {{exp0.dense_agree_resolved:3}} where the margin exceeds 4 sample spacings. The failures are apex cones whose 0.001-unit opening is below sampling resolution, and tori whose void needs more samples: their voids are born below the counting cut, but their persistence ratio ({{audit3.tori.pi_min:1}}–{{audit3.tori.pi_max:1}}) stays below the threshold of 4 (checked in the third audit, D9).
-- **Synthetic ground truth:** {{exp0.synth_resolvable:3}} of the 39,000 test clouds have resolvable topology.
+- **Synthetic eligibility.** A fraction {{exp0.synth_resolvable:3}} of the test clouds satisfies the catalog margin criterion. [Ground-truth parameter records](../results/exp0/)
 
 <!-- BEGIN:exp0_topology -->
 <!-- END:exp0_topology -->

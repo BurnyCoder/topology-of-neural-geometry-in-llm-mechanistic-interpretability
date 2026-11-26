@@ -1,16 +1,9 @@
-"""Method A: exact topology of a uniquely parametrised shape from the source's 13 families.
+"""Assign topology and feature-size proxies to the registered fitted-shape catalog.
 
-Global context: the source fitter returns, per cloud, one of 13 shape families with canonical parameters
-(`describe()` in external/shape-fitting/src/neurogeom/shapes/*.py). Each family is a known topological
-space whose homology is textbook material (Hatcher, Algebraic Topology, 2002,
-https://pi.math.cornell.edu/~hatcher/AT/AT.pdf: contractible spaces, S^1, S^2, T^2, finite point sets),
-and compact orientable surfaces with boundary satisfy chi = 2 - 2g - n_boundary. So Betti numbers,
-Euler characteristic, genus and boundary components follow exactly from family + parameters. The
-"margin" is the size, in data units, of the smallest geometric feature whose closing or collapse changes the
-topology: a gap (an open arc's or helix's endpoint gap) or a diameter (a circle's hole, a torus tube). It is a
-feature size, not the parameter change itself (shrinking a circle's radius r to 0 is a change of r; its margin is
-the hole diameter 2r). Divided by twice the cloud's noise scale it says, heuristically, whether the fitted
-topology is resolvable from the data (reports/preregistration.md, section 3; tda/ground_truth.py).
+Hatcher, Algebraic Topology, ch. 2, gives the homology of the ideal objects
+(https://pi.math.cornell.edu/~hatcher/AT/ATpage.html). The source describes
+near-complete arcs and caps as closed and assigns component counts to centres.
+Those conventions and the heuristic margins are documented in docs/analytic_topology.md.
 """
 
 from __future__ import annotations

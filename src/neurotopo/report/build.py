@@ -57,7 +57,7 @@ def exp0_alignment_table() -> str:
 
 
 def exp0_family_homotopy_table() -> str:
-    """Family x exact ground-truth Betti vector on the 39,000 synthetic test clouds (all / resolvable): which
+    """Family x registered catalog Betti vector on the 39,000 synthetic test clouds (all / resolvable): which
     geometric families are topologically equivalent (plan, Exp1)."""
     d = pd.read_csv(res("exp0", "synth_test_topology.csv.gz"), usecols=["family_name", "b0", "b1", "b2", "resolvable"])
     d["Betti vector"] = ["(" + ", ".join(map(str, v)) + ")" if v[0] <= 1 else "(k, 0, 0), k >= 2"
@@ -302,7 +302,8 @@ def render_templates(nums: dict) -> None:
     (gen / "numbers.tex").write_text(numbers.latex_macros(nums) + "\n", encoding="utf-8", newline=chr(10))
 
 
-def run() -> None:
+def render_documents() -> None:
+    """Rebuild the study text, evidence tables and audit figure from completed results."""
     nums = numbers.collect()
     render_templates(nums)
     tables.write_generated("prereg_addendum_A1", tables.addendum())
@@ -317,6 +318,10 @@ def run() -> None:
         from neurotopo.report import science
         science.dossier()
         science.figure()
+
+
+def run() -> None:
+    render_documents()
     figures.fig_pipeline()
     if have("exp0", "real_alignment.json"):
         figures.fig_exp0_helix()
