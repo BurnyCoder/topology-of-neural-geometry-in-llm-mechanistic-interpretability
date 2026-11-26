@@ -1,0 +1,43 @@
+"""Regression cases for the registered cohort, catalog targets and persistence representatives."""
+
+import numpy as np
+import pandas as pd
+
+from neurotopo.experiments.exp1_synthetic import contractible_cohort
+from neurotopo.experiments.exp2_invariants import agreement
+from neurotopo.science.benchmark import angular_target
+from neurotopo.science.cycles import BoundaryBasis
+from neurotopo.stats.circular import order_test
+
+
+def test_false_positive_denominator_uses_the_specific_shape():
+    rows = pd.DataFrame(dict(family_name=["arc", "sphere", "arc", "sphere", "line", "clusters"],
+                             b0=[1, 1, 1, 1, 1, 3], b1=[0, 0, 1, 0, 0, 0],
+                             b2=[0, 0, 0, 1, 0, 0], resolvable=[True, True, True, True, False, True]))
+    assert contractible_cohort(rows).tolist() == [True, True, False, False, False, False]
+
+
+def test_catalog_flag_and_raw_domain_define_distinct_targets():
+    for family, key, closed in [("arc", "extent_frac", (1, 1, 0)), ("sphere", "cap_frac", (1, 0, 1))]:
+        assert angular_target(family, {key: 0.999}, closed) == (1, 0, 0)
+        assert angular_target(family, {key: 1.0}, closed) == closed
+    assert angular_target("torus", {}, (1, 2, 1)) == (1, 2, 1)
+
+
+def test_full_agreement_includes_components():
+    df = pd.DataFrame(dict(A_b0=[1, 1], A_b1=[1, 0], A_b2=[0, 0], b0=[2, 1], b1_mc=[1, 0], b2_mc=[0, 0]))
+    assert agreement(df).tolist() == [False, True]
+
+
+def test_order_test_for_nonmatch_and_adaptive_frequency():
+    assert order_test(False, 7)["order_p"] == 1
+    assert np.isclose(order_test(True, 7)["order_p"], 1 / 360)
+    assert np.isclose(order_test(True, 7, 3)["order_p"], 3 / 360)
+
+
+def test_cycle_can_survive_a_different_triangles_death():
+    basis = BoundaryBasis()
+    older, younger = 0b111, 0b111000
+    basis.insert(younger)
+    assert basis.reduce(younger) == 0
+    assert basis.reduce(older ^ younger) != 0

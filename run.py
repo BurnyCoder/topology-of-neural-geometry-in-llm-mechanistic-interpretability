@@ -32,6 +32,8 @@ PHASES = {
     "audit": ("neurotopo.experiments.exp7_audit", "run"),
     "audit3": ("neurotopo.experiments.exp8_null_specificity", "run"),
     "audit4": ("neurotopo.experiments.exp9_independent_audit", "run"),  # top-10 loops of smooth-curve controls (D14)
+    "science-nulls": ("neurotopo.science.null_replay", "replay"),
+    "science-calibration": ("neurotopo.science.null_replay", "calibration"),
     "toy": ("neurotopo.experiments.toy_example", "run"),             # worked example (docs/worked_example.md)
     "voids": ("neurotopo.experiments.void_search", "run"),           # every void scored; interesting ones (post hoc)
     "loops": ("neurotopo.experiments.loop_search", "run"),           # every loop scored; interesting ones (post hoc)
