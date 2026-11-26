@@ -16,6 +16,11 @@ GIT = "https://github.com/BurnyCoder/topology-of-neural-geometry-in-llm-mechanis
 METHODS = {"P_alpha_universal":"P","S_rips_universal":"S","Ba_fixed_pi":"Ba","Bb_family_implied":"Bb","Bc_majority":"Bc"}
 
 
+def ordered_estimators(values):
+    """Retain the study's estimator order when historical JSON uses a different key order."""
+    return [name for name in METHODS if name in values] + sorted(set(values).difference(METHODS))
+
+
 def data():
     return config.path("results")/"science"
 

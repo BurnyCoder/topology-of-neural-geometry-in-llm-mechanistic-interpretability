@@ -11,7 +11,7 @@ uv sync --frozen
 uv run --frozen python run.py science
 ```
 
-To test an independent reproduction, keep the release checkout and run the commands above in a second checkout of the same revision with its own local data directory. From the release checkout, run the command below with the path to the completed second checkout. It writes a new record after comparing the numerical tables, structured results, persistence scores and circular coordinates. The record includes tolerances, array shapes, row counts, source revision and input-manifest digest. The copy distributed with the release records the November 2026 audit. [Comparison code](../src/neurotopo/report/check_publication.py) · [Release comparison](../results/science/reproduction.json)
+To test an independent reproduction, keep the release checkout and run the commands above in a second checkout of the same revision with its own local data directory. From the release checkout, run the command below with the path to the completed second checkout. It writes a new record after comparing the numerical tables, structured results, persistence scores and circular coordinates. The record includes tolerances, array shapes, row counts, source revision, input-manifest digest and hashes of the verified figures and PDF text. An available Poppler installation also enables a page-by-page image comparison. The copy distributed with the release records the November 2026 audit. [Comparison code](../src/neurotopo/report/check_publication.py) · [Release comparison](../results/science/reproduction.json)
 
 ```bash
 uv run --frozen python -m neurotopo.report.check_publication --replica PATH_TO_SECOND_CHECKOUT

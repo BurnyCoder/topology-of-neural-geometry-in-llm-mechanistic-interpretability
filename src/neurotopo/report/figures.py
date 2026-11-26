@@ -17,6 +17,7 @@ import numpy as np
 import pandas as pd
 
 from neurotopo import config
+from neurotopo.report.science import ordered_estimators
 from neurotopo.data import source
 from neurotopo.experiments.common import read_json
 
@@ -129,7 +130,7 @@ def fig_exp0_margin() -> None:
 def fig_exp1_estimators() -> None:
     """Exp1: macro exact Betti-vector accuracy (95% cluster-bootstrap CI) of every estimator on resolvable clouds."""
     s = read_json(config.path("results") / "exp1" / "summary.json")
-    names = [k for k in s["table"] if "subset" not in k]
+    names = [k for k in ordered_estimators(s["table"]) if "subset" not in k]
     est = [s["table"][k]["macro_exact"] for k in names]
     lo = [s["table"][k]["macro_exact"] - s["table"][k]["ci"][0] for k in names]
     hi = [s["table"][k]["ci"][1] - s["table"][k]["macro_exact"] for k in names]
@@ -148,7 +149,8 @@ def fig_exp1_by_rho() -> None:
     """Exp1: accuracy against the margin ratio rho_A (all clouds, including unresolvable ones)."""
     s = read_json(config.path("results") / "exp1" / "summary.json")
     fig, ax = plt.subplots(figsize=(6.5, 3.6))
-    for name, d in s["accuracy_by_rho"].items():
+    for name in ordered_estimators(s["accuracy_by_rho"]):
+        d = s["accuracy_by_rho"][name]
         ks = list(d.keys())
         ax.plot(range(len(ks)), [d[k] for k in ks], marker="o", label=name)
     ax.set_xticks(range(len(ks)))

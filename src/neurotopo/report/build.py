@@ -17,6 +17,7 @@ import pandas as pd
 from neurotopo import config
 from neurotopo.experiments.common import read_json
 from neurotopo.report import figures, numbers, tables
+from neurotopo.report.science import ordered_estimators
 
 log = logging.getLogger(__name__)
 R = None
@@ -98,8 +99,11 @@ def role_table() -> str:
 
 def exp1_table() -> str:
     s = read_json(res("exp1", "summary.json"))
-    rows = [{"estimator": k, "macro exact accuracy": v["macro_exact"], "95% CI": f"[{v['ci'][0]:.3f}, {v['ci'][1]:.3f}]",
-             "n clouds": v["n"]} for k, v in s["table"].items()]
+    rows = []
+    for name in ordered_estimators(s["table"]):
+        value = s["table"][name]
+        rows.append({"estimator": name, "macro exact accuracy": value["macro_exact"],
+                     "95% CI": f"[{value['ci'][0]:.3f}, {value['ci'][1]:.3f}]", "n clouds": value["n"]})
     diffs = [{"comparison": k, "difference": v["estimate"], "95% CI": f"[{v['ci'][0]:.3f}, {v['ci'][1]:.3f}]"}
              for k, v in s["paired_differences"].items()]
     fpr = pd.DataFrame(s["fpr_contractible"]).T.rename(columns=lambda c: f"N-bin {c}")

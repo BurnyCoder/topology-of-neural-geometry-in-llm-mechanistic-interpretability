@@ -64,3 +64,14 @@ def test_matched_gaussian_comparison_uses_registered_subset():
     subset = pd.read_csv(p/"mc_subset.csv").query("target=='catalog' and group=='macro'").set_index("method")
     delta = subset.loc["P_alpha_universal","accuracy"] - subset.loc["MC_gaussian3d","accuracy"]
     assert subset.loc["MC_gaussian3d","P_minus_method"] == pytest.approx(delta)
+
+def test_publication_detects_spaced_missing_citations_and_orders_estimators():
+    from neurotopo.report.check_publication import check_pdf_references
+    from neurotopo.report.science import ordered_estimators
+
+    for excerpt in ("as shown [? ]", "two sources [10, ? ]", "see Figure ??"):
+        with pytest.raises(ValueError):
+            check_pdf_references(excerpt)
+    check_pdf_references("two sources [10, 26]")
+    methods = ["P_alpha_universal", "Bb_family_implied", "Bc_majority", "MC_gaussian3d (subset)"]
+    assert ordered_estimators(dict.fromkeys(reversed(methods))) == methods

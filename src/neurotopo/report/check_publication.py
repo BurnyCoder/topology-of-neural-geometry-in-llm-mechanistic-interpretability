@@ -1,10 +1,12 @@
 """Check agreement between the rendered release and the row-level evidence. Optional second-checkout comparison."""
 import argparse
+import hashlib
 
 from pathlib import Path
 import re
 import shutil
 import subprocess
+import tempfile
 
 import numpy as np
 import pandas as pd
@@ -21,6 +23,12 @@ def pdf_text(file):
     return "\n".join(page.extract_text() for page in PdfReader(file).pages)
 
 
+def check_pdf_references(content):
+    """Catch numeric natbib placeholders, including whitespace introduced by text extraction."""
+    if re.search(r"\[[\d,\s?]*\?[\d,\s?]*\]|\?\?", content):
+        raise ValueError("The PDF contains an unresolved citation or cross-reference")
+
+
 def run():
     root = config.ROOT
     s = science.scalars()
@@ -31,6 +39,7 @@ def run():
     if pdf != (root/"reports/paper.pdf").read_bytes():
         raise ValueError("The PDF copies differ")
     publication = pdf_text(root/"paper/main.pdf")
+    check_pdf_references(publication)
     docs = {p:(root/p).read_text(encoding="utf-8") for p in ["README.md","reports/summary.md",
             f"reports/reviews/{science.REVIEW}.md","docs/scientific-audit.html","paper/main.tex"]}
     docs["PDF"] = publication
@@ -96,6 +105,46 @@ def compare_json(a, b, path):
         raise ValueError(f"{path}: clean-run values differ")
 
 
+def pdf_page_hashes(pdf, folder):
+    """Render each page with Poppler to compare page content independently of PDF metadata."""
+    subprocess.run(["pdftoppm", "-r", "96", "-png", str(pdf), str(folder/"page")], check=True)
+    return [hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(folder.glob("page-*.png"))]
+
+
+def compare_renderings(replica):
+    root = config.ROOT
+    replica = replica.resolve()
+    text_files = [root/"README.md", root/"reports/summary.md", root/f"reports/reviews/{science.REVIEW}.md",
+                  root/"paper/main.tex", *sorted((root/"reports/generated").glob("*.md")), *sorted((root/"docs").glob("*.html"))]
+    for path in text_files:
+        if path.read_text(encoding="utf-8").splitlines() != (replica/path.relative_to(root)).read_text(encoding="utf-8").splitlines():
+            raise ValueError(f"{path.relative_to(root)}: rendered text differs")
+    clouds = sorted((root/"docs/data").glob("*.json"))
+    for path in clouds:
+        compare_json(read_json(path), read_json(replica/path.relative_to(root)), str(path.relative_to(root)))
+    figures = {}
+    for path in sorted((root/"docs/figures").glob("*")):
+        data = path.read_bytes()
+        if data != (replica/path.relative_to(root)).read_bytes():
+            raise ValueError(f"{path.relative_to(root)}: rendered figure differs")
+        figures[path.name] = hashlib.sha256(data).hexdigest()
+    a_pdf, b_pdf = root/"paper/main.pdf", replica/"paper/main.pdf"
+    a, b = (" ".join(pdf_text(p).split()) for p in (a_pdf, b_pdf))
+    if a != b:
+        raise ValueError("Text in the two published PDFs differs")
+    check_pdf_references(b)
+    result = {"text_files_compared":[p.relative_to(root).as_posix() for p in text_files],
+              "explorer_json_files_compared":len(clouds), "figure_sha256":figures,
+              "pdf_text_sha256":hashlib.sha256(a.encode()).hexdigest()}
+    if shutil.which("pdftoppm"):
+        with tempfile.TemporaryDirectory() as left, tempfile.TemporaryDirectory() as right:
+            pages = pdf_page_hashes(a_pdf, Path(left))
+            if not pages or pages != pdf_page_hashes(b_pdf, Path(right)):
+                raise ValueError("Rasterized pages in the two published PDFs differ")
+            result["pdf_pages_at_96_dpi_sha256"] = pages
+    return result
+
+
 def compare(replica):
     """Compare every numerical result behind the audit across two checkouts, excluding timestamped environments."""
     root = config.path("results")
@@ -135,7 +184,7 @@ def compare(replica):
     write_json(root/"science/reproduction.json",{"replica_commit":subprocess.check_output(
         ["git","rev-parse","HEAD"],cwd=replica,text=True).strip(),"input_manifest_sha256":read_json(root/"science/inputs.json")["manifest_sha256"],
         "table_rows_compared":summary,"absolute_tolerance":1e-10,"relative_tolerance":1e-9,
-        "json_compared":json_files,"array_shapes_compared":arrays})
+        "json_compared":json_files,"array_shapes_compared":arrays,"rendered":compare_renderings(replica)})
 
 
 if __name__=="__main__":
