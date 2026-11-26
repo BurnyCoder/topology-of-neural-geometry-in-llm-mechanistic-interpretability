@@ -40,12 +40,12 @@ Date: 2026-11-15; updated 2026-11-22 (independent audit, D14: smooth-curve contr
 
   ![top-10 loop test](../docs/figures/fig_top10.png)
 
-- **DTM filtration (preregistered conditional):** not required. P's false-positive rate on outlier clouds is 0.065, below the 0.10 threshold (deviation D7; `reports/exp1_synthetic.md`).
+- **DTM filtration (preregistered conditional):** not required. P's false-positive rate on outlier clouds is 0.084, below the 0.10 threshold (deviation D7; `reports/exp1_synthetic.md`).
 
 **Interpretation.**
 - Raw persistence ratios are not comparable across dimensions and sample sizes. The top-10 statement therefore rests on the matched null above, which was added post hoc.
 - **In 10 dimensions, loops are not specific to cyclic concepts.** Years, age, counting and temperature have significant top-10 loops. Months and residues do not.
 - **These ordinal loops are not a generic artefact of ordered curves** (independent audit, D14; post hoc, with a decision rule committed before the run). The same test on the 20 smooth-curve controls (10 Gaussian processes, 10 random walks in ℝ⁷⁶⁸, N = 200) finds 0 of 20 significant (exact 95% CI of the rate 0–0.17); their largest Rips ratio is 1.009, against null thresholds of 1.39–1.73. Pre-specified verdict: the PCA-artefact explanation is not supported by the smooth-curve controls. The PCA projections of such curves are open Lissajous-type curves ([Antognini & Sohl-Dickstein 2018](https://arxiv.org/abs/1806.08805): PC_k ∝ cos(kπt)), and PC1 is monotone along the curve, so the top-10 curve does not close. The ordinal loops therefore need structure the controls lack: periodic features of numbers ([Kantamneni & Tegmark 2025](https://arxiv.org/abs/2502.00873)), clusters (ages form clusters, Exp0), or noise around a smooth curve, which the controls do not have. This test cannot tell these apart.
 - The post hoc traversal test shows that ordinal values do not wind around those loops. Only colours keep both a loop and a single winding in 10D, and the colour prompts' own RGB values already have that loop (audit D8, [exp7_audit.md](exp7_audit.md)).
-- The months and residue loops are strongest in the top-3 PCs and fade in higher dimensions. For residues this is expected, because several Fourier circles coexist in other PC pairs.
+- Months and residues show different loop or alignment results across projections. Frequency structure and overlapping PCA eigenvalues are possible explanations for instability. These observations do not isolate its cause. [Projection-specific measurements](../results/science/dataset_assessment.csv)
 - None of the conclusions depends on the Monte Carlo seed or on the offset nuisance factor.

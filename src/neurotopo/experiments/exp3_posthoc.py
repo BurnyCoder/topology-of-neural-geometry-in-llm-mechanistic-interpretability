@@ -1,12 +1,10 @@
-"""Exp3 post hoc (not preregistered): theta_B with DREiMac standard_range=False.
+"""Post hoc alignment with DREiMac standard_range=False in three and ten PCs.
 
-Global context: the preregistered DREiMac setting standard_range=True builds a circular coordinate only for a
-Rips class whose death is at least twice its birth (DREiMac EMCoords.get_cover_radius), which guarantees the
-class is non-trivial in the Cech complex. The weekday, month and days_time loops are weaker than that (Rips
-death/birth 1.3-1.9), so H1-B failed there before the alignment could be tested. This post hoc sensitivity
-analysis (reports/deviations.md D5) recomputes theta_B with standard_range=False (class guaranteed only in the
-Rips complex, as DREiMac's error message suggests) in 3D and in the top-10 PCs, and repeats the alignment
-test. It does not change any preregistered verdict.
+The strict method uses a landmark Rips H1 interval with death at least twice birth
+to select a range compatible with the Cech construction. A coordinate also needs
+coverage of the observed points. Relaxing the interval requirement can produce
+angles for shorter classes. See https://dreimac.scikit-tda.org/en/latest/theory.html
+and the preregistered and exploratory measurements in results/exp3.
 """
 
 from __future__ import annotations
@@ -38,7 +36,7 @@ def run() -> None:
         for name, pts in (("3d", c["y"]), ("top10", y10)):
             cc = circular.circular_coordinates(pts, standard_range=False)
             recs = alignment.records(did, cc["theta"], c["labels"], cfg["seed"]) if cc["theta"] is not None else []
-            r[name] = {"error": cc["error"], "rips_bar": cc["bar"], "records": recs}
+            r[name] = {"error": cc["error"], "rips_bar": cc["bar"], "uncovered": cc.get("uncovered"), "cover_radius": cc.get("cover_radius"), "n_landmarks": cc["n_landmarks"], "records": recs}
         res[did] = r
         first = lambda k: (r[k]["records"] or [{}])[0]
         log.info("%-26s 3D: R=%s p=%s w=%s | top10: R=%s p=%s w=%s", did, first("3d").get("R"), first("3d").get("p"),

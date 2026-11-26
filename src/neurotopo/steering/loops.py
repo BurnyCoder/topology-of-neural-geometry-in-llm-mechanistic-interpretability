@@ -49,6 +49,11 @@ class Loop:
         return float(np.linalg.norm(self.pts - self.pts.mean(0), axis=1).mean())
 
 
+def steering_bins(n_concepts: int) -> int:
+    """Registered H6 coordinate bins in amendment A2. The explorer uses its own display resolution."""
+    return min(2 * n_concepts, 72)
+
+
 def loop_from_coordinate(y: np.ndarray, theta: np.ndarray, n_bins: int) -> Loop:
     """Loop B: mean of the points in n_bins equal-width bins of a circle-valued coordinate theta, joined by a
     periodic cubic spline in the coordinates of y. Empty bins are skipped (the spline knots stay ordered)."""

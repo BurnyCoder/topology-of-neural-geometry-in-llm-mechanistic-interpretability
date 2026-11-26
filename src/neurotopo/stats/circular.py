@@ -93,15 +93,17 @@ def max_over_frequency_pvalue(theta: np.ndarray, a: np.ndarray, modulus: int, km
     """Max-statistic permutation p-value: residues are permuted and the max over k recomputed each time."""
     a = np.asarray(a)
     r_obs = max_over_frequency(theta, a, modulus, kmax)[0]
-    ks = np.arange(1, kmax + 1)[:, None]
-    e = np.exp(1j * np.asarray(theta))[None, :]
+    # Fourier coefficients give the resultant at each k and orientation. Preserve the RNG permutations.
+    u = np.exp(1j * np.asarray(theta))
+    frequencies = np.r_[np.arange(1, kmax + 1), -np.arange(1, kmax + 1)] % modulus
     count, done = 0, 0
     while done < mc:
         b = min(500, mc - done)
-        for _ in range(b):
-            ph = 2 * np.pi * ks * rng.permutation(a)[None, :] / modulus     # (kmax, n) phases for permuted labels
-            r = np.maximum(np.abs((e * np.exp(-1j * ph)).mean(1)), np.abs((e * np.exp(1j * ph)).mean(1)))
-            count += int(r.max() >= r_obs - 1e-12)
+        perm = np.array([rng.permutation(a) for _ in range(b)], dtype=int) % modulus
+        by_residue = np.zeros((b, modulus), dtype=complex)
+        np.add.at(by_residue, (np.arange(b)[:, None], perm), u)
+        maxima = np.abs(np.fft.fft(by_residue)[:, frequencies]).max(axis=1) / len(u)
+        count += int(np.sum(maxima >= r_obs - 1e-12))
         done += b
     return (1.0 + count) / (mc + 1.0)
 
@@ -140,6 +142,12 @@ def cyclic_order_p(n: int) -> float:
     if every circular gap between neighbouring angles is below pi, and with probability 0 otherwise
     (tests/test_circular_stats.py::test_cyclic_order_p_is_an_upper_bound)."""
     return 2.0 / math.factorial(n - 1)
+
+
+def order_test(match: bool, n: int, searches: int = 1) -> dict:
+    """One-sided binary order test. The union bound accounts for choosing a frequency on the same labels."""
+    bound = min(1., searches * cyclic_order_p(n))
+    return {"order_match": bool(match), "order_null_bound": bound, "order_p": bound if match else 1.}
 
 
 def closure_ratio(means: np.ndarray, metric: str = "cosine") -> float:

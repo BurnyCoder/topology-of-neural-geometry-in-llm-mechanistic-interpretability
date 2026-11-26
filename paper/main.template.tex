@@ -3,335 +3,107 @@
 \usepackage[utf8]{inputenc}
 \usepackage{amsmath,amssymb,booktabs,graphicx,hyperref,xcolor}
 \usepackage[numbers]{natbib}
-\usepackage{xurl}   % lets long URLs break at any character (avoids overfull lines)
+\usepackage{xurl}
 \hypersetup{colorlinks=true,linkcolor=blue!50!black,citecolor=blue!50!black,urlcolor=blue!50!black}
 \graphicspath{ {../docs/figures/} }
-\title{Holes in Neural Geometry: Exact Topology of Fitted Shapes and Persistent Homology\\of Top-3-PCA Activation Clouds, and Whether Cyclic Concepts Travel Around Them}
-\author{Libor ``Burny'' Burian}
-\date{22 November 2026}
+\newcommand{\evidence}[2]{\href{https://github.com/BurnyCoder/topology-of-neural-geometry-in-llm-mechanistic-interpretability/blob/main/#1}{#2}}
+\title{Testing semantic cycles in projected neural representations\\with fitted shapes and persistent homology}
+\author{Libor \textquotedblleft Burny\textquotedblright{} Burian}
+\date{26 November 2026}
 \begin{document}
 \maketitle
 
 \begin{abstract}
-Interpretability work reports circles, helices and other low-dimensional shapes in neural activations, usually identified by eye or by fitting. We ask the topological question behind a common hypothesis: does a concept have a \emph{hole} you can travel around, and does its semantic cycle go around it exactly once? The motivation is manifold steering~\citep{wurgaft2026manifold}: if so, steering around the loop should be semantically meaningful.
-
-We study the 44 top-3-PCA activation and weight clouds of a sibling shape-fitting project~\citep{shapefitting2026}, which come from GPT-2, Llama-3.1-8B, Pythia, a grokked modular-addition transformer and controls. We use two independent methods.
-\textbf{(A)} The fitted shapes are uniquely parametrised, so their Betti numbers, Euler characteristic and genus are exact. A margin ratio $\rho_A$ measures whether the data resolve that topology.
-\textbf{(B)} Alpha-complex persistent homology with design-matched Monte Carlo nulls, and circle-valued coordinates from persistent cohomology.
-
-Results per dataset:
-\begin{itemize}
-  \item \textbf{Colour hue:} a robust loop ($p={{exp2.colors.p_top_loop}}$, 999 null draws), far beyond what the null gives hole-free shapes. Hue winds once around it, also in the top-10 PCs (post hoc), where ordinal concepts have loops too but do not wind. A post hoc audit finds the same loop, with hue winding once, in the colour prompts' own RGB values ($\pi={{audit.rgb.pi:2}}$, $p={{audit.rgb.p}}$): the prompts avoid greys. The model reads hex codes, so its loop is not trivial, but it preserves the stimuli's hue circle; this does not show that it constructs a hue circle of its own.
-  \item \textbf{Residues mod 113:} a loop ($p={{exp2.grok.p_top_loop}}$) that the residues wind once around; the winding, not the loop test, is the evidence for a ring. The top-3 view is unstable under subsampling, most likely because the embeddings spread their variance almost evenly over 5 Fourier frequencies (nearly equal top PCA eigenvalues), and it fails the preregistered top-10-PC check.
-  \item \textbf{Months:} a loop through the month clusters ($p={{exp2.months.p_top_loop}}$). Simulated hole-free arrangements of the centres do not reach its strength, but a closed ring cannot be told from a nearly closed arc. The months go around it only in a post hoc analysis, and only in the top-3 PCs, so a ring is suggestive.
-  \item \textbf{Days with times:} no ring of days. The only significant loop is small, lies inside one day's cluster, and is unstable.
-  \item \textbf{Weekdays:} no ring of days. The 7 day centres form no loop in the top-3 PCs, and the cloud's most persistent loop ($p={{exp2.weekdays.p_top_loop}}$) lies inside one day's cluster. The loop test is also weak at 7 clusters. The days are ordered around their fitted helix's axis, but random smooth processes show the same ordering.
-  \item \textbf{Ordinal concepts and 20 random-process controls:} no loops in the top-3 PCs, but as open curves they never approach the Gaussian null's threshold. Ordinal concepts gain loops in 10 PCs, but their values do not wind around them; the smooth-curve controls gain none ({{audit4.n_sig}}/{{audit4.n}}, post hoc), so these loops are not a generic PCA artefact of ordered curves.
-\end{itemize}
-The fitter's ``helices'' for cyclic concepts are tight coils whose adjacent turns merge at the data's noise scale ($\rho_A \approx {{exp0.weekdays.rho:2}}$), so the fit cannot say whether a concept is an open or a closed curve. Months come closest to closing.
-
-The strict preregistered conjunctions pass for none of the three primary cyclic sets: {{exp3.H1A}}/3 by fitted-shape topology and {{exp3.H1B}}/3 by persistent homology. Specificity holds, but it is weakly informative, because sensitivity is zero. A post hoc audit finds that the Gaussian Monte Carlo null behind the loop test also rejects many hole-free shapes (false loops on {{audit3.mc.fpr:2}} of hole-free synthetic clouds, {{audit3.mc.fam.sphere_b0:2}} of spheres and caps). A significant loop is therefore evidence of non-Gaussian structure, and the ring claims rest on the traversal tests.
-
-On 39{,}000 synthetic clouds with exact ground-truth topology, the preregistered estimator recovers the exact Betti vector for {{exp1.P.acc:3}} of resolvable clouds (macro). A fixed threshold scores {{exp1.Ba.acc:3}} and the fitter's family label {{exp1.Bb.acc:3}}. Persistence beats the label only where the label is topologically ambiguous (open vs closed arcs, caps vs spheres).
-A post hoc search of all {{loops.n_loops}} loops and {{voids.n_voids}} voids, with one drawn representative each, changes no verdict. It finds voids that survive the correction only in toy models of superposition.
-Steering experiments are preregistered and postponed.
+We ask whether semantic labels wind once around a detected loop in projected activations or weights. On {{sci.n_real}} datasets from a pinned shape-fitting study, fitted geometry and persistent homology use the same observations. Neither method passes the complete registered decision rule on weekdays, months or modular residues. Residues align in a three-dimensional projection and lose the required coordinate in ten principal components. The amended primary hypothesis about model steering remains untested. The fitted and persistence-based estimates agree on components, loops and voids for {{sci.h4_full}}/{{sci.n_real}} datasets. On eligible synthetic clouds, the persistence estimator achieves {{exp1.P.acc:3}} family-macro accuracy against the generator's catalog, compared with {{exp1.Bb.acc:3}} for a learned family baseline. Arcs and spherical caps near closure receive closed catalog labels. With the same predictions and eligibility, scoring the actual angular domains reverses the relative performance in both families. The results characterize these fitted objects, projected samples and benchmark conventions. They leave continuous full-space topology and causal steering unresolved.
 \end{abstract}
 
-\section{Introduction}
+\section{Motivation and related work}
 
-Low-dimensional shapes in activations and embeddings are a recurring finding.
-\begin{itemize}
-  \item Circles for weekdays and months~\citep{engels2025notall}.
-  \item A helix of GPT-2 positions~\citep{yedidia2023helix}.
-  \item Circles of residues in grokked modular addition~\citep{nanda2023progress}.
-  \item Loops for colours and dates in text-embedding vectors~\citep{modell2025origins}.
-\end{itemize}
-Manifold steering~\citep{wurgaft2026manifold,goodfire2026geometry} moves activations along a fitted manifold. On a weekday manifold this shifts the output from Monday to Tuesday and so on, whereas linear steering cuts across the manifold.
+In a projection, a small gap in an open curve can be hard to distinguish from a closed loop. A helix can also wind around its axis while remaining contractible. We examine which of these descriptions the recorded data and decision rules support. Engels et al.\ identified calendar representations and intervened on model activations~\citep{engels2025notall}. Nanda et al.\ studied frequency-selective representations in modular addition~\citep{nanda2023progress}. Both Clock and Pizza computations can have circular input embeddings~\citep{zhong2023}. Wurgaft et al.\ tested movement along fitted manifolds with intervened model outputs~\citep{wurgaft2026manifold}. Our contribution is a paired evaluation of fitted-shape and persistence criteria on a fixed corpus, with registered negative controls, synthetic comparisons and a reconstruction of each hypothesis decision. The observational readouts here cannot answer the intervention question.
 
-These works identify shapes geometrically. A geometric label such as ``helix'' does not say whether a concept has a \emph{hole}, a 1-cycle in homology, or whether the semantic order goes \emph{around} it. That is what would make steering around a loop meaningful.
+Persistent cohomology supplies circular coordinates used in experimental neuroscience~\citep{desilva2011circular,rybakken2019decoding,gardner2022toroidal}. Shapes in embeddings and topology across model layers have also been studied directly~\citep{modell2025origins,gardinazzi2025persistent,moisescu2025modular}. Smooth processes and random walks can produce apparent circular organization after PCA~\citep{antognini2018pca,shinn2023phantom}. Those observations motivate explicit projection checks and comparisons with smooth-process controls.
 
-\paragraph{Contributions.}
-\begin{enumerate}
-  \item The exact topology of every fitted shape: Betti numbers, $\chi$, genus, boundary components. A margin ratio $\rho_A$ tests resolvability. We also read out the intrinsic coordinates of every labelled point on its fitted shape.
-  \item A preregistered, null-controlled persistent-homology test of whether cyclic concepts have a hole that their semantic order travels around once. It uses design-matched nulls, a projection-robustness check, and ordinal and random-init negative controls.
-  \item A validation of persistent-homology Betti estimators against exact ground truth on 39{,}000 synthetic clouds of 13 families.
-  \item Everything is reproducible from GitHub and Hugging Face, and every number is generated from results files.
-\end{enumerate}
+\section{Data and methods}
 
-\section{Related work}
+\paragraph{Data and analysis units.}
+The pinned corpus contains activations, weights, toy networks and control processes~\citep{shapefitting2026}. The primary clouds are Llama-3.1-8B weekday and month activations and the residue embeddings of a modular-addition transformer. Days with times are confirmatory-secondary. Hue is exploratory. The other sets include ordinal values, initialization controls, Gaussian processes, random walks and toy models of superposition. Prompt rows within a concept share templates or semantic structure. We report the number of clouds, generator chunks or concept labels relevant to each calculation. The archive identifies each dataset and its dimensions. \evidence{results/science/dataset_assessment.csv}{Dataset measurements and projection checks}.
 
-\paragraph{Topology of neural representations.}
-\begin{itemize}
-  \item Layer-wise topology simplification~\citep{naitzat2020topology}.
-  \item Zigzag persistence across LLM layers~\citep{gardinazzi2025persistent}.
-  \item Betti numbers of modular-addition representations~\citep{moisescu2025modular} and H1 at grokking~\citep{tang2026grokking}. Neither tests bars against a null model; the second compares with networks trained on permuted labels.
-  \item A persistence ratio for small centroid clouds of imposed cycles~\citep{david2026context}.
-\end{itemize}
+\begin{figure}[htbp]\centering\includegraphics[width=.94\linewidth]{fig_pipeline.png}
+\caption{Analysis of the same observations by parametric fitting and persistence. Coordinates are available only for eligible fits or a sufficiently persistent Rips class. Steering is a planned intervention.}\end{figure}
 
-\paragraph{Neuroscience.} Rings and tori are detected by persistent homology, by bar length~\citep{chaudhuri2019intrinsic} or against shuffled data~\citep{gardner2022toroidal}, and decoded with circular coordinates from persistent cohomology~\citep{rybakken2019decoding,gardner2022toroidal}, which come from~\citep{desilva2011circular,perea2023dreimac}.
+\paragraph{Fitted shapes (A).}
+We centre each cloud, use its top three PC scores, orient signs as in the source and normalize RMS radius to one. The fit supplies a parametrized shape with a catalog topology. Betti numbers count components, independent loops and independent two-dimensional cycles over the chosen field~\citep{hatcher2002algebraic}. An embedded nonzero-pitch helix over a finite interval is contractible. For nonsingular closed orientable connected surfaces, genus is the number of handles. Assigning genus to an arbitrary filtered Betti vector requires additional surface assumptions. Cluster and polytope targets describe centres or vertices. For a fitted-shape feature size $m$ and empirical bidirectional noise-and-coverage scale $\nu$, $\rho_A=m/(2\nu)\geq1$ defines catalog eligibility. The selected minimum of gaps or diameters is heuristic. The margin alone cannot identify the topology of a noisy offset or establish the reach conditions of a recovery theorem~\citep{niyogi2008finding}. \evidence{docs/analytic_topology.md}{Catalog and margin definitions}.
 
-\paragraph{Inference.} The universal null~\citep{bobrowski2023universal} gives per-bar $p$-values. Gardner et al.~\citep{gardner2022toroidal} threshold bars at the longest lifetime over all bars of 1{,}000 shuffles, a heuristic in their words; our Monte Carlo null adapts this to the ratio $\pi$, one maximum per null draw and the $p$-value $(1+b)/(M+1)$~\citep{phipson2010permutation}.
+\paragraph{Persistence (B).}
+GUDHI alpha persistence uses $\mathbb F_2$ in three dimensions. We take square roots of its squared filtration radii and cross-check against the direct-radius interface~\citep{gudhi}. The alpha complex models the topology of an offset at a specified radius~\citep{edelsbrunner1995union,bauer2017morse}. For finite positive H1 and H2 bars, $\pi=d/b$ measures relative persistence. The primary real-data statistic is the largest $\pi$ in each homological degree. Each of 999 draws is projected and normalized. Prompt-template designs redraw concept centres from a fitted Gaussian and retain within-group residuals. The other designs draw from a Gaussian matched to the observed covariance spectrum. The reference tail estimate is $(1+\#\{\pi_{\rm null,max}\geq\pi_{\rm obs}\})/(M+1)$. Fitted nuisance parameters limit an exact exchangeability interpretation~\citep{dufour2006}. The per-dataset conditional binomial intervals quantify simulation error. \evidence{results/science/null_replay.csv}{Fresh-draw comparisons}.
 
-\paragraph{Pitfalls.} PCA horseshoes~\citep{diaconis2008horseshoes}, Lissajous curves of random walks~\citep{antognini2018pca}, phantom oscillations~\citep{shinn2023phantom}, and Rips phantom classes~\citep{adamaszek2017rips}.
+\paragraph{Coordinates and alignment.}
+DREiMac selects the longest additive-lifetime landmark Rips H$^1$ class over $\mathbb F_{47}$ using at most 200 landmarks~\citep{perea2023dreimac}. The registered standard-range construction requires sufficient lifetime. We record refusal, actual open-ball landmark coverage and overlap with the alpha interval on a common radius scale. Interval overlap does not establish a generator correspondence across complexes, fields and ranking criteria. Concept mean angles $\bar\theta_c$ are compared with semantic phases $\phi_c$ by $R=\max_{s=\pm1}|n^{-1}\sum_c\exp(i(\bar\theta_c-s\phi_c))|$. Under exchangeable concept labels, enumerate small permutations or use the plus-one Monte Carlo formula~\citep{phipson2010permutation}. Repeat the residue-frequency search in each permutation. Winding sums principal increments around the designated closed label sequence. A magnitude of one permits local reversals. The binary exact-order check also requires all increments to have the same sign. \evidence{src/neurotopo/stats/circular.py}{Definitions and implementation}.
 
-\paragraph{Gap.} We found no peer-reviewed work that tests, with a null model, whether a cyclic concept's representation has a 1-cycle aligned with its semantic order. The nearest peer-reviewed use of persistent homology on a month representation is a visualisation of zigzag barcodes for the 12 month tokens across Mistral's layers, without a null~\citep[App.~C]{gardinazzi2025persistent}. A preprint compares the persistence ratio of centroid clouds of imposed cycles with random points~\citep{david2026context}, without a traversal test. A public re-implementation of Engels et al.\ (not peer reviewed) states that weekdays and months form correctly ordered loops that exceed a covariance-matched Gaussian null, without reporting test statistics~\citep{majumder2026circular}. We also found none that compares the exact topology of fitted parametric shapes with persistent homology of the same clouds.
-
-\section{Data}
-
-The 44 clouds of~\citep{shapefitting2026} (commit 4c5f3b6):
-\begin{itemize}
-  \item Llama-3.1-8B hidden states: weekdays and months at the concept token, layer 5; days-with-times, colours, years, temperatures and ages at the last token, layer 19; city truth statements~\citep{marks2024geometry}, layer 12; line-break character counts~\citep{gurnee2025manifolds}, layer 5.
-  \item Pythia-410m character counts.
-  \item Weight matrices: GPT-2 positional embeddings and the embedding of a grokked modular-addition transformer.
-  \item Toy models of superposition~\citep{elhage2022toy}.
-  \item Controls: 20 Gaussian-process and random-walk ordinal processes, and random-init networks.
-\end{itemize}
-Each cloud is normalised by the source's \texttt{fit\_frame}: centre, top-3 eigenvectors, skewness signs, RMS radius 1. Our numpy re-implementation reproduces the stored points to $10^{-4}$.
-
-The synthetic test set (39{,}000 clouds, 13 families, 5--1024 points, 3 noise levels) and its validation stream are regenerated bit-exactly on CUDA, together with their ground-truth parameters (maximum difference 0.0).
-
-\section{Method}
-\begin{figure}[t]\centering\includegraphics[width=\linewidth]{fig_pipeline.png}
-\caption{Pipeline. Method A reads exact topology and point coordinates off the fitted shape; Method B measures persistent homology of the cloud. Both give a circle-valued coordinate for the travel-around-the-hole test. Steering is designed and postponed.}\label{fig:pipeline}\end{figure}
-
-\paragraph{Method A.} Each family is a known space~\citep{hatcher2002algebraic}:
-\begin{itemize}
-  \item closed arc or ellipse: $S^1$;
-  \item helix, line, ringing curve: contractible curves;
-  \item disc, paraboloid, spherical cap: discs;
-  \item closed sphere: $S^2$;
-  \item cone frustum: an annulus;
-  \item torus: $T^2$ (genus 1);
-  \item clusters and polytopes: point sets.
-\end{itemize}
-The margin $m$ is the size of the smallest geometric feature whose closing or collapse alters the topology: a gap (for example, a helix's endpoint gap) or a diameter (a circle's hole, a torus tube). Its ratio to the noise-and-coverage scale $\nu$ is $\rho_A = m/(2\nu)$; the topology is called resolvable if $\rho_A \ge 1$. This is a heuristic (balls of radius $\nu$ grown from both sides of a gap $m$ meet once $2\nu \ge m$), not a recovery guarantee like the reach-based sampling theorem of~\citep{niyogi2008finding}.
-
-Every point gets the parameter of its nearest point on the fit: curve parameter, azimuth, height, or nearest centroid. The rules agree with persistent homology of dense noise-free samples for {{exp0.dense_agree:3}} of {{exp0.dense_n}} shapes.
-
-\paragraph{Method B.} Alpha complexes in $\mathbb{R}^3$, computed with GUDHI~\citep{gudhi}. They are smaller than \v{C}ech complexes but homotopy equivalent to the union of balls at every radius~\citep{edelsbrunner1995union}, and their filtration has the same persistence diagrams as the \v{C}ech filtration~\citep{bauer2017morse}; both results assume points in general position, which real activations satisfy generically. Rips complexes (ripser~\citep{tralie2018ripser}) are only interleaved with \v{C}ech~\citep{desilva2007coverage} and can have phantom classes~\citep{adamaszek2017rips}.
-
-A bar is significant if its persistence ratio $\pi = \text{death}/\text{birth}$ has a Monte Carlo $p = (1+\#\{\text{null maxima} \ge \pi\})/(M+1) < 0.05$ against the maximum $\pi$ of $M=999$ draws of a design-matched null, which is essentially exceeding the null's 95th percentile. Every draw passes through the same normalisation.
-\begin{itemize}
-  \item Prompt-template designs use a cluster-centre null: concept means are redrawn from a Gaussian matched to the covariance of the means, and within-concept residuals are kept.
-  \item One-point-per-value designs use a full-dimensional matched Gaussian.
-\end{itemize}
-Both nulls are Gaussian. A significant loop therefore means ``more persistent than a covariance-matched Gaussian'', which is not the same as ``a hole'' (Section~\ref{sec:specificity}).
-
-\paragraph{Travel around the hole.} The hole coordinate $\theta$ is either the fitted shape's azimuth ($\theta_A$) or DREiMac's circular coordinate of the most persistent class ($\theta_B$; prime 47, at most 200 landmarks, \texttt{standard\_range}).
-\begin{itemize}
-  \item Concept circular means $\bar\theta_c$, with semantic phases $\phi_c = 2\pi c/n$.
-  \item Alignment $R=\max_{s=\pm1}|\frac1n\sum_c e^{i(\bar\theta_c - s\phi_c)}|$, with a permutation null over concept labels (exact for $n=7$; $p_{\min}=1/360$).
-  \item The winding number of the semantic cycle in $\theta$.
-  \item For residues, the maximum over Fourier frequencies $k$.
-\end{itemize}
-Fig.~\ref{fig:toy} walks through every step on a 21-point toy week.
-
-\begin{figure}[!htbp]\centering\includegraphics[width=\linewidth]{fig_toy.png}
-\caption{Worked example on a synthetic toy week of 7 concepts (an illustration, not data). Top: balls of radius $r$ around every point at three radii: a tiny loop inside one concept, seven separate blobs, and the ring through all concepts. Bottom: the H1 persistence diagram with the null's 95th-percentile line $d=q_{95}\,b$, the null distribution of the largest persistence ratio, and the concepts' mean angles of $\theta_B$.}\label{fig:toy}\end{figure}
-
-\paragraph{Preregistration.} The hypotheses, nulls and decision rules were pushed before any topology was computed. Amendment A2, which makes steering the primary hypothesis, was pushed before any persistent homology of real data. Deviations D1--D14 are logged with dates (D10--D11, the void and loop searches, only add descriptive figures; D12--D14 are fact-checks and an independent audit, which corrected descriptive invariants and wording and added one post hoc control).
+\paragraph{Design and chronology.}
+H1-A requires a fitted hole, sufficient margin and aligned unit winding. H1-B requires a significant 3D alpha loop, aligned unit winding in 3D, and aligned unit winding with strict coordinates in ten PCs. Holm adjusts the six primary 3D alignment tests. Unavailable coordinates receive one for this decision and retain a missing measurement in the audit. H2 tests the two methods on ordinal and initialization controls. H3 uses day phase for days with times. H4 compares three classifiers and their fitted/persistence vector agreement. H5 compares synthetic instruments. Amendment A2, after the fitted-shape results were known and before the recorded real Method B analysis, makes H6 steering the primary hypothesis. The angular-target sensitivity, nested null calibration and chain verification are post hoc to the study. \evidence{reports/preregistration.md}{Registered design and amendments}. \evidence{reports/reviews/2026-11-26-protocol.md}{Audit protocol}.
 
 \section{Results}
 
-\subsection{Instrument validation (synthetic, exact ground truth)}
-Table~\ref{tab:exp1} reports the results. The preregistered estimator (alpha + universal null) is calibrated but conservative.
-\begin{itemize}
-  \item It is worse than a validation-tuned fixed threshold and than the family-implied baseline. The paired difference vs the family label is {{exp1.diff.Bb:3}} [{{exp1.diff.Bb.lo:3}}, {{exp1.diff.Bb.hi:3}}].
-  \item Persistent homology (Ba) is better where the family label is topologically ambiguous: open vs closed arcs ({{exp1.Ba.arc:2}} vs {{exp1.Bb.arc:2}}) and caps vs full spheres ({{exp1.Ba.sphere:2}} vs {{exp1.Bb.sphere:2}}). It is also better on polytopes ({{exp1.Ba.polytope:2}} vs {{exp1.Bb.polytope:2}}), and worse on ellipses, cones, tori and helices ({{exp1.Ba.ellipse:2}}, {{exp1.Ba.cone:2}}, {{exp1.Ba.torus:2}}, {{exp1.Ba.helix:2}} vs {{exp1.Bb.ellipse:2}}, {{exp1.Bb.cone:2}}, {{exp1.Bb.torus:2}}, {{exp1.Bb.helix:2}}).
-  \item On clouds far from a topology change ($\rho_A \ge 4$, post hoc; {{exp1.well.n}} clouds, no tori, a fraction {{exp1.well.trivial_frac:2}} of hole-free blobs, discs and paraboloids) the preregistered estimator scores {{exp1.well.P.acc:3}} [{{exp1.well.P.lo:3}}, {{exp1.well.P.hi:3}}] against {{exp1.well.Bb.acc:3}} for the family label (Fig.~\ref{fig:rho}).
-  \item It rarely finds a true hole: it detects {{audit3.P.sens:2}} of resolvable clouds with $b_1 \ge 1$ (false loops {{audit3.P.fpr:3}}), and {{audit3.P.fam.cone_b1:2}} of cone holes.
-  \item The family label comes from a fitter trained on the same 13-family generator, so the comparison is in-distribution for the label.
-  \item Outlier clouds (deviation D7: a point farther than {{exp1.out.factor:0}} median distances from the true shape) raise its false-positive rate on contractible shapes from {{exp1.out.P.clean:3}} to {{exp1.out.P.outlier:3}} [{{exp1.out.P.outlier.lo:3}}, {{exp1.out.P.outlier.hi:3}}]. This is below the preregistered {{exp1.out.thr:2}} threshold, so the DTM-filtration ablation was {{exp1.out.dtm}}.
-\end{itemize}
+\subsection{Registered observational tests}
 
-\begin{table}[t]\centering\small
+\begin{center}\small
+\begin{tabular}{p{.17\linewidth}p{.72\linewidth}}\toprule
+Dataset & Outcome in the tested projections\\\midrule
+Weekdays & Open helix. The 3D loop reference gives $p={{exp2.weekdays.p_top_loop}}$. No strict coordinate is available.\\
+Months & Open helix. The 3D alpha loop gives $p={{exp2.months.p_top_loop}}$. The landmark Rips class is too short for the strict coordinate. Relaxed alignment is exploratory.\\
+Modular residues & Open helix. The 3D alpha loop gives $p={{exp2.grok.p_top_loop}}$ and the strict Rips coordinate aligns in frequency-reordered residue order with unit absolute winding. The ten-PC strict coordinate is unavailable.\\
+Days with times & The leading 3D loop is localized within a day cluster. The secondary day-phase conjunction fails.\\
+Hue & The strict 3D coordinate aligns with hue. Input RGB values also exhibit a hue-aligned loop. The comparison cannot identify the mechanism producing the activation geometry.\\\bottomrule
+\end{tabular}\end{center}
+
+H1 passes on {{exp3.H1A}} primary datasets by A and {{exp3.H1B}} by B. Neither method reaches the H2 falsification rule for the six ordinal sets or three initialization controls. Neither passes a smooth-process control. The finite controls and the failure to pass the cyclic primary sets limit evidence for specificity. H3 fails for both methods. For H4, all three rules predict the negative class on the four cyclic and six ordinal datasets. Their balanced accuracies are {{exp3.H4.conj_B:2}} and all two-sided exact McNemar tests have $p=1$. Including estimated components gives agreement on {{sci.h4_full}}/{{sci.n_real}} datasets. Restricting agreement to loops and voids gives {{sci.h4_partial}}/{{sci.n_real}}. The fitted and persistent estimates have different estimands. Method B uses its component rule and counts bars passing a reference across scales. \evidence{results/science/decisions.csv}{Condition-level decisions}. \evidence{results/science/h4_datasets.csv}{Both vectors for every dataset}.
+
+\begin{figure}[htbp]\centering\includegraphics[width=\linewidth]{fig_examples.png}
+\caption{Three-dimensional examples and an ordinal control. The plotted paths describe finite offsets of projected samples. Strict and relaxed coordinate results are distinguished in the labels.}\end{figure}
+
+\subsection{Synthetic instrument and the definition of closure}
+
+H5 uses the source test set and validation-tuned predictions. Score exact vector agreement on eligible catalog objects, weight families equally, and score polytopes on components alone. A generator chunk of 25 clouds shares generation settings. We resample whole chunks jointly across methods for 2,000 replicates and report percentile intervals~\citep{field2007}. The fitted-family comparator is trained in the same generator domain. On the smaller subset with matched Gaussian estimates, P minus the Gaussian estimator has macro accuracy difference {{sci.p_vs_mc.P_minus_method:3}} (paired 95\% interval [{{sci.p_vs_mc.difference_low:3}}, {{sci.p_vs_mc.difference_high:3}}]). This subset uses one generator chunk per design cell. \evidence{results/science/mc_subset.csv}{Matched subset}. The held validation and test exports have {{sci.exact_cloud_overlap}} byte-identical ordered point arrays. This check covers exact duplicates between the two exports. \evidence{results/science/splits.json}{Split checks}.
+
+\begin{center}\small
 \begin{tabular}{lcc}\toprule
-Estimator & exact $(b_0,b_1,b_2)$ accuracy [95\% CI] & role\\\midrule
-P: alpha + universal null & {{exp1.P.acc:3}} [{{exp1.P.lo:3}}, {{exp1.P.hi:3}}] & preregistered method\\
-S: Rips H1 + universal null & {{exp1.S.acc:3}} [{{exp1.S.lo:3}}, {{exp1.S.hi:3}}] & secondary (D1)\\
-MC: 3D matched-Gaussian null (3{,}120 subset) & {{exp1.MC.acc:3}} [{{exp1.MC.lo:3}}, {{exp1.MC.hi:3}}] & secondary\\
-Ba: fixed $\pi$ thresholds & {{exp1.Ba.acc:3}} [{{exp1.Ba.lo:3}}, {{exp1.Ba.hi:3}}] & baseline\\
-Bb: fitter's family $\rightarrow$ modal Betti vector & {{exp1.Bb.acc:3}} [{{exp1.Bb.lo:3}}, {{exp1.Bb.hi:3}}] & baseline\\
-Bc: majority vector & {{exp1.Bc.acc:3}} [{{exp1.Bc.lo:3}}, {{exp1.Bc.hi:3}}] & control\\\bottomrule
-\end{tabular}
-\caption{Exp1: macro-averaged exact Betti-vector accuracy on {{exp1.n}} resolvable synthetic clouds. CIs are a cluster bootstrap over generator chunks.}\label{tab:exp1}\end{table}
+Estimator & Catalog accuracy & 95\% chunk interval\\\midrule
+P, alpha Gumbel score & {{exp1.P.acc:3}} & [{{exp1.P.lo:3}}, {{exp1.P.hi:3}}]\\
+S, Rips H1 variant & {{exp1.S.acc:3}} & [{{exp1.S.lo:3}}, {{exp1.S.hi:3}}]\\
+Ba, tuned fixed thresholds & {{exp1.Ba.acc:3}} & [{{exp1.Ba.lo:3}}, {{exp1.Ba.hi:3}}]\\
+Bb, fitted family label & {{exp1.Bb.acc:3}} & [{{exp1.Bb.lo:3}}, {{exp1.Bb.hi:3}}]\\
+Bc, majority baseline & {{exp1.Bc.acc:3}} & [{{exp1.Bc.lo:3}}, {{exp1.Bc.hi:3}}]\\\bottomrule
+\end{tabular}\end{center}
 
-\begin{figure}[t]\centering\includegraphics[width=0.62\linewidth]{fig_exp1_by_rho.png}
-\caption{Accuracy against the margin ratio $\rho_A$ (all synthetic clouds).}\label{fig:rho}\end{figure}
+The enrolled catalog is a valid target for reproducing its labeling convention. The source describes an arc or sphere-family object as closed at angular fraction 0.98. Every changed test example has a fraction below one. Its unrounded ideal domain is an interval or a disk. A full circle or sphere has different homology. Holding eligibility, fitted predictions and tuning fixed, catalog scores for P versus Bb on arcs are {{sci.catalog.arc.P.accuracy:3}} versus {{sci.catalog.arc.Bb.accuracy:3}}. Under angular-domain scoring they are {{sci.angular.arc.P.accuracy:3}} versus {{sci.angular.arc.Bb.accuracy:3}}. The corresponding sphere-family scores change from {{sci.catalog.sphere.P.accuracy:3}} versus {{sci.catalog.sphere.Bb.accuracy:3}} to {{sci.angular.sphere.P.accuracy:3}} versus {{sci.angular.sphere.Bb.accuracy:3}}. This changes the recovery interpretation while preserving the original catalog benchmark. \evidence{results/science/angular_domains.csv}{Raw fractions}. \evidence{results/science/benchmark.csv}{All paired differences and intervals}.
 
-\subsection{Exact topology of the fitted shapes}
-\begin{itemize}
-  \item {{exp0.n_hole_fits}} of 44 fits have a hole (cones for years and colours) and {{exp0.n_void_fits}} has a void (GPT-2 W$_\text{pos}$, a closed sphere). {{exp0.n_resolvable}} of 44 fitted topologies are resolvable.
-  \item The three primary cyclic sets are helices with $\rho_A = {{exp0.weekdays.rho:2}}, {{exp0.months.rho:2}}, {{exp0.grok.rho:2}}$. Each is a coil of {{exp0.prim_turns_min:1}}--{{exp0.prim_turns_max:1}} turns whose margin is its pitch: adjacent turns are closer than twice the noise scale, so at that scale the fit is a tube with one loop around its axis, like a thickened closed ring, and open vs closed is unresolvable from the fit. For prompt-template designs the coverage term, and so $\nu$, is inflated by the gaps between clusters. H1-A passes {{exp3.H1A}}/3.
-  \item The concepts sit around the helix axis in order:
-  \begin{itemize}
-    \item weekdays: $R={{exp0.weekdays.azimuth.R:2}}$, exact $p={{exp0.weekdays.azimuth.p}}$, winding {{exp0.weekdays.azimuth.w}};
-    \item months: $R={{exp0.months.azimuth.R:2}}$;
-    \item residues: $R={{exp0.grok.azimuth.R:2}}$.
-  \end{itemize}
-  \item Position along the helix does not track the concept order (weekdays $\rho={{coords.weekdays.curve_parameter_t.day_of_week.rho:2}}$).
-  \item This winding is not specific: {{exp0.gp_wind1}} of {{exp0.gp_helix_n}} Gaussian-process controls fitted as helices wind too, with the same minimum $p$. Only months stand out by their closure gap (Fig.~\ref{fig:helix}): {{exp0.months.azimuth.gap:2}} radii, against {{exp0.gp_gap_min:2}}--{{exp0.gp_gap_max:2}} for the controls. The weekdays' {{exp0.weekdays.azimuth.gap:2}} lies inside the control range.
-  \item Post hoc, the months' axial position is a second Fourier harmonic of the month angle ($R^2={{coords.months.harmonic.h2:2}}$ vs {{coords.months.harmonic.h1:2}} for the first). This is the shape of a closed, saddle-shaped loop, but the periodic fit assumes closure rather than testing it, and in 3D the December $\to$ January step is the largest of the 12 ({{audit.loc.months.lastfirst:2}}$\times$ the median step).
-  \item Ordinal concepts lie along open curves (counting $\rho={{coords.counting.curve_parameter_s.value.rho:3}}$, temperature {{coords.temperature.curve_parameter_s.value.rho:3}}).
-\end{itemize}
+\begin{figure}[htbp]\centering\includegraphics[width=.93\linewidth]{fig_scientific_audit.png}
+\caption{Same eligible samples and predictions under the catalog target and the post hoc unrounded angular target. Intervals are marginal 95\% chunk-bootstrap intervals. Paired difference intervals are in the linked table.}\end{figure}
 
-\begin{figure}[t]\centering\includegraphics[width=0.55\linewidth]{fig_exp0_helix.png}
-\caption{Helix fits: axial-winding alignment is high for cyclic concepts and for smooth random-process controls alike. Only the months' closure gap ({{exp0.months.azimuth.gap:2}} radii) lies below every control's; the weekdays' gap ({{exp0.weekdays.azimuth.gap:2}}) lies inside the controls' range ({{exp0.gp_gap_min:2}}--{{exp0.gp_gap_max:2}}).}\label{fig:helix}\end{figure}
+Including all eligible contractible catalog objects gives {{sci.fpr.all.flag.hits}}/{{sci.fpr.all.flag.n}} false positives among flagged clouds ({{sci.fpr.all.flag.rate:4}}, 95\% interval [{{sci.fpr.all.flag.low:4}}, {{sci.fpr.all.flag.high:4}}]). The published six-family restriction gave {{sci.fpr.old.flag.hits}}/{{sci.fpr.old.flag.n}}. The corrected estimate remains below the 10\% trigger for a distance-to-measure ablation. The flag is computed from distances to dense shape samples and has no recorded injection truth. Its association with false detections is descriptive. All four noiseless analytic controls (circle, gapped arc, sphere and cap) have the expected Betti vector at the specified radius. P and S discard the circle loop and sphere void on these designs, while Ba retains both. All three return the contractible vector on the gapped controls. \evidence{results/science/false_positives.csv}{Group and contrast intervals}. \evidence{results/science/analytic_controls.csv}{Analytic controls}.
 
-\subsection{Holes in the data and the cyclic tests}
-Table~\ref{tab:real} and Figs.~\ref{fig:examples}--\ref{fig:power} summarise the results.
-\begin{itemize}
-  \item Significant loops: colours, residues, months, days-with-times, and borderline the random-init grokking embedding ($p={{exp2.grokinit.p_top_loop}}$).
-  \item Localisation (post hoc audit): the colour, residue and month loops run through the concept clusters. The days-with-times loop dies at radius {{audit.loc.daystime.death:3}}, before any two day clusters touch ({{audit.loc.daystime.connect:3}}), so it lies inside one cluster and is unstable (stability {{exp2.daystime.loop_freq:2}}).
-  \item After Benjamini--Hochberg over the 44 loop tests, the loops of {{exp2.loops_q05}} remain at $q<0.05$.
-  \item Weekdays, all six ordinal concepts and all 20 random-process controls have no loop. The 7 weekday centres alone have $\pi={{audit.loc.weekdays.means_pi:2}}$, and the weekdays' most persistent loop lies inside one cluster. The ordinal and random-process clouds are open curves with top $\pi$ of {{exp2.open.pi_min:2}}--{{exp2.open.pi_max:2}}, far below their nulls' 95th percentiles ({{exp2.open.q95_min:2}}--{{exp2.open.q95_max:2}}).
-  \item H1-B passes {{exp3.H1B}}/3:
-  \begin{itemize}
-    \item weekdays fail at the loop step;
-    \item months fail at the coordinate step (DREiMac's \texttt{standard\_range} requires a Rips death/birth ratio $\ge 2$);
-    \item residues fail only the top-10-PC check.
-  \end{itemize}
-  \item H2 (specificity) is {{exp3.H2.B.falsified}}, but this is weakly informative: H4 balanced accuracy is {{exp3.H4.conj_B:2}} for every criterion, and the open-curve controls never approach the null threshold.
-  \item Post hoc (\texttt{standard\_range=False}):
-  \begin{itemize}
-    \item months wind once around their loop in 3D ($R={{exp3ph.months.3d.R:2}}$), but not in the top-10 PCs;
-    \item colours wind once in 3D and in the top-10 PCs ($R={{exp3ph.colors.top10.R:2}}$);
-    \item days-with-times do not wind (winding {{exp3ph.daystime.3d.w}}), but this coordinate is built on a non-significant class that does not overlap the significant loop;
-    \item non-cyclic sets with a winding record (any variable or dimension): {{exp3ph.noncyclic_wind1_ids}};
-    \item random-init controls with a winding record: {{exp3ph.init_wind1_ids}}.
-  \end{itemize}
-  \item In a top-10-PC loop test with a matched null (post hoc), significant loops are found for {{exp5.top10.sig_ids}}. In 10D, loops are therefore not specific to cyclic concepts; only colours combine a loop with a single winding there. The same test finds no loop in any of the {{audit4.n}} smooth Gaussian-process and random-walk controls (largest ratio {{audit4.pi_max:2}}; independent audit, D14, decision rule fixed before the run): their PCA projections are open Lissajous-type curves~\citep{antognini2018pca}, so the ordinal loops need structure the controls lack, such as periodic number features~\citep{kantamneni2025trig}, clusters or noise around a curve.
-  \item In a corrected power simulation (post hoc), a weekday-like ring of 7 clusters passes the loop test in {{audit.power.k7.ring.nearest_count}} of 40 replicates (exact 95\% CI {{audit.power.k7.ring.ci_lo:2}}--{{audit.power.k7.ring.ci_hi:2}}), and a month-like ring in {{power2.months.loop:2}}. The simulated clusters are tighter than the real ones. The full preregistered conjunction passes cluster rings in at most {{power2.months.ring_all_max:2}} of replicates, so H1-B was nearly untestable for weekdays and months.
-\end{itemize}
+\subsection{Reference calibration and path verification}
 
-\subsection{Is the loop test specific to holes? (post hoc, deviation D9)}\label{sec:specificity}
-Both Monte Carlo nulls are Gaussian. They match the covariance, not the intrinsic dimension or the shape.
-\begin{itemize}
-  \item On the 3{,}120-cloud synthetic subset, Exp1 had run the design-(b) null in 3D. On rank-3 clouds this is the same distribution as the real-data sampler (median $|q_{95}$ ratio$-1|={{audit3.eq.median_rel:3}}$).
-  \item It detects {{audit3.mc.sens:2}} [{{audit3.mc.sens_lo:2}}, {{audit3.mc.sens_hi:2}}] of true holes. But it flags {{audit3.mc.fpr:3}} [{{audit3.mc.fpr_lo:3}}, {{audit3.mc.fpr_hi:3}}] of resolvable hole-free clouds: spheres and caps {{audit3.mc.fam.sphere_b0:2}}, paraboloids {{audit3.mc.fam.paraboloid_b0:2}}, helices {{audit3.mc.fam.helix_b0:2}}, discs {{audit3.mc.fam.disc_b0:2}}, but open arcs only {{audit3.mc.fam.arc_b0:2}} and blobs, its own model, {{audit3.mc.fam.blob_b0:2}}.
-  \item The rate rises with $N$ ({{audit3.mc.fpr_bin0:2}} to {{audit3.mc.fpr_bin3:2}}) and is not caused by outliers. Maximal noise persistence grows with $N$ at a rate set by the homology degree, with constants that depend on the dimension~\citep{bobrowski2017maximally}; the theorem is proven for a homogeneous Poisson process in the unit cube (densities bounded above and below on a compact support are only remarked), not for Gaussians or points on surfaces, so it does not by itself predict this rate.
-  \item The flagged hole-free clouds have top $\pi$ of {{audit3.mc.flag_pi_q10:2}}--{{audit3.mc.flag_pi_q90:2}} (10th--90th percentile), which covers the residue, days-with-times and month loops. Only colours ($\pi={{exp2.colors.top_pi1:2}}$) is far above.
-  \item The cluster-centre null (design a) was simulated on hole-free arrangements of concept centres (a hemisphere cap, a planar lattice), next to rings, open arcs and Gaussian centres. At the real variance structure even rings rarely pass ({{audit3.k12.ring.n_pass}}/40 for 12 clusters), so the pre-specified verdict is ``{{audit3.k12.verdict}}''. Across cells, caps and lattices pass at most {{audit3.k12.holefree_pass_max:3}}, whereas rings and open arcs pass in up to {{audit3.k12.ring.pass_max:2}}.
-  \item No cap or lattice replicate reached the months' $\pi$ ({{audit3.k12.holefree_pi_ge_real_all}} of {{audit3.k12.holefree_n_all}}).
-  \item Consequence: a loop alone is not a hole. The colour and residue rings rest on the traversal tests, whose null shuffles concept labels over a fixed coordinate. The months' ring is suggestive.
-  \item The preregistered estimator P, validated in Table~\ref{tab:exp1}, detects few true holes ({{audit3.P.sens:2}}). It is not the test used on the real data.
-\end{itemize}
+The synthetic alpha estimator uses the left-Gumbel approximation proposed by Bobrowski and Skraba~\citep{bobrowski2023universal}. Weak universality fixes dimension, degree and construction. A later preprint derives distinct degree-one \v{C}ech limits in two and three dimensions and excludes a left-Gumbel form in its models~\citep{weak2024,strong2026}. We therefore interpret P as an empirical score. All blob size-by-noise cells are reported. Pooled within-cloud KS distances describe departures from uniformity and do not provide calibrated iid tests. \evidence{results/science/blobs.csv}{Calibration counts, denominators and intervals}.
 
-\begin{table}[t]\centering\small
-\begin{tabular}{lccccc}\toprule
-Dataset & top H1 $\pi$ & null q95 & $p$ & traversal $R$, winding (3D) & Rips $\pi$ top-10 PCs\\\midrule
-colours (hue) & {{exp2.colors.top_pi1:2}} & {{exp2.colors.null_q95_pi1:2}} & {{exp2.colors.p_top_loop}} & {{exp3.colors.thetaB.R:2}}, {{exp3.colors.thetaB.w}} & {{exp5.colors.rips10_pi1:2}}\\
-residues mod 113 & {{exp2.grok.top_pi1:2}} & {{exp2.grok.null_q95_pi1:2}} & {{exp2.grok.p_top_loop}} & {{exp3.grok.thetaB.R:2}}, {{exp3.grok.thetaB.w}} & {{exp5.grok.rips10_pi1:2}}\\
-months & {{exp2.months.top_pi1:2}} & {{exp2.months.null_q95_pi1:2}} & {{exp2.months.p_top_loop}} & {{exp3ph.months.3d.R:2}}, {{exp3ph.months.3d.w}} (post hoc) & {{exp5.months.rips10_pi1:2}}\\
-weekdays & {{exp2.weekdays.top_pi1:2}} & {{exp2.weekdays.null_q95_pi1:2}} & {{exp2.weekdays.p_top_loop}} & -- & {{exp5.weekdays.rips10_pi1:2}}\\
-years & {{exp2.years.top_pi1:2}} & {{exp2.years.null_q95_pi1:2}} & {{exp2.years.p_top_loop}} & -- & {{exp5.years.rips10_pi1:2}}\\
-GPT-2 positions & {{exp2.wpos.top_pi1:2}} & {{exp2.wpos.null_q95_pi1:2}} & {{exp2.wpos.p_top_loop}} & -- & {{exp5.wpos.rips10_pi1:2}}\\\bottomrule
-\end{tabular}
-\caption{Method B on key clouds. The null is design-matched (999 draws); traversal uses the cohomology coordinate $\theta_B$.}\label{tab:real}\end{table}
+For the real-data Gaussian comparisons, a nested simulation used the sample sizes of the primary sets, 128 independent outer datasets and 99 freshly fitted inner draws per dataset. The six-dimensional spectrum and the within-group residual templates are specified in the audit protocol. Every marginal 95\% binomial interval includes the exchangeable strict-rank reference of 0.04. Sampling uncertainty and the restricted simulation designs preclude a general finite-sample calibration guarantee. The fresh replay reproduced the ranks in all {{sci.null_arrays}} archived alpha-null arrays. \evidence{results/science/calibration.csv}{Rejection rates and exact intervals}. \evidence{results/science/null_replay.csv}{Seed-level replay}.
 
-\begin{figure}[!htbp]\centering\includegraphics[width=\linewidth]{fig_examples.png}
-\caption{Positive and negative examples. Top: clouds (PC1--PC2) coloured by position in their cycle (years: by value), titled with their verdicts: ``ring'' only where the concept goes around the loop in the preregistered analysis (Section~\ref{sec:specificity}), not for a loop inside one cluster (localisation audit), and flagged where the stimuli already have the loop. Bottom: top H1 persistence ratio divided by the null's 95th percentile (above 1: $p<0.05$).}\label{fig:examples}\end{figure}
+For each displayed alpha cycle we checked the boundary over $\mathbb F_2$ and membership in the boundary span immediately before and at its paired death simplex~\citep{edelsbrunner2010computational}. All {{sci.rep2.total}} shells pass. Of {{sci.rep1.total}} shortest birth paths, {{sci.rep1.failed}} carry an older class through death. The explorer flags those paths. All selected loop-gallery examples pass. A valid representative remains nonunique, and an offset cavity or projected loop alone says little about a model's use of the feature. \evidence{results/science/representatives.csv.gz}{Every chain certificate}.
 
-\begin{figure}[!htbp]\centering\includegraphics[width=\linewidth]{fig_detected_loops.png}
-\caption{The detected loops of the same clouds: each cloud's most persistent loop as one closed path of edges that carries it (red, seen face-on; small loops circled) and its dot in the persistence diagram (log axes; dashed: the null's 95th percentile; dotted: the radius at which two concepts' clusters first touch, below which a loop lies inside one cluster).}\label{fig:detloops}\end{figure}
+\section{Discussion and limitations}
 
-\begin{figure}[!htbp]\centering\includegraphics[width=\linewidth]{fig_null_tests.png}
-\caption{The loop test per dataset: null distribution of the largest H1 persistence ratio (999 design-matched draws), its 95th percentile (dashed) and the observed value (solid). Beating a Gaussian null is not by itself a hole (Section~\ref{sec:specificity}).}\label{fig:nulltests}\end{figure}
-
-\begin{figure}[t]\centering\includegraphics[width=\linewidth]{fig_real_gallery.png}
-\caption{Top: clouds (PC1--PC2) coloured by concept. Bottom: alpha persistence ratios with the null 95th percentile (red).}\label{fig:gallery}\end{figure}
-
-\begin{figure}[t]\centering\includegraphics[width=\linewidth]{fig_traversal.png}
-\caption{Travel around the hole. Each dot is a concept at the circular mean of its points' hole angle, coloured by semantic position; chords join consecutive concepts. One non-crossing polygon means winding $\pm1$. Colours ($\theta_B$ and the fitted cone's $\theta_A$), residues and, post hoc, months go round once. Weekdays wind around their helix axis, but so does a Gaussian-process control.}\label{fig:traversal}\end{figure}
-
-\begin{figure}[t]\centering\includegraphics[width=0.85\linewidth]{fig_power.png}
-\caption{Corrected power simulation (post hoc): pass rates of the loop test (solid) and of the full conjunction (dashed, rings) for 7 and 12 clusters, against top-3 explained variance; dotted lines mark the real sets. With 7 clusters, an open 300$^\circ$ arc passes as often as a ring.}\label{fig:power}\end{figure}
-
-\subsection{Voids, and the strongest loops and voids (post hoc, deviations D10--D11)}\label{sec:voids}
-Exp2 tests only each cloud's most persistent loop and void. Two descriptive phases list every bar ({{loops.n_loops}} loops and {{voids.n_voids}} voids) with one representative each and score it against the cloud's own Exp2 null; for a cloud's top bar this reproduces Exp2's $p$ exactly. They pick the interesting bars by fixed rules written after browsing the interactive explorer, so the selection is post hoc. No verdict changes.
-\begin{itemize}
-  \item \textbf{Representatives.} A loop's cycle is the edge that creates it, closed by the shortest path through earlier edges. A void's shell uses Alexander duality~\citep{edelsbrunner2010computational}: just after the void's birth triangle enters, a flood fill from the tetrahedron that fills it, through triangles that have not entered, marks the bounded empty region. The triangles where the fill stops form a closed surface that exists at the birth radius $b$ and is filled exactly at the death radius $d$. The circumcentre of the filling tetrahedron is the void's centre: no point is closer than $d$, so a ball of radius $d-b$ around it is still uncovered when the void closes. Representatives are for display only.
-  \item \textbf{The strongest loops and voids} (Fig.~\ref{fig:highlights}): a cloud's top bar that survives Benjamini--Hochberg over the 44 clouds. A loop must also have its concepts wind once along the drawn cycle, a post hoc check that changes no verdict. Four loops pass (colours, residues, months, the 12 month centres) and keep their verdicts (Fig.~\ref{fig:examples}). Three voids pass, all in the toy models of superposition~\citep{elhage2022toy}, exploratory sets of 6--20 points.
-  \item \textbf{Voids.} {{voids.n_significant}} voids have $p<0.05$, and {{exp2.n_void_q05}} survive the correction, all in the toy models: their features sit on or near the corners of a polytope with nothing inside it (Figs.~\ref{fig:voids} and~\ref{fig:voidlife}). The 6-feature void lives from {{life.tmsn6.birth:3}} to {{life.tmsn6.death:3}} ($\pi={{exp2.tmsn6.top_pi2:3}}$; a regular octahedron gives $\sqrt{3/2}\approx1.225$). Of the {{exp2.trained_n}} other trained-model clouds, {{exp2.trained_voids}} have a void at $p<0.05$. GPT-2 positions are fitted as a sphere but have no void ($\pi={{exp2.wpos.top_pi2:2}}$, null 95th percentile {{exp2.wpos.null_q95_pi2:2}}). As for loops, beating a Gaussian null is not by itself a hole (Section~\ref{sec:specificity}).
-  \item \textbf{Growing balls} (Fig.~\ref{fig:balls}): exact slices of the union of balls show each of these loops and voids being born and filled. Animated 3D and slice versions are in the repository, and the explorer draws the balls themselves.
-  \item \textbf{All interesting bars} (Appendix~\ref{app:figures}): the {{loops.n_interesting}} loops and {{voids.n_interesting}} voids the rules pick, including chance-level and degenerate ones and a random curve with one of the largest voids.
-\end{itemize}
-
-\begin{figure}[!htbp]\centering\includegraphics[width=\linewidth]{fig_highlights.png}
-\caption{The strongest loops and voids (post hoc): each cloud's most persistent loop or void that survives Benjamini--Hochberg over 44 tests. Top: loops as red cycles seen face-on, points coloured by concept (colours in their RGB), each titled with its original verdict (green: ring; orange: partial). Bottom: voids as red shells around the blue empty middle, in exploratory toy models.}\label{fig:highlights}\end{figure}
-
-\begin{figure}[!htbp]\centering\includegraphics[height=0.8\textheight,width=\linewidth,keepaspectratio]{fig_growing_balls.png}
-\caption{Growing balls in slices, at four radii per loop or void (before birth, just after, shortly before death, after). A ball at distance $h$ from the slice cuts it in a disc of radius $\sqrt{r^2-h^2}$, so each panel is the exact cross-section of the union of balls, on one scale. Loops are bold while alive; blue is the part of a void no ball reaches yet (radius $d-r$). The states come from the bars, since a slice can show a region as open or closed differently from 3D.}\label{fig:balls}\end{figure}
-
-\begin{figure}[!htbp]\centering\includegraphics[width=\linewidth]{fig_detected_voids.png}
-\caption{The detected voids: the three toy-model voids that survive the correction; the colours cloud's largest void, inside its hue ring (chosen after browsing the explorer; not significant, $p={{voids.colors.p}}$); and two GPT-2 position controls. Top: shell (red) and empty middle (blue). Bottom: the void persistence diagram, zoomed per cloud, with the null's 95th percentile (dashed).}\label{fig:voids}\end{figure}
-
-\begin{figure}[!htbp]\centering\includegraphics[width=\linewidth]{fig_void_life.png}
-\caption{The life of a void (toy model with 6 features): the {{life.tmsn6.s1.edges}} edges make {{life.tmsn6.loops_born}} loops; the {{life.tmsn6.s2.triangles}} faces fill all of them and close one void (Euler characteristic ${{life.tmsn6.points}}-{{life.tmsn6.s2.edges}}+{{life.tmsn6.s2.triangles}}=2=1-0+1$); the tetrahedra inside fill it at radius {{life.tmsn6.death:3}}.}\label{fig:voidlife}\end{figure}
-
-\section{Discussion}
-
-\paragraph{Answering the question.}
-\begin{itemize}
-  \item Topology finds a loop that the concept goes around for colour hue, robustly, and for residues mod 113. The colour loop is already present in the stimuli's RGB values.
-  \item For months there is a loop through the month clusters, and the months go around it, but only post hoc and only in the top-3 PCs. A ring is suggestive.
-  \item There is no ring of days for weekdays or days-with-times: the most persistent loop of each lies inside one day's cluster.
-  \item There are no holes for ordinal concepts or random controls, but as open curves they were never at risk under this null. Because the strict tests never fired for a cyclic set either, this is weak evidence of specificity.
-  \item The fitter's helices for cyclic concepts cannot be told apart from closed loops at this noise level.
-  \item Whether steering \emph{around} these loops is semantically meaningful is the causal question. It is designed and preregistered (amendment A2), and postponed by the author. Colour is the strongest candidate, with the caveat that its loop is inherited from the input.
-\end{itemize}
-
-\paragraph{Limitations.}
-\begin{itemize}
-  \item A convenience sample of 44 clouds, with claims made per dataset.
-  \item Not blind: the source's labels and figures were known.
-  \item The power for 7 clusters is limited (Fig.~\ref{fig:power}). Seven point-like centres on a regular 7-gon give only $\pi = 1/\sin(\pi/7)$; spread within the clusters can raise a ring's $\pi$, so this is not a ceiling.
-  \item For clustered designs, the maximum-$\pi$ statistic does not say where a loop lives; a post hoc localisation check is needed to tell a ring of concepts from a loop inside one cluster.
-  \item The colour stimuli sample saturation $\ge 0.4$ only, so their RGB values already have the hue loop; separating the model's hue code from the input needs controls with model inference (postponed).
-  \item DREiMac's \texttt{standard\_range} criterion decided the months verdict.
-  \item Exp4 bottleneck similarity was uninformative.
-  \item The preregistered power simulation was misspecified (corrected post hoc, deviation D6).
-  \item The alignment permutation $p$ measures ordering, not looping; only the winding number carries the cyclic claim.
-  \item The loop test's nulls are Gaussian: a significant loop means non-Gaussian structure, which hole-free surfaces, caps and helices also have, as do nearly closed arcs of cluster centres (Section~\ref{sec:specificity}). A hole-specific null, resampling hole-free fitted shapes at the cloud's noise, is future work.
-  \item Synthetic accuracy for tori is near zero at these sample sizes.
-  \item No causal evidence yet.
-\end{itemize}
+A semantic cycle, a closed fitted object, a nontrivial homology class of a finite offset, and a causal intervention answer different questions. The Gaussian comparison also flags some hole-free generative designs. The positive 3D findings for hue and residues support label organization in specific coordinates. The negative registered conjunctions leave other layers, prompts, metrics, projection dimensions and training seeds open. Observations across projections reuse the same data. The higher-dimensional checks and empirical controls describe sensitivity within this corpus. They provide no independent model replication. The calibration simulations examine one spectrum, the bootstrap assumes independent generator chunks, and near-closure has intrinsic finite-sample ambiguity. \evidence{reports/reviews/2026-11-26-scientific-audit.md}{Audit, simulations, projection evidence and limitations}.
 
 \section{Conclusion}
-Persistent homology finds loops that the concept travels around for colour hue (robustly, but inherited from the stimuli), residues mod 113 and, post hoc, months. The loop test alone does not establish a hole; the traversal does. It finds none for ordinal concepts or random controls, and no ring of days for weekdays or days-with-times. Fitted ``helices'' for cyclic concepts are not resolvable as open curves. Voids that survive the correction appear only in the exploratory toy models of superposition; no trained language-model cloud has a void even at $p<0.05$. Steering around the detected loops is the next, preregistered experiment.
+The observed data reproduce the negative registered H1 decision. The full-vector agreement, false-positive denominator and interpretation of near-complete angular shapes required correction. The amended primary steering hypothesis still requires simulated readouts and actual model interventions with the registered controls. \evidence{results/science/h6_datasets.csv}{Steering eligibility and unavailable measurements}.
 
-\paragraph{Reproducibility.} Code: \url{https://github.com/BurnyCoder/topology-of-neural-geometry-in-llm-mechanistic-interpretability}. Inputs and results (pinned, SHA-256-verified): \url{https://huggingface.co/datasets/BurnyCoder/topology-of-neural-geometry}. Running \texttt{uv run python run.py all} recomputes every number and figure on a CPU.
-
-\paragraph{Interactive figures.} An explorer of all 44 clouds (\url{https://burnycoder.github.io/topology-of-neural-geometry-in-llm-mechanistic-interpretability/}) replays persistent homology with a radius slider: the alpha complex, every loop's cycle and every void's shell alive at $r$, and optionally the balls of radius $r$ themselves. Its examples page replays the six examples of Fig.~\ref{fig:examples} with their nulls and traversals. The repository's README has animated versions of Figs.~\ref{fig:examples} and~\ref{fig:balls} (balls growing in 3D and in slices).
+\appendix
+\section{Reproducibility and supplementary results}
+A recursive checkout and the locked environment support \texttt{uv run --frozen python run.py science}. The command fetches verified inputs, rebuilds the study and audit estimators, and regenerates tables, plots, explorer and manuscript. The \evidence{reports/reviews/2026-11-26-claims.tsv}{claim ledger} traces interpretations to local outputs and primary sources. The \evidence{reports/exp4_exp5.md}{exploratory similarity and projection report} and the \evidence{reports/loops.md}{loop} and \evidence{reports/voids.md}{void} galleries detail supplementary analyses. All code, configuration and dated amendments are public. The residue simulation's registered within-centroid distance threshold is zero with one point per training class. Neither simulated nor model steering has an outcome. \evidence{reports/exp6_steering.md}{Steering implementation review}.
 
 \bibliographystyle{plainnat}
 \bibliography{references}
 
-\clearpage
-\appendix
-\section{Additional figures}\label{app:figures}
-
-\begin{figure}[!htbp]\centering\includegraphics[width=\linewidth]{fig_loop_gallery.png}
-\caption{Every interesting loop of the 44 clouds, picked by post hoc rules (significant; among the 5 largest; or the concepts wind once along a cycle spanning half the cloud). Green: a top loop surviving Benjamini--Hochberg; orange: $p<0.05$ only. Rule names describe the selection, not the verdict: the verdicts are those of Fig.~\ref{fig:examples}.}\label{fig:loopgallery}\end{figure}
-
-\begin{figure}[!htbp]\centering\includegraphics[width=\linewidth]{fig_void_gallery.png}
-\caption{Every interesting void, picked by post hoc rules (significant; among the 5 largest empty middles; or, in a trained concept cloud, a shell spanning half the cloud with half its concepts on its corners). Green: a top void surviving Benjamini--Hochberg; orange: $p<0.05$ only; black: not significant. Shape and meaning without significance occur in random curves too (C1\_gp\_3).}\label{fig:voidgallery}\end{figure}
-
-\begin{figure}[!htbp]\centering\includegraphics[width=0.6\linewidth]{fig_exp0_margin.png}
-\caption{Exact topology of every fitted shape (Method A): margin ratio $\rho_A$ on a log scale, marker by Betti vector. Right of $\rho_A=1$ the fitted topology is resolvable at the data's noise scale.}\label{fig:margin}\end{figure}
-
-\begin{figure}[!htbp]\centering\includegraphics[width=0.75\linewidth]{fig_exp1_estimators.png}
-\caption{Instrument validation (Exp1): macro exact Betti-vector accuracy of every estimator on resolvable synthetic clouds, with 95\% cluster-bootstrap confidence intervals.}\label{fig:estimators}\end{figure}
-
-\begin{figure}[!htbp]\centering\includegraphics[width=0.75\linewidth]{fig_exp1_outliers.png}
-\caption{Exp1 (deviation D7): false-positive rate on resolvable contractible clouds with and without detected outliers, per estimator, with 95\% confidence intervals and the preregistered 10\% threshold for the outlier-robust variant.}\label{fig:outliers}\end{figure}
-
-\begin{figure}[!htbp]\centering\includegraphics[width=0.65\linewidth]{fig_top10.png}
-\caption{Top-10-PC loop test (post hoc): the observed largest Rips H1 ratio against a matched null's 95th percentile. In 10 dimensions ordinal sets also have loops, so a loop there is not specific to cyclic concepts.}\label{fig:top10}\end{figure}
-
-\begin{figure}[!htbp]\centering\includegraphics[width=0.85\linewidth]{fig_exp4.png}
-\caption{Exp4 (exploratory): MDS map of bottleneck distances between significant-bar diagrams of clouds and ideal templates, and the average-linkage dendrogram. Uninformative: dominated by absolute scale.}\label{fig:exp4}\end{figure}
-
-\clearpage   % flush the appendix figures so the AI statement is the last thing in the paper
-\paragraph{AI statement.} Claude Code (Anthropic) wrote this codebase and this paper, executing an exact specification provided by a human author. Human cleanup and rewriting are in progress.
+\paragraph{AI statement.} The original codebase and manuscript were written with Claude Code. Codex wrote the independent audit code and this revision of the paper from the human author's specification. Human cleanup and rewriting are in progress.
 \end{document}

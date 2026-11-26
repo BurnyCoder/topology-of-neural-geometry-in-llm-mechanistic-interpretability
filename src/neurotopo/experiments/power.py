@@ -3,7 +3,7 @@
 Global context: reports/preregistration.md, section 8 and the addendum. Two parts:
 1. Validation tuning (synthetic validation stream only, never the test set or real data): the b0 rule
    (tau, min_frac), the fixed-pi-threshold baseline (pi0_1, pi0_2), and the family-implied baseline mapping
-   (family -> modal exact Betti vector), all against the exact ground truth of Exp0.
+   (family -> modal catalog Betti vector), all against the catalog target of Exp0.
 2. Power / false-positive simulation of the H1-B conditions (a)-(c) on synthetic designs that mimic the real
    cyclic sets: k concept centres x m prompts in R^D (k = 7, m = 7 like weekdays; k = 12, m = 12 like months;
    k = 113, m = 1 like grokking) arranged on a closed ring (power), an open 300-degree arc or at random
@@ -36,7 +36,7 @@ REPS, M_SIM = 40, 199
 
 # ----------------------------------------------------------------------------- 1. validation tuning
 def val_summaries() -> pd.DataFrame:
-    """summarize() for every validation cloud, joined with its exact ground truth from Exp0."""
+    """summarize() for every validation cloud, joined with its catalog target from Exp0."""
     cfg = config.load()["tda"]
     sset = synthetic.load("val")
     gt = pd.read_csv(config.path("results") / "exp0" / "synth_val_topology.csv.gz")

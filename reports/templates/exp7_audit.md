@@ -1,5 +1,8 @@
 # Exp7: second independent audit (post hoc, deviation D8)
 
+**Historical report · erratum, 26 November 2026.** This records an earlier analysis. Its family and loop comparisons use catalog labels and its Gaussian reference results apply to the simulated designs. The [independent audit](reviews/2026-11-26-scientific-audit.md) supersedes interpretations of raw angular topology, full-vector agreement, open-family false-positive denominators, uniform calibration and representative-cycle identity. The earlier author's tests and decisions remain part of the chronology.
+
+
 Date: 2026-11-15. Author: Libor "Burny" Burian. Every number is generated from `results/exp7_audit/` and earlier results by `run.py report`. Code: `src/neurotopo/experiments/exp7_audit.py` (`run.py audit`). No model inference and no training: everything uses stored activations, stored results, and the colour prompts' RGB values recomputed from the source's prompt builder.
 
 ## Why this audit

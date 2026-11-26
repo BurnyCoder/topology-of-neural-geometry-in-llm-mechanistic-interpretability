@@ -98,7 +98,7 @@ def llama_task(model, tok, task: tasks.Task, seed: int) -> dict:
     res = {"dataset": task.dataset_id, "hidden_rel_err": rel_err, "k_steps": k_steps, "n_prompts": len(task.prompts)}
     loop_set = {}
     if cc["theta"] is not None:
-        loop_set["B_cohomology"] = loops.loop_from_coordinate(z, cc["theta"], n_bins=2 * min(task.n, 36))
+        loop_set["B_cohomology"] = loops.loop_from_coordinate(z, cc["theta"], n_bins=loops.steering_bins(task.n))
     rr = source.real_results()[task.dataset_id]
     if rr["family"] in ("helix", "cone"):
         loop_set["A_fitted_axis_circle"] = None                           # built per prompt (height-dependent)
@@ -132,7 +132,7 @@ def llama_task(model, tok, task: tasks.Task, seed: int) -> dict:
         b = res["B_cohomology"]
         res["H6_pass"] = bool(res["random_null"]["p"] < 0.05 and b["frac_wind1"] >= 0.5 and b["vocab_mass"] >= 0.5)
     else:
-        res["H6_pass"] = False
+        res.update(H6_pass=None, missing_endpoint="coordinate unavailable")
     return res
 
 
@@ -161,6 +161,8 @@ def grok_readout(model, steer_vecs: np.ndarray, a_idx: np.ndarray, b_vals: list[
     for j, b in enumerate(b_vals):
         toks = torch.stack([torch.as_tensor(a_idx), torch.full((len(a_idx),), b), torch.full((len(a_idx),), p)], 1).to(dev)
         logits = model(toks, steer=torch.as_tensor(steer_vecs, dtype=torch.float32, device=dev))
+        if logits.shape[-1] != p:
+            raise ValueError("The full output vocabulary must consist of the residue classes for mass one")
         out[:, j] = (logits.argmax(-1).cpu().numpy() - b) % p
     return out
 
@@ -174,7 +176,7 @@ def grok_steer(model, w: np.ndarray, label: str, seed: int, b_vals=(0, 14, 28, 4
     cc = circular.circular_coordinates(y)
     res = {"model": label}
     if cc["theta"] is None:
-        res.update({"theta_B": None, "H6_pass": False})
+        res.update(theta_B=None, H6_pass=None, missing_endpoint="coordinate unavailable")
         return res
     a = np.arange(p)
     r, k, s = cs.max_over_frequency(cc["theta"], a, p, 56)
@@ -183,16 +185,16 @@ def grok_steer(model, w: np.ndarray, label: str, seed: int, b_vals=(0, 14, 28, 4
     deltas = 2 * np.pi * np.arange(k_steps) / k_steps
     order = np.argsort((k * a) % p)                                       # residues in k*-circle order
     cen = z[order]
-    loop_set = {"B_cohomology": loops.loop_from_coordinate(z, cc["theta"], n_bins=56),
+    loop_set = {"B_cohomology": loops.loop_from_coordinate(z, cc["theta"], n_bins=loops.steering_bins(p)),
                 "chord_centroids": loops.chord_path(cen)}
-    def evaluate(lp, coords, basis, idx):
+    def evaluate(lp, coords, basis, idx, offsets=b_vals):
         per = []
         for i in idx:
             dh = np.stack([lp.displacement(coords[i:i + 1], d)[0] @ basis.T for d in deltas])
-            ahat = grok_readout(model, dh, np.full(k_steps, i), list(b_vals))
-            for j in range(len(b_vals)):
+            ahat = grok_readout(model, dh, np.full(k_steps, i), list(offsets))
+            for j in range(len(offsets)):
                 psi = 2 * np.pi * k * ahat[:, j] / p
-                per.append({"a": int(i), "b": int(b_vals[j]), **metrics.traversal(psi, deltas), "vocab_mass": 1.0})
+                per.append({"a": int(i), "b": int(offsets[j]), **metrics.traversal(psi, deltas), "vocab_mass": 1.0})
         return per
     for name, lp in loop_set.items():
         per = evaluate(lp, z, fr["basis"], a)
@@ -203,13 +205,14 @@ def grok_steer(model, w: np.ndarray, label: str, seed: int, b_vals=(0, 14, 28, 4
     lb = loop_set["B_cohomology"]
     centre10 = ((lb.pts.mean(0) @ fr["basis"].T + fr["mean"]) - fr10["mean"]) @ fr10["basis"]
     rng = np.random.default_rng(dataset_seed("grok" + label, seed))
-    sub = a[::8]
+    # One fixed prompt per residue for the matched B-versus-random comparison (amendment A2).
+    first_offset = b_vals[0]
     t_null = [metrics.dataset_statistic(evaluate(loops.random_loop(centre10, lb.radius, np.eye(10), rng)[0], z10,
-                                                 fr10["basis"], sub))["T"] for _ in range(M_RANDOM)]
-    t_obs = metrics.dataset_statistic([q for q in res["B_cohomology"]["per_prompt"] if q["a"] in set(sub.tolist())])["T"]
+                                                 fr10["basis"], a, (first_offset,)))["T"] for _ in range(M_RANDOM)]
+    t_obs = metrics.dataset_statistic([q for q in res["B_cohomology"]["per_prompt"] if q["b"] == first_offset])["T"]
     res["random_null"] = {"T_subset_B": t_obs, "T_random": t_null, "p": metrics.null_pvalue(t_obs, np.array(t_null))}
     b = res["B_cohomology"]
-    res["H6_pass"] = bool(res["random_null"]["p"] < 0.05 and b["frac_wind1"] >= 0.5)
+    res["H6_pass"] = bool(res["random_null"]["p"] < 0.05 and b["frac_wind1"] >= 0.5 and b["vocab_mass"] >= 0.5)
     return res
 
 

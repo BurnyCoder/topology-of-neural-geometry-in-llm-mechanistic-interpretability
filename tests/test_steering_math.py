@@ -37,3 +37,14 @@ def test_random_loop_and_chord_path():
     cen = np.c_[np.cos(np.arange(7) * 2 * np.pi / 7), np.sin(np.arange(7) * 2 * np.pi / 7)]
     ch = loops.chord_path(cen)
     assert np.allclose(ch(np.array([2 * np.pi * 3 / 7]))[0], cen[3])
+
+def test_registered_loop_bins_singleton_radius_and_missing_outcomes():
+    from neurotopo.steering.offline import CentroidDecoder
+    assert [loops.steering_bins(n) for n in (7,12,113)] == [14,24,72]
+    x = np.eye(4)
+    dec = CentroidDecoder(x,np.arange(4),4,np.array([False,True,True,True]))
+    assert dec.radius95==0 and dec.decode(x[:1])[1][0]>0
+    assert metrics.cohort_verdict([])=="no eligible datasets"
+    assert metrics.cohort_verdict([None,None])=="unmeasured"
+    assert metrics.cohort_verdict([True,None])=="incomplete"
+    assert metrics.cohort_verdict([True,False])=="partially supported"

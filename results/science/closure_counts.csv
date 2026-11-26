@@ -1,0 +1,9 @@
+split,family,catalog_closed,raw_complete,n
+val,arc,False,False,74
+val,arc,True,False,46
+val,sphere,True,False,42
+val,sphere,False,False,78
+test,arc,False,False,1764
+test,arc,True,False,1236
+test,sphere,False,False,2021
+test,sphere,True,False,979

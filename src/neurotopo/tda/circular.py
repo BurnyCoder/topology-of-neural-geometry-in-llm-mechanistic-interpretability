@@ -24,21 +24,20 @@ def circular_coordinates(points: np.ndarray, prime: int = 47, max_landmarks: int
     dgm1 = np.asarray(cc.dgms_[1]) if hasattr(cc, "dgms_") else np.zeros((0, 2))
     if dgm1.size == 0:                                   # no H1 class at all (DREiMac would raise IndexError)
         return {"theta": None, "bar": None, "n_landmarks": n_land, "error": "no H1 class"}
+    # The candidate interval remains measurable even when the strict cover has no admissible radius.
+    order = np.argsort(dgm1[:, 0] - dgm1[:, 1])
+    bar = (dgm1[order[cocycle_idx]] / 2.0).tolist()
     try:
         # standard_range=True (preregistered) requires Rips death >= 2 x birth (DREiMac 0.3.2 EMCoords.get_cover_radius),
         # which DREiMac documents as guaranteeing the class is non-trivial in the Cech complex; False only guarantees it
-        # in the Rips complex. DREiMac's theory page also takes the cover radius >= the landmark covering radius
-        # d_H(landmarks, X); 0.3.2 does not check that term, so the guarantee is exact when every point is a
-        # landmark (N <= 200: weekdays, months, residues) and approximate for larger clouds (colours, days_time).
+        # in the Rips complex. Check actual point coverage at the returned radius even after a successful call.
         # (DREiMac's default prime is 41; the preregistered 47 is passed explicitly.)
         theta = cc.get_coordinates(perc=perc, cocycle_idx=cocycle_idx, standard_range=standard_range)
     except Exception as exc:
         # Only DREiMac's "class too short" refusal means "no usable loop" (deviations D3); anything else is a bug.
         if "too short" not in str(exc):
             raise
-        return {"theta": None, "bar": None, "n_landmarks": n_land, "error": str(exc)[:120]}
-    bar = None
-    if dgm1.size:
-        order = np.argsort(dgm1[:, 0] - dgm1[:, 1])                  # most persistent first (DREiMac ordering)
-        bar = (dgm1[order[cocycle_idx]] / 2.0).tolist()
-    return {"theta": np.asarray(theta, dtype=np.float64), "bar": bar, "n_landmarks": n_land, "error": None}
+        return {"theta": None, "bar": None, "n_landmarks": n_land, "error": str(exc)[:120], "candidate_bar": bar}
+    uncovered = int(np.sum(cc._dist_land_data.min(axis=0) >= cc._r_cover))
+    return {"theta": np.asarray(theta, dtype=np.float64), "bar": bar, "n_landmarks": n_land, "error": None,
+            "candidate_bar": bar, "uncovered": uncovered, "cover_radius": float(cc._r_cover)}

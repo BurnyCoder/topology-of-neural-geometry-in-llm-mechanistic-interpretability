@@ -48,8 +48,7 @@ def record(dataset_id: str, theta: np.ndarray, labels: list[str], variable: str 
         p = cs.max_over_frequency_pvalue(theta, a, 113, cc["grok_kmax"], cc["perm_mc"], rng)
         th = cs.concept_means(theta, (k * a) % 113, 113)          # residues ordered around the k-circle
         return {"variable": "residue (max over k)", "k": k, "n": 113, "R": r, "s": s, "p": p,
-                "winding": cs.winding(th), "order_match": cs.cyclic_order_matches(th),
-                "order_p": cs.cyclic_order_p(113)}
+                "winding": cs.winding(th), **cs.order_test(cs.cyclic_order_matches(th), 113, cc["grok_kmax"])}
     con = source.concepts(dataset_id, labels, variable=None if variable == "bins" else variable,
                           n_bins=n_bins or 7)
     n = len(con.phase)
@@ -57,7 +56,7 @@ def record(dataset_id: str, theta: np.ndarray, labels: list[str], variable: str 
     r, s = cs.alignment(th, con.phase)
     p = cs.permutation_pvalue(th, con.phase, exact_max_n=cc["exact_max_n"], mc=cc["perm_mc"], rng=rng)
     return {"variable": con.variable, "n": n, "R": r, "s": s, "p": p, "winding": cs.winding(th),
-            "order_match": cs.cyclic_order_matches(th), "order_p": cs.cyclic_order_p(n),
+            **cs.order_test(cs.cyclic_order_matches(th), n),
             "concept_theta": th.tolist()}
 
 

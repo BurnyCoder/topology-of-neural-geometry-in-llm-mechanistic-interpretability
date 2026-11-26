@@ -1,4 +1,4 @@
-Clouds per family and exact ground-truth Betti vector (in brackets: resolvable, rho_A >= 1).
+Clouds per family and catalog Betti target (in brackets: resolvable, rho_A >= 1).
 
 | family | (1, 0, 0) | (1, 0, 1) | (1, 1, 0) | (1, 2, 1) | (k, 0, 0), k >= 2 |
 |---|---|---|---|---|---|

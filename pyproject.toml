@@ -1,7 +1,7 @@
 [project]
 name = "neurotopo"
 version = "0.1.0"
-description = "Topology (exact Betti numbers of fitted shapes and persistent homology) of top-3-PCA neural activation clouds, and a test of whether semantically cyclic concepts travel around a hole"
+description = "Topology (fitted catalog Betti vectors and persistent homology) of top-3-PCA neural activation clouds, and a test of whether semantically cyclic concepts travel around a hole"
 readme = "README.md"
 license = "MIT"
 authors = [{ name = "Libor Burian" }]

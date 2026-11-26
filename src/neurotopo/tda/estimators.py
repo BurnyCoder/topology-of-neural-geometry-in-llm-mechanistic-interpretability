@@ -1,7 +1,7 @@
 """Betti-number estimators of Method B applied to one normalised 3D cloud (used by Exp1, Exp2 and tuning).
 
 Global context: H5 (reports/preregistration.md, section 6) compares estimators of (b0, b1, b2) against the
-exact ground-truth topology of synthetic clouds:
+registered catalog targets of synthetic clouds:
 - the preregistered primary estimator: alpha diagrams + universal null (A = 1/2), b0 by single linkage;
 - the secondary estimator added in reports/deviations.md D1: Rips H1 + universal null (A = 1);
 - a fixed-pi-threshold baseline (count bars with pi > pi0_k, pi0 tuned on the validation stream);

@@ -1,0 +1,9 @@
+2026-11-26 14:17:30 INFO root: phase audit3, log file C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\.audit-reproduction\logs\audit3_20261126T141730.log
+2026-11-26 14:17:41 INFO neurotopo.experiments.exp8_null_specificity: MC null on synthetic clouds: hole sensitivity 0.845, false-loop rate 0.174 [0.126, 0.225] (n=1982)
+2026-11-26 14:18:17 INFO neurotopo.experiments.exp8_null_specificity: sampler equivalence: median |q95 ratio - 1| = 0.012, KS p < 0.05 in 0.05 of clouds
+2026-11-26 14:31:25 INFO neurotopo.experiments.exp8_null_specificity: k7 (R5a_llama_weekdays-like, top-3 0.659 vs sim 0.648): undetermined; pass rates {'ring': 0.1, 'arc300': 0.3, 'cap': 0.05, 'grid': 0.125, 'random': 0.025}
+2026-11-26 14:31:25 INFO neurotopo.experiments.exp8_null_specificity: k12 (R5b_llama_months-like, top-3 0.549 vs sim 0.550): undetermined; pass rates {'ring': 0.125, 'arc300': 0.15, 'cap': 0.1, 'grid': 0.025, 'random': 0.025}
+2026-11-26 14:31:37 INFO neurotopo.experiments.exp8_null_specificity: torus 2-1-3050: margin 2r = 0.351, cut 0.088, void born 0.052 (pi 3.4) -> born above cut: False
+2026-11-26 14:31:37 INFO neurotopo.experiments.exp8_null_specificity: torus 2-1-3200: margin 2r = 0.387, cut 0.097, void born 0.052 (pi 3.7) -> born above cut: False
+2026-11-26 14:31:37 INFO neurotopo.experiments.exp8_null_specificity: torus 3-0-3000: margin 2r = 0.403, cut 0.101, void born 0.054 (pi 3.7) -> born above cut: False
+2026-11-26 14:31:37 INFO neurotopo.experiments.exp8_null_specificity: wrote C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\.audit-reproduction\results\exp8_audit3\summary.json

@@ -1,5 +1,8 @@
 # Exp8: third independent audit (post hoc, deviation D9)
 
+**Historical report · erratum, 26 November 2026.** This records an earlier analysis. Its family and loop comparisons use catalog labels and its Gaussian reference results apply to the simulated designs. The [independent audit](reviews/2026-11-26-scientific-audit.md) supersedes interpretations of raw angular topology, full-vector agreement, open-family false-positive denominators, uniform calibration and representative-cycle identity. The earlier author's tests and decisions remain part of the chronology.
+
+
 Date: 2026-11-15. Author: Libor "Burny" Burian.
 - Every number is generated from `results/exp8_audit3/` and earlier results by `run.py report`.
 - Code: `src/neurotopo/experiments/exp8_null_specificity.py` (`run.py audit3`).
@@ -59,7 +62,7 @@ Results on resolvable clouds, with cluster-bootstrap 95% CIs over generator chun
 | Ba (tuned threshold; all) | 0.566 [0.524, 0.609] | 0.016 [0.013, 0.018] |
 
 - **Which hole-free shapes MC flags:**
-  - blobs 0.06 (its own model, so calibrated), lines 0.04, open curves 0.00;
+  - observed rates for blobs 0.06, lines 0.04 and open curves 0.00. The fitted covariance precludes assuming exact calibration.
   - open arcs 0.08, polytopes 0.10, discs 0.19, helices 0.20;
   - **paraboloids 0.37, spheres and caps 0.73.**
   - The false loops come from surfaces and helices, not from open curves or open arcs. Closed arcs (true b1 = 1) are detected in 0.82.

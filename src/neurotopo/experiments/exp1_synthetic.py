@@ -1,9 +1,8 @@
-"""Exp1: validation of the persistent-homology Betti estimators against exact ground-truth topology (H5).
+"""Exp1: validation of the persistent-homology Betti estimators against the registered catalog target (H5).
 
 Global context (reports/preregistration.md, section 6, H5): on the source's fixed synthetic test set (39,000
-clouds, 13 families), the exact Betti numbers of every ground-truth shape are known (Exp0, Method A on the
-regenerated parameters). We score estimators of (b0, b1, b2) on clouds whose topology is resolvable
-(rho_A >= 1), macro-averaged over families (polytope on b0 only), with 95% cluster-bootstrap CIs over the
+clouds, 13 families), the source's catalog assigns target Betti vectors to the recorded parameters.
+We score estimators on catalog-eligible clouds (rho_A >= 1), macro-averaged over families (polytope on b0 only), with 95% cluster-bootstrap CIs over the
 generator chunks of 25 clouds:
 - P  (preregistered primary): alpha + universal null (A = 1/2) for b1/b2, single-linkage b0;
 - S  (secondary, deviations D1): Rips H1 + universal null (A = 1) for b1, alpha universal for b2;
@@ -25,13 +24,20 @@ from scipy import stats
 
 from neurotopo import config
 from neurotopo.data import synthetic
+from neurotopo.experiments import exp1_batches
 from neurotopo.experiments.common import env_record, out_dir, read_json, write_json
 from neurotopo.stats.tests import cluster_bootstrap
 from neurotopo.tda import diagrams, estimators, nulls
 from neurotopo.geometry.pca import rms_normalise
 
 log = logging.getLogger(__name__)
-CONTRACTIBLE = {"blob", "line", "helix", "ringing", "disc", "paraboloid"}   # families that are always (1,0,0)
+def contractible_cohort(df: pd.DataFrame) -> np.ndarray:
+    """The registered eligible, connected, contractible catalog objects, including open arcs and caps.
+
+    For these thirteen known families the vector determines this predicate. Acyclicity alone
+    would not imply contractibility for a general topological space (Hatcher, Algebraic Topology).
+    """
+    return (df["resolvable"] & df["b0"].eq(1) & df["b1"].eq(0) & df["b2"].eq(0)).to_numpy()
 
 
 def _summ(points, tau, frac):
@@ -53,15 +59,14 @@ def predictions(df: pd.DataFrame, t: dict) -> dict[str, np.ndarray]:
     """(N, 3) predicted Betti vectors of every estimator."""
     b0 = df["b0_pred"].to_numpy()
     pi1, pi2 = np.array(df["pi1_top"].tolist()), np.array(df["pi2_top"].tolist())
-    fam_pred = df["family_pred"].to_numpy()
-    fmap = {f: np.array(v) for f, v in t["family_map"].items()}
     out = {
         "P_alpha_universal": np.c_[b0, df["b1_alpha_univ"], df["b2_alpha_univ"]],
         "S_rips_universal": np.c_[b0, df["b1_rips_univ"], df["b2_alpha_univ"]],
         "Ba_fixed_pi": np.c_[b0, (pi1 > t["pi0_1"]).sum(1), (pi2 > t["pi0_2"]).sum(1)],
-        "Bb_family_implied": np.stack([fmap.get(f, np.array([1, 0, 0])) for f in fam_pred]),
         "Bc_majority": np.tile(np.array(t["majority"]), (len(df), 1)),
     }
+    if "family_pred" in df:
+        out["Bb_family_implied"] = np.stack([t["family_map"][f] for f in df["family_pred"]])
     return out
 
 
@@ -86,28 +91,49 @@ def run() -> None:
     sset = synthetic.load("test")
     gt = pd.read_csv(config.path("results") / "exp0" / "synth_test_topology.csv.gz")
     log.info("summarising %d test clouds", len(sset))
-    rows = Parallel(n_jobs=-1, batch_size=16)(delayed(_summ)(sset.cloud(i), t["b0_tau"], t["b0_minfrac"])
-                                              for i in range(len(sset)))
+    checkpoints = exp1_batches.checkpoint_folder(t)
+    rows = exp1_batches.measured_rows(checkpoints, "persistence", range(len(sset)),
+        lambda i:delayed(_summ)(sset.cloud(i),t["b0_tau"],t["b0_minfrac"]), 500)
     s = pd.DataFrame(rows)
     s["b0_pred"] = [r[f"{t['b0_tau']}|{t['b0_minfrac']}"] for r in s["b0_grid"]]
+    if not np.array_equal(gt["sample_id"], sset.meta["sample_id"]):
+        raise ValueError("Topology rows and point clouds have different sample identifiers")
     df = pd.concat([gt.reset_index(drop=True), s.drop(columns=["n", "b0_grid"])], axis=1)
     pred = synthetic.predictions()
-    meth = pred[pred["system"] == "method"].set_index("sample_id")["family_pred"]
-    df["family_pred"] = meth.reindex(df["sample_id"]).to_numpy()
+    meth = pred[pred["system"] == "method"].set_index("sample_id", verify_integrity=True)["family_pred"]
+    df["family_pred"] = meth.loc[df["sample_id"]].to_numpy()
     val = pd.read_json(config.path("results") / "power" / "val_summaries.json.gz", orient="records")
     vr = val[val["resolvable"]]
     t["majority"] = list(map(int, vr[["b0", "b1", "b2"]].value_counts().idxmax()))
     # Monte Carlo null on the baseline subset.
     sub = np.flatnonzero(synthetic.baseline_subset(df))
     seed = cfg["seed"]
-    mc = Parallel(n_jobs=-1, batch_size=4)(delayed(_mc)(sset.cloud(i), seed * 10 ** 6 + int(i),
-                                                        cfg["synthetic"]["mc_draws_synth"]) for i in sub)
+    mc = exp1_batches.measured_rows(checkpoints, "matched_gaussian", sub,
+        lambda i:delayed(_mc)(sset.cloud(i),seed*10**6+i,cfg["synthetic"]["mc_draws_synth"]), 64)
     df["b1_mc"], df["b2_mc"] = np.nan, np.nan
     df.loc[sub, "b1_mc"] = [m[0] for m in mc]
     df.loc[sub, "b2_mc"] = [m[1] for m in mc]
     df.drop(columns=["pi1_top", "pi2_top"]).to_csv(out / "per_cloud.csv.gz", index=False)
     np.savez_compressed(out / "pi_top.npz", pi1=np.array(df["pi1_top"].tolist()), pi2=np.array(df["pi2_top"].tolist()))
 
+    score_table(df, t, sset, sub, out)
+
+
+def rescore() -> None:
+    """Replay the published scoring analysis using the deposited row-level predictions."""
+    out = out_dir("exp1")
+    df = pd.read_csv(out / "per_cloud.csv.gz", low_memory=False)
+    with np.load(out / "pi_top.npz") as pi:
+        df["pi1_top"], df["pi2_top"] = list(pi["pi1"]), list(pi["pi2"])
+    t = read_json(config.path("results") / "power/val_tuning.json")
+    val = pd.read_json(config.path("results") / "power/val_summaries.json.gz")
+    t["majority"] = list(map(int, val.loc[val["resolvable"], ["b0","b1","b2"]].value_counts().idxmax()))
+    score_table(df, t, synthetic.load("test"), np.flatnonzero(synthetic.baseline_subset(df)), out)
+
+
+def score_table(df, t, sset, sub, out):
+    """Summarise the identical empirical estimands in a full run and an archived-row replay."""
+    cfg = config.load()
     preds = predictions(df, t)
     res = df["resolvable"].to_numpy()
     fam_code = df["family"].to_numpy()
@@ -139,7 +165,7 @@ def run() -> None:
         est, lo, hi = cluster_bootstrap(both, chunks, f, n_boot=nb)
         diffs[f"P - {name}"] = {"estimate": est, "ci": [lo, hi]}
     # False-positive rates on resolvable contractible clouds (GT b1 = b2 = 0, non-point-set families), per N-bin.
-    contr = res & np.isin(df["family_name"], list(CONTRACTIBLE))
+    contr = contractible_cohort(df)
     fpr = {}
     for name, p in preds.items():
         fp = (p[:, 1] > 0) | (p[:, 2] > 0)
@@ -148,11 +174,17 @@ def run() -> None:
     blobs = np.flatnonzero(df["family_name"].to_numpy() == "blob")
     calib = {}
     for b in range(4):
-        idx = blobs[df["n_bin"].to_numpy()[blobs] == b][:300]
-        pv = np.concatenate([np.asarray(x) for x in Parallel(n_jobs=-1)(delayed(_blob_pvalues)(sset.cloud(i)) for i in idx)])
+        idx = blobs[df["n_bin"].to_numpy()[blobs] == b]
+        pv = np.concatenate([np.asarray(x) for x in Parallel(n_jobs=exp1_batches.worker_count())(delayed(_blob_pvalues)(sset.cloud(i)) for i in idx)])
         calib[int(b)] = {"fwer_alpha_universal": float((df["b1_alpha_univ"].to_numpy()[idx] > 0).mean()),
                          "ks_uniform_D": float(stats.kstest(pv, "uniform").statistic) if pv.size else None,
-                         "n_pvalues": int(pv.size)}
+                         "n_pvalues": int(pv.size), "n_clouds": len(idx), "by_noise_bin": {}}
+        for noise in sorted(df["noise_bin"].unique()):
+            sel = idx[df["noise_bin"].to_numpy()[idx] == noise]
+            hits = df["b1_alpha_univ"].to_numpy()[sel] > 0
+            rate, lo, hi = cluster_bootstrap(hits, df["chunk"].to_numpy()[sel], np.mean, n_boot=nb)
+            calib[int(b)]["by_noise_bin"][int(noise)] = {"n": len(sel), "hits": int(hits.sum()),
+                                                         "rate": rate, "cluster_ci": [lo, hi]}
     # Accuracy versus resolvability (all clouds, binned rho_A).
     bins = [0, 0.25, 0.5, 1, 2, 4, np.inf]
     rb = pd.cut(df["rho_A"].replace(np.inf, 1e9), bins, right=False)
@@ -191,9 +223,9 @@ def outlier_check() -> None:
 
     Outlier clouds = clouds with >= 1 point farther than far_factor x their median distance to the ground-truth
     shape (tda.ground_truth.far_points). Reported: FPR of every estimator on resolvable contractible clouds with
-    and without detected outliers (cluster-bootstrap CI over generator chunks, one-sided Fisher test), the
+    and without detected outliers (cluster-bootstrap CI over generator chunks, legacy unclustered Fisher statistic), the
     decision (DTM ablation iff P's outlier FPR > dtm_fpr_threshold), and the proxy's flag rate per N bin next to
-    the generator's expected rate of clouds with at least one injected outlier (upper bound on the flag rate).
+    the generator's expected rate of clouds with at least one injected outlier (a model expectation for a different quantity).
     """
     import yaml
     from neurotopo.stats.tests import fisher_exact
@@ -205,7 +237,7 @@ def outlier_check() -> None:
     pi = np.load(out / "pi_top.npz")
     df["pi1_top"], df["pi2_top"] = list(pi["pi1"]), list(pi["pi2"])
     k = cfg["outliers"]["far_factor"]
-    df["n_far"] = Parallel(n_jobs=-1, batch_size=64)(delayed(far_points)(sset.cloud(i), sset.gt(i), k)
+    df["n_far"] = Parallel(n_jobs=exp1_batches.worker_count(), batch_size=64)(delayed(far_points)(sset.cloud(i), sset.gt(i), k)
                                                       for i in range(len(sset)))
     with open(config.path("submodule") / "configs" / "base.yaml", encoding="utf-8") as f:
         gen = yaml.safe_load(f)["synth"]
@@ -216,7 +248,7 @@ def outlier_check() -> None:
                       "expected_with_outliers": expected_outlier_rate(df["n"].to_numpy()[nbin == b],
                                                                       gen["outlier_prob"], gen["outlier_frac_max"])}
              for b in range(4)}
-    contr = df["resolvable"].to_numpy() & np.isin(df["family_name"], list(CONTRACTIBLE))
+    contr = contractible_cohort(df)
     chunks = df["chunk"].to_numpy()
     nb = cfg["synthetic"]["bootstrap"]
     rates = {}
@@ -235,7 +267,7 @@ def outlier_check() -> None:
     sens = {}
     preds = predictions(df, read_json(out / "summary.json")["tuning"])
     for kf in cfg["outliers"]["far_factor_sensitivity"]:
-        fl = np.array(Parallel(n_jobs=-1, batch_size=64)(delayed(far_points)(sset.cloud(i), sset.gt(i), kf)
+        fl = np.array(Parallel(n_jobs=exp1_batches.worker_count(), batch_size=64)(delayed(far_points)(sset.cloud(i), sset.gt(i), kf)
                                                           for i in range(len(sset)))) > 0
         sens[str(kf)] = {"flagged_fraction": float(fl.mean()), "n_outlier_contractible": int((contr & fl).sum()),
                          **{name: float((((preds[name][:, 1] > 0) | (preds[name][:, 2] > 0))[contr & fl]).mean())

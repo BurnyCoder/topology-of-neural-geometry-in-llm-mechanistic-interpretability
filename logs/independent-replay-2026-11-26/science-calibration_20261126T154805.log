@@ -1,0 +1,4 @@
+2026-11-26 15:48:05 INFO root: phase science-calibration, log file C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\.audit-reproduction\logs\science-calibration_20261126T154805.log
+2026-11-26 15:48:45 INFO neurotopo.science.null_replay: Completed fitted-null calibration for weekdays
+2026-11-26 15:50:11 INFO neurotopo.science.null_replay: Completed fitted-null calibration for months
+2026-11-26 15:51:08 INFO neurotopo.science.null_replay: Completed fitted-null calibration for residues

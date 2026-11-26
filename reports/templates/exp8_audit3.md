@@ -1,5 +1,8 @@
 # Exp8: third independent audit (post hoc, deviation D9)
 
+**Historical report · erratum, 26 November 2026.** This records an earlier analysis. Its family and loop comparisons use catalog labels and its Gaussian reference results apply to the simulated designs. The [independent audit](reviews/2026-11-26-scientific-audit.md) supersedes interpretations of raw angular topology, full-vector agreement, open-family false-positive denominators, uniform calibration and representative-cycle identity. The earlier author's tests and decisions remain part of the chronology.
+
+
 Date: 2026-11-15. Author: Libor "Burny" Burian.
 - Every number is generated from `results/exp8_audit3/` and earlier results by `run.py report`.
 - Code: `src/neurotopo/experiments/exp8_null_specificity.py` (`run.py audit3`).
@@ -59,7 +62,7 @@ Results on resolvable clouds, with cluster-bootstrap 95% CIs over generator chun
 | Ba (tuned threshold; all) | {{audit3.Ba.sens:3}} [{{audit3.Ba.sens_lo:3}}, {{audit3.Ba.sens_hi:3}}] | {{audit3.Ba.fpr:3}} [{{audit3.Ba.fpr_lo:3}}, {{audit3.Ba.fpr_hi:3}}] |
 
 - **Which hole-free shapes MC flags:**
-  - blobs {{audit3.mc.fam.blob_b0:2}} (its own model, so calibrated), lines {{audit3.mc.fam.line_b0:2}}, open curves {{audit3.mc.fam.ringing_b0:2}};
+  - observed rates for blobs {{audit3.mc.fam.blob_b0:2}}, lines {{audit3.mc.fam.line_b0:2}} and open curves {{audit3.mc.fam.ringing_b0:2}}. The fitted covariance precludes assuming exact calibration.
   - open arcs {{audit3.mc.fam.arc_b0:2}}, polytopes {{audit3.mc.fam.polytope_b0:2}}, discs {{audit3.mc.fam.disc_b0:2}}, helices {{audit3.mc.fam.helix_b0:2}};
   - **paraboloids {{audit3.mc.fam.paraboloid_b0:2}}, spheres and caps {{audit3.mc.fam.sphere_b0:2}}.**
   - The false loops come from surfaces and helices, not from open curves or open arcs. Closed arcs (true b1 = 1) are detected in {{audit3.mc.fam.arc_b1:2}}.

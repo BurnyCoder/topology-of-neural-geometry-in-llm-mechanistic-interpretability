@@ -32,6 +32,16 @@ PHASES = {
     "audit": ("neurotopo.experiments.exp7_audit", "run"),
     "audit3": ("neurotopo.experiments.exp8_null_specificity", "run"),
     "audit4": ("neurotopo.experiments.exp9_independent_audit", "run"),  # top-10 loops of smooth-curve controls (D14)
+    "science-cohorts": ("neurotopo.science.cohorts", "run"),
+    "science-verify": ("neurotopo.report.check_publication", "run"),
+    "science-controls": ("neurotopo.science.cycles", "analytic_controls"),
+    "science-decisions": ("neurotopo.science.hypotheses", "run"),
+    "science-summary": ("neurotopo.science.synthesis", "run"),
+    "science-real": ("neurotopo.science.hypotheses", "recompute_real"),
+    "science-cycles": ("neurotopo.science.cycles", "run"),
+    "science-benchmark": ("neurotopo.science.benchmark", "run"),
+    "science-nulls": ("neurotopo.science.null_replay", "replay"),
+    "science-calibration": ("neurotopo.science.null_replay", "calibration"),
     "toy": ("neurotopo.experiments.toy_example", "run"),             # worked example (docs/worked_example.md)
     "voids": ("neurotopo.experiments.void_search", "run"),           # every void scored; interesting ones (post hoc)
     "loops": ("neurotopo.experiments.loop_search", "run"),           # every loop scored; interesting ones (post hoc)
@@ -39,17 +49,23 @@ PHASES = {
     "exp6": ("neurotopo.experiments.exp6_steering", "run"),
     "report": ("neurotopo.report.build", "run"),
     "site": ("neurotopo.report.site", "run"),
+    "pdf": ("neurotopo.report.pdf", "run"),
     "publish": ("neurotopo.report.publish", "run"),
 }
-ALL = ["fetch", "exp0", "coords", "power", "power2", "exp1", "exp1outliers", "exp2", "exp3", "exp3posthoc", "exp4", "exp5", "audit", "audit3", "audit4", "toy", "voids", "loops", "report", "site"]   # exp6sim / exp6: postponed
+SCIENCE_CHECKS = ["science-nulls", "science-calibration", "science-controls", "science-cycles",
+                  "science-benchmark", "science-cohorts", "science-decisions", "science-summary"]
+# A clean checkout contains the archived comparison arrays. science-nulls always generates fresh draws.
+ALL = ["fetch", "exp0", "coords", "power", "power2", "exp1", "exp1outliers", "exp2", "exp3", "exp3posthoc",
+       "exp4", "exp5", "audit", "audit3", "audit4", "toy", "voids", "loops", *SCIENCE_CHECKS, "report", "site", "pdf"]
+SCIENCE = [*ALL, "science-verify"]
 
 
 def main(argv=None) -> None:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("phases", nargs="+", help=f"phases: {', '.join(PHASES)}, all, publish-inputs")
+    ap.add_argument("phases", nargs="+", help=f"phases: {', '.join(PHASES)}, science, all, publish-inputs")
     ap.add_argument("--staging", default="data/source", help="export folder for publish-inputs")
     args = ap.parse_args(argv)
-    phases = [p for ph in args.phases for p in (ALL if ph == "all" else [ph])]
+    phases = [p for ph in args.phases for p in ({"all": ALL, "science": SCIENCE}.get(ph, [ph]))]
     for ph in phases:
         log.setup(ph)
         if ph == "publish-inputs":

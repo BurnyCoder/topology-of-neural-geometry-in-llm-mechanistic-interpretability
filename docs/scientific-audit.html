@@ -1,0 +1,133 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Scientific audit · Neural geometry</title><style>body{font:16px/1.5 system-ui;color:#172f39;max-width:62rem;margin:2rem auto;padding:0 1rem}
+img{width:100%;height:auto}table{border-collapse:collapse;font-variant-numeric:tabular-nums}td,th{border-bottom:1px solid #ccc;padding:.4rem;text-align:left}section{overflow-x:auto}</style>
+<nav><a href="index.html">Cloud explorer</a> · <a href="https://github.com/BurnyCoder/topology-of-neural-geometry-in-llm-mechanistic-interpretability/blob/main/reports/reviews/2026-11-26-scientific-audit.md">Full audit and evidence register</a></nav><h1>Independent scientific audit</h1><p>26 November 2026 · Libor “Burny” Burian</p>
+<p>The strict primary-dataset conjunction fails on weekdays, months and modular residues. The amended primary steering experiment remains untested. The accuracy comparison depends on how the source labels near-complete angular domains.</p>
+<img src="figures/fig_scientific_audit.png" alt="Accuracy for the persistence estimator and family baseline on the catalog and unrounded angular domains">
+<h2>Fixed-cohort benchmark</h2><section><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Cohort</th>
+      <th>Target</th>
+      <th>Persistence (P)</th>
+      <th>Family label (Bb)</th>
+      <th>Paired P − Bb (95% CI)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>macro</td>
+      <td>catalog</td>
+      <td>0.618</td>
+      <td>0.812</td>
+      <td>-0.194 [-0.203, -0.185]</td>
+    </tr>
+    <tr>
+      <td>macro</td>
+      <td>angular</td>
+      <td>0.628</td>
+      <td>0.870</td>
+      <td>-0.242 [-0.252, -0.232]</td>
+    </tr>
+    <tr>
+      <td>arc</td>
+      <td>catalog</td>
+      <td>0.651</td>
+      <td>0.576</td>
+      <td>+0.075 [+0.055, +0.094]</td>
+    </tr>
+    <tr>
+      <td>arc</td>
+      <td>angular</td>
+      <td>0.859</td>
+      <td>0.978</td>
+      <td>-0.120 [-0.153, -0.086]</td>
+    </tr>
+    <tr>
+      <td>sphere</td>
+      <td>catalog</td>
+      <td>0.687</td>
+      <td>0.609</td>
+      <td>+0.077 [+0.046, +0.107]</td>
+    </tr>
+    <tr>
+      <td>sphere</td>
+      <td>angular</td>
+      <td>0.610</td>
+      <td>0.965</td>
+      <td>-0.355 [-0.402, -0.302]</td>
+    </tr>
+  </tbody>
+</table></section>
+<p>Intervals use paired resampling of generator chunks. The angular-domain sensitivity preserves all predictions and catalog eligibility.</p>
+<h2>Full-vector agreement and false positives</h2><p>The methods agree on components, loops and voids for 27/44 datasets. Among eligible contractible clouds flagged by distance to the sampled shape, P detected a loop or void in 350/4144. The intervals below use generator chunks.</p>
+<section><table class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>cohort</th>
+      <th>comparison</th>
+      <th>Detections</th>
+      <th>Clouds</th>
+      <th>Estimate</th>
+      <th>95% lower</th>
+      <th>95% upper</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>catalog</td>
+      <td>flagged</td>
+      <td>350</td>
+      <td>4144</td>
+      <td>0.084</td>
+      <td>0.071</td>
+      <td>0.098</td>
+    </tr>
+    <tr>
+      <td>catalog</td>
+      <td>unflagged</td>
+      <td>672</td>
+      <td>15086</td>
+      <td>0.045</td>
+      <td>0.038</td>
+      <td>0.051</td>
+    </tr>
+    <tr>
+      <td>catalog</td>
+      <td>flagged minus unflagged</td>
+      <td>—</td>
+      <td>—</td>
+      <td>0.040</td>
+      <td>0.030</td>
+      <td>0.051</td>
+    </tr>
+    <tr>
+      <td>six families</td>
+      <td>flagged</td>
+      <td>230</td>
+      <td>3547</td>
+      <td>0.065</td>
+      <td>0.053</td>
+      <td>0.079</td>
+    </tr>
+    <tr>
+      <td>six families</td>
+      <td>unflagged</td>
+      <td>401</td>
+      <td>12880</td>
+      <td>0.031</td>
+      <td>0.026</td>
+      <td>0.037</td>
+    </tr>
+    <tr>
+      <td>six families</td>
+      <td>flagged minus unflagged</td>
+      <td>—</td>
+      <td>—</td>
+      <td>0.034</td>
+      <td>0.023</td>
+      <td>0.045</td>
+    </tr>
+  </tbody>
+</table></section>
+<p><a href="https://github.com/BurnyCoder/topology-of-neural-geometry-in-llm-mechanistic-interpretability/blob/main/results/science/h4_datasets.csv">Full-vector agreement by dataset</a> · <a href="https://github.com/BurnyCoder/topology-of-neural-geometry-in-llm-mechanistic-interpretability/blob/main/results/science/decisions.csv">Every registered condition</a> · <a href="https://github.com/BurnyCoder/topology-of-neural-geometry-in-llm-mechanistic-interpretability/blob/main/results/science/representatives.csv.gz">Cycle certificates</a> · <a href="https://github.com/BurnyCoder/topology-of-neural-geometry-in-llm-mechanistic-interpretability/blob/main/results/science/claims.csv">Claim ledger</a></p></html>

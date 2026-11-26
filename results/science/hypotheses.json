@@ -1,0 +1,37 @@
+{
+ "H1": {
+  "A": 0,
+  "B": 0
+ },
+ "H2": {
+  "A": {
+   "ordinal": 0,
+   "init": 0,
+   "process": 0
+  },
+  "B": {
+   "ordinal": 0,
+   "init": 0,
+   "process": 0
+  }
+ },
+ "H3": {
+  "A": false,
+  "B": false
+ },
+ "H4": {
+  "hole_only_A": 0.5,
+  "conj_A": 0.5,
+  "conj_B": 0.5
+ },
+ "H4_McNemar": {
+  "hole_only_A vs conj_A": 1.0,
+  "hole_only_A vs conj_B": 1.0,
+  "conj_A vs conj_B": 1.0
+ },
+ "H4_full": 27,
+ "H5": "benchmark.csv",
+ "H6": "untested",
+ "registered_replay_agrees": true,
+ "exploratory_BH_max_error": 2.168404344971009e-19
+}

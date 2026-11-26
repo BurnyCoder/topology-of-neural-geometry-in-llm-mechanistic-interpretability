@@ -56,7 +56,11 @@ def method_b(d: str) -> bool:
 
 def method_b10(d: str) -> bool:
     """method_b plus the preregistered top-10-PC check (d): the full H1-B rule."""
-    return method_b(d) and _around(d, _data()["mb"][d].get("records10", []))
+    if d in config.load()["groups"]["cyclic_primary"]:
+        return bool(read_json(config.path("results") / "exp3/summary.json")["H1"][d]["B"]["pass"])
+    m = _data()["mb"][d]
+    good = {r["variable"] for r in m["records3"] if concept_record(d, r) and passes(r)}
+    return bool(m["loop"] and any(r["variable"] in good and passes(r) for r in m.get("records10", [])))
 
 
 def posthoc(d: str) -> bool:

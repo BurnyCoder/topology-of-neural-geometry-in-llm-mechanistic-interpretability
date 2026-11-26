@@ -1,0 +1,2 @@
+2026-11-26 13:44:11 INFO root: phase exp4, log file C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\logs\exp4_20261126T134411.log
+2026-11-26 13:46:02 INFO neurotopo.experiments.exp4_similarity: cyclic cohesion: mean within 0.335, exact p = 0.581

@@ -1,0 +1,5 @@
+shape,n,radius,expected,observed,agrees,Bb_family_implied,P_alpha_universal,S_rips_universal,Ba_fixed_pi,Bc_majority
+circle,96,0.3,"(1, 1, 0)","(1, 1, 0)",True,,"(1, 0, 0)","(1, 0, 0)","(1, 1, 0)","(1, 0, 0)"
+"open arc, 120-degree gap",65,0.3,"(1, 0, 0)","(1, 0, 0)",True,,"(1, 0, 0)","(1, 0, 0)","(1, 0, 0)","(1, 0, 0)"
+sphere,400,0.3,"(1, 0, 1)","(1, 0, 1)",True,,"(1, 0, 0)","(1, 0, 0)","(1, 0, 1)","(1, 0, 0)"
+"spherical cap, z >= -0.5",300,0.3,"(1, 0, 0)","(1, 0, 0)",True,,"(1, 0, 0)","(1, 0, 0)","(1, 0, 0)","(1, 0, 0)"

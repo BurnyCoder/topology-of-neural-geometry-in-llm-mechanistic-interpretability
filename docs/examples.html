@@ -88,7 +88,7 @@ const q = (id, name) => '<a class="q" href="#" title="' + (name || "What is this
 </script><script>
 // Shared by the explorer and the examples page: replay persistent homology on a cloud. The radius slider is
 // logarithmic (all clouds have RMS radius 1). At radius r the 3D view shows the alpha complex's edges and one
-// representative cycle of every loop alive at r, in that loop's own colour (data from report/examples.replay); the
+// birth path for every loop interval alive at r, in that loop's own colour (data from report/examples.replay); the
 // explorer also draws the shell of every void alive at r as a translucent surface in that void's own colour.
 const RMIN = 0.002, RMAX = 1.5, LN = Math.log(RMAX / RMIN);
 const toR = t => RMIN * Math.exp(LN * t / 1000), toT = r => Math.round(1000 * Math.log(Math.max(r, RMIN) / RMIN) / LN);
@@ -106,7 +106,7 @@ function loopTraces(d, alive, only = null) {             // one closed cycle per
   const P = d.points, out = [];
   alive.forEach((a, k) => { if (!a || (only !== null && k !== only)) return; const c = d.cycles[k].concat([d.cycles[k][0]]), b = d.h1[k];
     out.push({type: "scatter3d", mode: "lines", x: c.map(i => P[i][0]), y: c.map(i => P[i][1]), z: c.map(i => P[i][2]), showlegend: false,
-      line: {color: d.loop_colour[k], width: only === null ? 7 : 12}, hoverinfo: "text", text: "loop born " + b[0].toFixed(4) + ", dies " + b[1].toFixed(4)}); });
+      line: {color: d.loop_colour[k], width: only === null ? 7 : 12}, hoverinfo: "text", text: pathStatus(d,k) + "; bar born " + b[0].toFixed(4) + ", dies " + b[1].toFixed(4)}); });
   return out; }
 function voidTraces(d, alive, only = null) {             // one translucent surface: the shells of the alive voids (or of `only`)
   const P = d.points, I = [], J = [], K = [], C = [];      // mesh3d triangles index into the cloud's points, coloured per face
@@ -131,6 +131,7 @@ function ballTrace(d, r) {                               // a ball of radius r a
     hoverinfo: "skip", showlegend: false, name: "balls of radius r"}; }
 const holeMarker = (colour, alive, sel = null) =>({color: colour, opacity: alive.map((a, k) => (a || k === sel ? 1 : 0.2)),   // solid while alive,
   size: alive.map((a, k) => (k === sel ? 16 : a ? 10 : 5)), line: {color: "#000", width: alive.map((a, k) => (k === sel ? 2.5 : 0))}});   // ringed if picked
+const pathStatus = (d,k) => d.cycle_certified ? (d.cycle_certified[k] ? "certified cycle" : "birth path survives paired death") : "birth path";
 const loopMarker = (d, alive, sel = null) => holeMarker(d.loop_colour, alive, sel);
 </script>
 <script>

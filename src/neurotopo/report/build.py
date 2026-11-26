@@ -17,6 +17,7 @@ import pandas as pd
 from neurotopo import config
 from neurotopo.experiments.common import read_json
 from neurotopo.report import figures, numbers, tables
+from neurotopo.report.science import ordered_estimators
 
 log = logging.getLogger(__name__)
 R = None
@@ -57,7 +58,7 @@ def exp0_alignment_table() -> str:
 
 
 def exp0_family_homotopy_table() -> str:
-    """Family x exact ground-truth Betti vector on the 39,000 synthetic test clouds (all / resolvable): which
+    """Family x registered catalog Betti vector on the 39,000 synthetic test clouds (all / resolvable): which
     geometric families are topologically equivalent (plan, Exp1)."""
     d = pd.read_csv(res("exp0", "synth_test_topology.csv.gz"), usecols=["family_name", "b0", "b1", "b2", "resolvable"])
     d["Betti vector"] = ["(" + ", ".join(map(str, v)) + ")" if v[0] <= 1 else "(k, 0, 0), k >= 2"
@@ -65,7 +66,7 @@ def exp0_family_homotopy_table() -> str:
     t = pd.crosstab(d["family_name"], d["Betti vector"])
     r = pd.crosstab(d.loc[d["resolvable"], "family_name"], d.loc[d["resolvable"], "Betti vector"])
     out = t.astype(str) + " (" + r.reindex_like(t).fillna(0).astype(int).astype(str) + ")"
-    head = "Clouds per family and exact ground-truth Betti vector (in brackets: resolvable, rho_A >= 1)."
+    head = "Clouds per family and catalog Betti target (in brackets: resolvable, rho_A >= 1)."
     return head + "\n\n" + tables.md_table(out.reset_index().rename(columns={"family_name": "family"}), 0)
 
 
@@ -98,15 +99,20 @@ def role_table() -> str:
 
 def exp1_table() -> str:
     s = read_json(res("exp1", "summary.json"))
-    rows = [{"estimator": k, "macro exact accuracy": v["macro_exact"], "95% CI": f"[{v['ci'][0]:.3f}, {v['ci'][1]:.3f}]",
-             "n clouds": v["n"]} for k, v in s["table"].items()]
+    rows = []
+    methods = ordered_estimators(s["table"])
+    for name in methods:
+        value = s["table"][name]
+        rows.append({"estimator": name, "macro exact accuracy": value["macro_exact"],
+                     "95% CI": f"[{value['ci'][0]:.3f}, {value['ci'][1]:.3f}]", "n clouds": value["n"]})
     diffs = [{"comparison": k, "difference": v["estimate"], "95% CI": f"[{v['ci'][0]:.3f}, {v['ci'][1]:.3f}]"}
              for k, v in s["paired_differences"].items()]
     fpr = pd.DataFrame(s["fpr_contractible"]).T.rename(columns=lambda c: f"N-bin {c}")
+    fpr = fpr.loc[ordered_estimators(fpr.index)]
     fpr.insert(0, "estimator", fpr.index)
     cal = pd.DataFrame(s["calibration_blobs"]).T
     cal.insert(0, "N-bin", cal.index)
-    pf = pd.DataFrame({k: v["per_family"] for k, v in s["table"].items() if "per_family" in v})
+    pf = pd.DataFrame({k: s["table"][k]["per_family"] for k in methods if "per_family" in s["table"][k]})
     pf.insert(0, "family", pf.index)
     return "\n\n".join([tables.md_table(pd.DataFrame(rows)), "Paired differences (primary minus comparator):",
                         tables.md_table(pd.DataFrame(diffs)),
@@ -302,7 +308,8 @@ def render_templates(nums: dict) -> None:
     (gen / "numbers.tex").write_text(numbers.latex_macros(nums) + "\n", encoding="utf-8", newline=chr(10))
 
 
-def run() -> None:
+def render_documents() -> None:
+    """Rebuild the study text, evidence tables and audit figure from completed results."""
     nums = numbers.collect()
     render_templates(nums)
     tables.write_generated("prereg_addendum_A1", tables.addendum())
@@ -313,6 +320,14 @@ def run() -> None:
             for f in [config.ROOT / "README.md", *sorted((config.ROOT / "reports").glob("*.md"))]:
                 replace_block(f, key, txt)
             log.info("generated %s", key)
+    if have("science", "summary.json"):
+        from neurotopo.report import science
+        science.dossier()
+        science.figure()
+
+
+def run() -> None:
+    render_documents()
     figures.fig_pipeline()
     if have("exp0", "real_alignment.json"):
         figures.fig_exp0_helix()

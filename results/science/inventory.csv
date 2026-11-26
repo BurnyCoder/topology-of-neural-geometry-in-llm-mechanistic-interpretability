@@ -1,0 +1,610 @@
+path,role
+.env.example,"Study documentation, configuration or release artifact"
+.gitattributes,"Study documentation, configuration or release artifact"
+.gitignore,"Study documentation, configuration or release artifact"
+.gitmodules,"Study documentation, configuration or release artifact"
+.python-version,"Study documentation, configuration or release artifact"
+LICENSE,"Study documentation, configuration or release artifact"
+NOTICE,"Study documentation, configuration or release artifact"
+README.md,"Study documentation, configuration or release artifact"
+README.template.md,"Study documentation, configuration or release artifact"
+configs/base.yaml,"Study documentation, configuration or release artifact"
+docs/.nojekyll,"Study documentation, configuration or release artifact"
+docs/analytic_topology.md,"Study documentation, configuration or release artifact"
+docs/data/C1_gp_0.json,Explorer rendering from measured arrays
+docs/data/C1_gp_1.json,Explorer rendering from measured arrays
+docs/data/C1_gp_2.json,Explorer rendering from measured arrays
+docs/data/C1_gp_3.json,Explorer rendering from measured arrays
+docs/data/C1_gp_4.json,Explorer rendering from measured arrays
+docs/data/C1_gp_5.json,Explorer rendering from measured arrays
+docs/data/C1_gp_6.json,Explorer rendering from measured arrays
+docs/data/C1_gp_7.json,Explorer rendering from measured arrays
+docs/data/C1_gp_8.json,Explorer rendering from measured arrays
+docs/data/C1_gp_9.json,Explorer rendering from measured arrays
+docs/data/C1_walk_0.json,Explorer rendering from measured arrays
+docs/data/C1_walk_1.json,Explorer rendering from measured arrays
+docs/data/C1_walk_2.json,Explorer rendering from measured arrays
+docs/data/C1_walk_3.json,Explorer rendering from measured arrays
+docs/data/C1_walk_4.json,Explorer rendering from measured arrays
+docs/data/C1_walk_5.json,Explorer rendering from measured arrays
+docs/data/C1_walk_6.json,Explorer rendering from measured arrays
+docs/data/C1_walk_7.json,Explorer rendering from measured arrays
+docs/data/C1_walk_8.json,Explorer rendering from measured arrays
+docs/data/C1_walk_9.json,Explorer rendering from measured arrays
+docs/data/C3_gpt2_wpos_init.json,Explorer rendering from measured arrays
+docs/data/C3_grokking_WE_init.json,Explorer rendering from measured arrays
+docs/data/C3_grokking_WE_memorised.json,Explorer rendering from measured arrays
+docs/data/C3_llama_counting_init.json,Explorer rendering from measured arrays
+docs/data/C3_llama_months_init.json,Explorer rendering from measured arrays
+docs/data/C3_llama_weekdays_init.json,Explorer rendering from measured arrays
+docs/data/C3_tms_dense.json,Explorer rendering from measured arrays
+docs/data/R1_gpt2_wpos.json,Explorer rendering from measured arrays
+docs/data/R2_grokking_WE.json,Explorer rendering from measured arrays
+docs/data/R3_tms_n20.json,Explorer rendering from measured arrays
+docs/data/R3_tms_n6.json,Explorer rendering from measured arrays
+docs/data/R3_tms_n8.json,Explorer rendering from measured arrays
+docs/data/R4_llama_counting.json,Explorer rendering from measured arrays
+docs/data/R4b_pythia_counting.json,Explorer rendering from measured arrays
+docs/data/R5a_llama_weekdays.json,Explorer rendering from measured arrays
+docs/data/R5a_llama_weekdays_means.json,Explorer rendering from measured arrays
+docs/data/R5b_llama_months.json,Explorer rendering from measured arrays
+docs/data/R5b_llama_months_means.json,Explorer rendering from measured arrays
+docs/data/R5c_llama_days_time.json,Explorer rendering from measured arrays
+docs/data/R6_llama_years.json,Explorer rendering from measured arrays
+docs/data/R7_llama_colors.json,Explorer rendering from measured arrays
+docs/data/R8a_llama_temperature.json,Explorer rendering from measured arrays
+docs/data/R8b_llama_age.json,Explorer rendering from measured arrays
+docs/data/R9_llama_truth_cities.json,Explorer rendering from measured arrays
+docs/data/examples.json,Explorer rendering from measured arrays
+docs/data/manifest.json,Explorer rendering from measured arrays
+docs/data/worked_example.json,Explorer rendering from measured arrays
+docs/examples.html,"Study documentation, configuration or release artifact"
+docs/figures/anim_clouds.gif,Rendered measurements or simulation diagrams
+docs/figures/anim_examples.gif,Rendered measurements or simulation diagrams
+docs/figures/anim_highlights.gif,Rendered measurements or simulation diagrams
+docs/figures/anim_highlights_3d.gif,Rendered measurements or simulation diagrams
+docs/figures/fig_detected_loops.png,Rendered measurements or simulation diagrams
+docs/figures/fig_detected_voids.png,Rendered measurements or simulation diagrams
+docs/figures/fig_examples.png,Rendered measurements or simulation diagrams
+docs/figures/fig_exp0_helix.png,Rendered measurements or simulation diagrams
+docs/figures/fig_exp0_margin.png,Rendered measurements or simulation diagrams
+docs/figures/fig_exp1_by_rho.png,Rendered measurements or simulation diagrams
+docs/figures/fig_exp1_estimators.png,Rendered measurements or simulation diagrams
+docs/figures/fig_exp1_outliers.png,Rendered measurements or simulation diagrams
+docs/figures/fig_exp4.png,Rendered measurements or simulation diagrams
+docs/figures/fig_growing_balls.png,Rendered measurements or simulation diagrams
+docs/figures/fig_highlights.png,Rendered measurements or simulation diagrams
+docs/figures/fig_loop_gallery.png,Rendered measurements or simulation diagrams
+docs/figures/fig_null_tests.png,Rendered measurements or simulation diagrams
+docs/figures/fig_pipeline.png,Rendered measurements or simulation diagrams
+docs/figures/fig_power.png,Rendered measurements or simulation diagrams
+docs/figures/fig_real_gallery.png,Rendered measurements or simulation diagrams
+docs/figures/fig_scientific_audit.png,Rendered measurements or simulation diagrams
+docs/figures/fig_top10.png,Rendered measurements or simulation diagrams
+docs/figures/fig_toy.png,Rendered measurements or simulation diagrams
+docs/figures/fig_traversal.png,Rendered measurements or simulation diagrams
+docs/figures/fig_void_gallery.png,Rendered measurements or simulation diagrams
+docs/figures/fig_void_life.png,Rendered measurements or simulation diagrams
+docs/glossary.md,"Study documentation, configuration or release artifact"
+docs/index.html,"Study documentation, configuration or release artifact"
+docs/methodology.md,"Study documentation, configuration or release artifact"
+docs/reproduce_inputs.md,"Study documentation, configuration or release artifact"
+docs/scientific-audit.html,"Study documentation, configuration or release artifact"
+docs/templates/worked_example.md,"Study documentation, configuration or release artifact"
+docs/worked_example.html,"Study documentation, configuration or release artifact"
+docs/worked_example.md,"Study documentation, configuration or release artifact"
+external/shape-fitting,Pinned upstream checkout
+logs/audit3_20261115T195441.log,Dated observations and environment records
+logs/audit3_20261115T200251.log,Dated observations and environment records
+logs/audit3_console.txt,Dated observations and environment records
+logs/audit4_20261122T173246.log,Dated observations and environment records
+logs/audit_20261115T191129.log,Dated observations and environment records
+logs/coords_20261115T095757.log,Dated observations and environment records
+logs/coords_20261115T100302.log,Dated observations and environment records
+logs/coords_20261115T100833.log,Dated observations and environment records
+logs/coords_20261115T113051.log,Dated observations and environment records
+logs/coords_console.txt,Dated observations and environment records
+logs/exp0_20261115T085831.log,Dated observations and environment records
+logs/exp0_20261115T091139.log,Dated observations and environment records
+logs/exp0_20261115T091837.log,Dated observations and environment records
+logs/exp0_20261115T112739.log,Dated observations and environment records
+logs/exp0_console.txt,Dated observations and environment records
+logs/exp1_20261115T093150.log,Dated observations and environment records
+logs/exp1_20261115T114057.log,Dated observations and environment records
+logs/exp1_20261126T123735.log,Dated observations and environment records
+logs/exp1_console.txt,Dated observations and environment records
+logs/exp1outliers_20261115T163912.log,Dated observations and environment records
+logs/exp1outliers_20261115T164003.log,Dated observations and environment records
+logs/exp1outliers_20261115T164757.log,Dated observations and environment records
+logs/exp1outliers_20261115T165834.log,Dated observations and environment records
+logs/exp1outliers_20261126T134016.log,Dated observations and environment records
+logs/exp2_20261115T094213.log,Dated observations and environment records
+logs/exp2_20261115T115712.log,Dated observations and environment records
+logs/exp2_20261120T054026.log,Dated observations and environment records
+logs/exp2_20261120T060516.log,Dated observations and environment records
+logs/exp2_console.txt,Dated observations and environment records
+logs/exp345_console.txt,Dated observations and environment records
+logs/exp3_20261115T103552.log,Dated observations and environment records
+logs/exp3_20261115T123416.log,Dated observations and environment records
+logs/exp3posthoc_20261115T103936.log,Dated observations and environment records
+logs/exp3posthoc_20261115T123601.log,Dated observations and environment records
+logs/exp3posthoc_console.txt,Dated observations and environment records
+logs/exp4_20261115T103730.log,Dated observations and environment records
+logs/exp4_20261115T105110.log,Dated observations and environment records
+logs/exp4_20261115T124410.log,Dated observations and environment records
+logs/exp4_20261126T134411.log,Dated observations and environment records
+logs/exp4_console.txt,Dated observations and environment records
+logs/exp5_20261115T103800.log,Dated observations and environment records
+logs/exp5_20261115T124436.log,Dated observations and environment records
+logs/exp5_20261126T134602.log,Dated observations and environment records
+logs/export_source_artifacts_20261115T084455.log,Dated observations and environment records
+logs/export_source_artifacts_20261115T084608.log,Dated observations and environment records
+logs/fetch_20261115T085214.log,Dated observations and environment records
+logs/independent-replay-2026-11-26/audit3_20261126T141730.log,Dated observations and environment records
+logs/independent-replay-2026-11-26/audit4_20261126T141003.log,Dated observations and environment records
+logs/independent-replay-2026-11-26/audit_20261126T141028.log,Dated observations and environment records
+logs/independent-replay-2026-11-26/coords_20261126T135913.log,Dated observations and environment records
+logs/independent-replay-2026-11-26/exp0_20261126T125318.log,Dated observations and environment records
+logs/independent-replay-2026-11-26/exp1_20261126T132105.log,Dated observations and environment records
+logs/independent-replay-2026-11-26/exp1_20261126T141310.log,Dated observations and environment records
+logs/independent-replay-2026-11-26/exp1outliers_20261126T151127.log,Dated observations and environment records
+logs/independent-replay-2026-11-26/exp2_20261126T151151.log,Dated observations and environment records
+logs/independent-replay-2026-11-26/exp3_20261126T153323.log,Dated observations and environment records
+logs/independent-replay-2026-11-26/exp3posthoc_20261126T153337.log,Dated observations and environment records
+logs/independent-replay-2026-11-26/exp4_20261126T134630.log,Dated observations and environment records
+logs/independent-replay-2026-11-26/exp5_20261126T134848.log,Dated observations and environment records
+logs/independent-replay-2026-11-26/fetch_20261126T125215.log,Dated observations and environment records
+logs/independent-replay-2026-11-26/loops_20261126T140955.log,Dated observations and environment records
+logs/independent-replay-2026-11-26/pdf_20261126T155701.log,Dated observations and environment records
+logs/independent-replay-2026-11-26/pdf_20261126T160512.log,Dated observations and environment records
+logs/independent-replay-2026-11-26/power2_20261126T135937.log,Dated observations and environment records
+logs/independent-replay-2026-11-26/power_20261126T130223.log,Dated observations and environment records
+logs/independent-replay-2026-11-26/report_20261126T155223.log,Dated observations and environment records
+logs/independent-replay-2026-11-26/science-benchmark_20261126T155130.log,Dated observations and environment records
+logs/independent-replay-2026-11-26/science-calibration_20261126T154805.log,Dated observations and environment records
+logs/independent-replay-2026-11-26/science-clean-mc_20261126T143316.log,Dated observations and environment records
+logs/independent-replay-2026-11-26/science-cohorts_20261126T155134.log,Dated observations and environment records
+logs/independent-replay-2026-11-26/science-controls_20261126T155108.log,Dated observations and environment records
+logs/independent-replay-2026-11-26/science-cycles_20261126T155110.log,Dated observations and environment records
+logs/independent-replay-2026-11-26/science-decisions_20261126T155208.log,Dated observations and environment records
+logs/independent-replay-2026-11-26/science-nulls_20261126T153444.log,Dated observations and environment records
+logs/independent-replay-2026-11-26/science-summary_20261126T155209.log,Dated observations and environment records
+logs/independent-replay-2026-11-26/science-verify_20261126T155708.log,Dated observations and environment records
+logs/independent-replay-2026-11-26/science-verify_20261126T160520.log,Dated observations and environment records
+logs/independent-replay-2026-11-26/site_20261126T155640.log,Dated observations and environment records
+logs/independent-replay-2026-11-26/toy_20261126T140939.log,Dated observations and environment records
+logs/independent-replay-2026-11-26/voids_20261126T140941.log,Dated observations and environment records
+logs/latex_build.txt,Dated observations and environment records
+logs/loops_20261116T060023.log,Dated observations and environment records
+logs/loops_20261116T060156.log,Dated observations and environment records
+logs/pdf_20261126T135513.log,Dated observations and environment records
+logs/pdf_20261126T140845.log,Dated observations and environment records
+logs/pdf_20261126T143157.log,Dated observations and environment records
+logs/pdf_20261126T160512.log,Dated observations and environment records
+logs/pdflatex_console.txt,Dated observations and environment records
+logs/power2_20261115T113614.log,Dated observations and environment records
+logs/power_20261115T092131.log,Dated observations and environment records
+logs/power_console.txt,Dated observations and environment records
+logs/publish-inputs_20261115T084910.log,Dated observations and environment records
+logs/publish_20261115T110741.log,Dated observations and environment records
+logs/publish_20261115T110811.log,Dated observations and environment records
+logs/publish_20261115T125403.log,Dated observations and environment records
+logs/publish_20261115T143016.log,Dated observations and environment records
+logs/publish_20261115T170537.log,Dated observations and environment records
+logs/publish_20261115T180924.log,Dated observations and environment records
+logs/publish_20261115T192611.log,Dated observations and environment records
+logs/publish_20261115T201532.log,Dated observations and environment records
+logs/publish_20261116T021842.log,Dated observations and environment records
+logs/publish_20261120T065735.log,Dated observations and environment records
+logs/publish_20261120T071315.log,Dated observations and environment records
+logs/publish_20261120T080815.log,Dated observations and environment records
+logs/publish_20261122T180935.log,Dated observations and environment records
+logs/publish_console.txt,Dated observations and environment records
+logs/report_20261115T105417.log,Dated observations and environment records
+logs/report_20261115T105803.log,Dated observations and environment records
+logs/report_20261115T110058.log,Dated observations and environment records
+logs/report_20261115T110208.log,Dated observations and environment records
+logs/report_20261115T110325.log,Dated observations and environment records
+logs/report_20261115T124942.log,Dated observations and environment records
+logs/report_20261115T125039.log,Dated observations and environment records
+logs/report_20261115T125123.log,Dated observations and environment records
+logs/report_20261115T142813.log,Dated observations and environment records
+logs/report_20261115T165405.log,Dated observations and environment records
+logs/report_20261115T165548.log,Dated observations and environment records
+logs/report_20261115T170016.log,Dated observations and environment records
+logs/report_20261115T170129.log,Dated observations and environment records
+logs/report_20261115T170308.log,Dated observations and environment records
+logs/report_20261115T180345.log,Dated observations and environment records
+logs/report_20261115T180557.log,Dated observations and environment records
+logs/report_20261115T182609.log,Dated observations and environment records
+logs/report_20261115T182750.log,Dated observations and environment records
+logs/report_20261115T192339.log,Dated observations and environment records
+logs/report_20261115T200915.log,Dated observations and environment records
+logs/report_20261115T201057.log,Dated observations and environment records
+logs/report_20261115T201145.log,Dated observations and environment records
+logs/report_20261115T201306.log,Dated observations and environment records
+logs/report_20261116T021242.log,Dated observations and environment records
+logs/report_20261116T021728.log,Dated observations and environment records
+logs/report_20261116T024429.log,Dated observations and environment records
+logs/report_20261116T031836.log,Dated observations and environment records
+logs/report_20261116T034803.log,Dated observations and environment records
+logs/report_20261116T040706.log,Dated observations and environment records
+logs/report_20261116T042146.log,Dated observations and environment records
+logs/report_20261116T045426.log,Dated observations and environment records
+logs/report_20261116T050814.log,Dated observations and environment records
+logs/report_20261116T052558.log,Dated observations and environment records
+logs/report_20261116T054854.log,Dated observations and environment records
+logs/report_20261116T060642.log,Dated observations and environment records
+logs/report_20261116T060911.log,Dated observations and environment records
+logs/report_20261116T064227.log,Dated observations and environment records
+logs/report_20261116T071915.log,Dated observations and environment records
+logs/report_20261116T073607.log,Dated observations and environment records
+logs/report_20261116T074624.log,Dated observations and environment records
+logs/report_20261116T075038.log,Dated observations and environment records
+logs/report_20261116T081126.log,Dated observations and environment records
+logs/report_20261116T081950.log,Dated observations and environment records
+logs/report_20261120T064525.log,Dated observations and environment records
+logs/report_20261120T065114.log,Dated observations and environment records
+logs/report_20261120T070146.log,Dated observations and environment records
+logs/report_20261120T070644.log,Dated observations and environment records
+logs/report_20261120T075951.log,Dated observations and environment records
+logs/report_20261122T172228.log,Dated observations and environment records
+logs/report_20261122T174313.log,Dated observations and environment records
+logs/report_20261122T175219.log,Dated observations and environment records
+logs/report_20261126T134645.log,Dated observations and environment records
+logs/report_console.txt,Dated observations and environment records
+logs/report_site_console.txt,Dated observations and environment records
+logs/rerun_after_audit_console.txt,Dated observations and environment records
+logs/science-benchmark_20261126T124804.log,Dated observations and environment records
+logs/science-benchmark_20261126T132706.log,Dated observations and environment records
+logs/science-benchmark_20261126T134048.log,Dated observations and environment records
+logs/science-benchmark_20261126T141428.log,Dated observations and environment records
+logs/science-benchmark_20261126T142726.log,Dated observations and environment records
+logs/science-calibration_20261126T123811.log,Dated observations and environment records
+logs/science-cohorts_20261126T124748.log,Dated observations and environment records
+logs/science-cohorts_20261126T133309.log,Dated observations and environment records
+logs/science-cohorts_20261126T141448.log,Dated observations and environment records
+logs/science-cohorts_20261126T142103.log,Dated observations and environment records
+logs/science-controls_20261126T134247.log,Dated observations and environment records
+logs/science-cycles_20261126T123937.log,Dated observations and environment records
+logs/science-decisions_20261126T124808.log,Dated observations and environment records
+logs/science-decisions_20261126T131226.log,Dated observations and environment records
+logs/science-decisions_20261126T132818.log,Dated observations and environment records
+logs/science-decisions_20261126T140652.log,Dated observations and environment records
+logs/science-nulls_20261126T123147.log,Dated observations and environment records
+logs/science-real_20261126T123735.log,Dated observations and environment records
+logs/science-real_20261126T130812.log,Dated observations and environment records
+logs/science-summary_20261126T134300.log,Dated observations and environment records
+logs/science-summary_20261126T134908.log,Dated observations and environment records
+logs/science-summary_20261126T140701.log,Dated observations and environment records
+logs/science-summary_20261126T141518.log,Dated observations and environment records
+logs/science-summary_20261126T142224.log,Dated observations and environment records
+logs/science-summary_20261126T142752.log,Dated observations and environment records
+logs/science-summary_20261126T155239.log,Dated observations and environment records
+logs/science-verify_20261126T135520.log,Dated observations and environment records
+logs/science-verify_20261126T140149.log,Dated observations and environment records
+logs/science-verify_20261126T140855.log,Dated observations and environment records
+logs/science-verify_20261126T141546.log,Dated observations and environment records
+logs/science-verify_20261126T143209.log,Dated observations and environment records
+logs/science-verify_20261126T160520.log,Dated observations and environment records
+logs/site_20261115T110404.log,Dated observations and environment records
+logs/site_20261115T110536.log,Dated observations and environment records
+logs/site_20261115T125000.log,Dated observations and environment records
+logs/site_20261115T142830.log,Dated observations and environment records
+logs/site_20261115T165456.log,Dated observations and environment records
+logs/site_20261115T170354.log,Dated observations and environment records
+logs/site_20261115T180446.log,Dated observations and environment records
+logs/site_20261115T182846.log,Dated observations and environment records
+logs/site_20261115T192400.log,Dated observations and environment records
+logs/site_20261115T200939.log,Dated observations and environment records
+logs/site_20261115T201122.log,Dated observations and environment records
+logs/site_20261115T201218.log,Dated observations and environment records
+logs/site_20261116T021309.log,Dated observations and environment records
+logs/site_20261116T032047.log,Dated observations and environment records
+logs/site_20261116T035045.log,Dated observations and environment records
+logs/site_20261116T043724.log,Dated observations and environment records
+logs/site_20261116T044013.log,Dated observations and environment records
+logs/site_20261116T071730.log,Dated observations and environment records
+logs/site_20261120T064931.log,Dated observations and environment records
+logs/site_20261122T180211.log,Dated observations and environment records
+logs/site_20261126T131621.log,Dated observations and environment records
+logs/site_20261126T135446.log,Dated observations and environment records
+logs/site_console.txt,Dated observations and environment records
+logs/toy_20261116T020738.log,Dated observations and environment records
+logs/voids_20261116T054127.log,Dated observations and environment records
+logs/voids_20261116T060626.log,Dated observations and environment records
+paper/generated/numbers.tex,Publication scalars from results
+paper/main.pdf,"Study documentation, configuration or release artifact"
+paper/main.template.tex,"Study documentation, configuration or release artifact"
+paper/main.tex,"Study documentation, configuration or release artifact"
+paper/references.bib,"Study documentation, configuration or release artifact"
+pyproject.toml,"Study documentation, configuration or release artifact"
+reports/coords_check.md,"Study documentation, configuration or release artifact"
+reports/deviations.md,"Study documentation, configuration or release artifact"
+reports/exp0_analytic.md,"Study documentation, configuration or release artifact"
+reports/exp1_synthetic.md,"Study documentation, configuration or release artifact"
+reports/exp2_invariants.md,"Study documentation, configuration or release artifact"
+reports/exp3_cyclic.md,"Study documentation, configuration or release artifact"
+reports/exp4_exp5.md,"Study documentation, configuration or release artifact"
+reports/exp6_steering.md,"Study documentation, configuration or release artifact"
+reports/exp7_audit.md,"Study documentation, configuration or release artifact"
+reports/exp8_audit3.md,"Study documentation, configuration or release artifact"
+reports/experiments/2026-11-26/experiment.md,"Study documentation, configuration or release artifact"
+reports/experiments/2026-11-26/learnings.md,"Study documentation, configuration or release artifact"
+reports/experiments/experiments.md,"Study documentation, configuration or release artifact"
+reports/experiments/learnings.md,"Study documentation, configuration or release artifact"
+reports/findings_per_dataset.md,"Study documentation, configuration or release artifact"
+reports/generated/audit.md,Report table from results
+reports/generated/audit3.md,Report table from results
+reports/generated/coords.md,Report table from results
+reports/generated/exp0_alignment.md,Report table from results
+reports/generated/exp0_family_homotopy.md,Report table from results
+reports/generated/exp0_topology.md,Report table from results
+reports/generated/exp1.md,Report table from results
+reports/generated/exp2.md,Report table from results
+reports/generated/exp3.md,Report table from results
+reports/generated/loops.md,Report table from results
+reports/generated/prereg_addendum_A1.md,Report table from results
+reports/generated/readme_roles.md,Report table from results
+reports/generated/voids.md,Report table from results
+reports/literature-review.md,"Study documentation, configuration or release artifact"
+reports/loops.md,"Study documentation, configuration or release artifact"
+reports/paper.pdf,"Study documentation, configuration or release artifact"
+reports/plan.md,"Study documentation, configuration or release artifact"
+reports/preregistration.md,"Study documentation, configuration or release artifact"
+reports/progress.md,"Study documentation, configuration or release artifact"
+reports/reviews/2026-11-26-claims.tsv,Dated scientific review or erratum
+reports/reviews/2026-11-26-protocol.md,Dated scientific review or erratum
+reports/reviews/2026-11-26-scientific-audit.md,Dated scientific review or erratum
+reports/reviews/independent-audit.md,Dated scientific review or erratum
+reports/reviews/math-fact-check-2.md,Dated scientific review or erratum
+reports/reviews/math-fact-check.md,Dated scientific review or erratum
+reports/state-of-the-art-review.md,"Study documentation, configuration or release artifact"
+reports/summary.md,"Study documentation, configuration or release artifact"
+reports/templates/coords_check.md,"Study documentation, configuration or release artifact"
+reports/templates/exp0_analytic.md,"Study documentation, configuration or release artifact"
+reports/templates/exp1_synthetic.md,"Study documentation, configuration or release artifact"
+reports/templates/exp2_invariants.md,"Study documentation, configuration or release artifact"
+reports/templates/exp3_cyclic.md,"Study documentation, configuration or release artifact"
+reports/templates/exp4_exp5.md,"Study documentation, configuration or release artifact"
+reports/templates/exp6_steering.md,"Study documentation, configuration or release artifact"
+reports/templates/exp7_audit.md,"Study documentation, configuration or release artifact"
+reports/templates/exp8_audit3.md,"Study documentation, configuration or release artifact"
+reports/templates/findings_per_dataset.md,"Study documentation, configuration or release artifact"
+reports/templates/loops.md,"Study documentation, configuration or release artifact"
+reports/templates/reviews/2026-11-26-scientific-audit.md,"Study documentation, configuration or release artifact"
+reports/templates/reviews/independent-audit.md,"Study documentation, configuration or release artifact"
+reports/templates/summary.md,"Study documentation, configuration or release artifact"
+reports/templates/voids.md,"Study documentation, configuration or release artifact"
+reports/voids.md,"Study documentation, configuration or release artifact"
+results/coords/env.json,Measured or computed artifact
+results/coords/point_coordinates.csv,Measured or computed artifact
+results/coords/point_coordinates.json,Measured or computed artifact
+results/exp0/dense_check.csv,Measured or computed artifact
+results/exp0/env.json,Measured or computed artifact
+results/exp0/real_alignment.json,Measured or computed artifact
+results/exp0/real_topology.csv,Measured or computed artifact
+results/exp0/summary.json,Measured or computed artifact
+results/exp0/synth_test_topology.csv.gz,Measured or computed artifact
+results/exp0/synth_val_topology.csv.gz,Measured or computed artifact
+results/exp1/env.json,Measured or computed artifact
+results/exp1/outliers.json,Measured or computed artifact
+results/exp1/per_cloud.csv.gz,Measured or computed artifact
+results/exp1/pi_top.npz,Measured or computed artifact
+results/exp1/summary.json,Measured or computed artifact
+results/exp2/env.json,Measured or computed artifact
+results/exp2/invariants.csv,Measured or computed artifact
+results/exp2/summary.json,Measured or computed artifact
+results/exp3/env.json,Measured or computed artifact
+results/exp3/method_b.json,Measured or computed artifact
+results/exp3/posthoc_relaxed_range.json,Measured or computed artifact
+results/exp3/summary.json,Measured or computed artifact
+results/exp3/theta_B.npz,Measured or computed artifact
+results/exp3_posthoc/env.json,Measured or computed artifact
+results/exp4/bottleneck_matrix.csv,Measured or computed artifact
+results/exp4/env.json,Measured or computed artifact
+results/exp4/summary.json,Measured or computed artifact
+results/exp5/env.json,Measured or computed artifact
+results/exp5/nu_variants.csv,Measured or computed artifact
+results/exp5/projection.csv,Measured or computed artifact
+results/exp5/summary.json,Measured or computed artifact
+results/exp5/topk_null.csv,Measured or computed artifact
+results/exp7_audit/closure_ratio.csv,Measured or computed artifact
+results/exp7_audit/env.json,Measured or computed artifact
+results/exp7_audit/summary.json,Measured or computed artifact
+results/exp8_audit3/cluster_null_simulation.csv,Measured or computed artifact
+results/exp8_audit3/env.json,Measured or computed artifact
+results/exp8_audit3/summary.json,Measured or computed artifact
+results/exp8_audit3/synthetic_by_family.csv,Measured or computed artifact
+results/exp9_audit4/c1_top10.csv,Measured or computed artifact
+results/exp9_audit4/env.json,Measured or computed artifact
+results/exp9_audit4/summary.json,Measured or computed artifact
+results/loops/all_loops.csv,Measured or computed artifact
+results/loops/env.json,Measured or computed artifact
+results/loops/summary.json,Measured or computed artifact
+results/nulls/C1_gp_0_seed0.npy,Measured or computed artifact
+results/nulls/C1_gp_1_seed0.npy,Measured or computed artifact
+results/nulls/C1_gp_2_seed0.npy,Measured or computed artifact
+results/nulls/C1_gp_3_seed0.npy,Measured or computed artifact
+results/nulls/C1_gp_4_seed0.npy,Measured or computed artifact
+results/nulls/C1_gp_5_seed0.npy,Measured or computed artifact
+results/nulls/C1_gp_6_seed0.npy,Measured or computed artifact
+results/nulls/C1_gp_7_seed0.npy,Measured or computed artifact
+results/nulls/C1_gp_8_seed0.npy,Measured or computed artifact
+results/nulls/C1_gp_9_seed0.npy,Measured or computed artifact
+results/nulls/C1_walk_0_seed0.npy,Measured or computed artifact
+results/nulls/C1_walk_1_seed0.npy,Measured or computed artifact
+results/nulls/C1_walk_2_seed0.npy,Measured or computed artifact
+results/nulls/C1_walk_3_seed0.npy,Measured or computed artifact
+results/nulls/C1_walk_4_seed0.npy,Measured or computed artifact
+results/nulls/C1_walk_5_seed0.npy,Measured or computed artifact
+results/nulls/C1_walk_6_seed0.npy,Measured or computed artifact
+results/nulls/C1_walk_7_seed0.npy,Measured or computed artifact
+results/nulls/C1_walk_8_seed0.npy,Measured or computed artifact
+results/nulls/C1_walk_9_seed0.npy,Measured or computed artifact
+results/nulls/C3_gpt2_wpos_init_seed0.npy,Measured or computed artifact
+results/nulls/C3_grokking_WE_init_seed0.npy,Measured or computed artifact
+results/nulls/C3_grokking_WE_memorised_seed0.npy,Measured or computed artifact
+results/nulls/C3_llama_counting_init_seed0.npy,Measured or computed artifact
+results/nulls/C3_llama_months_init_seed0.npy,Measured or computed artifact
+results/nulls/C3_llama_weekdays_init_seed0.npy,Measured or computed artifact
+results/nulls/C3_tms_dense_seed0.npy,Measured or computed artifact
+results/nulls/R1_gpt2_wpos_seed0.npy,Measured or computed artifact
+results/nulls/R2_grokking_WE_seed0.npy,Measured or computed artifact
+results/nulls/R2_grokking_WE_seed1.npy,Measured or computed artifact
+results/nulls/R2_grokking_WE_seed2.npy,Measured or computed artifact
+results/nulls/R3_tms_n20_seed0.npy,Measured or computed artifact
+results/nulls/R3_tms_n6_seed0.npy,Measured or computed artifact
+results/nulls/R3_tms_n8_seed0.npy,Measured or computed artifact
+results/nulls/R4_llama_counting_seed0.npy,Measured or computed artifact
+results/nulls/R4b_pythia_counting_seed0.npy,Measured or computed artifact
+results/nulls/R5a_llama_weekdays_means_seed0.npy,Measured or computed artifact
+results/nulls/R5a_llama_weekdays_seed0.npy,Measured or computed artifact
+results/nulls/R5a_llama_weekdays_seed1.npy,Measured or computed artifact
+results/nulls/R5a_llama_weekdays_seed2.npy,Measured or computed artifact
+results/nulls/R5b_llama_months_means_seed0.npy,Measured or computed artifact
+results/nulls/R5b_llama_months_seed0.npy,Measured or computed artifact
+results/nulls/R5b_llama_months_seed1.npy,Measured or computed artifact
+results/nulls/R5b_llama_months_seed2.npy,Measured or computed artifact
+results/nulls/R5c_llama_days_time_seed0.npy,Measured or computed artifact
+results/nulls/R6_llama_years_seed0.npy,Measured or computed artifact
+results/nulls/R7_llama_colors_seed0.npy,Measured or computed artifact
+results/nulls/R8a_llama_temperature_seed0.npy,Measured or computed artifact
+results/nulls/R8b_llama_age_seed0.npy,Measured or computed artifact
+results/nulls/R9_llama_truth_cities_seed0.npy,Measured or computed artifact
+results/power/env.json,Measured or computed artifact
+results/power/power_simulation.csv,Measured or computed artifact
+results/power/power_summary.csv,Measured or computed artifact
+results/power/power_v2_simulation.csv,Measured or computed artifact
+results/power/power_v2_summary.csv,Measured or computed artifact
+results/power/real_second_order.json,Measured or computed artifact
+results/power/val_summaries.json.gz,Measured or computed artifact
+results/power/val_tuning.json,Measured or computed artifact
+results/replication.json,Measured or computed artifact
+results/science/analytic_controls.csv,Measured or computed artifact
+results/science/angular_domains.csv,Measured or computed artifact
+results/science/benchmark.csv,Measured or computed artifact
+results/science/bibliography.csv,Measured or computed artifact
+results/science/blob_score_strata.csv,Measured or computed artifact
+results/science/blobs.csv,Measured or computed artifact
+results/science/calibration.csv,Measured or computed artifact
+results/science/calibration_draws.csv,Measured or computed artifact
+results/science/chronology.json,Measured or computed artifact
+results/science/claim_occurrences.csv,Measured or computed artifact
+results/science/claims.csv,Measured or computed artifact
+results/science/closure_counts.csv,Measured or computed artifact
+results/science/dataset_assessment.csv,Measured or computed artifact
+results/science/decisions.csv,Measured or computed artifact
+results/science/false_positive_rows.csv.gz,Measured or computed artifact
+results/science/false_positive_strata.csv,Measured or computed artifact
+results/science/false_positives.csv,Measured or computed artifact
+results/science/h4_datasets.csv,Measured or computed artifact
+results/science/h6_datasets.csv,Measured or computed artifact
+results/science/hypotheses.json,Measured or computed artifact
+results/science/inputs.json,Measured or computed artifact
+results/science/inventory.csv,Measured or computed artifact
+results/science/matrix.csv,Measured or computed artifact
+results/science/mc_selection.csv,Measured or computed artifact
+results/science/mc_subset.csv,Measured or computed artifact
+results/science/null_replay.csv,Measured or computed artifact
+results/science/representatives.csv.gz,Measured or computed artifact
+results/science/reproduction.json,Measured or computed artifact
+results/science/sensitivity_differences.csv,Measured or computed artifact
+results/science/splits.json,Measured or computed artifact
+results/science/summary.json,Measured or computed artifact
+results/toy/env.json,Measured or computed artifact
+results/toy/summary.json,Measured or computed artifact
+results/voids/all_voids.csv,Measured or computed artifact
+results/voids/env.json,Measured or computed artifact
+results/voids/summary.json,Measured or computed artifact
+run.py,"Study documentation, configuration or release artifact"
+scripts/compare_results.py,"Study documentation, configuration or release artifact"
+scripts/export_source_artifacts.py,"Study documentation, configuration or release artifact"
+scripts/verify_scientific_sources.py,"Study documentation, configuration or release artifact"
+src/neurotopo/__init__.py,Implementation or presentation source
+src/neurotopo/analytic/__init__.py,Implementation or presentation source
+src/neurotopo/analytic/coords.py,Implementation or presentation source
+src/neurotopo/analytic/topology.py,Implementation or presentation source
+src/neurotopo/config.py,Implementation or presentation source
+src/neurotopo/data/__init__.py,Implementation or presentation source
+src/neurotopo/data/hub.py,Implementation or presentation source
+src/neurotopo/data/source.py,Implementation or presentation source
+src/neurotopo/data/synthetic.py,Implementation or presentation source
+src/neurotopo/experiments/__init__.py,Implementation or presentation source
+src/neurotopo/experiments/alignment.py,Implementation or presentation source
+src/neurotopo/experiments/common.py,Implementation or presentation source
+src/neurotopo/experiments/coords_check.py,Implementation or presentation source
+src/neurotopo/experiments/exp0_analytic.py,Implementation or presentation source
+src/neurotopo/experiments/exp1_batches.py,Implementation or presentation source
+src/neurotopo/experiments/exp1_synthetic.py,Implementation or presentation source
+src/neurotopo/experiments/exp2_invariants.py,Implementation or presentation source
+src/neurotopo/experiments/exp3_cyclic.py,Implementation or presentation source
+src/neurotopo/experiments/exp3_posthoc.py,Implementation or presentation source
+src/neurotopo/experiments/exp4_similarity.py,Implementation or presentation source
+src/neurotopo/experiments/exp5_robustness.py,Implementation or presentation source
+src/neurotopo/experiments/exp6_sim.py,Implementation or presentation source
+src/neurotopo/experiments/exp6_steering.py,Implementation or presentation source
+src/neurotopo/experiments/exp7_audit.py,Implementation or presentation source
+src/neurotopo/experiments/exp8_null_specificity.py,Implementation or presentation source
+src/neurotopo/experiments/exp9_independent_audit.py,Implementation or presentation source
+src/neurotopo/experiments/loop_search.py,Implementation or presentation source
+src/neurotopo/experiments/power.py,Implementation or presentation source
+src/neurotopo/experiments/realdata.py,Implementation or presentation source
+src/neurotopo/experiments/toy_example.py,Implementation or presentation source
+src/neurotopo/experiments/void_search.py,Implementation or presentation source
+src/neurotopo/geometry/__init__.py,Implementation or presentation source
+src/neurotopo/geometry/pca.py,Implementation or presentation source
+src/neurotopo/log.py,Implementation or presentation source
+src/neurotopo/report/__init__.py,Implementation or presentation source
+src/neurotopo/report/build.py,Implementation or presentation source
+src/neurotopo/report/check_publication.py,Implementation or presentation source
+src/neurotopo/report/examples.py,Implementation or presentation source
+src/neurotopo/report/figures.py,Implementation or presentation source
+src/neurotopo/report/numbers.py,Implementation or presentation source
+src/neurotopo/report/occurrences.py,Implementation or presentation source
+src/neurotopo/report/pdf.py,Implementation or presentation source
+src/neurotopo/report/publish.py,Implementation or presentation source
+src/neurotopo/report/science.py,Implementation or presentation source
+src/neurotopo/report/site.py,Implementation or presentation source
+src/neurotopo/report/tables.py,Implementation or presentation source
+src/neurotopo/report/verdicts.py,Implementation or presentation source
+src/neurotopo/science/__init__.py,Implementation or presentation source
+src/neurotopo/science/benchmark.py,Implementation or presentation source
+src/neurotopo/science/cohorts.py,Implementation or presentation source
+src/neurotopo/science/cycles.py,Implementation or presentation source
+src/neurotopo/science/hypotheses.py,Implementation or presentation source
+src/neurotopo/science/null_replay.py,Implementation or presentation source
+src/neurotopo/science/synthesis.py,Implementation or presentation source
+src/neurotopo/stats/__init__.py,Implementation or presentation source
+src/neurotopo/stats/circular.py,Implementation or presentation source
+src/neurotopo/stats/tests.py,Implementation or presentation source
+src/neurotopo/steering/__init__.py,Implementation or presentation source
+src/neurotopo/steering/loops.py,Implementation or presentation source
+src/neurotopo/steering/metrics.py,Implementation or presentation source
+src/neurotopo/steering/models.py,Implementation or presentation source
+src/neurotopo/steering/offline.py,Implementation or presentation source
+src/neurotopo/steering/tasks.py,Implementation or presentation source
+src/neurotopo/tda/__init__.py,Implementation or presentation source
+src/neurotopo/tda/circular.py,Implementation or presentation source
+src/neurotopo/tda/diagrams.py,Implementation or presentation source
+src/neurotopo/tda/estimators.py,Implementation or presentation source
+src/neurotopo/tda/ground_truth.py,Implementation or presentation source
+src/neurotopo/tda/invariants.py,Implementation or presentation source
+src/neurotopo/tda/nulls.py,Implementation or presentation source
+tests/test_analytic.py,Regression and implementation checks
+tests/test_audit.py,Regression and implementation checks
+tests/test_circular_stats.py,Regression and implementation checks
+tests/test_examples.py,Regression and implementation checks
+tests/test_exp1_batches.py,Regression and implementation checks
+tests/test_invariants.py,Regression and implementation checks
+tests/test_loop_search.py,Regression and implementation checks
+tests/test_null_specificity.py,Regression and implementation checks
+tests/test_pca.py,Regression and implementation checks
+tests/test_publication_evidence.py,Regression and implementation checks
+tests/test_scientific_audit.py,Regression and implementation checks
+tests/test_source_parsing.py,Regression and implementation checks
+tests/test_steering_math.py,Regression and implementation checks
+tests/test_tda.py,Regression and implementation checks
+tests/test_toy_example.py,Regression and implementation checks
+tests/test_void_search.py,Regression and implementation checks
+uv.lock,"Study documentation, configuration or release artifact"

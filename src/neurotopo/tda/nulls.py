@@ -1,7 +1,7 @@
 """Significance of persistence bars: the universal null and design-matched Monte Carlo nulls.
 
-Global context: a persistence diagram always contains short "noise" bars; Method B must decide which
-bars are real holes (reports/preregistration.md, section 4).
+Diagrams can contain short and long intervals. These two rules compare observed intervals
+with a reference distribution (reports/preregistration.md, section 4).
 - Universal null (Bobrowski & Skraba 2023, Sci. Rep. 13:12274, doi:10.1038/s41598-023-37842-2, eqs. for
   pi, l and the left-Gumbel law): l = A log log pi + B, B = -lambda - A * mean(log log pi), p = exp(-e^l),
   Bonferroni within the diagram (A = 1/2 Cech, 1 Rips: AVALS in the authors' modules/PDplot.py). The law is a
@@ -29,6 +29,8 @@ from threadpoolctl import threadpool_limits
 from neurotopo.geometry.pca import rms_normalise
 from neurotopo.tda.diagrams import alpha_diagrams, max_ratio, ratios
 
+# Strong universality is an empirical scoring assumption. The H1 Cech Gumbel law has
+# counterexamples in d=2,3 (Heo, Cor. 1.4, https://arxiv.org/html/2610.08257v1).
 EULER_GAMMA = 0.5772156649015329            # lambda in Bobrowski & Skraba 2023
 
 
@@ -38,7 +40,7 @@ def universal_pvalues(dgm: np.ndarray, A: float) -> np.ndarray:
 
     The mean L of log log pi is taken over bars with pi > 1, as in the authors' released code
     (github.com/primozskraba/PersistenceUniversality, modules/PDplot.py), since log log 1 = -inf. The paper averages
-    over all of dgm_k; the two agree here because zero-length bars are dropped, so every finite bar has pi > 1.
+    over the diagram. We exclude nonfinite ratios and ratios within 1e-12 of one to handle roundoff.
     """
     pi = ratios(dgm)
     valid = np.isfinite(pi) & (pi > 1.0 + 1e-12)

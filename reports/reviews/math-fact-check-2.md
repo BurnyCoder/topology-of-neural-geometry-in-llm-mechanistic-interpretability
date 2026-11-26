@@ -1,5 +1,8 @@
 # Independent math fact-check: persistent homology and mechanistic interpretability
 
+**Historical report · erratum, 26 November 2026.** This records an earlier analysis. Its family and loop comparisons use catalog labels and its Gaussian reference results apply to the simulated designs. The [independent audit](2026-11-26-scientific-audit.md) supersedes interpretations of raw angular topology, full-vector agreement, open-family false-positive denominators, uniform calibration and representative-cycle identity. The earlier author's tests and decisions remain part of the chronology.
+
+
 Libor "Burny" Burian, 2026-11-20. Logged as deviation [D13](../deviations.md).
 
 **Question.** Are the definitions, theorems, methods, statistics and citations in this repository used the way persistent homology (topological data analysis, TDA) and mechanistic interpretability (MI) use them? Are there factual errors, and does every claim have a source?

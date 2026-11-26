@@ -72,7 +72,7 @@ pretty_name: Topology of neural geometry - inputs and results
 # Topology of neural geometry: inputs and results
 
 Data for [topology-of-neural-geometry-in-llm-mechanistic-interpretability](https://github.com/BurnyCoder/topology-of-neural-geometry-in-llm-mechanistic-interpretability):
-exact topology of fitted shapes and persistent homology of top-3-PCA activation clouds, and a test of whether
+catalog topology of fitted shapes, persistent homology of samples projected onto their first three principal components, and a test of whether
 semantically cyclic concepts (weekdays, months, residues mod 113) travel around a hole.
 
 ## `inputs/` (exported once from the source project, commit `{commit}`)
@@ -94,12 +94,14 @@ Source project: [shape-fitting-in-neural-geometry-in-llm-mechanistic-interpretab
 
 ## `results/`, `paper.pdf`, `summary.md`, `logs/` (uploaded by `run.py publish`)
 
-- `results/<phase>/`: machine-readable outputs of every analysis phase. Each folder has an `env.json` with
-  package versions and the git commit.
-  - `exp0`: exact topology of the fitted shapes and of the synthetic ground truth;
+- `results/<phase>/`: machine-readable outputs of every analysis phase. Experiment `env.json` records contain
+  package versions and commit information where available.
+  - `science`: independent audit of hypotheses, generator targets, flagged-cloud cohorts, null calibration and interval representatives.
+    [Audit report](https://github.com/BurnyCoder/topology-of-neural-geometry-in-llm-mechanistic-interpretability/blob/main/reports/reviews/2026-11-26-scientific-audit.md) · [Claim ledger](https://huggingface.co/datasets/BurnyCoder/topology-of-neural-geometry/blob/main/results/science/claims.csv).
+  - `exp0`: catalog topology of the fitted shapes and synthetic targets;
   - `coords`: positions of the labelled points on their fitted shapes;
   - `power`: validation tuning and power simulations;
-  - `exp1`: synthetic validation of the Betti estimators, including `outliers.json`;
+  - `exp1`: comparison of Betti estimators against the registered catalog, including `outliers.json`;
   - `exp2`: persistent homology of the 44 clouds;
   - `exp3`: cyclic hypothesis tests;
   - `exp4`: topological similarity;
@@ -109,23 +111,32 @@ Source project: [shape-fitting-in-neural-geometry-in-llm-mechanistic-interpretab
   - `exp8_audit3`: post hoc checks of the third audit (is the loop test specific to holes? synthetic sensitivity
     and false-loop rates, cluster-centre null on hole-free centres, centre loops, dense-check tori; deviation D9);
   - `nulls/`: cached Monte Carlo null distributions;
-  - `replication.json`: the clean-room replication check.
+  - `science/reproduction.json`: numerical comparison with the independent clean checkout for this audit. `replication.json` records an earlier replay.
 - `paper.pdf`: the paper. `summary.md`: summary of all experiments. `logs/`: timestamped run logs.
 
-Every table and figure in the GitHub repository is regenerated from `results/` with
-`uv run python run.py report site`.
+Use `uv run --frozen python run.py science` for the audit replay, or `uv run --frozen python run.py report site pdf` to rebuild published displays from existing results.
 
 ## Licences
 
 Code of both projects: MIT. Activations derived from Llama-3.1-8B are subject to the
 [Llama 3.1 Community License](https://github.com/meta-llama/llama-models/blob/main/models/llama3_1/LICENSE);
-GPT-2 (MIT), Pythia (Apache-2.0).
+[GPT-2 licence](https://github.com/openai/gpt-2/blob/master/LICENSE) (MIT), [Pythia model card](https://huggingface.co/EleutherAI/pythia-410m) (Apache-2.0).
 """
 
 
 def dataset_card(manifest: dict) -> str:
     """The dataset card (README.md of the dataset repo), filled from an inputs manifest."""
-    return DATASET_CARD.format(commit=manifest["source_commit"][:7], diff=manifest["test_params"]["max_abs_diff_vs_cache"])
+    text = DATASET_CARD.format(commit=manifest["source_commit"][:7], diff=manifest["test_params"]["max_abs_diff_vs_cache"])
+    if (config.path("results")/"science/summary.json").exists():
+        from neurotopo.report.science import scalars
+        a = scalars()
+        text += (f"\n## Independent audit, 26 November 2026\n\n"
+                 f"Neither method passes the complete H1 rule on any primary dataset. H6 steering is untested. "
+                 f"Full-vector agreement is {a['sci.h4_full']}/{a['sci.n_real']}. The corrected false-positive count is "
+                 f"{a['sci.fpr.all.flag.hits']}/{a['sci.fpr.all.flag.n']} among flagged eligible clouds. "
+                 "The persistence-versus-family ranking reverses for arcs and caps with unrounded-domain labels. "
+                 "[Audit results](https://huggingface.co/datasets/BurnyCoder/topology-of-neural-geometry/tree/main/results/science)\n")
+    return text
 
 
 def publish_inputs(staging: Path) -> str:
