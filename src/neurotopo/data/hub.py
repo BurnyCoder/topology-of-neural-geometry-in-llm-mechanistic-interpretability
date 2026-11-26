@@ -72,7 +72,7 @@ pretty_name: Topology of neural geometry - inputs and results
 # Topology of neural geometry: inputs and results
 
 Data for [topology-of-neural-geometry-in-llm-mechanistic-interpretability](https://github.com/BurnyCoder/topology-of-neural-geometry-in-llm-mechanistic-interpretability):
-exact topology of fitted shapes and persistent homology of top-3-PCA activation clouds, and a test of whether
+catalog topology of fitted shapes, persistent homology of samples projected onto their first three principal components, and a test of whether
 semantically cyclic concepts (weekdays, months, residues mod 113) travel around a hole.
 
 ## `inputs/` (exported once from the source project, commit `{commit}`)
@@ -101,7 +101,7 @@ Source project: [shape-fitting-in-neural-geometry-in-llm-mechanistic-interpretab
   - `exp0`: catalog topology of the fitted shapes and synthetic targets;
   - `coords`: positions of the labelled points on their fitted shapes;
   - `power`: validation tuning and power simulations;
-  - `exp1`: synthetic validation of the Betti estimators, including `outliers.json`;
+  - `exp1`: comparison of Betti estimators against the registered catalog, including `outliers.json`;
   - `exp2`: persistent homology of the 44 clouds;
   - `exp3`: cyclic hypothesis tests;
   - `exp4`: topological similarity;
@@ -111,7 +111,7 @@ Source project: [shape-fitting-in-neural-geometry-in-llm-mechanistic-interpretab
   - `exp8_audit3`: post hoc checks of the third audit (is the loop test specific to holes? synthetic sensitivity
     and false-loop rates, cluster-centre null on hole-free centres, centre loops, dense-check tori; deviation D9);
   - `nulls/`: cached Monte Carlo null distributions;
-  - `replication.json`: the clean-room replication check.
+  - `science/reproduction.json`: numerical comparison with the independent clean checkout for this audit. `replication.json` records an earlier replay.
 - `paper.pdf`: the paper. `summary.md`: summary of all experiments. `logs/`: timestamped run logs.
 
 Use `uv run --frozen python run.py science` for the audit replay, or `uv run --frozen python run.py report site pdf` to rebuild published displays from existing results.
@@ -120,7 +120,7 @@ Use `uv run --frozen python run.py science` for the audit replay, or `uv run --f
 
 Code of both projects: MIT. Activations derived from Llama-3.1-8B are subject to the
 [Llama 3.1 Community License](https://github.com/meta-llama/llama-models/blob/main/models/llama3_1/LICENSE);
-GPT-2 (MIT), Pythia (Apache-2.0).
+[GPT-2 licence](https://github.com/openai/gpt-2/blob/master/LICENSE) (MIT), [Pythia model card](https://huggingface.co/EleutherAI/pythia-410m) (Apache-2.0).
 """
 
 
