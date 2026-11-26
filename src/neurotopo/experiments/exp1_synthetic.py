@@ -96,10 +96,12 @@ def run() -> None:
                                               for i in range(len(sset)))
     s = pd.DataFrame(rows)
     s["b0_pred"] = [r[f"{t['b0_tau']}|{t['b0_minfrac']}"] for r in s["b0_grid"]]
+    if not np.array_equal(gt["sample_id"], sset.meta["sample_id"]):
+        raise ValueError("Topology rows and point clouds have different sample identifiers")
     df = pd.concat([gt.reset_index(drop=True), s.drop(columns=["n", "b0_grid"])], axis=1)
     pred = synthetic.predictions()
-    meth = pred[pred["system"] == "method"].set_index("sample_id")["family_pred"]
-    df["family_pred"] = meth.reindex(df["sample_id"]).to_numpy()
+    meth = pred[pred["system"] == "method"].set_index("sample_id", verify_integrity=True)["family_pred"]
+    df["family_pred"] = meth.loc[df["sample_id"]].to_numpy()
     val = pd.read_json(config.path("results") / "power" / "val_summaries.json.gz", orient="records")
     vr = val[val["resolvable"]]
     t["majority"] = list(map(int, vr[["b0", "b1", "b2"]].value_counts().idxmax()))
@@ -221,9 +223,9 @@ def outlier_check() -> None:
 
     Outlier clouds = clouds with >= 1 point farther than far_factor x their median distance to the ground-truth
     shape (tda.ground_truth.far_points). Reported: FPR of every estimator on resolvable contractible clouds with
-    and without detected outliers (cluster-bootstrap CI over generator chunks, one-sided Fisher test), the
+    and without detected outliers (cluster-bootstrap CI over generator chunks, legacy unclustered Fisher statistic), the
     decision (DTM ablation iff P's outlier FPR > dtm_fpr_threshold), and the proxy's flag rate per N bin next to
-    the generator's expected rate of clouds with at least one injected outlier (upper bound on the flag rate).
+    the generator's expected rate of clouds with at least one injected outlier (a model expectation for a different quantity).
     """
     import yaml
     from neurotopo.stats.tests import fisher_exact

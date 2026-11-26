@@ -63,14 +63,14 @@ def run():
             for rec in holes or [{}]:
                 rows.append(dict(hypothesis=hypothesis, id=d, variable=var, method="A", fit=fit.family,
                                  hole=bool(fit.b1 >= 1), eligible_margin=bool(fit.rho_A >= 1), rho=fit.rho_A,
-                                 coordinate=rec.get("coordinate", "unavailable"), p_raw=rec.get("p"),
+                                 coordinate=rec.get("coordinate", "unavailable"), p_raw=rec.get("p"), R=rec.get("R"),
                                  winding=rec.get("winding"), coordinate10="inapplicable"))
             r3 = next((r for r in b[d]["records3"] if r["variable"]==var), {})
             r10 = next((r for r in b[d]["records10"] if r["variable"]==var), {})
             rows.append(dict(hypothesis=hypothesis, id=d, variable=var, method="B", hole=bool(b[d]["p_loop"]<.05),
                              p_loop=b[d]["p_loop"], coordinate=b[d]["theta3_error"] or "available",
-                             p_raw=r3.get("p"), winding=r3.get("winding"), coordinate10=b[d]["theta10_error"] or "available",
-                             p10=r10.get("p"), winding10=r10.get("winding"), frequency=r3.get("k"),
+                             p_raw=r3.get("p"), R=r3.get("R"), winding=r3.get("winding"), coordinate10=b[d]["theta10_error"] or "available",
+                             R10=r10.get("R"), p10=r10.get("p"), winding10=r10.get("winding"), frequency=r3.get("k"),
                              uncovered=b[d].get("coverage3"), uncovered10=b[d].get("coverage10")))
     primary = [r for r in rows if r["hypothesis"]=="H1"]
     if len(primary)!=6:
@@ -81,7 +81,9 @@ def run():
         prob = r.get("p_holm", r["p_raw"])
         align = prob is not None and prob < .05 and abs(r["winding"] or 0)==1
         gate = r["eligible_margin"] if r["method"]=="A" else r["p10"] is not None and r["p10"]<.05 and abs(r["winding10"])==1
+        r["aligned_and_wound_once"] = bool(align)
         r["passed"] = bool(r["hole"] and align and gate)
+        r["status"] = "passed conjunction" if r["passed"] else "failed conjunction"
         r["multiplicity"] = "Holm over six alignments" if r in primary else "unadjusted"
     df = pd.DataFrame(rows)
     df.to_csv(out / "decisions.csv", index=False)
@@ -105,6 +107,9 @@ def run():
     full = (inv[["b0","b1_mc","b2_mc"]].to_numpy()==fitted.loc[inv.index,["b0","b1","b2"]].to_numpy()).all(1)
     per = pd.DataFrame({"id":inv.index,"H4_full_vector":full,
                         **{k:[p[pool.index(d)] if d in pool else None for d in inv.index] for k,p in predictions.items()}})
+    per["b1_b2_only"] = inv["agree_b1b2"].to_numpy()
+    for key in ["A_b0","A_b1","A_b2","b0","b1_mc","b2_mc"]:
+        per[key] = inv[key].to_numpy()
     per.to_csv(out / "h4_datasets.csv",index=False)
     steer = []
     for d in [*cyc,"R7_llama_colors",*ordinal,*init,*c1]:

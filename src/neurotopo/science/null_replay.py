@@ -1,6 +1,9 @@
 """Replay alpha nulls from original activations and calibrate the fitted-null test (Dufour 2006)."""
 
+import hashlib
+import json
 import logging
+import subprocess
 
 import gudhi
 import numpy as np
@@ -50,6 +53,13 @@ def observed_max(y):
 def replay():
     """Generate every seed-zero array and primary robustness seed before reading its deposited counterpart."""
     inputs = config.path("inputs")
+    # Digest of the manifest retrieved independently from the pinned HF revision (see protocol).
+    manifest_sha = hashlib.sha256((inputs/"manifest.json").read_bytes()).hexdigest()
+    if manifest_sha != "d816710a70301784210912c063173d30edafa39e839f0d12044aa77afc479cf8":
+        raise ValueError("The manifest differs from the specified HF snapshot")
+    commit = subprocess.check_output(["git","rev-parse","HEAD"], cwd=config.path("submodule"), text=True).strip()
+    if commit != config.load()["source_commit"]:
+        raise ValueError("Source checkout differs from the pinned revision")
     count = hub.verify(inputs)
     out = out_dir("science")
     ref = pd.read_csv(config.path("results") / "exp2/invariants.csv").set_index("id")
@@ -79,7 +89,9 @@ def replay():
             log.info("Fresh nulls checked for %s", did)
             pd.DataFrame(rows).to_csv(out / "null_replay.csv", index=False)
     write_json(out / "inputs.json", {"verified_files": count, "hf_revision": config.load()["hf"]["revision"],
-                                    "source_commit": config.load()["source_commit"]})
+                                    "source_commit": commit, "manifest_sha256": manifest_sha,
+                                    "bytes": sum(x["bytes"] if "bytes" in x else (inputs/name).stat().st_size
+                                                 for name,x in json.loads((inputs/"manifest.json").read_text())["files"].items())})
 
 
 def simulate_one(n_groups, copies, fixed_residual, seed):

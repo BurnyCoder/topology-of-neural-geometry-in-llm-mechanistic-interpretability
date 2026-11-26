@@ -43,8 +43,8 @@ def far_points(points: np.ndarray, shape_samples: np.ndarray, factor: float) -> 
 
     Outlier proxy of deviation D7: the source generator replaces a random fraction of points by uniform draws
     from the padded bounding box (neurogeom/data/nuisance.py::add_outliers) but does not store which ones.
-    Gaussian noise (isotropic or with per-axis scales in [0.3, 1]) almost never puts a point 6 median distances
-    from the shape, so points beyond that are box outliers; box outliers that land near the shape are missed.
+    This distance proxy depends on shape sampling, dimension and cloud size. Either false flags
+    or missed injections are possible. The exported data contain no per-point injection truth.
     """
     d = cKDTree(np.asarray(shape_samples, dtype=np.float64)).query(np.asarray(points, dtype=np.float64))[0]
     return int((d > factor * np.median(d)).sum())

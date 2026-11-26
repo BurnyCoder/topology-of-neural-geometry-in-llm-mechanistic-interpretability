@@ -41,3 +41,23 @@ def test_cycle_can_survive_a_different_triangles_death():
     basis.insert(younger)
     assert basis.reduce(younger) == 0
     assert basis.reduce(older ^ younger) != 0
+
+def test_frequency_permutation_repeats_search_with_duplicate_residues():
+    from neurotopo.stats.circular import max_over_frequency, max_over_frequency_pvalue
+
+    a = np.array([0, 0, 2, 3, 5, 6, 6, 4])
+    theta = np.array([.5, 1.1, -2., 2.2, .4, -.6, 2.8, .9])
+    rng = np.random.default_rng(815)
+    obs = max_over_frequency(theta, a, 7, 3)[0]
+    hits = sum(max_over_frequency(theta, rng.permutation(a), 7, 3)[0] >= obs-1e-12 for _ in range(99))
+    assert max_over_frequency_pvalue(theta, a, 7, 3, 99, np.random.default_rng(815)) == (1+hits)/100
+
+
+def test_certificates_use_the_death_simplex_and_are_closed():
+    from neurotopo.science.cycles import certify
+
+    rng = np.random.default_rng(4)
+    records = certify(rng.normal(size=(65,3)), 1)
+    assert all(r["cycle_closed"] and r["nonboundary_before_death"] for r in records)
+    assert any(r["certified"] for r in records)
+    assert any(not r["bounds_at_death"] for r in records)
