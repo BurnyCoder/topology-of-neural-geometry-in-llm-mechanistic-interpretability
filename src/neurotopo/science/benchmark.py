@@ -46,7 +46,20 @@ def chunk_intervals(correct, family, chunks, repetitions):
             den = weight[ix] @ counts[ix]
             draws[b, j] = weight[ix] @ sums[ix] / den if den else np.nan
     return (["macro", *family_id], np.concatenate([observed.mean(0)[None, :], observed]),
-            np.concatenate([np.nanmean(draws, axis=1, keepdims=True), draws], axis=1))
+            np.concatenate([draws.mean(axis=1, keepdims=True), draws], axis=1))
+
+
+def paired_table(group, est, boots, labels):
+    """Report marginal and paired intervals from the common chunk resamples."""
+    rows = []
+    for i, g in enumerate(group):
+        for j, (target, method) in enumerate(labels):
+            ref = labels.index((target, "P_alpha_universal"))
+            lo, hi = np.nanquantile(boots[:, i, j], [.025, .975])
+            dl, dh = np.nanquantile(boots[:, i, ref]-boots[:, i, j], [.025, .975])
+            rows.append(dict(target=target, group=g, method=method, accuracy=est[i,j], low=lo, high=hi,
+                             P_minus_method=est[i,ref]-est[i,j], difference_low=dl, difference_high=dh))
+    return pd.DataFrame(rows)
 
 
 def run():
@@ -103,15 +116,31 @@ def run():
             labels.append((lab, name))
     group, est, boots = chunk_intervals(np.column_stack(cols), df.family_name[mask], df.chunk[mask],
                                          config.load()["synthetic"]["bootstrap"])
-    rows = []
-    for i, g in enumerate(group):
-        for j, (target, method) in enumerate(labels):
-            ref = labels.index((target, "P_alpha_universal"))
-            lo, hi = np.nanquantile(boots[:, i, j], [.025, .975])
-            dl, dh = np.nanquantile(boots[:, i, ref]-boots[:, i, j], [.025, .975])
-            rows.append(dict(target=target, group=g, method=method, accuracy=est[i,j], low=lo, high=hi,
-                             P_minus_method=est[i,ref]-est[i,j], difference_low=dl, difference_high=dh))
-    pd.DataFrame(rows).to_csv(out / "benchmark.csv", index=False)
+    paired_table(group,est,boots,labels).to_csv(out/"benchmark.csv",index=False)
+    # The MC baseline was measured on the first generator chunk of each design cell.
+    measured = df.b1_mc.notna() & df.b2_mc.notna()
+    if not np.array_equal(measured, synthetic.baseline_subset(df)):
+        raise ValueError("Measured MC rows differ from the planned subset")
+    by = ["family_name","n_bin","noise_bin"]
+    census = df.groupby(by).chunk.agg(total_clouds="size", total_chunks="nunique")
+    for title, cohort in (("measured",measured),("eligible_measured",measured & mask)):
+        counts = df.loc[cohort].groupby(by).chunk.agg(["size","nunique"])
+        census = census.join(counts.rename(columns={"size":title+"_clouds","nunique":title+"_chunks"}))
+    census.fillna(0).astype(int).to_csv(out/"mc_selection.csv")
+    mc = df[["b0_pred","b1_mc","b2_mc"]].to_numpy()
+    cols_mc, labels_mc = [], []
+    selected = mask & measured.to_numpy()
+    for lab,target in (("catalog",truth),("angular",alternate)):
+        for name,pred in {**methods,"MC_gaussian3d":mc}.items():
+            ok = (pred[:,0]==target[:,0]) & (poly | (pred[:,1:]==target[:,1:]).all(1))
+            cols_mc.append(ok[selected])
+            labels_mc.append((lab,name))
+    gmc,emc,bmc = chunk_intervals(np.column_stack(cols_mc),df.family_name[selected],df.chunk[selected],
+                                  config.load()["synthetic"]["bootstrap"])
+    matched = paired_table(gmc,emc,bmc,labels_mc)
+    complete = {g:int(np.isfinite(bmc[:,i,0]).sum()) for i,g in enumerate(gmc)}
+    matched["complete_chunk_draws"] = matched.group.map(complete)
+    matched.to_csv(out/"mc_subset.csv",index=False)
     changes = []
     pcat, pang = (labels.index((t,"P_alpha_universal")) for t in ("catalog","angular"))
     for i, g in enumerate(group):

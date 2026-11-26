@@ -53,3 +53,14 @@ def test_blob_calibration_covers_every_degree_size_and_noise_cell():
     assert set(d.index)==expected and (d.n_clouds==250).all()
     assert d.hits.sum()==round((d.rate*d.n_clouds).sum())
     assert d.loc[d.valid_bars>0,"pooled_bar_KS_D"].between(0,1).all()
+
+def test_matched_gaussian_comparison_uses_registered_subset():
+    p = config.path("results")/"science"
+    if not (p/"benchmark.csv").exists():
+        pytest.skip("audit tables have not been generated")
+    selection = pd.read_csv(p/"mc_selection.csv")
+    assert selection.measured_chunks.eq(1).all() and selection.total_chunks.eq(10).all()
+    assert selection.measured_clouds.sum()==3120 and selection.eligible_measured_clouds.sum()==2427
+    subset = pd.read_csv(p/"mc_subset.csv").query("target=='catalog' and group=='macro'").set_index("method")
+    delta = subset.loc["P_alpha_universal","accuracy"] - subset.loc["MC_gaussian3d","accuracy"]
+    assert subset.loc["MC_gaussian3d","P_minus_method"] == pytest.approx(delta)
