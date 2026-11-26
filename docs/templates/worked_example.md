@@ -102,7 +102,7 @@ Each fake centre μ*_c is an independent draw from a Gaussian with the real cent
 
 **The numbers**
 - M = {{toy.null_m}} draws (seed crc32(id) + seed = {{toy.null_seed}}).
-- **Null floor.** Every null cloud still contains the 7 triangles, so its largest π is never below {{toy.null_min:3}}. In {{toy.null_floor_pct}}% of draws nothing beats the triangles. The null therefore knows about the noise loops, and they cannot produce a false positive.
+- **Observed null minimum.** The null preserves the triangular residual patterns while moving the concept centres. The minimum maximum ratio in the simulated draws was {{toy.null_min:3}}. In {{toy.null_floor_pct}}% of draws the maximum was at the triangle value to the recorded precision. Other arrangements can change the persistence. [Simulated maxima](../results/toy/summary.json)
 - **p-value:** p = (1 + #{null maxima ≥ π_obs}) / (M + 1). Here {{toy.null_n_ge}} of {{toy.null_m}} null maxima reach {{toy.big_pi:3}} (the largest is {{toy.null_max:3}}), so p = {{toy.null_p:3}}, the smallest value M = {{toy.null_m}} allows.
 - **q95**, the 95th percentile of the null maxima, uses numpy's linear interpolation. Sort the maxima v₍₀₎ ≤ … ≤ v₍M−1₎; the position is h = 0.95 · (M − 1), and q95 = v₍⌊h⌋₎ + (h − ⌊h⌋)(v₍⌊h⌋+1₎ − v₍⌊h⌋₎). Here q95 = {{toy.null_q95:3}}.
 - **Bar height** in the example figure = π_obs / q95 = {{toy.big_pi:3}} / {{toy.null_q95:3}} = **{{toy.null_ratio:2}}**. A bar above 1 means fewer than about 5% of null maxima reach π_obs, i.e. p ≲ 0.05.

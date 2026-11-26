@@ -1,7 +1,7 @@
 """Significance of persistence bars: the universal null and design-matched Monte Carlo nulls.
 
-Global context: a persistence diagram always contains short "noise" bars; Method B must decide which
-bars are real holes (reports/preregistration.md, section 4).
+Diagrams can contain short and long intervals. These two rules compare observed intervals
+with a reference distribution (reports/preregistration.md, section 4).
 - Universal null (Bobrowski & Skraba 2023, Sci. Rep. 13:12274, doi:10.1038/s41598-023-37842-2, eqs. for
   pi, l and the left-Gumbel law): l = A log log pi + B, B = -lambda - A * mean(log log pi), p = exp(-e^l),
   Bonferroni within the diagram (A = 1/2 Cech, 1 Rips: AVALS in the authors' modules/PDplot.py). The law is a

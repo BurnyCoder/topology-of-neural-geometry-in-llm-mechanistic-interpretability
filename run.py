@@ -55,9 +55,9 @@ PHASES = {
 SCIENCE_CHECKS = ["science-nulls", "science-calibration", "science-controls", "science-cycles",
                   "science-benchmark", "science-cohorts", "science-decisions", "science-summary"]
 # A clean checkout contains the archived comparison arrays. science-nulls always generates fresh draws.
-SCIENCE = ["fetch", "exp0", "power", "exp1", "exp1outliers", "exp2", "exp3", "exp3posthoc", "exp4", "exp5", *SCIENCE_CHECKS, "report", "site", "pdf", "science-verify"]
 ALL = ["fetch", "exp0", "coords", "power", "power2", "exp1", "exp1outliers", "exp2", "exp3", "exp3posthoc",
        "exp4", "exp5", "audit", "audit3", "audit4", "toy", "voids", "loops", *SCIENCE_CHECKS, "report", "site", "pdf"]
+SCIENCE = [*ALL, "science-verify"]
 
 
 def main(argv=None) -> None:
