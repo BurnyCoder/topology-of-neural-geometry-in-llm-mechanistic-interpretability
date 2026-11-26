@@ -1,0 +1,7 @@
+2026-11-26 16:12:02 INFO root: phase publish, log file C:\Users\Happy\Documents\projects\topology-of-neural-geometry-in-llm-mechanistic-interpretability\logs\publish_20261126T161202.log
+2026-11-26 16:12:04 INFO httpx2: HTTP Request: GET https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry "HTTP/1.1 200 OK"
+2026-11-26 16:12:04 INFO httpx2: HTTP Request: GET https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry/tree/226b06ad4525884933d12ae6b2ac5d7ffb28fd37?recursive=true&expand=false "HTTP/1.1 200 OK"
+2026-11-26 16:12:09 INFO httpx2: HTTP Request: POST https://huggingface.co/api/validate-yaml "HTTP/1.1 200 OK"
+2026-11-26 16:12:09 INFO httpx2: HTTP Request: POST https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry/preupload/main "HTTP/1.1 200 OK"
+2026-11-26 16:12:15 INFO httpx2: HTTP Request: POST https://huggingface.co/api/datasets/BurnyCoder/topology-of-neural-geometry/commit/main "HTTP/1.1 200 OK"
+2026-11-26 16:12:15 INFO neurotopo.report.publish: Verified publication files at dataset revision a21e6915eb832845f815c9bbef9e48724f88114c (141 changed paths)
